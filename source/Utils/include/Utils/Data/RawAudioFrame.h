@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
+#include <string>
 
 namespace adaptone
 {
@@ -20,14 +21,15 @@ namespace adaptone
             Signed24 = 3,
             SignedPadded24 = 4,
             Signed32 = 4,
-            Unsigned8 = 1,
-            Unsigned16 = 2,
-            Unsigned24 = 3,
-            UnsignedPadded24 = 4,
-            Unsigned32 = 4
+            Unsigned8 = 1 + 8,
+            Unsigned16 = 2 + 8,
+            Unsigned24 = 3 + 8,
+            UnsignedPadded24 = 4 + 8,
+            Unsigned32 = 4 + 8
         };
 
         static std::size_t formatSize(Format format);
+        static RawAudioFrame::Format parseFormat(const std::string& format);
 
     private:
         Format m_format;
@@ -54,7 +56,7 @@ namespace adaptone
 
     inline std::size_t RawAudioFrame::formatSize(Format format)
     {
-        return static_cast<std::size_t>(format);
+        return static_cast<std::size_t>(format) & 0b0111;
     }
 
     inline RawAudioFrame::Format RawAudioFrame::format() const

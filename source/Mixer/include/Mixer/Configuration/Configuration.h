@@ -3,6 +3,7 @@
 
 #include <Mixer/Configuration/LoggerConfiguration.h>
 #include <Mixer/Configuration/AudioConfiguration.h>
+#include <Mixer/Configuration/AudioInputConfiguration.h>
 
 #include <Utils/Configuration/Properties.h>
 
@@ -12,6 +13,7 @@ namespace adaptone
     {
         LoggerConfiguration m_loggerConfiguration;
         AudioConfiguration m_audioConfiguration;
+        AudioInputConfiguration m_audioInputConfiguration;
 
     public:
         explicit Configuration(const Properties& properties);
@@ -19,6 +21,7 @@ namespace adaptone
 
         const LoggerConfiguration& logger() const;
         const AudioConfiguration& audio() const;
+        const AudioInputConfiguration& audioInput() const;
     };
 
     inline const LoggerConfiguration& Configuration::logger() const
@@ -29,6 +32,11 @@ namespace adaptone
     inline const AudioConfiguration& Configuration::audio() const
     {
         return m_audioConfiguration;
+    }
+
+    inline const AudioInputConfiguration& Configuration::audioInput() const
+    {
+        return m_audioInputConfiguration;
     }
 }
 

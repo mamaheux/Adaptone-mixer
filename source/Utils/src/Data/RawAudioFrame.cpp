@@ -1,7 +1,54 @@
 #include <Utils/Data/RawAudioFrame.h>
 
+#include <Utils/Exception/InvalidValueException.h>
+
 using namespace adaptone;
 using namespace std;
+
+RawAudioFrame::Format RawAudioFrame::parseFormat(const std::string& format)
+{
+    if (format == "signed_8")
+    {
+        return RawAudioFrame::Format::Signed8;
+    }
+    if (format == "signed_16")
+    {
+        return RawAudioFrame::Format::Signed16;
+    }
+    if (format == "signed_24")
+    {
+        return RawAudioFrame::Format::Signed24;
+    }
+    if (format == "signed_padded_24")
+    {
+        return RawAudioFrame::Format::SignedPadded24;
+    }
+    if (format == "signed_32")
+    {
+        return RawAudioFrame::Format::Signed32;
+    }
+    if (format == "unsigned_8")
+    {
+        return RawAudioFrame::Format::Unsigned8;
+    }
+    if (format == "unsigned_16")
+    {
+        return RawAudioFrame::Format::Unsigned16;
+    }
+    if (format == "unsigned_24")
+    {
+        return RawAudioFrame::Format::Unsigned24;
+    }
+    if (format == "unsigned_padded_24")
+    {
+        return RawAudioFrame::Format::UnsignedPadded24;
+    }
+    if (format == "unsigned_32")
+    {
+        return RawAudioFrame::Format::Unsigned32;
+    }
+    THROW_INVALID_VALUE_EXCEPTION("RawAudioFrame::Format", format);
+}
 
 RawAudioFrame::RawAudioFrame(Format format, size_t channelCount, size_t sampleCount) :
     m_format(format), m_channelCount(channelCount), m_sampleCount(sampleCount)
