@@ -3,7 +3,8 @@
 using namespace adaptone;
 
 Configuration::Configuration(const Properties& properties) :
-    m_loggerConfiguration(properties)
+    m_loggerConfiguration(properties),
+    m_audioConfiguration(properties)
 {
 }
 
