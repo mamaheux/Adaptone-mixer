@@ -1,5 +1,5 @@
-#ifndef UTILS_DATA_RAW_AUDIO_FRAME_H
-#define UTILS_DATA_RAW_AUDIO_FRAME_H
+#ifndef UTILS_DATA_PCM_AUDIO_FRAME_H
+#define UTILS_DATA_PCM_AUDIO_FRAME_H
 
 #include <cstddef>
 #include <cstdint>
@@ -9,9 +9,9 @@
 namespace adaptone
 {
     /*
-     * A Raw PCM audio frame (Little endian)
+     * A PCM audio frame (Little endian)
      */
-    class RawAudioFrame
+    class PcmAudioFrame
     {
     public:
         enum class Format : std::size_t
@@ -29,7 +29,7 @@ namespace adaptone
         };
 
         static std::size_t formatSize(Format format);
-        static RawAudioFrame::Format parseFormat(const std::string& format);
+        static PcmAudioFrame::Format parseFormat(const std::string& format);
 
     private:
         Format m_format;
@@ -38,10 +38,10 @@ namespace adaptone
         uint8_t* m_data;
 
     public:
-        RawAudioFrame(Format format, std::size_t channelCount, std::size_t sampleCount);
-        RawAudioFrame(const RawAudioFrame& other);
-        RawAudioFrame(RawAudioFrame&& other);
-        ~RawAudioFrame();
+        PcmAudioFrame(Format format, std::size_t channelCount, std::size_t sampleCount);
+        PcmAudioFrame(const PcmAudioFrame& other);
+        PcmAudioFrame(PcmAudioFrame&& other);
+        ~PcmAudioFrame();
 
         Format format() const;
         std::size_t channelCount() const;
@@ -50,36 +50,36 @@ namespace adaptone
         uint8_t* data();
         std::size_t size() const;
 
-        RawAudioFrame& operator=(const RawAudioFrame& other);
-        RawAudioFrame& operator=(RawAudioFrame&& other);
+        PcmAudioFrame& operator=(const PcmAudioFrame& other);
+        PcmAudioFrame& operator=(PcmAudioFrame&& other);
     };
 
-    inline std::size_t RawAudioFrame::formatSize(Format format)
+    inline std::size_t PcmAudioFrame::formatSize(Format format)
     {
         return static_cast<std::size_t>(format) & 0b0111;
     }
 
-    inline RawAudioFrame::Format RawAudioFrame::format() const
+    inline PcmAudioFrame::Format PcmAudioFrame::format() const
     {
         return m_format;
     }
 
-    inline std::size_t RawAudioFrame::channelCount() const
+    inline std::size_t PcmAudioFrame::channelCount() const
     {
         return m_channelCount;
     }
 
-    inline std::size_t RawAudioFrame::sampleCount() const
+    inline std::size_t PcmAudioFrame::sampleCount() const
     {
         return m_sampleCount;
     }
 
-    inline uint8_t* RawAudioFrame::data()
+    inline uint8_t* PcmAudioFrame::data()
     {
         return m_data;
     }
 
-    inline std::size_t RawAudioFrame::size() const
+    inline std::size_t PcmAudioFrame::size() const
     {
         return m_channelCount * m_sampleCount * formatSize(m_format);
     }

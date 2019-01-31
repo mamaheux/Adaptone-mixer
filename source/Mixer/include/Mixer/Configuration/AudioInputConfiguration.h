@@ -2,7 +2,7 @@
 #define MIXER_CONFIGURATION_AUDIO_INPUT_CONFIGURATION_H
 
 #include <Utils/Configuration/Properties.h>
-#include <Utils/Data/RawAudioFrame.h>
+#include <Utils/Data/PcmAudioFrame.h>
 
 namespace adaptone
 {
@@ -16,7 +16,7 @@ namespace adaptone
 
     private:
         Type m_type;
-        RawAudioFrame::Format m_format;
+        PcmAudioFrame::Format m_format;
 
         //Raw file
         std::string m_filename;
@@ -26,7 +26,7 @@ namespace adaptone
         virtual ~AudioInputConfiguration();
 
         Type type() const;
-        RawAudioFrame::Format format() const;
+        PcmAudioFrame::Format format() const;
 
         const std::string& filename() const;
     };
@@ -36,7 +36,7 @@ namespace adaptone
         return m_type;
     }
 
-    inline RawAudioFrame::Format AudioInputConfiguration::format() const
+    inline PcmAudioFrame::Format AudioInputConfiguration::format() const
     {
         return m_format;
     }

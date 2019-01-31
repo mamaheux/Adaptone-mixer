@@ -32,6 +32,6 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().processingDataType(), AudioConfiguration::ProcessingDataType::Double);
 
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
-    EXPECT_EQ(configuration.audioInput().format(), RawAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.audioInput().filename(), "input.raw");
 }

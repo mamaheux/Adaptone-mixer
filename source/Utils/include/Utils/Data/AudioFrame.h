@@ -7,7 +7,7 @@
 namespace adaptone
 {
     /*
-     * A templated PCM audio frame
+     * A templated audio frame. The channel samples are consecutive.
      */
     template <class T>
     class AudioFrame

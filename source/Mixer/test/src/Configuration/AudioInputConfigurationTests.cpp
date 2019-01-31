@@ -17,7 +17,7 @@ TEST(AudioInputConfigurationTests, constructor_rawFilType_shouldSetTheTypeRelate
     }));
 
     EXPECT_EQ(configuration.type(), AudioInputConfiguration::Type::RawFile);
-    EXPECT_EQ(configuration.format(), RawAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.filename(), "input.raw");
 }
 
