@@ -7,7 +7,7 @@
 namespace adaptone
 {
     /*
-     * A PCM audio frame
+     * A templated PCM audio frame
      */
     template <class T>
     class AudioFrame
@@ -27,6 +27,7 @@ namespace adaptone
 
         T* data();
         std::size_t size() const;
+        std::size_t byteSize() const;
         T& operator[](std::size_t i);
 
         AudioFrame& operator=(const AudioFrame& other);
@@ -90,6 +91,12 @@ namespace adaptone
     inline std::size_t AudioFrame<T>::size() const
     {
         return m_channelCount * m_sampleCount;
+    }
+
+    template <class T>
+    inline std::size_t AudioFrame<T>::byteSize() const
+    {
+        return m_channelCount * m_sampleCount * sizeof(T);
     }
 
     template <class T>
