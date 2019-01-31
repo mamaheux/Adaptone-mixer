@@ -19,7 +19,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
 
         {"input.type", "raw_file"},
         {"input.format", "signed_8"},
-        {"input.filename", "input.raw"},
+        {"input.filename", "input.raw"}
     }));
 
     EXPECT_EQ(configuration.logger().type(), LoggerConfiguration::Type::Console);

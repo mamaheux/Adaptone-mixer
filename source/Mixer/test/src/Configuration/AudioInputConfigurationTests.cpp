@@ -13,7 +13,7 @@ TEST(AudioInputConfigurationTests, constructor_rawFilType_shouldSetTheTypeRelate
     {
         {"input.type", "raw_file"},
         {"input.format", "signed_8"},
-        {"input.filename", "input.raw"},
+        {"input.filename", "input.raw"}
     }));
 
     EXPECT_EQ(configuration.type(), AudioInputConfiguration::Type::RawFile);
@@ -27,7 +27,7 @@ TEST(AudioInputConfigurationTests, constructor_invalidType_shouldSetTheTypeRelat
                  {
                      {"input.type", "other"},
                      {"input.format", "signed_8"},
-                     {"input.filename", "input.raw"},
+                     {"input.filename", "input.raw"}
                  })),
                  InvalidValueException);
 }
