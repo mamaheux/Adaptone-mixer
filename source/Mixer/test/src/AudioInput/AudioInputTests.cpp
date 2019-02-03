@@ -13,6 +13,7 @@ public:
     DummyAudioInput() : AudioInput(PcmAudioFrame::Format::Signed8, 1, 1)
     {
     }
+
     ~DummyAudioInput() override
     {
     }
