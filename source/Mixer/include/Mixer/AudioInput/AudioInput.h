@@ -11,7 +11,7 @@ namespace adaptone
     protected:
         PcmAudioFrame m_frame;
     public:
-        AudioInput(PcmAudioFrame::Format format, std::size_t frameSampleCount, std::size_t sampleCount);
+        AudioInput(PcmAudioFrame::Format format, std::size_t channelCount, std::size_t frameSampleCount);
         virtual ~AudioInput();
 
         DECLARE_NOT_COPYABLE(AudioInput);
@@ -19,6 +19,9 @@ namespace adaptone
 
         virtual const PcmAudioFrame& read() = 0;
         virtual bool hasNext() = 0;
+
+        virtual bool hasGainControl();
+        virtual void setGain(std::size_t channelIndex, uint8_t gain);
     };
 }
 
