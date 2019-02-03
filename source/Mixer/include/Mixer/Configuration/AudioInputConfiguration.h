@@ -20,6 +20,7 @@ namespace adaptone
 
         //Raw file
         std::string m_filename;
+        bool m_looping;
 
     public:
         explicit AudioInputConfiguration(const Properties& properties);
@@ -29,6 +30,7 @@ namespace adaptone
         PcmAudioFrame::Format format() const;
 
         const std::string& filename() const;
+        bool looping() const;
     };
 
     inline AudioInputConfiguration::Type AudioInputConfiguration::type() const
@@ -44,6 +46,11 @@ namespace adaptone
     inline const std::string& AudioInputConfiguration::filename() const
     {
         return m_filename;
+    }
+
+    inline bool AudioInputConfiguration::looping() const
+    {
+        return m_looping;
     }
 }
 

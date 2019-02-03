@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cstring>
 #include <string>
+#include <istream>
 
 namespace adaptone
 {
@@ -47,11 +48,16 @@ namespace adaptone
         std::size_t channelCount() const;
         std::size_t sampleCount() const;
 
-        uint8_t* data();
+        const uint8_t* data() const;
         std::size_t size() const;
 
         PcmAudioFrame& operator=(const PcmAudioFrame& other);
         PcmAudioFrame& operator=(PcmAudioFrame&& other);
+
+        uint8_t& operator [](std::size_t i);
+
+        friend std::istream& operator >>(std::istream& stream, PcmAudioFrame& frame);
+        friend std::ostream& operator <<(std::ostream& stream, PcmAudioFrame& frame);
     };
 
     inline std::size_t PcmAudioFrame::formatSize(Format format)
@@ -74,7 +80,7 @@ namespace adaptone
         return m_sampleCount;
     }
 
-    inline uint8_t* PcmAudioFrame::data()
+    inline const uint8_t* PcmAudioFrame::data() const
     {
         return m_data;
     }
@@ -82,6 +88,23 @@ namespace adaptone
     inline std::size_t PcmAudioFrame::size() const
     {
         return m_channelCount * m_sampleCount * formatSize(m_format);
+    }
+
+    inline uint8_t& PcmAudioFrame::operator [](std::size_t i)
+    {
+        return m_data[i];
+    }
+
+    inline std::istream& operator >>(std::istream& stream, PcmAudioFrame& frame)
+    {
+        stream.read(reinterpret_cast<char*>(frame.m_data), frame.size());
+        return stream;
+    }
+
+    inline std::ostream& operator <<(std::ostream& stream, PcmAudioFrame& frame)
+    {
+        stream.write(reinterpret_cast<char*>(frame.m_data), frame.size());
+        return stream;
     }
 }
 

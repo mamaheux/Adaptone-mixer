@@ -1,4 +1,5 @@
 #include <Mixer/Configuration/Configuration.h>
+
 #include <gtest/gtest.h>
 
 using namespace adaptone;
@@ -17,9 +18,10 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         {"audio.output_channel_count", "14"},
         {"audio.processing_data_type", "double"},
 
-        {"input.type", "raw_file"},
-        {"input.format", "signed_8"},
-        {"input.filename", "input.raw"}
+        {"audio.input.type", "raw_file"},
+        {"audio.input.format", "signed_8"},
+        {"audio.input.filename", "input.raw"},
+        {"audio.input.looping", "false"}
     }));
 
     EXPECT_EQ(configuration.logger().type(), LoggerConfiguration::Type::Console);
@@ -34,4 +36,5 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.audioInput().filename(), "input.raw");
+    EXPECT_EQ(configuration.audioInput().looping(), false);
 }

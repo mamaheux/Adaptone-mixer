@@ -27,3 +27,7 @@ target_link_libraries(MixerTests
     gmock)
     
 assign_source_group(${source_files})
+
+add_custom_command(TARGET MixerTests POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${PROJECT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:MixerTests>/resources)

@@ -62,6 +62,13 @@ namespace adaptone
 
         return it->second;
     }
+
+    template <>
+    inline bool Properties::get(const std::string& key) const
+    {
+        return get<std::string>(key) == "true";
+
+    }
 }
 
 #endif

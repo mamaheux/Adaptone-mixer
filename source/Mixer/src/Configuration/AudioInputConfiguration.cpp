@@ -7,9 +7,10 @@ using namespace std;
 
 AudioInputConfiguration::AudioInputConfiguration(const Properties& properties)
 {
-    constexpr const char* TypePropertyKey = "input.type";
-    constexpr const char* FormatPropertyKey = "input.format";
-    constexpr const char* InputFilenamePropertyKey = "input.filename";
+    constexpr const char* TypePropertyKey = "audio.input.type";
+    constexpr const char* FormatPropertyKey = "audio.input.format";
+    constexpr const char* InputFilenamePropertyKey = "audio.input.filename";
+    constexpr const char* LoopingPropertyKey = "audio.input.looping";
 
     string type = properties.get<string>(TypePropertyKey);
 
@@ -19,6 +20,7 @@ AudioInputConfiguration::AudioInputConfiguration(const Properties& properties)
     {
         m_type = AudioInputConfiguration::Type::RawFile;
         m_filename = properties.get<string>(InputFilenamePropertyKey);
+        m_looping = properties.get<bool>(LoopingPropertyKey);
     }
     else
     {
