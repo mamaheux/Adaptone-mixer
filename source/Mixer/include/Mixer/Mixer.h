@@ -2,6 +2,7 @@
 #define MIXER_MIXER_H
 
 #include <Mixer/Configuration/Configuration.h>
+#include <Mixer/AudioInput/AudioInput.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
@@ -14,6 +15,7 @@ namespace adaptone
     {
         Configuration m_configuration;
         std::shared_ptr<Logger> m_logger;
+        std::unique_ptr<AudioInput> m_audioInput;
 
     public:
         Mixer(const Configuration& configuration);
@@ -23,6 +25,7 @@ namespace adaptone
 
     private:
         std::shared_ptr<Logger> createLogger();
+        std::unique_ptr<AudioInput> createAudioInput();
     };
 }
 

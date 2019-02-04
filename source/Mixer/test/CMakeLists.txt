@@ -14,16 +14,20 @@ file(GLOB_RECURSE
     source_files
     src/*
     include/*)
-     
+
 add_executable(MixerTests
     ${source_files})
 
 set_property(TARGET MixerTests PROPERTY CXX_STANDARD 14)
-    
+
 target_link_libraries(MixerTests
     Utils
     Mixer_Private
     gtest
     gmock)
-    
+
 assign_source_group(${source_files})
+
+add_custom_command(TARGET MixerTests POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${PROJECT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:MixerTests>/resources)

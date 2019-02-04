@@ -12,10 +12,10 @@ namespace adaptone
     {
     public:
         InvalidValueException(const std::string& filename,
-                              const std::string& function,
-                              int line,
-                              const std::string& name,
-                              const std::string& value);
+            const std::string& function,
+            int line,
+            const std::string& name,
+            const std::string& value);
 
         virtual ~InvalidValueException();
     };

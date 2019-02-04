@@ -12,10 +12,14 @@ using namespace std;
 class LoggerMock : public Logger
 {
 public:
-    LoggerMock() {}
-    ~LoggerMock() override {}
+    LoggerMock()
+    {}
 
-    MOCK_METHOD1(logMessage, void (const string&));
+    ~LoggerMock() override
+    {}
+
+    MOCK_METHOD1(logMessage, void(
+        const string&));
 };
 
 TEST(LoggerTests, log_shouldCallTheOverridedMethod)

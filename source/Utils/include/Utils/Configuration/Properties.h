@@ -25,7 +25,7 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(Properties);
         DECLARE_NOT_MOVABLE(Properties);
 
-        template <class T>
+        template<class T>
         T get(const std::string& key) const;
 
     private:
@@ -33,7 +33,7 @@ namespace adaptone
         void parseLine(const std::string& line);
     };
 
-    template <class T>
+    template<class T>
     inline T Properties::get(const std::string& key) const
     {
         std::string valueStr = get<std::string>(key);
@@ -51,7 +51,7 @@ namespace adaptone
         return value;
     }
 
-    template <>
+    template<>
     inline std::string Properties::get(const std::string& key) const
     {
         auto it = m_properties.find(key);
@@ -61,6 +61,13 @@ namespace adaptone
         }
 
         return it->second;
+    }
+
+    template<>
+    inline bool Properties::get(const std::string& key) const
+    {
+        return get<std::string>(key) == "true";
+
     }
 }
 

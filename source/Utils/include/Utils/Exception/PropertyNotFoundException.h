@@ -12,9 +12,9 @@ namespace adaptone
     {
     public:
         PropertyNotFoundException(const std::string& filename,
-                                  const std::string& function,
-                                  int line,
-                                  const std::string& key);
+            const std::string& function,
+            int line,
+            const std::string& key);
 
         virtual ~PropertyNotFoundException();
     };

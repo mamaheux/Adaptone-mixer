@@ -11,7 +11,7 @@ file(GLOB_RECURSE
     source_files
     src/*
     include/*)
-     
+
 add_executable(Mixer
     ${source_files})
 
@@ -21,8 +21,8 @@ target_link_libraries(Mixer
     Utils)
 
 add_custom_command(TARGET Mixer POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${PROJECT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:Mixer>/resources)
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${PROJECT_SOURCE_DIR}/resources $<TARGET_FILE_DIR:Mixer>/resources)
 
 
 add_library(Mixer_Private
