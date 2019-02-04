@@ -21,7 +21,11 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.input.type", "raw_file" },
         { "audio.input.format", "signed_8" },
         { "audio.input.filename", "input.raw" },
-        { "audio.input.looping", "false" }
+        { "audio.input.looping", "false" },
+
+        { "audio.output.type", "raw_file" },
+        { "audio.output.format", "signed_8" },
+        { "audio.output.filename", "output.raw" }
     }));
 
     EXPECT_EQ(configuration.logger().type(), LoggerConfiguration::Type::Console);
@@ -37,4 +41,8 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.audioInput().filename(), "input.raw");
     EXPECT_EQ(configuration.audioInput().looping(), false);
+
+    EXPECT_EQ(configuration.audioOutput().type(), AudioOutputConfiguration::Type::RawFile);
+    EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.audioOutput().filename(), "output.raw");
 }
