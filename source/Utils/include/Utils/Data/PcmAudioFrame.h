@@ -61,7 +61,7 @@ namespace adaptone
         uint8_t& operator[](std::size_t i);
 
         friend std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame);
-        friend std::ostream& operator<<(std::ostream& stream, PcmAudioFrame& frame);
+        friend std::ostream& operator<<(std::ostream& stream, const PcmAudioFrame& frame);
     };
 
     inline std::size_t PcmAudioFrame::formatSize(Format format)
@@ -105,7 +105,7 @@ namespace adaptone
         return stream;
     }
 
-    inline std::ostream& operator<<(std::ostream& stream, PcmAudioFrame& frame)
+    inline std::ostream& operator<<(std::ostream& stream, const PcmAudioFrame& frame)
     {
         stream.write(reinterpret_cast<char*>(frame.m_data), frame.size());
         return stream;
