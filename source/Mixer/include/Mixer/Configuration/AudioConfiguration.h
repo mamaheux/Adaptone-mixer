@@ -23,17 +23,12 @@ namespace adaptone
 
     public:
         explicit AudioConfiguration(const Properties& properties);
-
         virtual ~AudioConfiguration();
 
         std::size_t frameSampleCount() const;
-
         std::size_t sampleFrequency() const;
-
         std::size_t inputChannelCount() const;
-
         std::size_t outputChannelCount() const;
-
         ProcessingDataType processingDataType() const;
     };
 

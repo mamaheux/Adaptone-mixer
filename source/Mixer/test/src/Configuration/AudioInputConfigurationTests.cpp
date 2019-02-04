@@ -11,10 +11,10 @@ TEST(AudioInputConfigurationTests, constructor_rawFileType_shouldSetTheTypeRelat
 {
     AudioInputConfiguration configuration(Properties(
     {
-        { "audio.input.type", "raw_file" },
-        { "audio.input.format", "signed_8" },
-        { "audio.input.filename", "input.raw" },
-        { "audio.input.looping", "true" }
+        {"audio.input.type", "raw_file"},
+        {"audio.input.format", "signed_8"},
+        {"audio.input.filename", "input.raw"},
+        {"audio.input.looping", "true"}
     }));
 
     EXPECT_EQ(configuration.type(), AudioInputConfiguration::Type::RawFile);
@@ -26,10 +26,10 @@ TEST(AudioInputConfigurationTests, constructor_rawFileType_shouldSetTheTypeRelat
 TEST(AudioInputConfigurationTests, constructor_invalidType_shouldSetTheTypeRelatedAttributes)
 {
     EXPECT_THROW(AudioInputConfiguration(Properties(
-        {
-            {"audio.input.type",     "other"},
-            {"audio.input.format",   "signed_8"},
-            {"audio.input.filename", "input.raw"}
-        })),
-        InvalidValueException);
+                 {
+                     {"audio.input.type", "other"},
+                     {"audio.input.format", "signed_8"},
+                     {"audio.input.filename", "input.raw"}
+                 })),
+                 InvalidValueException);
 }

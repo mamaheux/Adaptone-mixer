@@ -5,7 +5,7 @@
 
 namespace adaptone
 {
-    template<class T>
+    template <class T>
     struct AlwaysFalse : std::false_type
     {
     };

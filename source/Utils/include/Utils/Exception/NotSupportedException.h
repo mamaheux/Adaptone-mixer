@@ -12,9 +12,9 @@ namespace adaptone
     {
     public:
         NotSupportedException(const std::string& filename,
-            const std::string& function,
-            int line,
-            const std::string& message);
+                              const std::string& function,
+                              int line,
+                              const std::string& message);
 
         virtual ~NotSupportedException();
     };

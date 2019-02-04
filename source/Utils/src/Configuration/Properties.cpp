@@ -23,7 +23,7 @@ Properties::~Properties()
 void Properties::parse(istream& stream)
 {
     string line;
-    while (stream.good())
+    while(stream.good())
     {
         getline(stream, line);
         parseLine(line);
@@ -35,8 +35,7 @@ void Properties::parseLine(const std::string& line)
     size_t equalIndex = line.find('=');
     size_t hashTagIndex = line.find('#');
 
-    if (equalIndex == string::npos || hashTagIndex < equalIndex)
-    { return; }
+    if (equalIndex == string::npos || hashTagIndex < equalIndex) { return; }
 
     string key = line.substr(0, equalIndex);
     string value = line.substr(equalIndex + 1, hashTagIndex - equalIndex - 1);

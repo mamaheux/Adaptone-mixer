@@ -9,7 +9,6 @@ namespace adaptone
     {
     public:
         ConsoleLogger();
-
         ~ConsoleLogger() override;
 
         DECLARE_NOT_COPYABLE(ConsoleLogger);

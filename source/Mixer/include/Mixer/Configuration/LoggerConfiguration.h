@@ -22,11 +22,9 @@ namespace adaptone
 
     public:
         explicit LoggerConfiguration(const Properties& properties);
-
         virtual ~LoggerConfiguration();
 
         Type type() const;
-
         const std::string& filename() const;
     };
 

@@ -9,19 +9,19 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
 {
     Configuration configuration(Properties(
     {
-        { "logger.type", "console" },
-        { "logger.filename", "log.txt" },
+        {"logger.type", "console"},
+        {"logger.filename", "log.txt"},
 
-        { "audio.frame_sample_count", "32" },
-        { "audio.sample_frequency", "48000" },
-        { "audio.input_channel_count", "16" },
-        { "audio.output_channel_count", "14" },
-        { "audio.processing_data_type", "double" },
+        {"audio.frame_sample_count", "32"},
+        {"audio.sample_frequency", "48000"},
+        {"audio.input_channel_count", "16"},
+        {"audio.output_channel_count", "14"},
+        {"audio.processing_data_type", "double"},
 
-        { "audio.input.type", "raw_file" },
-        { "audio.input.format", "signed_8" },
-        { "audio.input.filename", "input.raw" },
-        { "audio.input.looping", "false" }
+        {"audio.input.type", "raw_file"},
+        {"audio.input.format", "signed_8"},
+        {"audio.input.filename", "input.raw"},
+        {"audio.input.looping", "false"}
     }));
 
     EXPECT_EQ(configuration.logger().type(), LoggerConfiguration::Type::Console);

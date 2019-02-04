@@ -30,7 +30,6 @@ namespace adaptone
         };
 
         static std::size_t formatSize(Format format);
-
         static PcmAudioFrame::Format parseFormat(const std::string& format);
 
     private:
@@ -41,32 +40,24 @@ namespace adaptone
 
     public:
         PcmAudioFrame(Format format, std::size_t channelCount, std::size_t sampleCount);
-
         PcmAudioFrame(const PcmAudioFrame& other);
-
         PcmAudioFrame(PcmAudioFrame&& other);
-
         ~PcmAudioFrame();
 
         Format format() const;
-
         std::size_t channelCount() const;
-
         std::size_t sampleCount() const;
 
         const uint8_t* data() const;
-
         std::size_t size() const;
 
         PcmAudioFrame& operator=(const PcmAudioFrame& other);
-
         PcmAudioFrame& operator=(PcmAudioFrame&& other);
 
-        uint8_t& operator[](std::size_t i);
+        uint8_t& operator [](std::size_t i);
 
-        friend std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame);
-
-        friend std::ostream& operator<<(std::ostream& stream, PcmAudioFrame& frame);
+        friend std::istream& operator >>(std::istream& stream, PcmAudioFrame& frame);
+        friend std::ostream& operator <<(std::ostream& stream, PcmAudioFrame& frame);
     };
 
     inline std::size_t PcmAudioFrame::formatSize(Format format)
@@ -99,18 +90,18 @@ namespace adaptone
         return m_channelCount * m_sampleCount * formatSize(m_format);
     }
 
-    inline uint8_t& PcmAudioFrame::operator[](std::size_t i)
+    inline uint8_t& PcmAudioFrame::operator [](std::size_t i)
     {
         return m_data[i];
     }
 
-    inline std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame)
+    inline std::istream& operator >>(std::istream& stream, PcmAudioFrame& frame)
     {
         stream.read(reinterpret_cast<char*>(frame.m_data), frame.size());
         return stream;
     }
 
-    inline std::ostream& operator<<(std::ostream& stream, PcmAudioFrame& frame)
+    inline std::ostream& operator <<(std::ostream& stream, PcmAudioFrame& frame)
     {
         stream.write(reinterpret_cast<char*>(frame.m_data), frame.size());
         return stream;

@@ -85,8 +85,7 @@ TEST(AudioFrameTests, assignationOperator_shouldCopy)
 
     EXPECT_EQ(copy.channelCount(), 2);
     EXPECT_EQ(copy.sampleCount(), 3);
-    EXPECT_EQ(copy.size(), 6);
-    EXPECT_EQ(frame.byteSize(), 24);
+    EXPECT_EQ(copy.size(), 6);EXPECT_EQ(frame.byteSize(), 24);
     EXPECT_NE(frame.data(), copy.data());
 
     for (size_t i = 0; i < 6; i++)
