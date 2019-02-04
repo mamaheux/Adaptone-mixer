@@ -63,7 +63,7 @@ PcmAudioFrame::PcmAudioFrame(const PcmAudioFrame& other) :
     memcpy(m_data, other.m_data, size());
 }
 
-PcmAudioFrame::PcmAudioFrame(PcmAudioFrame&& other):
+PcmAudioFrame::PcmAudioFrame(PcmAudioFrame&& other) :
     m_format(other.m_format), m_channelCount(other.m_channelCount), m_sampleCount(other.m_sampleCount)
 {
     m_data = other.m_data;

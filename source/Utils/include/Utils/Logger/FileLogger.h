@@ -12,6 +12,7 @@ namespace adaptone
         std::ofstream m_stream;
     public:
         explicit FileLogger(const std::string& filename);
+
         ~FileLogger() override;
 
         DECLARE_NOT_COPYABLE(FileLogger);

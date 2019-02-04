@@ -17,10 +17,13 @@ namespace adaptone
 
     public:
         explicit Configuration(const Properties& properties);
+
         virtual ~Configuration();
 
         const LoggerConfiguration& logger() const;
+
         const AudioConfiguration& audio() const;
+
         const AudioInputConfiguration& audioInput() const;
     };
 

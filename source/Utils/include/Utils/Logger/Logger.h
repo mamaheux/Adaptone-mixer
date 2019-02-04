@@ -23,17 +23,21 @@ namespace adaptone
         };
 
         Logger();
+
         virtual ~Logger();
 
         DECLARE_NOT_COPYABLE(Logger);
         DECLARE_NOT_MOVABLE(Logger);
 
         void log(Level level, const std::string& message);
+
         void log(Level level, const std::exception& exception);
+
         void log(Level level, const std::exception& exception, const std::string& message);
 
     protected:
         void writeLevelName(std::stringstream& ss, Logger::Level level);
+
         virtual void logMessage(const std::string& message) = 0;
     };
 

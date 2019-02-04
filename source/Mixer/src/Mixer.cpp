@@ -57,10 +57,10 @@ std::unique_ptr<AudioInput> Mixer::createAudioInput()
     {
         case AudioInputConfiguration::Type::RawFile:
             return make_unique<RawFileAudioInput>(m_configuration.audioInput().format(),
-                                                  m_configuration.audio().inputChannelCount(),
-                                                  m_configuration.audio().frameSampleCount(),
-                                                  m_configuration.audioInput().filename(),
-                                                  m_configuration.audioInput().looping());
+                m_configuration.audio().inputChannelCount(),
+                m_configuration.audio().frameSampleCount(),
+                m_configuration.audioInput().filename(),
+                m_configuration.audioInput().looping());
     }
 
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");

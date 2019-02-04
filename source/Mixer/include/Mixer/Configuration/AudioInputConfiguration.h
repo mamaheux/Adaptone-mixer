@@ -24,12 +24,15 @@ namespace adaptone
 
     public:
         explicit AudioInputConfiguration(const Properties& properties);
+
         virtual ~AudioInputConfiguration();
 
         Type type() const;
+
         PcmAudioFrame::Format format() const;
 
         const std::string& filename() const;
+
         bool looping() const;
     };
 

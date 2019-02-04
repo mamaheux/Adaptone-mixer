@@ -25,6 +25,7 @@ namespace adaptone
     {
     public:
         LoggedException(const std::string& filename, const std::string& function, int line, const std::string& message);
+
         virtual ~LoggedException();
     };
 }

@@ -19,12 +19,14 @@ namespace adaptone
 
     public:
         Mixer(const Configuration& configuration);
+
         virtual ~Mixer();
 
         int run();
 
     private:
         std::shared_ptr<Logger> createLogger();
+
         std::unique_ptr<AudioInput> createAudioInput();
     };
 }
