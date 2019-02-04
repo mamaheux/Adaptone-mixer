@@ -10,7 +10,7 @@ using namespace std;
 class DummyAudioInput : public AudioInput
 {
 public:
-    DummyAudioInput() : AudioInput(PcmAudioFrame::Format::Signed8, 1, 1)
+    DummyAudioInput() : AudioInput(PcmAudioFrame::Format::Signed8, 1, 2)
     {
     }
 
@@ -29,13 +29,21 @@ public:
     }
 };
 
-TEST(RawFileAudioInputTests, hasGainControl_shouldReturnFalse)
+TEST(AudioInputTests, constructor_shouldInitializeTheFrame)
+{
+    DummyAudioInput input;
+    EXPECT_EQ(input.read().format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(input.read().channelCount(), 1);
+    EXPECT_EQ(input.read().sampleCount(), 2);
+}
+
+TEST(AudioInputTests, hasGainControl_shouldReturnFalse)
 {
     DummyAudioInput input;
     EXPECT_FALSE(input.hasGainControl());
 }
 
-TEST(RawFileAudioInputTests, setGain_shouldThrowNotSupportedException)
+TEST(AudioInputTests, setGain_shouldThrowNotSupportedException)
 {
     DummyAudioInput input;
     EXPECT_THROW(input.setGain(0, 0), NotSupportedException);
