@@ -22,11 +22,15 @@ namespace adaptone
             Signed24 = 3,
             SignedPadded24 = 4,
             Signed32 = 4,
-            Unsigned8 = 1 + 8,
-            Unsigned16 = 2 + 8,
-            Unsigned24 = 3 + 8,
-            UnsignedPadded24 = 4 + 8,
-            Unsigned32 = 4 + 8
+
+            Unsigned8 = 1 + 16,
+            Unsigned16 = 2 + 16,
+            Unsigned24 = 3 + 16,
+            UnsignedPadded24 = 4 + 16,
+            Unsigned32 = 4 + 16,
+
+            Float = 4 + 32,
+            Double = 8 + 32
         };
 
         static std::size_t formatSize(Format format);
@@ -62,7 +66,7 @@ namespace adaptone
 
     inline std::size_t PcmAudioFrame::formatSize(Format format)
     {
-        return static_cast<std::size_t>(format) & 0b0111;
+        return static_cast<std::size_t>(format) & 0b1111;
     }
 
     inline PcmAudioFrame::Format PcmAudioFrame::format() const
