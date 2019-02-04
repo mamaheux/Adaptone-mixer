@@ -10,20 +10,20 @@ using namespace std;
 TEST(RawFileAudioInputTests, invalidFile_shouldThrowNotSupportedException)
 {
     EXPECT_THROW(RawFileAudioInput(PcmAudioFrame::Format::Signed8,
-                                   2,
-                                   1,
-                                   "resources/RawFileAudioInputTests/invalid.raw",
-                                   false),
-                 NotSupportedException);
+        2,
+        1,
+        "resources/RawFileAudioInputTests/invalid.raw",
+        false),
+        NotSupportedException);
 }
 
 TEST(RawFileAudioInputTests, invalidFile_noLooping_shouldReadTheFile)
 {
     RawFileAudioInput input(PcmAudioFrame::Format::Signed8,
-                            2,
-                            1,
-                            "resources/RawFileAudioInputTests/valid.raw",
-                            false);
+        2,
+        1,
+        "resources/RawFileAudioInputTests/valid.raw",
+        false);
 
     EXPECT_TRUE(input.hasNext());
     const PcmAudioFrame* frame = &input.read();
@@ -41,10 +41,10 @@ TEST(RawFileAudioInputTests, invalidFile_noLooping_shouldReadTheFile)
 TEST(RawFileAudioInputTests, invalidFile_looping_shouldReadTheFileInLoop)
 {
     RawFileAudioInput input(PcmAudioFrame::Format::Signed8,
-                            2,
-                            1,
-                            "resources/RawFileAudioInputTests/valid.raw",
-                            true);
+        2,
+        1,
+        "resources/RawFileAudioInputTests/valid.raw",
+        true);
 
     EXPECT_TRUE(input.hasNext());
     const PcmAudioFrame* frame = &input.read();

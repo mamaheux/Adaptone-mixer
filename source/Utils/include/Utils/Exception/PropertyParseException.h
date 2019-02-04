@@ -12,10 +12,10 @@ namespace adaptone
     {
     public:
         PropertyParseException(const std::string& filename,
-                               const std::string& function,
-                               int line,
-                               const std::string& key,
-                               const std::string& value);
+            const std::string& function,
+            int line,
+            const std::string& key,
+            const std::string& value);
 
         virtual ~PropertyParseException();
     };

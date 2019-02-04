@@ -6,17 +6,17 @@ using namespace adaptone;
 using namespace std;
 
 RawFileAudioInput::RawFileAudioInput(PcmAudioFrame::Format format,
-                                     size_t channelCount,
-                                     size_t frameSampleCount,
-                                     const string& filename,
-                                     bool looping) :
+    size_t channelCount,
+    size_t frameSampleCount,
+    const string& filename,
+    bool looping) :
     AudioInput(format, channelCount, frameSampleCount), m_looping(looping)
 {
     auto fileStream = make_unique<ifstream>(filename, ifstream::binary);
 
-    fileStream->seekg (0, fileStream->end);
+    fileStream->seekg(0, fileStream->end);
     m_fileSize = static_cast<size_t>(fileStream->tellg());
-    fileStream->seekg (0, fileStream->beg);
+    fileStream->seekg(0, fileStream->beg);
 
     if (m_fileSize % m_frame.size() != 0)
     {
@@ -34,7 +34,7 @@ const PcmAudioFrame& RawFileAudioInput::read()
 {
     if (m_fileStream->tellg() >= m_fileSize && m_looping)
     {
-        m_fileStream->seekg (0, m_fileStream->beg);
+        m_fileStream->seekg(0, m_fileStream->beg);
     }
 
     *m_fileStream >> m_frame;

@@ -11,11 +11,11 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
 {
     AudioConfiguration configuration(Properties(
     {
-        {"audio.frame_sample_count", "32"},
-        {"audio.sample_frequency", "48000"},
-        {"audio.input_channel_count", "16"},
-        {"audio.output_channel_count", "14"},
-        {"audio.processing_data_type", "float"}
+        { "audio.frame_sample_count", "32" },
+        { "audio.sample_frequency", "48000" },
+        { "audio.input_channel_count", "16" },
+        { "audio.output_channel_count", "14" },
+        { "audio.processing_data_type", "float" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -29,11 +29,11 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
 {
     AudioConfiguration configuration(Properties(
     {
-        {"audio.frame_sample_count", "32"},
-        {"audio.sample_frequency", "48000"},
-        {"audio.input_channel_count", "16"},
-        {"audio.output_channel_count", "14"},
-        {"audio.processing_data_type", "double"}
+        { "audio.frame_sample_count", "32" },
+        { "audio.sample_frequency", "48000" },
+        { "audio.input_channel_count", "16" },
+        { "audio.output_channel_count", "14" },
+        { "audio.processing_data_type", "double" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -46,12 +46,12 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
 TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetTheAttributes)
 {
     EXPECT_THROW(AudioConfiguration configuration(Properties(
-                 {
-                     {"audio.frame_sample_count", "32"},
-                     {"audio.sample_frequency", "48000"},
-                     {"audio.input_channel_count", "16"},
-                     {"audio.output_channel_count", "14"},
-                     {"audio.processing_data_type", "asdasd"}
-                 })),
-                 InvalidValueException);
+        {
+            { "audio.frame_sample_count", "32" },
+            { "audio.sample_frequency", "48000" },
+            { "audio.input_channel_count", "16" },
+            { "audio.output_channel_count", "14" },
+            { "audio.processing_data_type", "asdasd" }
+        })),
+        InvalidValueException);
 }

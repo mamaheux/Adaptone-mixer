@@ -10,13 +10,13 @@ file(GLOB_RECURSE
     source_files
     src/*
     include/*)
-     
+
 add_library(Utils
     STATIC
     ${source_files})
 
 set_property(TARGET Utils PROPERTY CXX_STANDARD 14)
-    
+
 assign_source_group(${source_files})
 
 add_subdirectory(test)

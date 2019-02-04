@@ -18,10 +18,10 @@ namespace adaptone
 
     public:
         RawFileAudioInput(PcmAudioFrame::Format format,
-                          std::size_t channelCount,
-                          std::size_t frameSampleCount,
-                          const std::string& filename,
-                          bool looping);
+            std::size_t channelCount,
+            std::size_t frameSampleCount,
+            const std::string& filename,
+            bool looping);
         ~RawFileAudioInput() override;
 
         DECLARE_NOT_COPYABLE(RawFileAudioInput);
