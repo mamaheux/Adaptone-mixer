@@ -25,8 +25,8 @@ TEST(AudioOutputConfigurationTests, constructor_invalidType_shouldSetTheTypeRela
 {
     EXPECT_THROW(AudioOutputConfiguration(Properties(
         {
-            { "audio.output.type",     "other" },
-            { "audio.output.format",   "signed_8" },
+            { "audio.output.type", "other" },
+            { "audio.output.format", "signed_8" },
             { "audio.output.filename", "output.raw" }
         })),
         InvalidValueException);

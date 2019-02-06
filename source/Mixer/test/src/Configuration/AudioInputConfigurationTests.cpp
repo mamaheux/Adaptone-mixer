@@ -27,8 +27,8 @@ TEST(AudioInputConfigurationTests, constructor_invalidType_shouldSetTheTypeRelat
 {
     EXPECT_THROW(AudioInputConfiguration(Properties(
         {
-            { "audio.input.type",     "other" },
-            { "audio.input.format",   "signed_8" },
+            { "audio.input.type", "other" },
+            { "audio.input.format", "signed_8" },
             { "audio.input.filename", "input.raw" }
         })),
         InvalidValueException);

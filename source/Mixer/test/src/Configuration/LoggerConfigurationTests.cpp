@@ -35,7 +35,7 @@ TEST(LoggerConfigurationTests, constructor_invalidType_shouldSetTheTypeRelatedAt
 {
     EXPECT_THROW(LoggerConfiguration(Properties(
         {
-            { "logger.type",     "bob" },
+            { "logger.type", "bob" },
             { "logger.filename", "log.txt" }
         })),
         InvalidValueException);
