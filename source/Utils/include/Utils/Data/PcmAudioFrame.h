@@ -22,11 +22,15 @@ namespace adaptone
             Signed24 = 3,
             SignedPadded24 = 4,
             Signed32 = 4,
-            Unsigned8 = 1 + 8,
-            Unsigned16 = 2 + 8,
-            Unsigned24 = 3 + 8,
-            UnsignedPadded24 = 4 + 8,
-            Unsigned32 = 4 + 8
+
+            Unsigned8 = 1 + 16,
+            Unsigned16 = 2 + 16,
+            Unsigned24 = 3 + 16,
+            UnsignedPadded24 = 4 + 16,
+            Unsigned32 = 4 + 16,
+
+            Float = 4 + 32,
+            Double = 8 + 32
         };
 
         static std::size_t formatSize(Format format);
@@ -57,12 +61,12 @@ namespace adaptone
         uint8_t& operator[](std::size_t i);
 
         friend std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame);
-        friend std::ostream& operator<<(std::ostream& stream, PcmAudioFrame& frame);
+        friend std::ostream& operator<<(std::ostream& stream, const PcmAudioFrame& frame);
     };
 
     inline std::size_t PcmAudioFrame::formatSize(Format format)
     {
-        return static_cast<std::size_t>(format) & 0b0111;
+        return static_cast<std::size_t>(format) & 0b1111;
     }
 
     inline PcmAudioFrame::Format PcmAudioFrame::format() const
@@ -101,7 +105,7 @@ namespace adaptone
         return stream;
     }
 
-    inline std::ostream& operator<<(std::ostream& stream, PcmAudioFrame& frame)
+    inline std::ostream& operator<<(std::ostream& stream, const PcmAudioFrame& frame)
     {
         stream.write(reinterpret_cast<char*>(frame.m_data), frame.size());
         return stream;

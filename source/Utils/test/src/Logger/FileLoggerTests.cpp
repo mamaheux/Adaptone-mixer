@@ -12,7 +12,6 @@ constexpr const char* LogFilename = "log.txt";
 class FileLoggerTests : public ::testing::Test
 {
 protected:
-protected:
     void SetUp() override
     {
     }

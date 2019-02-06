@@ -23,6 +23,9 @@ TEST(PcmAudioFrameTests, parseFormat_shouldReturnTheRightFormat)
     EXPECT_EQ(PcmAudioFrame::parseFormat("unsigned_padded_24"), PcmAudioFrame::Format::UnsignedPadded24);
     EXPECT_EQ(PcmAudioFrame::parseFormat("unsigned_32"), PcmAudioFrame::Format::Unsigned32);
 
+    EXPECT_EQ(PcmAudioFrame::parseFormat("float"), PcmAudioFrame::Format::Float);
+    EXPECT_EQ(PcmAudioFrame::parseFormat("double"), PcmAudioFrame::Format::Double);
+
     EXPECT_THROW(PcmAudioFrame::parseFormat("unsigned_32asdasd"), InvalidValueException);
 }
 
@@ -39,6 +42,9 @@ TEST(PcmAudioFrameTests, formatSize_shouldReturnTheRightSize)
     EXPECT_EQ(PcmAudioFrame::formatSize(PcmAudioFrame::Format::Unsigned24), 3);
     EXPECT_EQ(PcmAudioFrame::formatSize(PcmAudioFrame::Format::UnsignedPadded24), 4);
     EXPECT_EQ(PcmAudioFrame::formatSize(PcmAudioFrame::Format::Unsigned32), 4);
+
+    EXPECT_EQ(PcmAudioFrame::formatSize(PcmAudioFrame::Format::Float), 4);
+    EXPECT_EQ(PcmAudioFrame::formatSize(PcmAudioFrame::Format::Double), 8);
 }
 
 TEST(PcmAudioFrameTests, construtor_shouldSetParameterAndAllocateMemory)

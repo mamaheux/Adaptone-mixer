@@ -7,8 +7,11 @@ using namespace std;
 
 TEST(PropertiesTests, construtor_map_shouldCopyTheMap)
 {
-    Properties properties({{"key0", "v1"},
-                           {"key1", "v2"}});
+    Properties properties(
+        {
+            { "key0", "v1" },
+            { "key1", "v2" }
+        });
 
     EXPECT_EQ(properties.get<string>("key0"), "v1");
     EXPECT_EQ(properties.get<string>("key1"), "v2");

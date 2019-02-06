@@ -2,51 +2,37 @@
 
 #include <Utils/Exception/InvalidValueException.h>
 
+#include <unordered_map>
+
 using namespace adaptone;
 using namespace std;
 
 PcmAudioFrame::Format PcmAudioFrame::parseFormat(const std::string& format)
 {
-    if (format == "signed_8")
+    unordered_map<string, PcmAudioFrame::Format> Mapping(
+        {
+            { "signed_8", PcmAudioFrame::Format::Signed8 },
+            { "signed_16", PcmAudioFrame::Format::Signed16 },
+            { "signed_24", PcmAudioFrame::Format::Signed24 },
+            { "signed_padded_24", PcmAudioFrame::Format::SignedPadded24 },
+            { "signed_32", PcmAudioFrame::Format::Signed32 },
+
+            { "unsigned_8", PcmAudioFrame::Format::Unsigned8 },
+            { "unsigned_16", PcmAudioFrame::Format::Unsigned16 },
+            { "unsigned_24", PcmAudioFrame::Format::Unsigned24 },
+            { "unsigned_padded_24", PcmAudioFrame::Format::UnsignedPadded24 },
+            { "unsigned_32", PcmAudioFrame::Format::Unsigned32 },
+
+            { "float", PcmAudioFrame::Format::Float },
+            { "double", PcmAudioFrame::Format::Double },
+        });
+
+    auto it = Mapping.find(format);
+    if (it != Mapping.end())
     {
-        return PcmAudioFrame::Format::Signed8;
+        return it->second;
     }
-    if (format == "signed_16")
-    {
-        return PcmAudioFrame::Format::Signed16;
-    }
-    if (format == "signed_24")
-    {
-        return PcmAudioFrame::Format::Signed24;
-    }
-    if (format == "signed_padded_24")
-    {
-        return PcmAudioFrame::Format::SignedPadded24;
-    }
-    if (format == "signed_32")
-    {
-        return PcmAudioFrame::Format::Signed32;
-    }
-    if (format == "unsigned_8")
-    {
-        return PcmAudioFrame::Format::Unsigned8;
-    }
-    if (format == "unsigned_16")
-    {
-        return PcmAudioFrame::Format::Unsigned16;
-    }
-    if (format == "unsigned_24")
-    {
-        return PcmAudioFrame::Format::Unsigned24;
-    }
-    if (format == "unsigned_padded_24")
-    {
-        return PcmAudioFrame::Format::UnsignedPadded24;
-    }
-    if (format == "unsigned_32")
-    {
-        return PcmAudioFrame::Format::Unsigned32;
-    }
+
     THROW_INVALID_VALUE_EXCEPTION("PcmAudioFrame::Format", format);
 }
 

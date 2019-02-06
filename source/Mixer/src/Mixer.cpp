@@ -1,6 +1,7 @@
 #include <Mixer/Mixer.h>
 
 #include <Mixer/AudioInput/RawFileAudioInput.h>
+#include <Mixer/AudioOutput/RawFileAudioOutput.h>
 
 #include <Utils/Exception/NotSupportedException.h>
 #include <Utils/Logger/ConsoleLogger.h>
@@ -12,12 +13,16 @@ using namespace std;
 Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration)
 {
     shared_ptr<Logger> logger = createLogger();
+
     unique_ptr<AudioInput> audioInput = createAudioInput();
+    unique_ptr<AudioOutput> audioOutput = createAudioOutput();
 
 
     //Create all members, then assign them to the attributes to prevent memory leaks
     m_logger = logger;
+
     m_audioInput = move(audioInput);
+    m_audioOutput = move(audioOutput);
 }
 
 Mixer::~Mixer()
@@ -61,6 +66,20 @@ std::unique_ptr<AudioInput> Mixer::createAudioInput()
                 m_configuration.audio().frameSampleCount(),
                 m_configuration.audioInput().filename(),
                 m_configuration.audioInput().looping());
+    }
+
+    THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
+}
+
+std::unique_ptr<AudioOutput> Mixer::createAudioOutput()
+{
+    switch (m_configuration.audioOutput().type())
+    {
+        case AudioOutputConfiguration::Type::RawFile:
+            return make_unique<RawFileAudioOutput>(m_configuration.audioOutput().format(),
+                m_configuration.audio().inputChannelCount(),
+                m_configuration.audio().frameSampleCount(),
+                m_configuration.audioOutput().filename());
     }
 
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
