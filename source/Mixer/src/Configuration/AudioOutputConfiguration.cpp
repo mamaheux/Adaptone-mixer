@@ -9,7 +9,10 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
 {
     constexpr const char* TypePropertyKey = "audio.output.type";
     constexpr const char* FormatPropertyKey = "audio.output.format";
+
     constexpr const char* FilenamePropertyKey = "audio.output.filename";
+
+    constexpr const char* DevicePropertyKey = "audio.output.device";
 
     string type = properties.get<string>(TypePropertyKey);
 
@@ -19,6 +22,11 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
     {
         m_type = AudioOutputConfiguration::Type::RawFile;
         m_filename = properties.get<string>(FilenamePropertyKey);
+    }
+    else if (type == "alsa")
+    {
+        m_type = AudioOutputConfiguration::Type::Alsa;
+        m_device = properties.get<string>(DevicePropertyKey);
     }
     else
     {

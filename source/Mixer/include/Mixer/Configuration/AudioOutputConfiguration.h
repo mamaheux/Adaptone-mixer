@@ -11,7 +11,8 @@ namespace adaptone
     public:
         enum class Type
         {
-            RawFile
+            RawFile,
+            Alsa
         };
 
     private:
@@ -21,6 +22,9 @@ namespace adaptone
         //Raw file
         std::string m_filename;
 
+        //Alsa
+        std::string m_device;
+
     public:
         explicit AudioOutputConfiguration(const Properties& properties);
         virtual ~AudioOutputConfiguration();
@@ -29,6 +33,8 @@ namespace adaptone
         PcmAudioFrame::Format format() const;
 
         const std::string& filename() const;
+
+        const std::string& device() const;
     };
 
     inline AudioOutputConfiguration::Type AudioOutputConfiguration::type() const
@@ -44,6 +50,11 @@ namespace adaptone
     inline const std::string& AudioOutputConfiguration::filename() const
     {
         return m_filename;
+    }
+
+    inline const std::string& AudioOutputConfiguration::device() const
+    {
+        return m_device;
     }
 }
 

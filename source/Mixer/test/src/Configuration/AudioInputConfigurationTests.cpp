@@ -23,6 +23,20 @@ TEST(AudioInputConfigurationTests, constructor_rawFileType_shouldSetTheTypeRelat
     EXPECT_TRUE(configuration.looping());
 }
 
+TEST(AudioInputConfigurationTests, constructor_alsaType_shouldSetTheTypeRelatedAttributes)
+{
+    AudioInputConfiguration configuration(Properties(
+    {
+        { "audio.input.type", "alsa" },
+        { "audio.input.format", "signed_8" },
+        { "audio.input.device", "hw:0,0" }
+    }));
+
+    EXPECT_EQ(configuration.type(), AudioInputConfiguration::Type::Alsa);
+    EXPECT_EQ(configuration.format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.device(), "hw:0,0");
+}
+
 TEST(AudioInputConfigurationTests, constructor_invalidType_shouldSetTheTypeRelatedAttributes)
 {
     EXPECT_THROW(AudioInputConfiguration(Properties(
