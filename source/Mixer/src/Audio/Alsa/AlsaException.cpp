@@ -1,3 +1,5 @@
+#if defined(__unix__) || defined(__linux__)
+
 #include <Mixer/Audio/Alsa/AlsaException.h>
 
 using namespace adaptone;
@@ -12,10 +14,12 @@ AlsaException::AlsaException(const std::string& filename,
     LoggedException(filename,
         function,
         line,
-        "AlsaException: " + message + "(" + to_string(errorCode) + ": " + errorDescription + ")")
+        "AlsaException: " + message + " (" + to_string(errorCode) + ": " + errorDescription + ")")
 {
 }
 
 AlsaException::~AlsaException()
 {
 }
+
+#endif
