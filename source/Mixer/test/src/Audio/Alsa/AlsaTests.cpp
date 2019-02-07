@@ -3,13 +3,13 @@
 #include <MixerTests/JetsonTest.h>
 
 #include <Mixer/Audio/Alsa/AlsaPcmDevice.h>
-
-#include <gtest/gtest.h>
+#include <Mixer/AudioInput/AlsaAudioInput.h>
+#include <Mixer/AudioOutput/AlsaAudioOutput.h>
 
 using namespace adaptone;
 using namespace std;
 
-JETSON_TEST(AlsaPcmDeviceTests, playback_shouldPlayASound)
+JETSON_TEST(AlsaTests, captureThenPlay_device_shouldReplayASound)
 {
     PcmAudioFrame::Format format = PcmAudioFrame::Format::Signed32;
     std::size_t channelCount = 10;
@@ -35,11 +35,38 @@ JETSON_TEST(AlsaPcmDeviceTests, playback_shouldPlayASound)
     int frameCount = 10000;
     for (int i = 0; i < frameCount; i++)
     {
-        cout << i << endl;
         if (captureDevice.read(frame))
         {
             playbackDevice.write(frame);
         }
+    }
+}
+
+JETSON_TEST(AlsaTests, captureThenPlay_shouldReplayASound)
+{
+    PcmAudioFrame::Format format = PcmAudioFrame::Format::Signed32;
+    std::size_t channelCount = 10;
+    std::size_t frameSampleCount = 32;
+    std::size_t sampleFrequency = 44100;
+
+    AlsaAudioInput input(format,
+        channelCount,
+        frameSampleCount,
+        sampleFrequency,
+        "hw:CARD=x20,DEV=0");
+
+    AlsaAudioOutput output(format,
+        channelCount,
+        frameSampleCount,
+        sampleFrequency,
+        "hw:CARD=x20,DEV=0");
+
+    PcmAudioFrame frame(format, channelCount, frameSampleCount);
+
+    int frameCount = 10000;
+    for (int i = 0; i < frameCount; i++)
+    {
+        output.write(input.read());
     }
 }
 
