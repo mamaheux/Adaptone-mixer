@@ -25,11 +25,13 @@ AudioInputConfiguration::AudioInputConfiguration(const Properties& properties)
         m_filename = properties.get<string>(InputFilenamePropertyKey);
         m_looping = properties.get<bool>(LoopingPropertyKey);
     }
+#if defined(__unix__) || defined(__linux__)
     else if (type == "alsa")
     {
         m_type = AudioInputConfiguration::Type::Alsa;
         m_device = properties.get<string>(DevicePropertyKey);
     }
+#endif
     else
     {
         THROW_INVALID_VALUE_EXCEPTION(TypePropertyKey, type);

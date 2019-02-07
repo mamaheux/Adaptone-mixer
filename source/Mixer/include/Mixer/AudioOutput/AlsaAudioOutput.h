@@ -1,6 +1,8 @@
 #ifndef MIXER_AUDIO_OUTPUT_ALSA_AUDIO_OUTPUT_H
 #define MIXER_AUDIO_OUTPUT_ALSA_AUDIO_OUTPUT_H
 
+#if defined(__unix__) || defined(__linux__)
+
 #include <Mixer/AudioOutput/AudioOutput.h>
 #include <Mixer/Audio/Alsa/AlsaPcmDevice.h>
 
@@ -26,5 +28,11 @@ namespace adaptone
         void write(const PcmAudioFrame& frame) override;
     };
 }
+
+#else
+
+#error "Invalid include file"
+
+#endif
 
 #endif

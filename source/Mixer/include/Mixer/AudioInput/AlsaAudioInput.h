@@ -1,6 +1,8 @@
 #ifndef MIXER_AUDIO_INPUT_ALSA_AUDIO_INPUT_H
 #define MIXER_AUDIO_INPUT_ALSA_AUDIO_INPUT_H
 
+#if defined(__unix__) || defined(__linux__)
+
 #include <Mixer/AudioInput/AudioInput.h>
 #include <Mixer/Audio/Alsa/AlsaPcmDevice.h>
 
@@ -27,5 +29,11 @@ namespace adaptone
         bool hasNext() override;
     };
 }
+
+#else
+
+#error "Invalid include file"
+
+#endif
 
 #endif

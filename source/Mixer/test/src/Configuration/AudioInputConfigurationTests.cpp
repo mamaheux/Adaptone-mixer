@@ -23,6 +23,8 @@ TEST(AudioInputConfigurationTests, constructor_rawFileType_shouldSetTheTypeRelat
     EXPECT_TRUE(configuration.looping());
 }
 
+#if defined(__unix__) || defined(__linux__)
+
 TEST(AudioInputConfigurationTests, constructor_alsaType_shouldSetTheTypeRelatedAttributes)
 {
     AudioInputConfiguration configuration(Properties(
@@ -36,6 +38,8 @@ TEST(AudioInputConfigurationTests, constructor_alsaType_shouldSetTheTypeRelatedA
     EXPECT_EQ(configuration.format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.device(), "hw:0,0");
 }
+
+#endif
 
 TEST(AudioInputConfigurationTests, constructor_invalidType_shouldSetTheTypeRelatedAttributes)
 {

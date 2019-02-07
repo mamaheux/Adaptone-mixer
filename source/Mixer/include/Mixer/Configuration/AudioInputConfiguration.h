@@ -12,7 +12,9 @@ namespace adaptone
         enum class Type
         {
             RawFile,
+#if defined(__unix__) || defined(__linux__)
             Alsa
+#endif
         };
 
     private:
@@ -23,8 +25,10 @@ namespace adaptone
         std::string m_filename;
         bool m_looping;
 
+#if defined(__unix__) || defined(__linux__)
         //Alsa
         std::string m_device;
+#endif
 
     public:
         explicit AudioInputConfiguration(const Properties& properties);
@@ -36,7 +40,9 @@ namespace adaptone
         const std::string& filename() const;
         bool looping() const;
 
+#if defined(__unix__) || defined(__linux__)
         const std::string& device() const;
+#endif
     };
 
     inline AudioInputConfiguration::Type AudioInputConfiguration::type() const
@@ -59,10 +65,15 @@ namespace adaptone
         return m_looping;
     }
 
+#if defined(__unix__) || defined(__linux__)
+
     inline const std::string& AudioInputConfiguration::device() const
     {
         return m_device;
     }
+
+#endif
+
 }
 
 #endif

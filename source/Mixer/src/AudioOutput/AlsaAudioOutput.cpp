@@ -1,3 +1,5 @@
+#if defined(__unix__) || defined(__linux__)
+
 #include <Mixer/AudioOutput/AlsaAudioOutput.h>
 
 using namespace adaptone;
@@ -26,3 +28,5 @@ void AlsaAudioOutput::write(const PcmAudioFrame& frame)
 {
     m_device.write(frame);
 }
+
+#endif

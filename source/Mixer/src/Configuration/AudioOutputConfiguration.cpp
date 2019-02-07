@@ -23,11 +23,13 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
         m_type = AudioOutputConfiguration::Type::RawFile;
         m_filename = properties.get<string>(FilenamePropertyKey);
     }
+#if defined(__unix__) || defined(__linux__)
     else if (type == "alsa")
     {
         m_type = AudioOutputConfiguration::Type::Alsa;
         m_device = properties.get<string>(DevicePropertyKey);
     }
+#endif
     else
     {
         THROW_INVALID_VALUE_EXCEPTION(TypePropertyKey, type);

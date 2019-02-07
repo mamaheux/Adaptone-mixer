@@ -1,3 +1,5 @@
+#if defined(__unix__) || defined(__linux__)
+
 #include <Mixer/AudioInput/AlsaAudioInput.h>
 
 using namespace adaptone;
@@ -35,3 +37,5 @@ bool AlsaAudioInput::hasNext()
 {
     return true;
 }
+
+#endif
