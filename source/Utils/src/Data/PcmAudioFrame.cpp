@@ -9,7 +9,7 @@ using namespace std;
 
 PcmAudioFrame::Format PcmAudioFrame::parseFormat(const std::string& format)
 {
-    unordered_map<string, PcmAudioFrame::Format> Mapping(
+    const unordered_map<string, PcmAudioFrame::Format> Mapping(
         {
             { "signed_8", PcmAudioFrame::Format::Signed8 },
             { "signed_16", PcmAudioFrame::Format::Signed16 },
@@ -24,7 +24,7 @@ PcmAudioFrame::Format PcmAudioFrame::parseFormat(const std::string& format)
             { "unsigned_32", PcmAudioFrame::Format::Unsigned32 },
 
             { "float", PcmAudioFrame::Format::Float },
-            { "double", PcmAudioFrame::Format::Double },
+            { "double", PcmAudioFrame::Format::Double }
         });
 
     auto it = Mapping.find(format);

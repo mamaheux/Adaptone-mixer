@@ -21,12 +21,30 @@ TEST(AudioOutputConfigurationTests, constructor_rawFileType_shouldSetTheTypeRela
     EXPECT_EQ(configuration.filename(), "output.raw");
 }
 
+#if defined(__unix__) || defined(__linux__)
+
+TEST(AudioOutputConfigurationTests, constructor_alsaType_shouldSetTheTypeRelatedAttributes)
+{
+    AudioOutputConfiguration configuration(Properties(
+    {
+        { "audio.output.type", "alsa" },
+        { "audio.output.format", "signed_8" },
+        { "audio.output.device", "hw:0,0" }
+    }));
+
+    EXPECT_EQ(configuration.type(), AudioOutputConfiguration::Type::Alsa);
+    EXPECT_EQ(configuration.format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.device(), "hw:0,0");
+}
+
+#endif
+
 TEST(AudioOutputConfigurationTests, constructor_invalidType_shouldSetTheTypeRelatedAttributes)
 {
     EXPECT_THROW(AudioOutputConfiguration(Properties(
         {
-            { "audio.output.type",     "other" },
-            { "audio.output.format",   "signed_8" },
+            { "audio.output.type", "other" },
+            { "audio.output.format", "signed_8" },
             { "audio.output.filename", "output.raw" }
         })),
         InvalidValueException);

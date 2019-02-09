@@ -3,6 +3,13 @@
 #include <Mixer/AudioInput/RawFileAudioInput.h>
 #include <Mixer/AudioOutput/RawFileAudioOutput.h>
 
+#if defined(__unix__) || defined(__linux__)
+
+#include <Mixer/AudioInput/AlsaAudioInput.h>
+#include <Mixer/AudioOutput/AlsaAudioOutput.h>
+
+#endif
+
 #include <Utils/Exception/NotSupportedException.h>
 #include <Utils/Logger/ConsoleLogger.h>
 #include <Utils/Logger/FileLogger.h>
@@ -66,6 +73,15 @@ std::unique_ptr<AudioInput> Mixer::createAudioInput()
                 m_configuration.audio().frameSampleCount(),
                 m_configuration.audioInput().filename(),
                 m_configuration.audioInput().looping());
+
+#if defined(__unix__) || defined(__linux__)
+        case AudioInputConfiguration::Type::Alsa:
+            return make_unique<AlsaAudioInput>(m_configuration.audioInput().format(),
+                m_configuration.audio().inputChannelCount(),
+                m_configuration.audio().frameSampleCount(),
+                m_configuration.audio().sampleFrequency(),
+                m_configuration.audioInput().device());
+#endif
     }
 
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
@@ -80,6 +96,15 @@ std::unique_ptr<AudioOutput> Mixer::createAudioOutput()
                 m_configuration.audio().inputChannelCount(),
                 m_configuration.audio().frameSampleCount(),
                 m_configuration.audioOutput().filename());
+
+#if defined(__unix__) || defined(__linux__)
+        case AudioOutputConfiguration::Type::Alsa:
+            return make_unique<AlsaAudioOutput>(m_configuration.audioOutput().format(),
+                m_configuration.audio().inputChannelCount(),
+                m_configuration.audio().frameSampleCount(),
+                m_configuration.audio().sampleFrequency(),
+                m_configuration.audioOutput().device());
+#endif
     }
 
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
