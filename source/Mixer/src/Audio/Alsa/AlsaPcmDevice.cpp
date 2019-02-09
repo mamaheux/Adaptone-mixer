@@ -149,7 +149,7 @@ void AlsaPcmDevice::write(const PcmAudioFrame& frame)
 
 snd_pcm_format_t AlsaPcmDevice::convert(PcmAudioFrame::Format format)
 {
-    map<PcmAudioFrame::Format, snd_pcm_format_t> Mapping(
+    const map<PcmAudioFrame::Format, snd_pcm_format_t> Mapping(
         {
             { PcmAudioFrame::Format::Signed8, SND_PCM_FORMAT_S8 },
             { PcmAudioFrame::Format::Signed16, SND_PCM_FORMAT_S16_LE },
