@@ -41,6 +41,7 @@ endfunction(assign_source_group)
 add_subdirectory(3rdParty)
 add_subdirectory(Mixer)
 add_subdirectory(Utils)
+add_subdirectory(SignalProcessing)
 
 set_target_properties(gmock PROPERTIES FOLDER 3rdParty)
 set_target_properties(gmock_main PROPERTIES FOLDER 3rdParty)
