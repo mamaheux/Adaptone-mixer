@@ -2,24 +2,17 @@
 #define MIXER_CONFIGURATION_AUDIO_CONFIGURATION_H
 
 #include <Utils/Configuration/Properties.h>
+#include <SignalProcessing/SignalProcessor.h>
 
 namespace adaptone
 {
     class AudioConfiguration
     {
-    public:
-        enum class ProcessingDataType
-        {
-            Float,
-            Double
-        };
-
-    private:
         std::size_t m_frameSampleCount;
         std::size_t m_sampleFrequency; // 44 kHz, 48 kHz, 96 kHz
         std::size_t m_inputChannelCount;
         std::size_t m_outputChannelCount;
-        ProcessingDataType m_processingDataType;
+        SignalProcessor::ProcessingDataType m_processingDataType;
 
     public:
         explicit AudioConfiguration(const Properties& properties);
@@ -29,7 +22,7 @@ namespace adaptone
         std::size_t sampleFrequency() const;
         std::size_t inputChannelCount() const;
         std::size_t outputChannelCount() const;
-        ProcessingDataType processingDataType() const;
+        SignalProcessor::ProcessingDataType processingDataType() const;
     };
 
     inline std::size_t AudioConfiguration::frameSampleCount() const
@@ -52,7 +45,7 @@ namespace adaptone
         return m_outputChannelCount;
     }
 
-    inline AudioConfiguration::ProcessingDataType AudioConfiguration::processingDataType() const
+    inline SignalProcessor::ProcessingDataType AudioConfiguration::processingDataType() const
     {
         return m_processingDataType;
     }
