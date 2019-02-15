@@ -9,6 +9,7 @@
 #include <Utils/Logger/Logger.h>
 
 #include <memory>
+#include <atomic>
 
 namespace adaptone
 {
@@ -20,11 +21,14 @@ namespace adaptone
         std::unique_ptr<AudioInput> m_audioInput;
         std::unique_ptr<AudioOutput> m_audioOutput;
 
+        std::atomic<bool> m_stopped;
+
     public:
         Mixer(const Configuration& configuration);
         virtual ~Mixer();
 
         int run();
+        void stop();
 
     private:
         std::shared_ptr<Logger> createLogger();

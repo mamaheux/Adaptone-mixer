@@ -2,24 +2,34 @@ cmake_minimum_required(VERSION 2.6.4)
 
 project(SignalProcessing)
 
-set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
+find_package(CUDA 9.0)
 
-include_directories(include)
+if (CUDA_FOUND)
 
-file(GLOB_RECURSE
-    source_files
-    src/*
-    include/*)
+    set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
-add_library(SignalProcessing
-    STATIC
-    ${source_files})
+    include_directories(${CUDA_INCLUDE_DIRS})
+    include_directories(../Utils/include)
+    include_directories(include)
 
-set_property(TARGET SignalProcessing PROPERTY CXX_STANDARD 14)
+    link_directories(${CUDA_LIBRARY_DIRS})
 
-target_link_libraries(SignalProcessing
-    armadillo)
+    file(GLOB_RECURSE
+        source_files
+        src/*
+        include/*)
 
-assign_source_group(${source_files})
+    cuda_add_library(SignalProcessing
+        STATIC
+        ${source_files})
 
-add_subdirectory(test)
+    set_property(TARGET SignalProcessing PROPERTY CXX_STANDARD 14)
+
+    target_link_libraries(SignalProcessing
+        armadillo)
+
+    assign_source_group(${source_files})
+
+    add_subdirectory(test)
+
+endif (CUDA_FOUND)

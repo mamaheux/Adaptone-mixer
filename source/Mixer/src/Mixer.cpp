@@ -17,7 +17,7 @@
 using namespace adaptone;
 using namespace std;
 
-Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration)
+Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration), m_stopped(false)
 {
     shared_ptr<Logger> logger = createLogger();
 
@@ -40,13 +40,25 @@ int Mixer::run()
 {
     try
     {
-        return 0;
+        while (!m_stopped.load() && m_audioInput->hasNext())
+        {
+            const PcmAudioFrame& frame = m_audioInput->read();
+
+            m_audioOutput->write(frame);
+        }
     }
     catch (exception& ex)
     {
         m_logger->log(Logger::Level::Error, ex);
         return -1;
     }
+
+    return 0;
+}
+
+void Mixer::stop()
+{
+    m_stopped.store(true);
 }
 
 std::shared_ptr<Logger> Mixer::createLogger()
