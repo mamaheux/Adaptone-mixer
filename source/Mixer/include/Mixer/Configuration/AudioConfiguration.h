@@ -2,7 +2,7 @@
 #define MIXER_CONFIGURATION_AUDIO_CONFIGURATION_H
 
 #include <Utils/Configuration/Properties.h>
-#include <SignalProcessing/SignalProcessor.h>
+#include <SignalProcessing/ProcessingDataType.h>
 
 namespace adaptone
 {
@@ -12,7 +12,7 @@ namespace adaptone
         std::size_t m_sampleFrequency; // 44 kHz, 48 kHz, 96 kHz
         std::size_t m_inputChannelCount;
         std::size_t m_outputChannelCount;
-        SignalProcessor::ProcessingDataType m_processingDataType;
+        ProcessingDataType m_processingDataType;
 
     public:
         explicit AudioConfiguration(const Properties& properties);
@@ -22,7 +22,7 @@ namespace adaptone
         std::size_t sampleFrequency() const;
         std::size_t inputChannelCount() const;
         std::size_t outputChannelCount() const;
-        SignalProcessor::ProcessingDataType processingDataType() const;
+        ProcessingDataType processingDataType() const;
     };
 
     inline std::size_t AudioConfiguration::frameSampleCount() const
@@ -45,7 +45,7 @@ namespace adaptone
         return m_outputChannelCount;
     }
 
-    inline SignalProcessor::ProcessingDataType AudioConfiguration::processingDataType() const
+    inline ProcessingDataType AudioConfiguration::processingDataType() const
     {
         return m_processingDataType;
     }

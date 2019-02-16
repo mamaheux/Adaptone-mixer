@@ -10,7 +10,6 @@ include_directories(../Utils/include)
 include_directories(include)
 
 if (CUDA_FOUND)
-
     include_directories(${CUDA_INCLUDE_DIRS})
     link_directories(${CUDA_LIBRARY_DIRS})
 
@@ -18,6 +17,8 @@ if (CUDA_FOUND)
         source_files
         src/*
         include/*)
+
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};-std=c++14;-DUSE_CUDA")
 
     cuda_add_library(SignalProcessing
         STATIC
@@ -27,22 +28,27 @@ if (CUDA_FOUND)
         armadillo
         ${CUDA_LIBRARIES})
 
-    add_compile_definitions(USE_CUDA)
+    add_definitions(-DUSE_CUDA)
 
     add_subdirectory(test)
 
 else (CUDA_FOUND)
 
+    file(GLOB_RECURSE
+        source_files
+        src/SignalProcessor.cpp
+        include/SignalProcessing/ProcessingDataType.h
+        include/SignalProcessing/SignalProcessor.h)
+
     add_library(SignalProcessing
         STATIC
-        include/SignalProcessing/SignalProcessor.h
-        src/SignalProcessor.cpp)
+        ${source_files})
 
     target_link_libraries(SignalProcessing
         armadillo)
 
 endif (CUDA_FOUND)
 
-
 set_property(TARGET SignalProcessing PROPERTY CXX_STANDARD 14)
+
 assign_source_group(${source_files})

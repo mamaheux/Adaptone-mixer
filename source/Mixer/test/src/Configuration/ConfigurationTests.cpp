@@ -35,7 +35,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().sampleFrequency(), 48000);
     EXPECT_EQ(configuration.audio().inputChannelCount(), 16);
     EXPECT_EQ(configuration.audio().outputChannelCount(), 14);
-    EXPECT_EQ(configuration.audio().processingDataType(), SignalProcessor::ProcessingDataType::Double);
+    EXPECT_EQ(configuration.audio().processingDataType(), ProcessingDataType::Double);
 
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrame::Format::Signed8);

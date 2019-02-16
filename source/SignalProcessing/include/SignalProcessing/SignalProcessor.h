@@ -1,30 +1,29 @@
 #ifndef SIGNAL_PROCESSING_SIGNAL_PROCESSOR_H
 #define SIGNAL_PROCESSING_SIGNAL_PROCESSOR_H
 
+#include <SignalProcessing/ProcessingDataType.h>
+
 #include <Utils/Data/PcmAudioFrame.h>
+
+#include <memory>
+
+#ifdef USE_CUDA
+
+#include <SignalProcessing/Cuda/CudaSignalProcessor.h>
+
+#else
+
+class CudaSignalProcessor
+{
+};
+
+#endif
 
 namespace adaptone
 {
     class SignalProcessor
     {
-    public:
-        enum class ProcessingDataType
-        {
-            Float,
-            Double
-        };
-
-    private:
-        ProcessingDataType m_processingDataType;
-
-        std::size_t m_frameSampleCount;
-        std::size_t m_sampleFrequency;
-
-        std::size_t m_inputChannelCount;
-        std::size_t m_outputChannelCount;
-
-        PcmAudioFrame::Format m_inputFormat;
-        PcmAudioFrame::Format m_outputFormat;
+        std::unique_ptr<CudaSignalProcessor> m_cudaSignalProcessor;
 
     public:
         SignalProcessor(ProcessingDataType processingDataType,
