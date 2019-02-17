@@ -37,8 +37,10 @@ else (CUDA_FOUND)
     file(GLOB_RECURSE
         source_files
         src/SignalProcessor.cpp
+        src/SpecificSignalProcessor.cpp
         include/SignalProcessing/ProcessingDataType.h
-        include/SignalProcessing/SignalProcessor.h)
+        include/SignalProcessing/SignalProcessor.h
+        include/SignalProcessing/SpecificSignalProcessor.h)
 
     add_library(SignalProcessing
         STATIC

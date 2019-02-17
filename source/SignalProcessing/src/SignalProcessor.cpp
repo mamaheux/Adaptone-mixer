@@ -1,5 +1,7 @@
 #include <SignalProcessing/SignalProcessor.h>
 
+#ifndef USE_CUDA
+
 using namespace adaptone;
 using namespace std;
 
@@ -11,32 +13,11 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
     PcmAudioFrame::Format inputFormat,
     PcmAudioFrame::Format outputFormat)
 {
-#ifdef USE_CUDA
-
-    m_cudaSignalProcessor = make_unique<CudaSignalProcessor>(processingDataType,
-        frameSampleCount,
-        sampleFrequency,
-        inputChannelCount,
-        outputChannelCount,
-        inputFormat,
-        outputFormat);
-
-#endif
+    m_specificSignalProcessor = make_unique<SpecificSignalProcessor>();
 }
 
 SignalProcessor::~SignalProcessor()
 {
 }
 
-const PcmAudioFrame& SignalProcessor::process(const PcmAudioFrame& inputFrame)
-{
-#ifdef USE_CUDA
-
-    return m_cudaSignalProcessor->process(inputFrame);
-
-#else
-
-    return inputFrame;
-
 #endif
-}

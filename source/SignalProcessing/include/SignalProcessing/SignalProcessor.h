@@ -2,28 +2,18 @@
 #define SIGNAL_PROCESSING_SIGNAL_PROCESSOR_H
 
 #include <SignalProcessing/ProcessingDataType.h>
+#include <SignalProcessing/SpecificSignalProcessor.h>
 
+#include <Utils/ClassMacro.h>
 #include <Utils/Data/PcmAudioFrame.h>
 
 #include <memory>
-
-#ifdef USE_CUDA
-
-#include <SignalProcessing/Cuda/CudaSignalProcessor.h>
-
-#else
-
-class CudaSignalProcessor
-{
-};
-
-#endif
 
 namespace adaptone
 {
     class SignalProcessor
     {
-        std::unique_ptr<CudaSignalProcessor> m_cudaSignalProcessor;
+        std::unique_ptr<SpecificSignalProcessor> m_specificSignalProcessor;
 
     public:
         SignalProcessor(ProcessingDataType processingDataType,
@@ -35,8 +25,17 @@ namespace adaptone
             PcmAudioFrame::Format outputFormat);
         virtual ~SignalProcessor();
 
+        DECLARE_NOT_COPYABLE(SignalProcessor);
+        DECLARE_NOT_MOVABLE(SignalProcessor);
+
         const PcmAudioFrame& process(const PcmAudioFrame& inputFrame);
     };
+
+    inline const PcmAudioFrame& SignalProcessor::process(const PcmAudioFrame& inputFrame)
+    {
+        return m_specificSignalProcessor->process(inputFrame);
+    }
+
 }
 
 #endif

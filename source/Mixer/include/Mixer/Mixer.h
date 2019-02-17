@@ -31,6 +31,9 @@ namespace adaptone
         Mixer(const Configuration& configuration);
         virtual ~Mixer();
 
+        DECLARE_NOT_COPYABLE(Mixer);
+        DECLARE_NOT_MOVABLE(Mixer);
+
         int run();
         void stop();
 

@@ -6,9 +6,7 @@
 
 using namespace std;
 
-TEST(ArmadilloDummyTests, det
-)
+TEST(ArmadilloDummyTests, det)
 {
-cout <<
-det();
+    cout << det();
 }
