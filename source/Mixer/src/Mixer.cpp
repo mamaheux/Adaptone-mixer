@@ -17,19 +17,22 @@
 using namespace adaptone;
 using namespace std;
 
-Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration)
+Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration), m_stopped(false)
 {
     shared_ptr<Logger> logger = createLogger();
 
     unique_ptr<AudioInput> audioInput = createAudioInput();
     unique_ptr<AudioOutput> audioOutput = createAudioOutput();
 
+    unique_ptr<SignalProcessor> signalProcessor = createSignalProcessor();
 
     //Create all members, then assign them to the attributes to prevent memory leaks
     m_logger = logger;
 
     m_audioInput = move(audioInput);
     m_audioOutput = move(audioOutput);
+
+    m_signalProcessor = move(signalProcessor);
 }
 
 Mixer::~Mixer()
@@ -40,16 +43,28 @@ int Mixer::run()
 {
     try
     {
-        return 0;
+        while (!m_stopped.load() && m_audioInput->hasNext())
+        {
+            const PcmAudioFrame& inputFrame = m_audioInput->read();
+            const PcmAudioFrame& outputFrame = m_signalProcessor->process(inputFrame);
+            m_audioOutput->write(outputFrame);
+        }
     }
     catch (exception& ex)
     {
         m_logger->log(Logger::Level::Error, ex);
         return -1;
     }
+
+    return 0;
 }
 
-std::shared_ptr<Logger> Mixer::createLogger()
+void Mixer::stop()
+{
+    m_stopped.store(true);
+}
+
+shared_ptr<Logger> Mixer::createLogger()
 {
     switch (m_configuration.logger().type())
     {
@@ -63,7 +78,7 @@ std::shared_ptr<Logger> Mixer::createLogger()
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported logger type.");
 }
 
-std::unique_ptr<AudioInput> Mixer::createAudioInput()
+unique_ptr<AudioInput> Mixer::createAudioInput()
 {
     switch (m_configuration.audioInput().type())
     {
@@ -87,7 +102,7 @@ std::unique_ptr<AudioInput> Mixer::createAudioInput()
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
 }
 
-std::unique_ptr<AudioOutput> Mixer::createAudioOutput()
+unique_ptr<AudioOutput> Mixer::createAudioOutput()
 {
     switch (m_configuration.audioOutput().type())
     {
@@ -108,4 +123,15 @@ std::unique_ptr<AudioOutput> Mixer::createAudioOutput()
     }
 
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
+}
+
+unique_ptr<SignalProcessor> Mixer::createSignalProcessor()
+{
+    return make_unique<SignalProcessor>(m_configuration.audio().processingDataType(),
+        m_configuration.audio().frameSampleCount(),
+        m_configuration.audio().sampleFrequency(),
+        m_configuration.audio().inputChannelCount(),
+        m_configuration.audio().outputChannelCount(),
+        m_configuration.audioInput().format(),
+        m_configuration.audioOutput().format());
 }

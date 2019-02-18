@@ -22,7 +22,7 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
     EXPECT_EQ(configuration.sampleFrequency(), 48000);
     EXPECT_EQ(configuration.inputChannelCount(), 16);
     EXPECT_EQ(configuration.outputChannelCount(), 14);
-    EXPECT_EQ(configuration.processingDataType(), AudioConfiguration::ProcessingDataType::Float);
+    EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Float);
 }
 
 TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheAttributes)
@@ -40,7 +40,7 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
     EXPECT_EQ(configuration.sampleFrequency(), 48000);
     EXPECT_EQ(configuration.inputChannelCount(), 16);
     EXPECT_EQ(configuration.outputChannelCount(), 14);
-    EXPECT_EQ(configuration.processingDataType(), AudioConfiguration::ProcessingDataType::Double);
+    EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Double);
 }
 
 TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetTheAttributes)

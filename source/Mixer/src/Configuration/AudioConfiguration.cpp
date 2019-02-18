@@ -22,11 +22,11 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
 
     if (processingDataType == "float")
     {
-        m_processingDataType = AudioConfiguration::ProcessingDataType::Float;
+        m_processingDataType = ProcessingDataType::Float;
     }
     else if (processingDataType == "double")
     {
-        m_processingDataType = AudioConfiguration::ProcessingDataType::Double;
+        m_processingDataType = ProcessingDataType::Double;
     }
     else
     {

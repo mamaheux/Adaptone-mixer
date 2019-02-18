@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 2.6.4)
 
 project(SignalProcessingTests)
 
+find_package(CUDA 9.0 REQUIRED)
+
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../../3rdParty/googletest/googletest/include)
@@ -15,13 +17,14 @@ file(GLOB_RECURSE
     src/*
     include/*)
 
-add_executable(SignalProcessingTests
+cuda_add_executable(SignalProcessingTests
     ${source_files})
 
 set_property(TARGET SignalProcessingTests PROPERTY CXX_STANDARD 14)
 
 target_link_libraries(SignalProcessingTests
     SignalProcessing
+    Utils
     gtest
     gmock)
 

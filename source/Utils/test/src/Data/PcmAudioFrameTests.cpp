@@ -47,6 +47,11 @@ TEST(PcmAudioFrameTests, formatSize_shouldReturnTheRightSize)
     EXPECT_EQ(PcmAudioFrame::formatSize(PcmAudioFrame::Format::Double), 8);
 }
 
+TEST(PcmAudioFrameTests, size_shouldReturnTheFrameSize)
+{
+    EXPECT_EQ(PcmAudioFrame::size(PcmAudioFrame::Format::Signed16, 2, 3), 12);
+}
+
 TEST(PcmAudioFrameTests, construtor_shouldSetParameterAndAllocateMemory)
 {
     PcmAudioFrame frame(PcmAudioFrame::Format::Signed24, 2, 3);

@@ -5,6 +5,7 @@ project(Mixer)
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../Utils/include)
+include_directories(../SignalProcessing/include)
 include_directories(include)
 
 file(GLOB_RECURSE
@@ -31,17 +32,21 @@ set_property(TARGET Mixer_Private PROPERTY CXX_STANDARD 14)
 if (UNIX)
     target_link_libraries(Mixer
         Utils
+        SignalProcessing
         asound)
 
     target_link_libraries(Mixer_Private
         Utils
+        SignalProcessing
         asound)
 else (UNIX)
     target_link_libraries(Mixer
-        Utils)
+        Utils
+        SignalProcessing)
 
     target_link_libraries(Mixer_Private
-        Utils)
+        Utils
+        SignalProcessing)
 endif (UNIX)
 
 assign_source_group(${source_files})

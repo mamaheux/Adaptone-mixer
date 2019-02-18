@@ -8,7 +8,10 @@
 #include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
 
+#include <SignalProcessing/SignalProcessor.h>
+
 #include <memory>
+#include <atomic>
 
 namespace adaptone
 {
@@ -20,17 +23,27 @@ namespace adaptone
         std::unique_ptr<AudioInput> m_audioInput;
         std::unique_ptr<AudioOutput> m_audioOutput;
 
+        std::unique_ptr<SignalProcessor> m_signalProcessor;
+
+        std::atomic<bool> m_stopped;
+
     public:
         Mixer(const Configuration& configuration);
         virtual ~Mixer();
 
+        DECLARE_NOT_COPYABLE(Mixer);
+        DECLARE_NOT_MOVABLE(Mixer);
+
         int run();
+        void stop();
 
     private:
         std::shared_ptr<Logger> createLogger();
 
         std::unique_ptr<AudioInput> createAudioInput();
         std::unique_ptr<AudioOutput> createAudioOutput();
+
+        std::unique_ptr<SignalProcessor> createSignalProcessor();
     };
 }
 

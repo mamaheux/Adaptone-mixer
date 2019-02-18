@@ -34,6 +34,7 @@ namespace adaptone
         };
 
         static std::size_t formatSize(Format format);
+        static std::size_t size(Format format, std::size_t channelCount, std::size_t sampleCount);
         static PcmAudioFrame::Format parseFormat(const std::string& format);
 
     private:
@@ -69,6 +70,11 @@ namespace adaptone
         return static_cast<std::size_t>(format) & 0b1111;
     }
 
+    inline std::size_t PcmAudioFrame::size(Format format, std::size_t channelCount, std::size_t sampleCount)
+    {
+        return channelCount * sampleCount * formatSize(format);
+    }
+
     inline PcmAudioFrame::Format PcmAudioFrame::format() const
     {
         return m_format;
@@ -91,7 +97,7 @@ namespace adaptone
 
     inline std::size_t PcmAudioFrame::size() const
     {
-        return m_channelCount * m_sampleCount * formatSize(m_format);
+        return size(m_format, m_channelCount, m_sampleCount);
     }
 
     inline uint8_t& PcmAudioFrame::operator[](std::size_t i)
