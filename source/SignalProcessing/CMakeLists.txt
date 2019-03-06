@@ -30,8 +30,6 @@ if (CUDA_FOUND)
 
     add_definitions(-DUSE_CUDA)
 
-    add_subdirectory(test)
-
 else (CUDA_FOUND)
 
     file(GLOB_RECURSE
@@ -40,7 +38,9 @@ else (CUDA_FOUND)
         src/SpecificSignalProcessor.cpp
         include/SignalProcessing/ProcessingDataType.h
         include/SignalProcessing/SignalProcessor.h
-        include/SignalProcessing/SpecificSignalProcessor.h)
+        include/SignalProcessing/SpecificSignalProcessor.h
+        include/SignalProcessing/Filters/BiquadCoefficients.h
+        include/SignalProcessing/Filters/Design/*)
 
     add_library(SignalProcessing
         STATIC
@@ -54,3 +54,5 @@ endif (CUDA_FOUND)
 set_property(TARGET SignalProcessing PROPERTY CXX_STANDARD 14)
 
 assign_source_group(${source_files})
+
+add_subdirectory(test)
