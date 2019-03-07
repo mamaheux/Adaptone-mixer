@@ -241,26 +241,193 @@ TEST(GraphicEqDesignerTests, update_shouldSetTheRightCoefficents)
 
     ASSERT_EQ(designer.biquadCoefficients().size(), frequencies.size() * 2);
 
-    for (size_t i = 0; i < designer.biquadCoefficients().size(); i++)
-    {
-        EXPECT_NEAR(designer.biquadCoefficients()[i].b2, 0, MaxAbsError);
-    }
+    EXPECT_NEAR(designer.biquadCoefficients()[0].b0, 0.00137494, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[0].b1, -0.00137322, MaxAbsError);
 
-    EXPECT_NEAR(designer.biquadCoefficients()[0].b0, 0.0014, MaxAbsError);
-    EXPECT_NEAR(designer.biquadCoefficients()[0].b1, -0.0014, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[1].b0, 0.000291045, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[1].b1, -0.000287952, MaxAbsError);
 
-    EXPECT_NEAR(designer.biquadCoefficients()[1].b0, 0.0003, MaxAbsError);
-    EXPECT_NEAR(designer.biquadCoefficients()[1].b1, -0.0003, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[2].b0, 0.000267274, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[2].b1, -0.000266722, MaxAbsError);
 
-    EXPECT_NEAR(designer.biquadCoefficients()[2].b0, 0.0003, MaxAbsError);
-    EXPECT_NEAR(designer.biquadCoefficients()[2].b1, -0.0003, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[3].b0, 0.000341358, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[3].b1, -0.000340639, MaxAbsError);
 
-    EXPECT_NEAR(designer.biquadCoefficients()[3].b0, 0.0004, MaxAbsError);
-    EXPECT_NEAR(designer.biquadCoefficients()[3].b1, -0.0003, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[4].b0, 0.000295608, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[4].b1, -0.000294318, MaxAbsError);
 
-    //TODO continuer les EXPECT_NEAR
+    EXPECT_NEAR(designer.biquadCoefficients()[5].b0, 0.000389323, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[5].b1, -0.00038773, MaxAbsError);
 
-    EXPECT_NEAR(designer.d0(), 0.5251, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[6].b0, 0.000267525, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[6].b1, -0.00026518, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[7].b0, 0.000286747, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[7].b1, -0.000284067, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[8].b0, 0.000104914, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[8].b1, -0.000102185, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[9].b0, 8.36606e-05, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[9].b1, -8.13647e-05, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[10].b0, 1.37421e-05, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[10].b1, -1.13051e-05, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[11].b0, 8.23807e-06, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[11].b1, -5.76519e-06, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[12].b0, -8.77419e-05, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[12].b1, 9.03259e-05, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[13].b0, -0.000128556, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[13].b1, 0.00013096, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[14].b0, -0.000152642, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[14].b1, 0.000154807, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[15].b0, -0.000176964, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[15].b1, 0.000179278, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[16].b0, -0.000266694, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[16].b1, 0.000267735, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[17].b0, -0.000560237, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[17].b1, 0.00056077, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[18].b0, -8.35032e-05, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[18].b1, 7.72766e-05, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[19].b0, 0.000602747, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[19].b1, -0.000608751, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[20].b0, 0.000373119, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[20].b1, -0.000368895, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[21].b0, -2.15529e-05, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[21].b1, 1.99342e-05, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[22].b0, 0.00180211, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[22].b1, -0.00179547, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[23].b0, 0.00623058, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[23].b1, -0.00614276, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[24].b0, 0.0013497, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[24].b1, -0.00119609, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[25].b0, 0.0001185, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[25].b1, -1.82194e-05, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[26].b0, 0.000293462, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[26].b1, -0.000150621, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[27].b0, 5.86951e-05, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[27].b1, 0.000215848, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[28].b0, -0.00327243, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[28].b1, 0.00342256, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[29].b0, -0.00506835, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[29].b1, 0.0051428, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[30].b0, 0.00310329, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[30].b1, -0.00315992, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[31].b0, 0.0149726, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[31].b1, -0.0129856, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[32].b0, -0.0121375, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[32].b1, 0.0130191, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[33].b0, 0.000982476, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[33].b1, -0.000972017, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[34].b0, 0.000248697, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[34].b1, -0.000132581, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[35].b0, -8.35748e-05, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[35].b1, 0.000179173, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[36].b0, -0.000535952, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[36].b1, 0.000593574, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[37].b0, -0.000803744, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[37].b1, 0.000853751, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[38].b0, -0.00127489, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[38].b1, 0.0011684, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[39].b0, -0.00330712, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[39].b1, 0.00302769, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[40].b0, -0.000812308, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[40].b1, -0.000534149, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[41].b0, 0.00454284, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[41].b1, -0.00686885, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[42].b0, 0.00527147, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[42].b1, -0.00620023, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[43].b0, 0.0053471, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[43].b1, -0.00623723, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[44].b0, 0.00646901, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[44].b1, -0.0064016, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[45].b0, 0.00729362, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[45].b1, -0.00707285, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[46].b0, 0.00826682, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[46].b1, -0.00621572, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[47].b0, 0.0102397, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[47].b1, -0.00612457, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[48].b0, 0.00382345, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[48].b1, 0.00145581, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[49].b0, 0.000917525, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[49].b1, 0.00373589, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[50].b0, -0.00253645, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[50].b1, 0.00661528, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[51].b0, -0.00502684, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[51].b1, 0.00821718, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[52].b0, -0.00717603, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[52].b1, 0.00762374, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[53].b0, -0.00930542, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[53].b1, 0.00676118, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[54].b0, -0.0106096, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[54].b1, 0.00117641, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[55].b0, -0.0253665, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[55].b1, 0.00144828, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[56].b0, -0.010466, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[56].b1, -0.0372887, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[57].b0, 0.0125815, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[57].b1, -0.0741803, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[58].b0, 0.0249289, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[58].b1, -0.0385757, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[59].b0, 0.0169699, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[59].b1, -0.0308919, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[60].b0, 0.012303, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[60].b1, -0.0204712, MaxAbsError);
+
+    EXPECT_NEAR(designer.biquadCoefficients()[61].b0, -0.00606272, MaxAbsError);
+    EXPECT_NEAR(designer.biquadCoefficients()[61].b1, -0.0185558, MaxAbsError);
+
+    EXPECT_NEAR(designer.d0(), 0.702345, MaxAbsError);
 }
 
 TEST(GraphicEqDesignerTests, performance)

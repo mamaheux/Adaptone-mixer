@@ -26,6 +26,31 @@ namespace adaptone
         xFreq(arma::span(limit2, x.n_elem - 1)) *= 0;
         y = arma::ifft(xFreq);
     }
+
+    inline void interpolateWithoutNaN(const arma::vec& x, const arma::vec& y, const arma::vec& xx, arma::vec& yy)
+    {
+        arma::interp1(x, y, xx, yy, "*linear");
+
+        std::size_t notNaNIndex = 0;
+        while (std::isnan(yy(notNaNIndex)) && notNaNIndex < yy.n_elem)
+        {
+            notNaNIndex++;
+        }
+        for (std::size_t i = 0; i < notNaNIndex; i++)
+        {
+            yy(i) = yy(notNaNIndex);
+        }
+
+        notNaNIndex = yy.n_elem - 1;
+        while (std::isnan(yy(notNaNIndex)) && notNaNIndex > 0)
+        {
+            notNaNIndex--;
+        }
+        for (std::size_t i = yy.n_elem - 1; i > notNaNIndex; i--)
+        {
+            yy(i) = yy(notNaNIndex);
+        }
+    }
 }
 
 #endif

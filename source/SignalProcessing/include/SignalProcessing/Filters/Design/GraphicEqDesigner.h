@@ -2,6 +2,7 @@
 #define SIGNAL_PROCESSING_FILTERS_DESIGN_GRAPHIC_EQ_DESIGNER_H
 
 #include <SignalProcessing/Filters/BiquadCoefficients.h>
+#include <SignalProcessing/Filters/Design/Math.h>
 
 #include <Utils/Exception/InvalidValueException.h>
 
@@ -10,14 +11,12 @@
 #include <vector>
 #include <cmath>
 
-#include <iostream>
-
 namespace adaptone
 {
     template<class T>
     class GraphicEqDesigner
     {
-        static constexpr std::size_t MinPhaseN = 4096;
+        static constexpr std::size_t MinPhaseN = 8193;
 
         double m_sampleFrequency;
         std::vector<BiquadCoefficients<T>> m_biquadCoefficients;
@@ -64,8 +63,6 @@ namespace adaptone
         void updateMr();
 
         void updateBCoefficients();
-
-        void updateInterpolatedGains();
     };
 
     template<class T>
@@ -77,7 +74,7 @@ namespace adaptone
         m_centerW(centerFrequencies),
         m_gains(centerFrequencies.size()),
 
-        m_optimizationW(10 * centerFrequencies.size()),
+        m_optimizationW(4 * centerFrequencies.size()),
         m_interpolatedGains(m_optimizationW.size()),
 
         m_minPhaseW(MinPhaseN),
@@ -104,8 +101,7 @@ namespace adaptone
         m_optimizationW = arma::logspace(std::log10(minFrequency), std::log10(maxFrequency), m_optimizationW.n_elem);
         m_optimizationW *= 2 * M_PI / m_sampleFrequency;
 
-        m_minPhaseW = arma::linspace(minFrequency, maxFrequency, m_minPhaseW.n_elem);
-        m_minPhaseW *= 2 * M_PI / m_sampleFrequency;
+        m_minPhaseW = arma::linspace(0, M_PI, m_minPhaseW.n_elem);
 
         initPoles();
         initM();
@@ -136,6 +132,7 @@ namespace adaptone
 
         updateHtr();
         updateMr();
+
         updateBCoefficients();
     }
 
@@ -206,30 +203,49 @@ namespace adaptone
         std::complex<double> j(0, 1);
         m_M.ones();
 
-        arma::cx_vec tmp1 = arma::exp(-j * m_optimizationW);
-        arma::cx_vec tmp2 = arma::exp(-2.0 * j * m_optimizationW);
+        arma::cx_vec exp1 = arma::exp(-j * m_optimizationW);
+        arma::cx_vec exp2 = arma::exp(-2.0 * j * m_optimizationW);
 
         for (std::size_t i = 0; i < m_biquadCoefficients.size(); i++)
         {
-            m_M.col(2 * i) = 1 / (1 + m_biquadCoefficients[i].a1 * tmp1 + m_biquadCoefficients[i].a2 * tmp2);
-            m_M.col(2 * i + 1) = tmp1 / (1 + m_biquadCoefficients[i].a1 * tmp1 + m_biquadCoefficients[i].a2 * tmp2);
+            m_M.col(2 * i) = 1 / (1 + m_biquadCoefficients[i].a1 * exp1 + m_biquadCoefficients[i].a2 * exp2);
+            m_M.col(2 * i + 1) = exp1 / (1 + m_biquadCoefficients[i].a1 * exp1 + m_biquadCoefficients[i].a2 * exp2);
         }
     }
 
     template<class T>
     inline void GraphicEqDesigner<T>::updateHt()
     {
-        updateInterpolatedGains();
+        interpolateWithoutNaN(m_centerW, m_gains, m_optimizationW, m_interpolatedGains);
+        interpolateWithoutNaN(m_optimizationW, m_interpolatedGains, m_minPhaseW, m_minPhaseGains);
 
-        arma::interp1(m_optimizationW, m_interpolatedGains, m_minPhaseW, m_minPhaseGains, "*linear");
+        std::size_t N = m_minPhaseGains.n_elem - 1;
 
+        arma::vec tmp1(2 * N);
+        tmp1(arma::span(0, N - 1)) = arma::reverse(m_minPhaseGains(arma::span(1, N)));
+        tmp1(arma::span(N, tmp1.n_elem - 1)) = m_minPhaseGains(arma::span(0, N - 1));
+        tmp1 = arma::log(tmp1);
+
+        arma::vec tmp2(2 * tmp1.n_elem);
+        tmp2(arma::span(0, tmp1.n_elem - 1)) = tmp1;
+        tmp2(arma::span(tmp1.n_elem, tmp2.n_elem - 1)) = tmp1;
+
+        arma::cx_vec analyticSignal;
+        hilbert(tmp2, analyticSignal);
+        arma::vec phaseUpsampled = arma::imag(analyticSignal(arma::span(N, 2 * N)));
+
+        arma::vec phase;
+        interpolateWithoutNaN(m_minPhaseW, phaseUpsampled, m_optimizationW, phase);
+
+        std::complex<double> j(0, 1);
+        m_ht = m_interpolatedGains % arma::exp(-j * phase);
     }
 
     template<class T>
     inline void GraphicEqDesigner<T>::applyWeighting()
     {
         m_weight = arma::abs(m_ht);
-        m_weight = arma::sqrt(1 / m_weight % m_weight);
+        m_weight = arma::sqrt(1 / (m_weight % m_weight));
 
         m_weightedM = m_M;
         for (std::size_t i = 0; i < m_weight.n_elem; i++)
@@ -243,7 +259,7 @@ namespace adaptone
     inline void GraphicEqDesigner<T>::updateHtr()
     {
         m_htr(arma::span(0, m_ht.n_elem - 1)) = arma::real(m_ht);
-        m_htr(arma::span(m_ht.n_elem, m_htr.n_elem - 1)) = arma::real(m_ht);
+        m_htr(arma::span(m_ht.n_elem, m_htr.n_elem - 1)) = arma::imag(m_ht);
     }
 
     template<class T>
@@ -256,35 +272,15 @@ namespace adaptone
     template<class T>
     inline void GraphicEqDesigner<T>::updateBCoefficients()
     {
-        if (arma::solve(m_B, m_Mr, m_htr, arma::solve_opts::fast))
+        if (arma::solve(m_B, m_Mr, m_htr))
         {
             for (std::size_t i = 0; i < m_biquadCoefficients.size(); i++)
             {
-                m_biquadCoefficients[i].b0 = m_B(2 * i);
-                m_biquadCoefficients[i].b1 = m_B(2 * i + 1);
+                m_biquadCoefficients[i].b0 = static_cast<T>(m_B(2 * i));
+                m_biquadCoefficients[i].b1 = static_cast<T>(m_B(2 * i + 1));
             }
 
             m_d0 = m_B(m_B.n_elem - 1);
-        }
-    }
-
-    template<class T>
-    inline void GraphicEqDesigner<T>::updateInterpolatedGains()
-    {
-        arma::interp1(m_centerW, m_gains, m_optimizationW, m_interpolatedGains, "*linear");
-
-        int i = 0;
-        while (std::isnan(m_interpolatedGains(i)))
-        {
-            m_interpolatedGains(i) = m_gains(0);
-            i++;
-        }
-
-        i = m_interpolatedGains.n_elem - 1;
-        while (std::isnan(m_interpolatedGains(i)))
-        {
-            m_interpolatedGains(i) = m_gains(m_gains.n_elem - 1);
-            i--;
         }
     }
 }
