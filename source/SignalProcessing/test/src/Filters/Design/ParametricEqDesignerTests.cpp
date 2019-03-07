@@ -16,7 +16,7 @@ TEST(ParametricEqDesignerTests, constructor_invalidFilterCount_shouldThrowInvali
     EXPECT_THROW(ParametricEqDesigner<float>(1, SampleFrequency), InvalidValueException);
 }
 
-TEST(ParametricEqDesignerTests, constructor_invalidParameterCount_shouldThrowInvalidValueException)
+TEST(ParametricEqDesignerTests, update_invalidParameterCount_shouldThrowInvalidValueException)
 {
     ParametricEqDesigner<float> designer(2, SampleFrequency);
 

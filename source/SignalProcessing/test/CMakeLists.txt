@@ -28,6 +28,8 @@ if (CUDA_FOUND)
         SignalProcessing
         Utils
         armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran
         gtest
         gmock
         ${CUDA_LIBRARIES})
@@ -48,6 +50,8 @@ else (CUDA_FOUND)
         SignalProcessing
         Utils
         armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran
         gtest
         gmock)
 endif (CUDA_FOUND)
