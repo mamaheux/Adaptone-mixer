@@ -51,7 +51,7 @@ TEST(MathTests, hilbert_oddSize_shouldReturnTheAnalyticSignal)
     EXPECT_NEAR(y(4).imag(), 1.7013, MaxAbsError);
 }
 
-TEST(MathTests, interpolateWithoutNaN_shouldNotReturnNaN)
+TEST(MathTests, interpolateWithNaNRemoval_shouldRemoveNaNValues)
 {
     arma::vec x({ 1, 2, 3 });
     arma::vec y({ 1, 2, 3 });
@@ -59,7 +59,7 @@ TEST(MathTests, interpolateWithoutNaN_shouldNotReturnNaN)
     arma::vec xx({ 0, 1, 2, 3, 4, });
     arma::vec yy;
 
-    interpolateWithoutNaN(x, y, xx, yy);
+    interpolateWithNaNRemoval(x, y, xx, yy);
     EXPECT_NEAR(yy(0), 1, MaxAbsError);
     EXPECT_NEAR(yy(1), 1, MaxAbsError);
     EXPECT_NEAR(yy(2), 2, MaxAbsError);

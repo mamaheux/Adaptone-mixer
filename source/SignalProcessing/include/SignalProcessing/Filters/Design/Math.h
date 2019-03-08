@@ -27,7 +27,7 @@ namespace adaptone
         y = arma::ifft(xFreq);
     }
 
-    inline void interpolateWithoutNaN(const arma::vec& x, const arma::vec& y, const arma::vec& xx, arma::vec& yy)
+    inline void interpolateWithNaNRemoval(const arma::vec& x, const arma::vec& y, const arma::vec& xx, arma::vec& yy)
     {
         arma::interp1(x, y, xx, yy, "*linear");
 

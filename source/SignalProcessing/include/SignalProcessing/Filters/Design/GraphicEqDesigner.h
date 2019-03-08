@@ -13,10 +13,17 @@
 
 namespace adaptone
 {
+    /*
+     * Reference :
+     * Rämö, Jussi & Välimäki, Vesa & Bank, Balazs. (2014).
+     * High-Precision Parallel Graphic Equalizer.
+     * Audio, Speech, and Language Processing,
+     * IEEE/ACM Transactions on. 22. 1894-1904. 10.1109/TASLP.2014.2354241.
+     */
     template<class T>
     class GraphicEqDesigner
     {
-        static constexpr std::size_t MinPhaseN = 8193;
+        static constexpr std::size_t MinPhaseN = 8193; // Vector size for calculating the min phase target
 
         double m_sampleFrequency;
         std::vector<BiquadCoefficients<T>> m_biquadCoefficients;
@@ -28,9 +35,6 @@ namespace adaptone
         arma::vec m_optimizationW;
         arma::vec m_interpolatedGains;
 
-        arma::vec m_minPhaseW;
-        arma::vec m_minPhaseGains;
-
         arma::cx_mat m_M;
         arma::cx_mat m_weightedM;
         arma::mat m_Mr;
@@ -40,6 +44,15 @@ namespace adaptone
 
         arma::vec m_weight;
         arma::vec m_B;
+
+        // Vectors for calculating ht
+        arma::vec m_minPhaseW;
+        arma::vec m_minPhaseGains;
+        arma::vec m_minPhaseGains1Period;
+        arma::vec m_minPhaseGains2Period;
+        arma::cx_vec m_analyticSignal;
+        arma::vec m_phaseUpsampled;
+        arma::vec m_phase;
 
     public:
         GraphicEqDesigner(std::size_t sampleFrequency, const std::vector<double>& centerFrequencies);
@@ -77,8 +90,6 @@ namespace adaptone
         m_optimizationW(4 * centerFrequencies.size()),
         m_interpolatedGains(m_optimizationW.size()),
 
-        m_minPhaseW(MinPhaseN),
-        m_minPhaseGains(m_minPhaseW.n_elem),
 
         m_M(m_optimizationW.n_elem, m_biquadCoefficients.size() * 2 + 1),
         m_weightedM(arma::size(m_M)),
@@ -86,7 +97,15 @@ namespace adaptone
         m_ht(m_optimizationW.n_elem),
         m_htr(m_ht.n_elem * 2),
         m_weight(m_ht.n_elem),
-        m_B(m_M.n_cols)
+        m_B(m_M.n_cols),
+
+        m_minPhaseW(MinPhaseN),
+        m_minPhaseGains(m_minPhaseW.n_elem),
+        m_minPhaseGains1Period(2 * (MinPhaseN - 1)),
+        m_minPhaseGains2Period(2 * m_minPhaseGains1Period.n_elem),
+        m_analyticSignal(m_minPhaseGains2Period.n_elem),
+        m_phaseUpsampled(MinPhaseN),
+        m_phase(m_optimizationW.n_elem)
     {
         if (!arma::vec(centerFrequencies).is_sorted() || centerFrequencies.size() < 1)
         {
@@ -216,29 +235,28 @@ namespace adaptone
     template<class T>
     inline void GraphicEqDesigner<T>::updateHt()
     {
-        interpolateWithoutNaN(m_centerW, m_gains, m_optimizationW, m_interpolatedGains);
-        interpolateWithoutNaN(m_optimizationW, m_interpolatedGains, m_minPhaseW, m_minPhaseGains);
+        interpolateWithNaNRemoval(m_centerW, m_gains, m_optimizationW, m_interpolatedGains);
+        interpolateWithNaNRemoval(m_optimizationW, m_interpolatedGains, m_minPhaseW, m_minPhaseGains);
 
         std::size_t N = m_minPhaseGains.n_elem - 1;
 
-        arma::vec tmp1(2 * N);
-        tmp1(arma::span(0, N - 1)) = arma::reverse(m_minPhaseGains(arma::span(1, N)));
-        tmp1(arma::span(N, tmp1.n_elem - 1)) = m_minPhaseGains(arma::span(0, N - 1));
-        tmp1 = arma::log(tmp1);
+        // Calculate the periodic gain target
+        m_minPhaseGains1Period(arma::span(0, N - 1)) = arma::reverse(m_minPhaseGains(arma::span(1, N)));
+        m_minPhaseGains1Period(arma::span(N, m_minPhaseGains1Period.n_elem - 1)) =
+            m_minPhaseGains(arma::span(0, N - 1));
+        m_minPhaseGains1Period = arma::log(m_minPhaseGains1Period);
 
-        arma::vec tmp2(2 * tmp1.n_elem);
-        tmp2(arma::span(0, tmp1.n_elem - 1)) = tmp1;
-        tmp2(arma::span(tmp1.n_elem, tmp2.n_elem - 1)) = tmp1;
+        m_minPhaseGains2Period(arma::span(0, m_minPhaseGains1Period.n_elem - 1)) = m_minPhaseGains1Period;
+        m_minPhaseGains2Period(arma::span(m_minPhaseGains1Period.n_elem, m_minPhaseGains2Period.n_elem - 1)) =
+            m_minPhaseGains1Period;
 
-        arma::cx_vec analyticSignal;
-        hilbert(tmp2, analyticSignal);
-        arma::vec phaseUpsampled = arma::imag(analyticSignal(arma::span(N, 2 * N)));
-
-        arma::vec phase;
-        interpolateWithoutNaN(m_minPhaseW, phaseUpsampled, m_optimizationW, phase);
+        // Calculate the min phase target
+        hilbert(m_minPhaseGains2Period, m_analyticSignal);
+        m_phaseUpsampled = arma::imag(m_analyticSignal(arma::span(N, 2 * N)));
+        interpolateWithNaNRemoval(m_minPhaseW, m_phaseUpsampled, m_optimizationW, m_phase);
 
         std::complex<double> j(0, 1);
-        m_ht = m_interpolatedGains % arma::exp(-j * phase);
+        m_ht = m_interpolatedGains % arma::exp(-j * m_phase);
     }
 
     template<class T>
