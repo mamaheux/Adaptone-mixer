@@ -8,16 +8,17 @@
 using namespace adaptone;
 using namespace std;
 
+static constexpr size_t SampleFrequency = 48000;
 static constexpr double MaxAbsError = 0.0001;
 
 TEST(ParametricEqDesignerTests, constructor_invalidFilterCount_shouldThrowInvalidValueException)
 {
-    EXPECT_THROW(ParametricEqDesigner<float>(1, 48000), InvalidValueException);
+    EXPECT_THROW(ParametricEqDesigner<float>(1, SampleFrequency), InvalidValueException);
 }
 
-TEST(ParametricEqDesignerTests, constructor_invalidParameterCount_shouldThrowInvalidValueException)
+TEST(ParametricEqDesignerTests, update_invalidParameterCount_shouldThrowInvalidValueException)
 {
-    ParametricEqDesigner<float> designer(2, 48000);
+    ParametricEqDesigner<float> designer(2, SampleFrequency);
 
     vector<ParametricEqDesigner<float>::Parameters> parameters
         {
@@ -31,7 +32,7 @@ TEST(ParametricEqDesignerTests, constructor_invalidParameterCount_shouldThrowInv
 
 TEST(ParametricEqDesignerTests, update_lowShelveGainLessThan0_highShelveGainGreaterThan0_shouldSetTheRightCoefficents)
 {
-    ParametricEqDesigner<double> designer(5, 48000);
+    ParametricEqDesigner<double> designer(5, SampleFrequency);
 
     vector<ParametricEqDesigner<double>::Parameters> parameters
         {
@@ -79,12 +80,12 @@ TEST(ParametricEqDesignerTests, update_lowShelveGainLessThan0_highShelveGainGrea
 
 TEST(ParametricEqDesignerTests, update_lowShelveGainGreaterThan0_highShelveGainLessThan0_shouldSetTheRightCoefficents)
 {
-    ParametricEqDesigner<double> designer(2, 48000);
+    ParametricEqDesigner<float> designer(2, SampleFrequency);
 
-    vector<ParametricEqDesigner<double>::Parameters> parameters
+    vector<ParametricEqDesigner<float>::Parameters> parameters
         {
-            ParametricEqDesigner<double>::Parameters(50, 1, 12),
-            ParametricEqDesigner<double>::Parameters(12000, 1, -5),
+            ParametricEqDesigner<float>::Parameters(50, 1, 12),
+            ParametricEqDesigner<float>::Parameters(12000, 1, -5),
         };
 
     designer.update(parameters);
@@ -106,7 +107,7 @@ TEST(ParametricEqDesignerTests, update_lowShelveGainGreaterThan0_highShelveGainL
 
 TEST(ParametricEqDesignerTests, update_lowShelveGain0_highShelveGain0_shouldSetTheRightCoefficents)
 {
-    ParametricEqDesigner<double> designer(2, 48000);
+    ParametricEqDesigner<double> designer(2, SampleFrequency);
 
     vector<ParametricEqDesigner<double>::Parameters> parameters
         {
@@ -134,7 +135,7 @@ TEST(ParametricEqDesignerTests, update_lowShelveGain0_highShelveGain0_shouldSetT
 
 TEST(ParametricEqDesignerTests, gainsDb_shouldReturnTheGainAtTheSpecifiedFrequencies)
 {
-    ParametricEqDesigner<double> designer(5, 48000);
+    ParametricEqDesigner<double> designer(5, SampleFrequency);
 
     vector<ParametricEqDesigner<double>::Parameters> parameters
         {
@@ -189,7 +190,7 @@ TEST(ParametricEqDesignerTests, gainsDb_shouldReturnTheGainAtTheSpecifiedFrequen
 
 TEST(ParametricEqDesignerTests, performance)
 {
-    ParametricEqDesigner<double> designer(5, 48000);
+    ParametricEqDesigner<double> designer(5, SampleFrequency);
 
     vector<ParametricEqDesigner<double>::Parameters> parameters
         {

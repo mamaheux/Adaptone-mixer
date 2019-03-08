@@ -47,7 +47,9 @@ else (CUDA_FOUND)
         ${source_files})
 
     target_link_libraries(SignalProcessing
-        armadillo)
+        armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran)
 
 endif (CUDA_FOUND)
 
