@@ -52,7 +52,7 @@ TEST(PcmAudioFrameTests, size_shouldReturnTheFrameSize)
     EXPECT_EQ(PcmAudioFrame::size(PcmAudioFrame::Format::Signed16, 2, 3), 12);
 }
 
-TEST(PcmAudioFrameTests, construtor_shouldSetParameterAndAllocateMemory)
+TEST(PcmAudioFrameTests, constructor_shouldSetParameterAndAllocateMemory)
 {
     PcmAudioFrame frame(PcmAudioFrame::Format::Signed24, 2, 3);
     for (size_t i = 0; i < 6; i++)
@@ -71,7 +71,7 @@ TEST(PcmAudioFrameTests, construtor_shouldSetParameterAndAllocateMemory)
     }
 }
 
-TEST(PcmAudioFrameTests, copyConstrutor_shouldCopy)
+TEST(PcmAudioFrameTests, copyConstructor_shouldCopy)
 {
     PcmAudioFrame frame(PcmAudioFrame::Format::Signed24, 2, 3);
     for (size_t i = 0; i < 6; i++)

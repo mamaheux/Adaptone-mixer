@@ -1,5 +1,4 @@
 #include <Utils/Configuration/Properties.h>
-#include <Utils/StringUtils.h>
 
 #include <fstream>
 
@@ -36,7 +35,9 @@ void Properties::parseLine(const std::string& line)
     size_t hashTagIndex = line.find('#');
 
     if (equalIndex == string::npos || hashTagIndex < equalIndex)
-    { return; }
+    {
+        return;
+    }
 
     string key = line.substr(0, equalIndex);
     string value = line.substr(equalIndex + 1, hashTagIndex - equalIndex - 1);

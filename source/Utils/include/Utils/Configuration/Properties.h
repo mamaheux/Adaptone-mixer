@@ -3,10 +3,12 @@
 
 #include <Utils/ClassMacro.h>
 #include <Utils/TypeTraits.h>
+#include <Utils/StringUtils.h>
 #include <Utils/Exception/PropertyNotFoundException.h>
 #include <Utils/Exception/PropertyParseException.h>
 
 #include <unordered_map>
+#include <vector>
 #include <string>
 #include <istream>
 #include <sstream>
@@ -34,25 +36,71 @@ namespace adaptone
     };
 
     template<class T>
-    inline T Properties::get(const std::string& key) const
+    struct ValueParser
     {
-        std::string valueStr = get<std::string>(key);
-
-        std::istringstream ss(valueStr);
-
-        T value;
-        ss >> value;
-
-        if (ss.fail())
+        static T parse(const std::string& key, const std::string& valueStr)
         {
-            THROW_PROPERTY_PARSE_EXCEPTION(key, valueStr);
-        }
+            std::istringstream ss(valueStr);
 
-        return value;
-    }
+            T value;
+            ss >> value;
+
+            if (ss.fail())
+            {
+                THROW_PROPERTY_PARSE_EXCEPTION(key, valueStr);
+            }
+
+            return value;
+        }
+    };
 
     template<>
-    inline std::string Properties::get(const std::string& key) const
+    struct ValueParser<bool>
+    {
+        static bool parse(const std::string& key, const std::string& valueStr)
+        {
+            return valueStr == "true";
+        }
+    };
+
+    template<>
+    struct ValueParser<std::string>
+    {
+        static std::string parse(const std::string& key, const std::string& valueStr)
+        {
+            return valueStr;
+        }
+    };
+
+    template<>
+    template<class T>
+    struct ValueParser<std::vector<T>>
+    {
+        static std::vector<T> parse(const std::string& key, const std::string& valueStr)
+        {
+            if (valueStr.size() < 2 || valueStr[0] != '[' || valueStr[valueStr.size() - 1] != ']')
+            {
+                THROW_PROPERTY_PARSE_EXCEPTION(key, valueStr);
+            }
+
+            std::vector<T> values;
+            std::string arrayValue;
+            std::stringstream arrayValuesStream(valueStr.substr(1, valueStr.size() - 2));
+            while (std::getline(arrayValuesStream, arrayValue, ','))
+            {
+                trim(arrayValue);
+                if (arrayValue != "" || !arrayValuesStream.eof())
+                {
+                    values.push_back(ValueParser<T>::parse(key, arrayValue));
+                }
+            }
+
+            return values;
+        }
+    };
+
+    template<class T>
+    inline T Properties::get(const std::string& key) const
     {
         auto it = m_properties.find(key);
         if (it == m_properties.end())
@@ -60,14 +108,7 @@ namespace adaptone
             THROW_PROPERTY_NOT_FOUND_EXCEPTION(key);
         }
 
-        return it->second;
-    }
-
-    template<>
-    inline bool Properties::get(const std::string& key) const
-    {
-        return get<std::string>(key) == "true";
-
+        return ValueParser<T>::parse(key, it->second);
     }
 }
 
