@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-TEST(PropertiesTests, construtor_map_shouldCopyTheMap)
+TEST(PropertiesTests, constructor_map_shouldCopyTheMap)
 {
     Properties properties(
         {
@@ -17,7 +17,7 @@ TEST(PropertiesTests, construtor_map_shouldCopyTheMap)
     EXPECT_EQ(properties.get<string>("key1"), "v2");
 }
 
-TEST(PropertiesTests, construtor_file_shouldReadTheProperties)
+TEST(PropertiesTests, constructor_file_shouldReadTheProperties)
 {
     Properties properties("resources/PropertiesTests/valid.properties");
 
@@ -35,4 +35,10 @@ TEST(PropertiesTests, construtor_file_shouldReadTheProperties)
     EXPECT_EQ(properties.get<int>("key_array[1]"), 10);
 
     EXPECT_EQ(properties.get<double>("key_array[1]"), 10.5);
+
+    EXPECT_THROW(properties.get<vector<int>>("key6"), PropertyParseException);
+    EXPECT_THROW(properties.get<vector<int>>("key7"), PropertyParseException);
+    EXPECT_THROW(properties.get<vector<int>>("key8"), PropertyParseException);
+    EXPECT_EQ(properties.get<vector<int>>("key9"), vector<int>());
+    EXPECT_EQ(properties.get<vector<int>>("key10"), vector<int>({ 1, 2, 3, 4 }));
 }

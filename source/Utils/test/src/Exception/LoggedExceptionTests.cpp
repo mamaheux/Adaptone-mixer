@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-TEST(LoggedExceptionTests, construtor_shouldSetTheRightMessage)
+TEST(LoggedExceptionTests, constructor_shouldSetTheRightMessage)
 {
     try
     {
@@ -15,7 +15,7 @@ TEST(LoggedExceptionTests, construtor_shouldSetTheRightMessage)
     {
         string message = ex.what();
         EXPECT_NE(message.find("LoggedExceptionTests.cpp"), string::npos);
-        EXPECT_NE(message.find("construtor_shouldSetTheRightMessage"), string::npos);
+        EXPECT_NE(message.find("constructor_shouldSetTheRightMessage"), string::npos);
         EXPECT_NE(message.find("12"), string::npos);
         EXPECT_NE(message.find("my message"), string::npos);
     }

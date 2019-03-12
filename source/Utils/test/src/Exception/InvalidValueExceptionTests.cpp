@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-TEST(InvalidValueExceptionTests, construtor_shouldSetTheRightMessage)
+TEST(InvalidValueExceptionTests, constructor_shouldSetTheRightMessage)
 {
     try
     {
@@ -15,7 +15,7 @@ TEST(InvalidValueExceptionTests, construtor_shouldSetTheRightMessage)
     {
         string message = ex.what();
         EXPECT_NE(message.find("InvalidValueExceptionTests.cpp"), string::npos);
-        EXPECT_NE(message.find("construtor_shouldSetTheRightMessage"), string::npos);
+        EXPECT_NE(message.find("constructor_shouldSetTheRightMessage"), string::npos);
         EXPECT_NE(message.find("12"), string::npos);
         EXPECT_NE(message.find("InvalidValueException:"), string::npos);
         EXPECT_NE(message.find("key=my_key"), string::npos);

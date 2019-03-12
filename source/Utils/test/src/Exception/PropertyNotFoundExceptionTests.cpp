@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-TEST(PropertyNotFoundExceptionTests, construtor_shouldSetTheRightMessage)
+TEST(PropertyNotFoundExceptionTests, constructor_shouldSetTheRightMessage)
 {
     try
     {
@@ -15,7 +15,7 @@ TEST(PropertyNotFoundExceptionTests, construtor_shouldSetTheRightMessage)
     {
         string message = ex.what();
         EXPECT_NE(message.find("PropertyNotFoundExceptionTests.cpp"), string::npos);
-        EXPECT_NE(message.find("construtor_shouldSetTheRightMessage"), string::npos);
+        EXPECT_NE(message.find("constructor_shouldSetTheRightMessage"), string::npos);
         EXPECT_NE(message.find("12"), string::npos);
         EXPECT_NE(message.find("PropertyNotFoundException:"), string::npos);
         EXPECT_NE(message.find("key=my_key"), string::npos);
