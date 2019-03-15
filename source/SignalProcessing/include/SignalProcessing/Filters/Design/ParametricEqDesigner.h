@@ -3,6 +3,7 @@
 
 #include <SignalProcessing/Filters/BiquadCoefficients.h>
 
+#include <Utils/ClassMacro.h>
 #include <Utils/Exception/InvalidValueException.h>
 
 #include <armadillo>
@@ -35,6 +36,9 @@ namespace adaptone
     public:
         ParametricEqDesigner(std::size_t filterCount, std::size_t sampleFrequency);
         virtual ~ParametricEqDesigner();
+
+        DECLARE_NOT_COPYABLE(ParametricEqDesigner);
+        DECLARE_NOT_MOVABLE(ParametricEqDesigner);
 
         void update(const std::vector<Parameters> parameters);
         const std::vector<BiquadCoefficients<T>>& biquadCoefficients() const;

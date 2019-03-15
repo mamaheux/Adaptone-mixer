@@ -4,6 +4,7 @@
 #include <SignalProcessing/Filters/BiquadCoefficients.h>
 #include <SignalProcessing/Filters/Design/Math.h>
 
+#include <Utils/ClassMacro.h>
 #include <Utils/Exception/InvalidValueException.h>
 
 #include <armadillo>
@@ -57,6 +58,9 @@ namespace adaptone
     public:
         GraphicEqDesigner(std::size_t sampleFrequency, const std::vector<double>& centerFrequencies);
         virtual ~GraphicEqDesigner();
+
+        DECLARE_NOT_COPYABLE(GraphicEqDesigner);
+        DECLARE_NOT_MOVABLE(GraphicEqDesigner);
 
         void update(const std::vector<double>& gainsDb);
         const std::vector<BiquadCoefficients<T>>& biquadCoefficients() const;
