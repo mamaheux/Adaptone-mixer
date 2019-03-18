@@ -13,13 +13,3 @@ AudioOutput::AudioOutput(PcmAudioFrame::Format format, std::size_t channelCount,
 AudioOutput::~AudioOutput()
 {
 }
-
-bool AudioOutput::hasGainControl()
-{
-    return false;
-}
-
-void AudioOutput::setGain(std::size_t channelIndex, uint8_t gain)
-{
-    THROW_NOT_SUPPORTED_EXCEPTION("");
-}
