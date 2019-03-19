@@ -21,9 +21,6 @@ namespace adaptone
         DECLARE_NOT_MOVABLE(AudioOutput);
 
         virtual void write(const PcmAudioFrame& frame) = 0;
-
-        virtual bool hasGainControl();
-        virtual void setGain(std::size_t channelIndex, uint8_t gain);
     };
 }
 

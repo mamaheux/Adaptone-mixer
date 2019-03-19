@@ -45,15 +45,3 @@ TEST(AudioOutputTests, constructor_shouldInitializeTheParameters)
     EXPECT_EQ(output.channelCount(), 1);
     EXPECT_EQ(output.frameSampleCount(), 2);
 }
-
-TEST(AudioOutputTests, hasGainControl_shouldReturnFalse)
-{
-    DummyAudioOutput output;
-    EXPECT_FALSE(output.hasGainControl());
-}
-
-TEST(AudioOutputTests, setGain_shouldThrowNotSupportedException)
-{
-    DummyAudioOutput output;
-    EXPECT_THROW(output.setGain(0, 0), NotSupportedException);
-}
