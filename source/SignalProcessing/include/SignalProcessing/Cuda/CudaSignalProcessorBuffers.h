@@ -152,13 +152,13 @@ namespace adaptone
     }
 
     template<class T>
-    __device__ __host__ T* CudaSignalProcessorBuffers<T>::inputFrames()
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::inputFrames()
     {
         return m_inputFrames;
     }
 
     template<class T>
-    __device__ __host__ T* CudaSignalProcessorBuffers<T>::currentInputFrame()
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::currentInputFrame()
     {
         return m_inputFrames + m_currentFrameIndex * m_frameSize;
     }
@@ -218,7 +218,7 @@ namespace adaptone
     }
 
     template<class T>
-    __device__ PcmToArrayConversionFunctionPointer<T> CudaSignalProcessorBuffers<T>::pcmToArrayConversionFunction()
+    inline __device__ PcmToArrayConversionFunctionPointer<T> CudaSignalProcessorBuffers<T>::pcmToArrayConversionFunction()
     {
         return m_pcmToArrayConversionFunction;
     }
