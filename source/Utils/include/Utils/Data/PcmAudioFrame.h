@@ -20,13 +20,13 @@ namespace adaptone
             Signed8 = 1,
             Signed16 = 2,
             Signed24 = 3,
-            SignedPadded24 = 4,
+            SignedPadded24 = 4 + 64,
             Signed32 = 4,
 
             Unsigned8 = 1 + 16,
             Unsigned16 = 2 + 16,
             Unsigned24 = 3 + 16,
-            UnsignedPadded24 = 4 + 16,
+            UnsignedPadded24 = 4 + 16 + 64,
             Unsigned32 = 4 + 16,
 
             Float = 4 + 32,
