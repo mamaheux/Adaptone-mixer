@@ -40,7 +40,8 @@ else (CUDA_FOUND)
         include/SignalProcessing/SignalProcessor.h
         include/SignalProcessing/SpecificSignalProcessor.h
         include/SignalProcessing/Filters/BiquadCoefficients.h
-        include/SignalProcessing/Filters/Design/*)
+        include/SignalProcessing/Filters/Design/*
+        include/SignalProcessing/Parameters/*)
 
     add_library(SignalProcessing
         STATIC

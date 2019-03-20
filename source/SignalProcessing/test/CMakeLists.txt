@@ -41,7 +41,8 @@ else (CUDA_FOUND)
     file(GLOB_RECURSE
         source_files
         src/main.cpp
-        src/Filters/Design/*)
+        src/Filters/Design/*
+        src/Parameters/*)
 
     add_executable(SignalProcessingTests
         ${source_files})
