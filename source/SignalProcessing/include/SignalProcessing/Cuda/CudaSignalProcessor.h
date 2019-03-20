@@ -58,9 +58,12 @@ namespace adaptone
         m_inputFormat(inputFormat),
         m_outputFormat(outputFormat),
         m_outputFrame(outputFormat, outputChannelCount, frameSampleCount),
-        m_buffers(PcmAudioFrame::size(inputFormat, inputChannelCount, frameSampleCount),
-            PcmAudioFrame::size(outputFormat, outputChannelCount, frameSampleCount),
-            CudaSignalProcessorFrameCount)
+        m_buffers(CudaSignalProcessorFrameCount,
+            frameSampleCount,
+            inputChannelCount,
+            outputChannelCount,
+            inputFormat,
+            outputFormat)
     {
     }
 
@@ -72,24 +75,31 @@ namespace adaptone
     template<class T>
     __global__ void processKernel(CudaSignalProcessorBuffers<T> buffers)
     {
+        uint8_t* inputPcmFrame = buffers.currentInputPcmFrame();
+        T* inputFrame = buffers.currentInputFrame();
+        std::size_t frameSampleCount = buffers.frameSampleCount();
+        std::size_t inputChannelCount = buffers.inputChannelCount();
+
+        buffers.pcmToArrayConversionFunction()(inputPcmFrame, inputFrame, frameSampleCount, inputChannelCount);
+
+        //TODO Remove the following code
         int index = threadIdx.x;
         int stride = blockDim.x;
 
-        uint8_t* inputFrame = buffers.currentInputFrame();
-        uint8_t* outputFrame = buffers.currentOutputFrame();
+        uint8_t* outputPcmFrame = buffers.currentOutputPcmFrame();
 
-        for (int i = index; i < buffers.inputFrameSize() && i < buffers.outputFrameSize(); i += stride)
+        for (int i = index; i < buffers.inputPcmFrameSize() && i < buffers.outputPcmFrameSize(); i += stride)
         {
-            outputFrame[i] = inputFrame[i];
+            outputPcmFrame[i] = inputPcmFrame[i];
         }
     }
 
     template<class T>
     const PcmAudioFrame& CudaSignalProcessor<T>::process(const PcmAudioFrame& inputFrame)
     {
-        cudaMemcpy(m_buffers.currentInputFrame(), inputFrame.data(), inputFrame.size(), cudaMemcpyHostToDevice);
-        processKernel<<<1, 128>>>(m_buffers);
-        cudaMemcpy(&m_outputFrame[0], m_buffers.currentOutputFrame(), m_outputFrame.size(), cudaMemcpyDeviceToHost);
+        cudaMemcpy(m_buffers.currentInputPcmFrame(), inputFrame.data(), inputFrame.size(), cudaMemcpyHostToDevice);
+        processKernel<<<1, 256>>>(m_buffers);
+        cudaMemcpy(&m_outputFrame[0], m_buffers.currentOutputPcmFrame(), m_outputFrame.size(), cudaMemcpyDeviceToHost);
 
         m_buffers.nextFrame();
 
