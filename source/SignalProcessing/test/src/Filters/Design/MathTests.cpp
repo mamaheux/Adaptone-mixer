@@ -2,8 +2,6 @@
 
 #include <gtest/gtest.h>
 
-#include <iostream>
-
 using namespace adaptone;
 
 static constexpr double MaxAbsError = 0.0001;
