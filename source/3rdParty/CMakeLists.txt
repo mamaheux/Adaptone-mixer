@@ -19,3 +19,5 @@ add_subdirectory(googletest)
 
 add_subdirectory(armadillo-code)
 add_dependencies(armadillo openblas)
+
+add_subdirectory(Websocket)
