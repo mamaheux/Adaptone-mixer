@@ -47,4 +47,6 @@ void adaptone::startWebSocket()
         cout << "Server: Error in connection " << connection.get() << ". "
             << "Error: " << ec << ", error message: " << ec.message() << endl;
     };
+
+    server.start();
 }
