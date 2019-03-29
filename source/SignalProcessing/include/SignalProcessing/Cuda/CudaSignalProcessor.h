@@ -36,7 +36,7 @@ namespace adaptone
             std::size_t outputChannelCount,
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat);
-        virtual ~CudaSignalProcessor();
+        ~CudaSignalProcessor() override;
 
         DECLARE_NOT_COPYABLE(CudaSignalProcessor);
         DECLARE_NOT_MOVABLE(CudaSignalProcessor);

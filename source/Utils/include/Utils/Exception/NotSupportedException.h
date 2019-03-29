@@ -16,7 +16,7 @@ namespace adaptone
             int line,
             const std::string& message);
 
-        virtual ~NotSupportedException();
+        ~NotSupportedException() override;
     };
 }
 

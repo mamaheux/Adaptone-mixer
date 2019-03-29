@@ -25,7 +25,7 @@ namespace adaptone
             int errorCode,
             const std::string& errorDescription);
 
-        virtual ~AlsaException();
+        ~AlsaException() override;
     };
 }
 

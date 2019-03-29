@@ -36,6 +36,7 @@ else (CUDA_FOUND)
         source_files
         src/SignalProcessor.cpp
         src/SpecificSignalProcessor.cpp
+        src/Parameters/*
         include/SignalProcessing/ProcessingDataType.h
         include/SignalProcessing/SignalProcessor.h
         include/SignalProcessing/SpecificSignalProcessor.h

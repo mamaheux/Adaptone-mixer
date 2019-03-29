@@ -47,7 +47,6 @@ namespace adaptone
     {
     protected:
         std::queue<std::function<T>> m_functionQueue;
-        std::mutex m_mutex;
 
         FunctionQueueCommon();
         virtual ~FunctionQueueCommon();
@@ -82,7 +81,7 @@ namespace adaptone
 
     public:
         FunctionQueue();
-        virtual ~FunctionQueue();
+        ~FunctionQueue() override;
 
         DECLARE_NOT_COPYABLE(FunctionQueue);
         DECLARE_NOT_MOVABLE(FunctionQueue);
