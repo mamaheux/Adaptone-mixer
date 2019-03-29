@@ -1,6 +1,8 @@
 #ifndef SIGNAL_PROCESSING_PARAMETERS_GAIN_PARAMETERS_H
 #define SIGNAL_PROCESSING_PARAMETERS_GAIN_PARAMETERS_H
 
+#include <SignalProcessing/Parameters/RealtimeParameters.h>
+
 #include <Utils/ClassMacro.h>
 #include <Utils/Exception/InvalidValueException.h>
 
@@ -11,13 +13,13 @@
 namespace adaptone
 {
     template<class T>
-    class GainParameters
+    class GainParameters : public RealtimeParameters
     {
         std::vector<T> m_gains;
 
     public:
         GainParameters(std::size_t channelCount);
-        virtual ~GainParameters();
+        ~GainParameters() override;
 
         DECLARE_NOT_COPYABLE(GainParameters);
         DECLARE_NOT_MOVABLE(GainParameters);
@@ -44,7 +46,10 @@ namespace adaptone
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel", "");
         }
 
-        m_gains[channel] = std::pow(10, gainDb / 20);
+        uptate([&]()
+        {
+            m_gains[channel] = std::pow(10, gainDb / 20);
+        });
     }
 
     template<class T>

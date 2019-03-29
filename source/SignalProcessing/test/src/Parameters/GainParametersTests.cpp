@@ -23,7 +23,10 @@ TEST(GainParametersTests, setGain_shouldSetSpecifiedChannelGainNotInDb)
 {
     GainParameters<float> gainParameters(2);
 
+    EXPECT_FALSE(gainParameters.isDirty());
+
     gainParameters.setGain(0, 20);
 
+    EXPECT_TRUE(gainParameters.isDirty());
     EXPECT_EQ(gainParameters.gains(), vector<float>({ 10, 1 }));
 }

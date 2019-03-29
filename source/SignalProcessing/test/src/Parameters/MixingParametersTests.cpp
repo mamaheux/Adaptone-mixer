@@ -25,6 +25,8 @@ TEST(MixingParametersTests, setGain_shouldSetSpecifiedChannelGainNotInDb)
 {
     MixingParameters<float> mixingParameters(3, 2);
 
+    EXPECT_FALSE(mixingParameters.isDirty());
+
     mixingParameters.setGain(0, 0, 0);
     mixingParameters.setGain(1, 0, 20);
     mixingParameters.setGain(2, 0, 40);
@@ -33,5 +35,6 @@ TEST(MixingParametersTests, setGain_shouldSetSpecifiedChannelGainNotInDb)
     mixingParameters.setGain(1, 1, 20);
     mixingParameters.setGain(2, 1, 0);
 
+    EXPECT_TRUE(mixingParameters.isDirty());
     EXPECT_EQ(mixingParameters.gains(), vector<float>({ 1, 10, 100, 100, 10, 1 }));
 }
