@@ -39,29 +39,20 @@ Mixer::~Mixer()
 {
 }
 
-int Mixer::run()
+void Mixer::run()
 {
-    try
-    {
-        while (!m_stopped.load() && m_audioInput->hasNext())
-        {
-            const PcmAudioFrame& inputFrame = m_audioInput->read();
-            const PcmAudioFrame& outputFrame = m_signalProcessor->process(inputFrame);
-            m_audioOutput->write(outputFrame);
-        }
-    }
-    catch (exception& ex)
-    {
-        m_logger->log(Logger::Level::Error, ex);
-        return -1;
-    }
+    m_analysisThread = make_unique<thread>(&Mixer::analysisRun, this);
+    //TODO Add the websocket start
 
-    return 0;
+    processingRun();
+
+    m_analysisThread->join();
 }
 
 void Mixer::stop()
 {
     m_stopped.store(true);
+    //TODO Add the websocket stop
 }
 
 shared_ptr<Logger> Mixer::createLogger()
@@ -134,4 +125,38 @@ unique_ptr<SignalProcessor> Mixer::createSignalProcessor()
         m_configuration.audio().outputChannelCount(),
         m_configuration.audioInput().format(),
         m_configuration.audioOutput().format());
+}
+
+void Mixer::analysisRun()
+{
+    try
+    {
+        while (!m_stopped.load())
+        {
+            //TODO Add the analysis code
+        }
+    }
+    catch (exception& ex)
+    {
+        m_logger->log(Logger::Level::Error, ex);
+    }
+    m_stopped.store(true);
+}
+
+void Mixer::processingRun()
+{
+    try
+    {
+        while (!m_stopped.load() && m_audioInput->hasNext())
+        {
+            const PcmAudioFrame& inputFrame = m_audioInput->read();
+            const PcmAudioFrame& outputFrame = m_signalProcessor->process(inputFrame);
+            m_audioOutput->write(outputFrame);
+        }
+    }
+    catch (exception& ex)
+    {
+        m_logger->log(Logger::Level::Error, ex);
+    }
+    m_stopped.store(true);
 }

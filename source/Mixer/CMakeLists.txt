@@ -33,12 +33,14 @@ if (UNIX)
     target_link_libraries(Mixer
         Utils
         SignalProcessing
-        asound)
+        asound
+        pthread)
 
     target_link_libraries(Mixer_Private
         Utils
         SignalProcessing
-        asound)
+        asound
+        pthread)
 else (UNIX)
     target_link_libraries(Mixer
         Utils
