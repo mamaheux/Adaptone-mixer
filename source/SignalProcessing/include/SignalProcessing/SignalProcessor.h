@@ -28,14 +28,58 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(SignalProcessor);
         DECLARE_NOT_MOVABLE(SignalProcessor);
 
+        void setInputGain(std::size_t channel, double gainDb);
+        void setInputGains(const std::vector<double>& gainsDb);
+
+        void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb);
+        void setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb);
+        void setMixingGains(const std::vector<double>& gainsDb);
+
+        void setOutputGain(std::size_t channel, double gainDb);
+        void setOutputGains(const std::vector<double>& gainsDb);
+
         const PcmAudioFrame& process(const PcmAudioFrame& inputFrame);
     };
+
+    inline void SignalProcessor::setInputGain(std::size_t channel, double gainDb)
+    {
+        m_specificSignalProcessor->setInputGain(channel, gainDb);
+    }
+
+    inline void SignalProcessor::setInputGains(const std::vector<double>& gainsDb)
+    {
+        m_specificSignalProcessor->setInputGains(gainsDb);
+    }
+
+    inline void SignalProcessor::setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb)
+    {
+        m_specificSignalProcessor->setMixingGain(inputChannel, outputChannel, gainDb);
+    }
+
+    inline void SignalProcessor::setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb)
+    {
+        m_specificSignalProcessor->setMixingGains(outputChannel, gainsDb);
+    }
+
+    inline void SignalProcessor::setMixingGains(const std::vector<double>& gainsDb)
+    {
+        m_specificSignalProcessor->setMixingGains(gainsDb);
+    }
+
+    inline void SignalProcessor::setOutputGain(std::size_t channel, double gainDb)
+    {
+        m_specificSignalProcessor->setOutputGain(channel, gainDb);
+    }
+
+    inline void SignalProcessor::setOutputGains(const std::vector<double>& gainsDb)
+    {
+        m_specificSignalProcessor->setOutputGains(gainsDb);
+    }
 
     inline const PcmAudioFrame& SignalProcessor::process(const PcmAudioFrame& inputFrame)
     {
         return m_specificSignalProcessor->process(inputFrame);
     }
-
 }
 
 #endif

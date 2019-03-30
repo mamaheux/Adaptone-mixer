@@ -8,7 +8,7 @@
 using namespace adaptone;
 using namespace std;
 
-TEST(FunctionQueueTests, boolReturnType_shouldRemoveTheFunctionOnlyIfItReturnTrue)
+TEST(FunctionQueueTests, boolReturnType_shouldRemoveTheFunctionOnlyIfItReturnsTrue)
 {
     int counter1 = 0;
     int counter2 = 0;

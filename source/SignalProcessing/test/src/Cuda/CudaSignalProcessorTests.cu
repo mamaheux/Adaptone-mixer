@@ -75,3 +75,5 @@ TEST(CudaSignalProcessorTests, performance)
 
     cout << "Elapsed time = " << elapsed_seconds.count() / Count << " s" << endl;
 }
+
+//TODO Faire un test où les paramètres changent un après l'autre.

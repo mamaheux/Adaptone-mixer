@@ -30,3 +30,21 @@ TEST(GainParametersTests, setGain_shouldSetSpecifiedChannelGainNotInDb)
     EXPECT_TRUE(gainParameters.isDirty());
     EXPECT_EQ(gainParameters.gains(), vector<float>({ 10, 1 }));
 }
+
+TEST(GainParametersTests, setGains_invalidChannelCount_shouldThrowInvalidException)
+{
+    GainParameters<float> gainParameters(2);
+    EXPECT_THROW(gainParameters.setGains({ 1, 2, 3 }), InvalidValueException);
+}
+
+TEST(GainParametersTests, setGains_shouldSetAllGainsNotInDb)
+{
+    GainParameters<float> gainParameters(2);
+
+    EXPECT_FALSE(gainParameters.isDirty());
+
+    gainParameters.setGains({ 20, 40 });
+
+    EXPECT_TRUE(gainParameters.isDirty());
+    EXPECT_EQ(gainParameters.gains(), vector<float>({ 10, 100 }));
+}

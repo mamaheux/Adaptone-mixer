@@ -21,6 +21,10 @@ namespace adaptone
 
         T* m_inputFrames;
 
+        T* m_inputGains;
+        T* m_mixingGains;
+        T* m_outputGains;
+
         std::size_t m_currentFrameIndex;
         std::size_t m_frameCount;
         std::size_t m_inputPcmFrameSize;
@@ -30,6 +34,8 @@ namespace adaptone
         std::size_t m_inputChannelCount;
         std::size_t m_outputChannelCount;
         std::size_t m_frameSize;
+
+        std::size_t m_mixingGainsSize;
 
         PcmToArrayConversionFunctionPointer<T> m_pcmToArrayConversionFunction;
 
@@ -56,6 +62,10 @@ namespace adaptone
         __device__ __host__ T* inputFrames();
         __device__ __host__ T* currentInputFrame();
 
+        __device__ __host__ T* inputGains();
+        __device__ __host__ T* mixingGains();
+        __device__ __host__ T* outputGains();
+
         __device__ __host__ std::size_t currentFrameIndex();
         __host__ void nextFrame();
 
@@ -67,6 +77,7 @@ namespace adaptone
         __device__ __host__ std::size_t inputChannelCount();
         __device__ __host__ std::size_t outputChannelCount();
         __device__ __host__ std::size_t frameSize();
+        __device__ __host__ std::size_t mixingGainsSize();
 
         __device__ PcmToArrayConversionFunctionPointer<T> pcmToArrayConversionFunction();
     };
@@ -86,12 +97,21 @@ namespace adaptone
         m_inputChannelCount(inputChannelCount),
         m_outputChannelCount(outputChannelCount),
         m_frameSize(m_frameSampleCount * m_inputChannelCount),
+        m_mixingGainsSize(m_inputChannelCount * m_outputChannelCount),
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_inputPcmFrames), m_inputPcmFrameSize * frameCount);
         cudaMalloc(reinterpret_cast<void**>(&m_outputPcmFrames), m_outputPcmFrameSize * frameCount);
 
         cudaMalloc(reinterpret_cast<void**>(&m_inputFrames), m_frameSize * frameCount * sizeof(T));
+
+        cudaMalloc(reinterpret_cast<void**>(&m_inputGains), m_inputChannelCount * sizeof(T));
+        cudaMalloc(reinterpret_cast<void**>(&m_mixingGains), m_mixingGainsSize * sizeof(T));
+        cudaMalloc(reinterpret_cast<void**>(&m_outputGains), m_outputChannelCount * sizeof(T));
+
+        cudaMemset(m_inputGains, 0, m_inputChannelCount * sizeof(T));
+        cudaMemset(m_mixingGains, 0, m_mixingGainsSize * sizeof(T));
+        cudaMemset(m_outputGains, 0, m_outputChannelCount * sizeof(T));
 
         m_pcmToArrayConversionFunction = getPcmToArrayConversionFunctionPointer<T>(inputFormat);
     }
@@ -102,6 +122,9 @@ namespace adaptone
         m_inputPcmFrames(other.m_inputPcmFrames),
         m_outputPcmFrames(other.m_outputPcmFrames),
         m_inputFrames(other.m_inputFrames),
+        m_inputGains(other.m_inputGains),
+        m_mixingGains(other.m_mixingGains),
+        m_outputGains(other.m_outputGains),
         m_currentFrameIndex(other.m_currentFrameIndex),
         m_inputPcmFrameSize(other.m_inputPcmFrameSize),
         m_outputPcmFrameSize(other.m_outputPcmFrameSize),
@@ -109,8 +132,9 @@ namespace adaptone
         m_frameSampleCount(other.m_frameSampleCount),
         m_inputChannelCount(other.m_inputChannelCount),
         m_outputChannelCount(other.m_outputChannelCount),
-        m_pcmToArrayConversionFunction(other.m_pcmToArrayConversionFunction),
         m_frameSize(other.m_frameSize),
+        m_mixingGainsSize(other.m_mixingGainsSize),
+        m_pcmToArrayConversionFunction(other.m_pcmToArrayConversionFunction),
         m_hasOwnership(false)
     {
     }
@@ -161,6 +185,24 @@ namespace adaptone
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::currentInputFrame()
     {
         return m_inputFrames + m_currentFrameIndex * m_frameSize;
+    }
+
+    template<class T>
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::inputGains()
+    {
+        return m_inputGains;
+    }
+
+    template<class T>
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::mixingGains()
+    {
+        return m_mixingGains;
+    }
+
+    template<class T>
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::outputGains()
+    {
+        return m_outputGains;
     }
 
     template <class T>
@@ -215,6 +257,12 @@ namespace adaptone
     inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::frameSize()
     {
         return m_frameSize;
+    }
+
+    template<class T>
+    inline __device__ __host__ std::size_t mixingGainsSize()
+    {
+        return m_mixingGainsSize;
     }
 
     template<class T>
