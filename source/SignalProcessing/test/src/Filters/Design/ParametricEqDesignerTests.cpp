@@ -213,7 +213,7 @@ TEST(ParametricEqDesignerTests, performance)
         vector<double> gainsDb = designer.gainsDb(frequencies);
     }
     auto end = chrono::system_clock::now();
-    chrono::duration<double> elapsed_seconds = end - start;
+    chrono::duration<double> elapsedSeconds = end - start;
 
-    cout << "Elapsed time = " << elapsed_seconds.count() / Count << " s" << endl;
+    cout << "Elapsed time = " << elapsedSeconds.count() / Count << " s" << endl;
 }

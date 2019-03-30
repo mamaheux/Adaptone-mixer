@@ -71,9 +71,9 @@ TEST(CudaSignalProcessorTests, performance)
         PcmAudioFrame outputFrame = processor.process(inputFrame);
     }
     auto end = chrono::system_clock::now();
-    chrono::duration<double> elapsed_seconds = end - start;
+    chrono::duration<double> elapsedSeconds = end - start;
 
-    cout << "Elapsed time = " << elapsed_seconds.count() / Count << " s" << endl;
+    cout << "Elapsed time = " << elapsedSeconds.count() / Count << " s" << endl;
 }
 
 //TODO Faire un test où les paramètres changent un après l'autre.
