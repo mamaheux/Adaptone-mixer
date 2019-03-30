@@ -189,7 +189,7 @@ namespace adaptone
     {
         m_updateFunctionQueue.push([&]()
         {
-            return m_inputGainParameters.tryApplyingUptate([&]()
+            return m_inputGainParameters.tryApplyingUpdate([&]()
             {
                 cudaMemcpy(m_buffers.inputGains(), m_inputGainParameters.gains().data(),
                     m_buffers.inputChannelCount() * sizeof(T), cudaMemcpyHostToDevice);
@@ -201,7 +201,7 @@ namespace adaptone
     {
         m_updateFunctionQueue.push([&]()
         {
-            return m_mixingGainParameters.tryApplyingUptate([&]()
+            return m_mixingGainParameters.tryApplyingUpdate([&]()
             {
                 cudaMemcpy(m_buffers.mixingGains(), m_mixingGainParameters.gains().data(),
                     m_buffers.mixingGainsSize() * sizeof(T), cudaMemcpyHostToDevice);
@@ -213,7 +213,7 @@ namespace adaptone
     {
         m_updateFunctionQueue.push([&]()
         {
-            return m_outputGainParameters.tryApplyingUptate([&]()
+            return m_outputGainParameters.tryApplyingUpdate([&]()
             {
                 cudaMemcpy(m_buffers.outputGains(), m_outputGainParameters.gains().data(),
                     m_buffers.outputChannelCount() * sizeof(T), cudaMemcpyHostToDevice);

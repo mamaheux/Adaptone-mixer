@@ -16,10 +16,10 @@ namespace adaptone
         virtual ~RealtimeParameters();
 
         bool isDirty();
-        void uptate(const std::function<void()>& function);
+        void update(const std::function<void()>& function);
 
-        void applyUptate(const std::function<void()>& function);
-        bool tryApplyingUptate(const std::function<void()>& function);
+        void applyUpdate(const std::function<void()>& function);
+        bool tryApplyingUpdate(const std::function<void()>& function);
     };
 
     inline bool RealtimeParameters::isDirty()
@@ -28,14 +28,14 @@ namespace adaptone
         return m_isDirty;
     }
 
-    inline void RealtimeParameters::uptate(const std::function<void()>& function)
+    inline void RealtimeParameters::update(const std::function<void()>& function)
     {
         std::lock_guard<std::mutex> lock(m_mutex);
         function();
         m_isDirty = true;
     }
 
-    inline void RealtimeParameters::applyUptate(const std::function<void()>& function)
+    inline void RealtimeParameters::applyUpdate(const std::function<void()>& function)
     {
         std::lock_guard<std::mutex> lock(m_mutex);
         if (m_isDirty)
@@ -45,7 +45,7 @@ namespace adaptone
         }
     }
 
-    inline bool RealtimeParameters::tryApplyingUptate(const std::function<void()>& function)
+    inline bool RealtimeParameters::tryApplyingUpdate(const std::function<void()>& function)
     {
         std::unique_lock<std::mutex> lock(m_mutex, std::try_to_lock);
         if (lock.owns_lock())

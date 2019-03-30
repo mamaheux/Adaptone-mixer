@@ -53,7 +53,7 @@ namespace adaptone
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel", "");
         }
 
-        uptate([&]()
+        update([&]()
         {
             m_gains[outputChannel * m_inputChannelCount + inputChannel] = std::pow(10, gainDb / 20);
         });
@@ -71,7 +71,7 @@ namespace adaptone
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel count", "");
         }
 
-        uptate([&]()
+        update([&]()
         {
             for (std::size_t i = 0; i < m_inputChannelCount; i++)
             {
@@ -88,7 +88,7 @@ namespace adaptone
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel count", "");
         }
 
-        uptate([&]()
+        update([&]()
         {
             for (std::size_t i = 0; i < gainsDb.size(); i++)
             {
