@@ -87,7 +87,10 @@ namespace adaptone
             inputChannelCount,
             outputChannelCount,
             inputFormat,
-            outputFormat)
+            outputFormat),
+        m_inputGainParameters(inputChannelCount),
+        m_mixingGainParameters(inputChannelCount, outputChannelCount),
+        m_outputGainParameters(outputChannelCount)
     {
         pushInputGainUpdate();
         pushMixingGainUpdate();
@@ -123,14 +126,14 @@ namespace adaptone
     template<class T>
     void CudaSignalProcessor<T>::setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb)
     {
-        m_mixingGainParameters.setGain(outputChannel, std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        m_mixingGainParameters.setGains(outputChannel, std::vector<T>(gainsDb.begin(), gainsDb.end()));
         pushMixingGainUpdate();
     }
 
     template<class T>
     void CudaSignalProcessor<T>::setMixingGains(const std::vector<double>& gainsDb)
     {
-        m_mixingGainParameters.setGain(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        m_mixingGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
         pushMixingGainUpdate();
     }
 
