@@ -15,7 +15,6 @@ namespace adaptone
     {
     };
 
-    template<>
     template<class ... Types>
     struct IsReturningBool<bool(Types...)> : std::true_type
     {

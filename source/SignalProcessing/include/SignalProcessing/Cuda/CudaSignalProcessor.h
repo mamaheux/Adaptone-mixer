@@ -197,6 +197,7 @@ namespace adaptone
         });
     }
 
+    template<class T>
     void CudaSignalProcessor<T>::pushMixingGainUpdate()
     {
         m_updateFunctionQueue.push([&]()
@@ -209,6 +210,7 @@ namespace adaptone
         });
     }
 
+    template<class T>
     void CudaSignalProcessor<T>::pushOutputGainUpdate()
     {
         m_updateFunctionQueue.push([&]()

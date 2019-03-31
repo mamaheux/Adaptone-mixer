@@ -80,6 +80,8 @@ PcmAudioFrame& PcmAudioFrame::operator=(const PcmAudioFrame& other)
 
     m_data = new uint8_t[size()];
     memcpy(m_data, other.m_data, size());
+
+    return *this;
 }
 
 PcmAudioFrame& PcmAudioFrame::operator=(PcmAudioFrame&& other)
@@ -97,4 +99,6 @@ PcmAudioFrame& PcmAudioFrame::operator=(PcmAudioFrame&& other)
     other.m_channelCount = 0;
     other.m_sampleCount = 0;
     other.m_data = nullptr;
+
+    return *this;
 }
