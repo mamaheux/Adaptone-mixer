@@ -41,6 +41,7 @@ Mixer::~Mixer()
 
 void Mixer::run()
 {
+    m_stopped.store(false);
     m_analysisThread = make_unique<thread>(&Mixer::analysisRun, this);
     //TODO Add the websocket start
 

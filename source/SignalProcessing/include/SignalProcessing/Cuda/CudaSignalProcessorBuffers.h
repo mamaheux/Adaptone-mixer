@@ -148,6 +148,10 @@ namespace adaptone
             cudaFree(m_outputPcmFrames);
 
             cudaFree(m_inputFrames);
+
+            cudaFree(m_inputGains);
+            cudaFree(m_mixingGains);
+            cudaFree(m_outputGains);
         }
     }
 
