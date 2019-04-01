@@ -16,6 +16,7 @@ namespace adaptone
         std::size_t m_outputChannelCount;
         ProcessingDataType m_processingDataType;
 
+        std::size_t m_eqParametricFilterCount;
         std::vector<double> m_eqCenterFrequencies;
 
     public:
@@ -28,6 +29,7 @@ namespace adaptone
         std::size_t outputChannelCount() const;
         ProcessingDataType processingDataType() const;
 
+        std::size_t eqParametricFilterCount() const;
         const std::vector<double>& eqCenterFrequencies() const;
     };
 
@@ -54,6 +56,11 @@ namespace adaptone
     inline ProcessingDataType AudioConfiguration::processingDataType() const
     {
         return m_processingDataType;
+    }
+
+    inline std::size_t AudioConfiguration::eqParametricFilterCount() const
+    {
+        return m_eqParametricFilterCount;
     }
 
     inline const std::vector<double>& AudioConfiguration::eqCenterFrequencies() const
