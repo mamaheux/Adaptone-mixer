@@ -244,7 +244,7 @@ namespace adaptone
         m_updateFunctionQueue.tryExecute();
 
         cudaMemcpy(m_buffers.currentInputPcmFrame(), inputFrame.data(), inputFrame.size(), cudaMemcpyHostToDevice);
-        processKernel << < 1, 256 >> > (m_buffers);
+        processKernel<<<1, 256>>>(m_buffers);
         cudaMemcpy(&m_outputFrame[0], m_buffers.currentOutputPcmFrame(), m_outputFrame.size(), cudaMemcpyDeviceToHost);
 
         m_buffers.nextFrame();

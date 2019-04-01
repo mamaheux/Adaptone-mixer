@@ -60,8 +60,10 @@ TEST(EqParametersTests, setParametricEqParameters_shouldUpdateTheSpecifiedChanne
     vector<double> frequencies{ 20, 50, 125 };
 
     EqParameters<float> eqParameters(SampleFrequency, parameters.size(), frequencies, 2);
+    EXPECT_FALSE(eqParameters.isDirty());
 
     eqParameters.setParametricEqParameters(0, parameters);
+    EXPECT_TRUE(eqParameters.isDirty());
 
     ASSERT_EQ(eqParameters.biquadCoefficients(0).size(), 2 * frequencies.size());
 
@@ -124,8 +126,10 @@ TEST(EqParametersTests, setGraphicEqGains_invalidChannel_shouldUpdateTheSpecifie
     vector<double> frequencies{ 20, 50, 125 };
 
     EqParameters<float> eqParameters(SampleFrequency, 3, frequencies, 2);
+    EXPECT_FALSE(eqParameters.isDirty());
 
     eqParameters.setGraphicEqGains(0, gainsDb);
+    EXPECT_TRUE(eqParameters.isDirty());
 
     ASSERT_EQ(eqParameters.biquadCoefficients(0).size(), 2 * frequencies.size());
 
