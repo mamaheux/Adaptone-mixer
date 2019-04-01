@@ -95,6 +95,11 @@ namespace adaptone
         pushInputGainUpdate();
         pushMixingGainUpdate();
         pushOutputGainUpdate();
+
+        while (m_updateFunctionQueue.size() > 0)
+        {
+            m_updateFunctionQueue.execute();
+        }
     }
 
     template<class T>

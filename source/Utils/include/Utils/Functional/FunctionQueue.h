@@ -89,6 +89,8 @@ namespace adaptone
         void push(const std::function<T>& function);
         void tryExecute();
         void execute();
+
+        std::size_t size();
     };
 
     template<class T>
@@ -123,6 +125,13 @@ namespace adaptone
     {
         std::lock_guard<std::mutex> lock(m_mutex);
         BaseType::executeAndRemove();
+    }
+
+    template<class T>
+    std::size_t FunctionQueue<T>::size()
+    {
+        std::lock_guard<std::mutex> lock(m_mutex);
+        return BaseType::m_functionQueue.size();
     }
 }
 
