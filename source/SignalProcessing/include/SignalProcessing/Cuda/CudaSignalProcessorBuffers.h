@@ -264,7 +264,7 @@ namespace adaptone
     }
 
     template<class T>
-    inline __device__ __host__ std::size_t mixingGainsSize()
+    inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::mixingGainsSize()
     {
         return m_mixingGainsSize;
     }
