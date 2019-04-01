@@ -125,7 +125,9 @@ unique_ptr<SignalProcessor> Mixer::createSignalProcessor()
         m_configuration.audio().inputChannelCount(),
         m_configuration.audio().outputChannelCount(),
         m_configuration.audioInput().format(),
-        m_configuration.audioOutput().format());
+        m_configuration.audioOutput().format(),
+        m_configuration.audio().eqParametricFilterCount(),
+        m_configuration.audio().eqCenterFrequencies());
 }
 
 void Mixer::analysisRun()

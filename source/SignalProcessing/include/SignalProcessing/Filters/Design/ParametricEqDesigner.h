@@ -2,6 +2,7 @@
 #define SIGNAL_PROCESSING_FILTERS_DESIGN_PARAMETRIC_EQ_DESIGNER_H
 
 #include <SignalProcessing/Filters/BiquadCoefficients.h>
+#include <SignalProcessing/Filters/ParametricEqParameters.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Exception/InvalidValueException.h>
@@ -13,16 +14,6 @@
 
 namespace adaptone
 {
-    struct ParametricEqParameters
-    {
-        double cutoffFrequency;
-        double Q;
-        double gainDb;
-
-        ParametricEqParameters(double cutoffFrequency, double Q, double gainDb);
-        virtual ~ParametricEqParameters();
-    };
-
     template<class T>
     class ParametricEqDesigner
     {
@@ -47,15 +38,6 @@ namespace adaptone
         void designHighShelvingFilter(BiquadCoefficients<T>& coefficients, const ParametricEqParameters& parameter);
         void designPeakFilter(BiquadCoefficients<T>& coefficients, const ParametricEqParameters& parameter);
     };
-
-    inline ParametricEqParameters::ParametricEqParameters(double cutoffFrequency, double Q, double gainDb) :
-        cutoffFrequency(cutoffFrequency), Q(Q), gainDb(gainDb)
-    {
-    }
-
-    inline ParametricEqParameters::~ParametricEqParameters()
-    {
-    }
 
     template<class T>
     inline ParametricEqDesigner<T>::ParametricEqDesigner(std::size_t filterCount, std::size_t sampleFrequency) :
