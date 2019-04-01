@@ -61,8 +61,8 @@ int main(int argc, char** argv)
 
     if (setupInterruptSignalHandler(mixer))
     {
-        return mixer.run();
+        mixer.run();
     }
 
-    return -1;
+    return 0;
 }

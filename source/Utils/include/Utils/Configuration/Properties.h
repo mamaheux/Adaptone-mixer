@@ -72,7 +72,6 @@ namespace adaptone
         }
     };
 
-    template<>
     template<class T>
     struct ValueParser<std::vector<T>>
     {

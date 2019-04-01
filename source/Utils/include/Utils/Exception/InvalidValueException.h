@@ -17,7 +17,7 @@ namespace adaptone
             const std::string& name,
             const std::string& value);
 
-        virtual ~InvalidValueException();
+        ~InvalidValueException() override;
     };
 }
 

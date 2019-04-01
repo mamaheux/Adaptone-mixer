@@ -17,7 +17,7 @@ namespace adaptone
             const std::string& key,
             const std::string& value);
 
-        virtual ~PropertyParseException();
+        ~PropertyParseException() override;
     };
 }
 

@@ -4,9 +4,12 @@
 #include <SignalProcessing/ProcessingDataType.h>
 #include <SignalProcessing/SpecificSignalProcessor.h>
 #include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
+#include <SignalProcessing/Parameters/GainParameters.h>
+#include <SignalProcessing/Parameters/MixingParameters.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Data/PcmAudioFrame.h>
+#include <Utils/Functional/FunctionQueue.h>
 
 #include <cuda_runtime.h>
 
@@ -29,6 +32,12 @@ namespace adaptone
         PcmAudioFrame m_outputFrame;
         CudaSignalProcessorBuffers<T> m_buffers;
 
+        GainParameters<T> m_inputGainParameters;
+        MixingParameters<T> m_mixingGainParameters;
+        GainParameters<T> m_outputGainParameters;
+
+        FunctionQueue<bool()> m_updateFunctionQueue;
+
     public:
         CudaSignalProcessor(std::size_t frameSampleCount,
             std::size_t sampleFrequency,
@@ -36,12 +45,27 @@ namespace adaptone
             std::size_t outputChannelCount,
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat);
-        virtual ~CudaSignalProcessor();
+        ~CudaSignalProcessor() override;
 
         DECLARE_NOT_COPYABLE(CudaSignalProcessor);
         DECLARE_NOT_MOVABLE(CudaSignalProcessor);
 
+        void setInputGain(std::size_t channel, double gainDb) override;
+        void setInputGains(const std::vector<double>& gainsDb) override;
+
+        void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb) override;
+        void setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb) override;
+        void setMixingGains(const std::vector<double>& gainsDb) override;
+
+        void setOutputGain(std::size_t channel, double gainDb) override;
+        void setOutputGains(const std::vector<double>& gainsDb) override;
+
         const PcmAudioFrame& process(const PcmAudioFrame& inputFrame) override;
+
+    private:
+        void pushInputGainUpdate();
+        void pushMixingGainUpdate();
+        void pushOutputGainUpdate();
     };
 
     template<class T>
@@ -63,13 +87,68 @@ namespace adaptone
             inputChannelCount,
             outputChannelCount,
             inputFormat,
-            outputFormat)
+            outputFormat),
+        m_inputGainParameters(inputChannelCount),
+        m_mixingGainParameters(inputChannelCount, outputChannelCount),
+        m_outputGainParameters(outputChannelCount)
     {
+        pushInputGainUpdate();
+        pushMixingGainUpdate();
+        pushOutputGainUpdate();
     }
 
     template<class T>
     CudaSignalProcessor<T>::~CudaSignalProcessor()
     {
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setInputGain(std::size_t channel, double gainDb)
+    {
+        m_inputGainParameters.setGain(channel, static_cast<T>(gainDb));
+        pushInputGainUpdate();
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setInputGains(const std::vector<double>& gainsDb)
+    {
+        m_inputGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        pushInputGainUpdate();
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb)
+    {
+        m_mixingGainParameters.setGain(inputChannel, outputChannel, static_cast<T>(gainDb));
+        pushMixingGainUpdate();
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb)
+    {
+        m_mixingGainParameters.setGains(outputChannel, std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        pushMixingGainUpdate();
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setMixingGains(const std::vector<double>& gainsDb)
+    {
+        m_mixingGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        pushMixingGainUpdate();
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setOutputGain(std::size_t channel, double gainDb)
+    {
+        m_outputGainParameters.setGain(channel, static_cast<T>(gainDb));
+        pushOutputGainUpdate();
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setOutputGains(const std::vector<double>& gainsDb)
+    {
+        m_inputGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        pushOutputGainUpdate();
     }
 
     template<class T>
@@ -97,6 +176,8 @@ namespace adaptone
     template<class T>
     const PcmAudioFrame& CudaSignalProcessor<T>::process(const PcmAudioFrame& inputFrame)
     {
+        m_updateFunctionQueue.tryExecute();
+
         cudaMemcpy(m_buffers.currentInputPcmFrame(), inputFrame.data(), inputFrame.size(), cudaMemcpyHostToDevice);
         processKernel<<<1, 256>>>(m_buffers);
         cudaMemcpy(&m_outputFrame[0], m_buffers.currentOutputPcmFrame(), m_outputFrame.size(), cudaMemcpyDeviceToHost);
@@ -104,6 +185,45 @@ namespace adaptone
         m_buffers.nextFrame();
 
         return m_outputFrame;
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::pushInputGainUpdate()
+    {
+        m_updateFunctionQueue.push([&]()
+        {
+            return m_inputGainParameters.tryApplyingUpdate([&]()
+            {
+                cudaMemcpy(m_buffers.inputGains(), m_inputGainParameters.gains().data(),
+                    m_buffers.inputChannelCount() * sizeof(T), cudaMemcpyHostToDevice);
+            });
+        });
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::pushMixingGainUpdate()
+    {
+        m_updateFunctionQueue.push([&]()
+        {
+            return m_mixingGainParameters.tryApplyingUpdate([&]()
+            {
+                cudaMemcpy(m_buffers.mixingGains(), m_mixingGainParameters.gains().data(),
+                    m_buffers.mixingGainsSize() * sizeof(T), cudaMemcpyHostToDevice);
+            });
+        });
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::pushOutputGainUpdate()
+    {
+        m_updateFunctionQueue.push([&]()
+        {
+            return m_outputGainParameters.tryApplyingUpdate([&]()
+            {
+                cudaMemcpy(m_buffers.outputGains(), m_outputGainParameters.gains().data(),
+                    m_buffers.outputChannelCount() * sizeof(T), cudaMemcpyHostToDevice);
+            });
+        });
     }
 }
 

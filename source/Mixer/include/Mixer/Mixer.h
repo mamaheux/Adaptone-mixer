@@ -12,6 +12,7 @@
 
 #include <memory>
 #include <atomic>
+#include <thread>
 
 namespace adaptone
 {
@@ -25,6 +26,7 @@ namespace adaptone
 
         std::unique_ptr<SignalProcessor> m_signalProcessor;
 
+        std::unique_ptr<std::thread> m_analysisThread;
         std::atomic<bool> m_stopped;
 
     public:
@@ -34,7 +36,7 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(Mixer);
         DECLARE_NOT_MOVABLE(Mixer);
 
-        int run();
+        void run();
         void stop();
 
     private:
@@ -44,6 +46,9 @@ namespace adaptone
         std::unique_ptr<AudioOutput> createAudioOutput();
 
         std::unique_ptr<SignalProcessor> createSignalProcessor();
+
+        void analysisRun();
+        void processingRun();
     };
 }
 

@@ -16,7 +16,7 @@ namespace adaptone
             int line,
             const std::string& key);
 
-        virtual ~PropertyNotFoundException();
+        ~PropertyNotFoundException() override;
     };
 }
 
