@@ -15,7 +15,8 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
         { "audio.sample_frequency", "48000" },
         { "audio.input_channel_count", "16" },
         { "audio.output_channel_count", "14" },
-        { "audio.processing_data_type", "float" }
+        { "audio.processing_data_type", "float" },
+        { "audio.eq.center_frequencies", "[10, 20]" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -23,6 +24,7 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
     EXPECT_EQ(configuration.inputChannelCount(), 16);
     EXPECT_EQ(configuration.outputChannelCount(), 14);
     EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Float);
+    EXPECT_EQ(configuration.eqCenterFrequencies(), vector<double>({ 10, 20 }));
 }
 
 TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheAttributes)
@@ -33,7 +35,8 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
         { "audio.sample_frequency", "48000" },
         { "audio.input_channel_count", "16" },
         { "audio.output_channel_count", "14" },
-        { "audio.processing_data_type", "double" }
+        { "audio.processing_data_type", "double" },
+        { "audio.eq.center_frequencies", "[10, 20]" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -41,6 +44,7 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
     EXPECT_EQ(configuration.inputChannelCount(), 16);
     EXPECT_EQ(configuration.outputChannelCount(), 14);
     EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Double);
+    EXPECT_EQ(configuration.eqCenterFrequencies(), vector<double>({ 10, 20 }));
 }
 
 TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetTheAttributes)

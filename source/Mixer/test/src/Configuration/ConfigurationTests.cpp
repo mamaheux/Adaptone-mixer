@@ -17,6 +17,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.input_channel_count", "16" },
         { "audio.output_channel_count", "14" },
         { "audio.processing_data_type", "double" },
+        { "audio.eq.center_frequencies", "[10, 20]" },
 
         { "audio.input.type", "raw_file" },
         { "audio.input.format", "signed_8" },
@@ -36,6 +37,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().inputChannelCount(), 16);
     EXPECT_EQ(configuration.audio().outputChannelCount(), 14);
     EXPECT_EQ(configuration.audio().processingDataType(), ProcessingDataType::Double);
+    EXPECT_EQ(configuration.audio().eqCenterFrequencies(), vector<double>({ 10, 20 }));
 
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrame::Format::Signed8);
