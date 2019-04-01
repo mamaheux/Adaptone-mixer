@@ -24,7 +24,7 @@ namespace adaptone
             std::size_t outputChannelCount,
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
-            std::size_t eqParametricFilterCount,
+            std::size_t parametricEqFilterCount,
             const std::vector<double>& eqCenterFrequencies);
         virtual ~SignalProcessor();
 

@@ -12,7 +12,7 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
     size_t outputChannelCount,
     PcmAudioFrame::Format inputFormat,
     PcmAudioFrame::Format outputFormat,
-    std::size_t eqParametricFilterCount,
+    std::size_t parametricEqFilterCount,
     const std::vector<double>& eqCenterFrequencies)
 {
     m_specificSignalProcessor = make_unique<SpecificSignalProcessor>();

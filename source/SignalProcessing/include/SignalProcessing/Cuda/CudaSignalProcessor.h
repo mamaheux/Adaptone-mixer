@@ -48,7 +48,7 @@ namespace adaptone
             std::size_t outputChannelCount,
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
-            std::size_t eqParametricFilterCount,
+            std::size_t parametricEqFilterCount,
             const std::vector<double>& eqCenterFrequencies);
         ~CudaSignalProcessor() override;
 
@@ -90,7 +90,7 @@ namespace adaptone
         size_t outputChannelCount,
         PcmAudioFrame::Format inputFormat,
         PcmAudioFrame::Format outputFormat,
-        std::size_t eqParametricFilterCount,
+        std::size_t parametricEqFilterCount,
         const std::vector<double>& eqCenterFrequencies) :
         m_frameSampleCount(frameSampleCount),
         m_sampleFrequency(sampleFrequency),
@@ -107,9 +107,9 @@ namespace adaptone
             outputFormat,
             2 * eqCenterFrequencies.size()),
         m_inputGainParameters(inputChannelCount),
-        m_inputEqParameters(sampleFrequency, eqParametricFilterCount, eqCenterFrequencies, inputChannelCount),
+        m_inputEqParameters(sampleFrequency, parametricEqFilterCount, eqCenterFrequencies, inputChannelCount),
         m_mixingGainParameters(inputChannelCount, outputChannelCount),
-        m_outputEqParameters(sampleFrequency, eqParametricFilterCount, eqCenterFrequencies, outputChannelCount),
+        m_outputEqParameters(sampleFrequency, parametricEqFilterCount, eqCenterFrequencies, outputChannelCount),
         m_outputGainParameters(outputChannelCount)
     {
         pushInputGainUpdate();

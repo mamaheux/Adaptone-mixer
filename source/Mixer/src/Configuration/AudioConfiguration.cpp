@@ -13,7 +13,7 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
     constexpr const char* OutputChannelCountPropertyKey = "audio.output_channel_count";
     constexpr const char* ProcessingDataTypePropertyKey = "audio.processing_data_type";
 
-    constexpr const char* EqParametricFilterCountPropertyKey = "audio.eq.parametric_filter_count";
+    constexpr const char* ParametricEqFilterCountPropertyKey = "audio.eq.parametric_filter_count";
     constexpr const char* EqCenterFrequenciesPropertyKey = "audio.eq.center_frequencies";
 
     m_frameSampleCount = properties.get<size_t>(FrameSampleCountPropertyKey);
@@ -36,7 +36,7 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
         THROW_INVALID_VALUE_EXCEPTION(ProcessingDataTypePropertyKey, processingDataType);
     }
 
-    m_eqParametricFilterCount = properties.get<size_t>(EqParametricFilterCountPropertyKey);
+    m_parametricEqFilterCount = properties.get<size_t>(ParametricEqFilterCountPropertyKey);
     m_eqCenterFrequencies = properties.get<vector<double>>(EqCenterFrequenciesPropertyKey);
 }
 
