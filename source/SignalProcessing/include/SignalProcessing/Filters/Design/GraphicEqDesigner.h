@@ -64,7 +64,7 @@ namespace adaptone
 
         void update(const std::vector<double>& gainsDb);
         const std::vector<BiquadCoefficients<T>>& biquadCoefficients() const;
-        T d0();
+        T d0() const;
 
     private:
         arma::vec getPolesW();
@@ -166,7 +166,7 @@ namespace adaptone
     }
 
     template<class T>
-    inline T GraphicEqDesigner<T>::d0()
+    inline T GraphicEqDesigner<T>::d0() const
     {
         return m_d0;
     }

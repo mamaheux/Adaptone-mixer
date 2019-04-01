@@ -20,11 +20,11 @@ TEST(ParametricEqDesignerTests, update_invalidParameterCount_shouldThrowInvalidV
 {
     ParametricEqDesigner<float> designer(2, SampleFrequency);
 
-    vector<ParametricEqDesigner<float>::Parameters> parameters
+    vector<ParametricEqParameters> parameters
         {
-            ParametricEqDesigner<float>::Parameters(100, 1, -10),
-            ParametricEqDesigner<float>::Parameters(300, 5, 5),
-            ParametricEqDesigner<float>::Parameters(800, 5, -8)
+            ParametricEqParameters(100, 1, -10),
+            ParametricEqParameters(300, 5, 5),
+            ParametricEqParameters(800, 5, -8)
         };
 
     EXPECT_THROW(designer.update(parameters), InvalidValueException);
@@ -34,13 +34,13 @@ TEST(ParametricEqDesignerTests, update_lowShelveGainLessThan0_highShelveGainGrea
 {
     ParametricEqDesigner<double> designer(5, SampleFrequency);
 
-    vector<ParametricEqDesigner<double>::Parameters> parameters
+    vector<ParametricEqParameters> parameters
         {
-            ParametricEqDesigner<double>::Parameters(100, 1, -10),
-            ParametricEqDesigner<double>::Parameters(300, 5, 5),
-            ParametricEqDesigner<double>::Parameters(800, 5, -8),
-            ParametricEqDesigner<double>::Parameters(1500, 5, 12),
-            ParametricEqDesigner<double>::Parameters(8000, 1, 2),
+            ParametricEqParameters(100, 1, -10),
+            ParametricEqParameters(300, 5, 5),
+            ParametricEqParameters(800, 5, -8),
+            ParametricEqParameters(1500, 5, 12),
+            ParametricEqParameters(8000, 1, 2),
         };
 
     designer.update(parameters);
@@ -82,10 +82,10 @@ TEST(ParametricEqDesignerTests, update_lowShelveGainGreaterThan0_highShelveGainL
 {
     ParametricEqDesigner<float> designer(2, SampleFrequency);
 
-    vector<ParametricEqDesigner<float>::Parameters> parameters
+    vector<ParametricEqParameters> parameters
         {
-            ParametricEqDesigner<float>::Parameters(50, 1, 12),
-            ParametricEqDesigner<float>::Parameters(12000, 1, -5),
+            ParametricEqParameters(50, 1, 12),
+            ParametricEqParameters(12000, 1, -5),
         };
 
     designer.update(parameters);
@@ -109,10 +109,10 @@ TEST(ParametricEqDesignerTests, update_lowShelveGain0_highShelveGain0_shouldSetT
 {
     ParametricEqDesigner<double> designer(2, SampleFrequency);
 
-    vector<ParametricEqDesigner<double>::Parameters> parameters
+    vector<ParametricEqParameters> parameters
         {
-            ParametricEqDesigner<double>::Parameters(100, 1, 0),
-            ParametricEqDesigner<double>::Parameters(12000, 1, 0),
+            ParametricEqParameters(100, 1, 0),
+            ParametricEqParameters(12000, 1, 0),
         };
 
     designer.update(parameters);
@@ -137,13 +137,13 @@ TEST(ParametricEqDesignerTests, gainsDb_shouldReturnTheGainAtTheSpecifiedFrequen
 {
     ParametricEqDesigner<double> designer(5, SampleFrequency);
 
-    vector<ParametricEqDesigner<double>::Parameters> parameters
+    vector<ParametricEqParameters> parameters
         {
-            ParametricEqDesigner<double>::Parameters(100, 1, -10),
-            ParametricEqDesigner<double>::Parameters(300, 5, 5),
-            ParametricEqDesigner<double>::Parameters(800, 5, -8),
-            ParametricEqDesigner<double>::Parameters(1500, 5, 12),
-            ParametricEqDesigner<double>::Parameters(8000, 1, 2),
+            ParametricEqParameters(100, 1, -10),
+            ParametricEqParameters(300, 5, 5),
+            ParametricEqParameters(800, 5, -8),
+            ParametricEqParameters(1500, 5, 12),
+            ParametricEqParameters(8000, 1, 2),
         };
 
     designer.update(parameters);
@@ -192,13 +192,13 @@ TEST(ParametricEqDesignerTests, performance)
 {
     ParametricEqDesigner<double> designer(5, SampleFrequency);
 
-    vector<ParametricEqDesigner<double>::Parameters> parameters
+    vector<ParametricEqParameters> parameters
         {
-            ParametricEqDesigner<double>::Parameters(100, 1, -10),
-            ParametricEqDesigner<double>::Parameters(300, 5, 5),
-            ParametricEqDesigner<double>::Parameters(800, 5, -8),
-            ParametricEqDesigner<double>::Parameters(1500, 5, 12),
-            ParametricEqDesigner<double>::Parameters(8000, 1, 2),
+            ParametricEqParameters(100, 1, -10),
+            ParametricEqParameters(300, 5, 5),
+            ParametricEqParameters(800, 5, -8),
+            ParametricEqParameters(1500, 5, 12),
+            ParametricEqParameters(8000, 1, 2),
         };
 
     vector<double> frequencies{ 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000,
