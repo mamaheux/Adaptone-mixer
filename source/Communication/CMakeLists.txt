@@ -4,6 +4,7 @@ project(Communication)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
+include_directories(../3rdParty/Websocket)
 include_directories(include)
 
 file(GLOB_RECURSE

@@ -6,6 +6,7 @@ find_package(CUDA 9.0 QUIET)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
+include_directories(../3rdParty/armadillo-code/include)
 include_directories(../Utils/include)
 include_directories(include)
 
