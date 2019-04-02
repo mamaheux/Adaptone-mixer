@@ -14,21 +14,31 @@ TEST(FunctionQueueTests, boolReturnType_shouldRemoveTheFunctionOnlyIfItReturnsTr
     int counter2 = 0;
 
     FunctionQueue<bool()> functionQueue;
+    EXPECT_EQ(functionQueue.size(), 0);
+
     functionQueue.push([&]()
     {
         counter1++;
         return counter1 != 1;
     });
+    EXPECT_EQ(functionQueue.size(), 1);
 
     functionQueue.push([&]()
     {
         counter2++;
         return true;
     });
+    EXPECT_EQ(functionQueue.size(), 2);
 
     functionQueue.execute();
+    EXPECT_EQ(functionQueue.size(), 2);
+
     functionQueue.execute();
+    EXPECT_EQ(functionQueue.size(), 1);
+
     functionQueue.execute();
+    EXPECT_EQ(functionQueue.size(), 0);
+
     functionQueue.execute(); //this call should do nothing
 
     EXPECT_EQ(counter1, 2);
@@ -41,18 +51,26 @@ TEST(FunctionQueueTests, voidReturnType_shouldRemoveTheFunction)
     int counter2 = 0;
 
     FunctionQueue<void()> functionQueue;
+    EXPECT_EQ(functionQueue.size(), 0);
+
     functionQueue.push([&]()
     {
         counter1++;
     });
+    EXPECT_EQ(functionQueue.size(), 1);
 
     functionQueue.push([&]()
     {
         counter2++;
     });
+    EXPECT_EQ(functionQueue.size(), 2);
 
     functionQueue.execute();
+    EXPECT_EQ(functionQueue.size(), 1);
+
     functionQueue.execute();
+    EXPECT_EQ(functionQueue.size(), 0);
+
     functionQueue.execute(); //this call should do nothing
 
     EXPECT_EQ(counter1, 1);

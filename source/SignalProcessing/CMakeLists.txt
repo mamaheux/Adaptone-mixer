@@ -6,6 +6,7 @@ find_package(CUDA 9.0 QUIET)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
+include_directories(../3rdParty/armadillo-code/include)
 include_directories(../Utils/include)
 include_directories(include)
 
@@ -26,6 +27,8 @@ if (CUDA_FOUND)
 
     target_link_libraries(SignalProcessing
         armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran
         ${CUDA_LIBRARIES})
 
     add_definitions(-DUSE_CUDA)
@@ -40,8 +43,7 @@ else (CUDA_FOUND)
         include/SignalProcessing/ProcessingDataType.h
         include/SignalProcessing/SignalProcessor.h
         include/SignalProcessing/SpecificSignalProcessor.h
-        include/SignalProcessing/Filters/BiquadCoefficients.h
-        include/SignalProcessing/Filters/Design/*
+        include/SignalProcessing/Filters/*
         include/SignalProcessing/Parameters/*)
 
     add_library(SignalProcessing

@@ -4,6 +4,8 @@
 #include <Utils/Configuration/Properties.h>
 #include <SignalProcessing/ProcessingDataType.h>
 
+#include <vector>
+
 namespace adaptone
 {
     class AudioConfiguration
@@ -14,6 +16,9 @@ namespace adaptone
         std::size_t m_outputChannelCount;
         ProcessingDataType m_processingDataType;
 
+        std::size_t m_parametricEqFilterCount;
+        std::vector<double> m_eqCenterFrequencies;
+
     public:
         explicit AudioConfiguration(const Properties& properties);
         virtual ~AudioConfiguration();
@@ -23,6 +28,9 @@ namespace adaptone
         std::size_t inputChannelCount() const;
         std::size_t outputChannelCount() const;
         ProcessingDataType processingDataType() const;
+
+        std::size_t parametricEqFilterCount() const;
+        const std::vector<double>& eqCenterFrequencies() const;
     };
 
     inline std::size_t AudioConfiguration::frameSampleCount() const
@@ -48,6 +56,16 @@ namespace adaptone
     inline ProcessingDataType AudioConfiguration::processingDataType() const
     {
         return m_processingDataType;
+    }
+
+    inline std::size_t AudioConfiguration::parametricEqFilterCount() const
+    {
+        return m_parametricEqFilterCount;
+    }
+
+    inline const std::vector<double>& AudioConfiguration::eqCenterFrequencies() const
+    {
+        return m_eqCenterFrequencies;
     }
 }
 

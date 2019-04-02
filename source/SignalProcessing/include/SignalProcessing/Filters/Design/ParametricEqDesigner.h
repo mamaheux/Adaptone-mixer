@@ -2,6 +2,7 @@
 #define SIGNAL_PROCESSING_FILTERS_DESIGN_PARAMETRIC_EQ_DESIGNER_H
 
 #include <SignalProcessing/Filters/BiquadCoefficients.h>
+#include <SignalProcessing/Filters/ParametricEqParameters.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Exception/InvalidValueException.h>
@@ -16,18 +17,6 @@ namespace adaptone
     template<class T>
     class ParametricEqDesigner
     {
-    public:
-        struct Parameters
-        {
-            double cutoffFrequency;
-            double Q;
-            double gainDb;
-
-            Parameters(double cutoffFrequency, double Q, double gainDb);
-            virtual ~Parameters();
-        };
-
-    private:
         std::size_t m_filterCount;
         double m_sampleFrequency;
 
@@ -40,27 +29,15 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(ParametricEqDesigner);
         DECLARE_NOT_MOVABLE(ParametricEqDesigner);
 
-        void update(const std::vector<Parameters> parameters);
+        void update(const std::vector<ParametricEqParameters>& parameters);
         const std::vector<BiquadCoefficients<T>>& biquadCoefficients() const;
         std::vector<double> gainsDb(const std::vector<double>& frequencies) const;
 
     private:
-        void designLowShelvingFilter(BiquadCoefficients<T>& coefficients, const Parameters& parameter);
-        void designHighShelvingFilter(BiquadCoefficients<T>& coefficients, const Parameters& parameter);
-        void designPeakFilter(BiquadCoefficients<T>& coefficients, const Parameters& parameter);
+        void designLowShelvingFilter(BiquadCoefficients<T>& coefficients, const ParametricEqParameters& parameter);
+        void designHighShelvingFilter(BiquadCoefficients<T>& coefficients, const ParametricEqParameters& parameter);
+        void designPeakFilter(BiquadCoefficients<T>& coefficients, const ParametricEqParameters& parameter);
     };
-
-
-    template<class T>
-    ParametricEqDesigner<T>::Parameters::Parameters(double cutoffFrequency, double Q, double gainDb) :
-        cutoffFrequency(cutoffFrequency), Q(Q), gainDb(gainDb)
-    {
-    }
-
-    template<class T>
-    ParametricEqDesigner<T>::Parameters::~Parameters()
-    {
-    }
 
     template<class T>
     inline ParametricEqDesigner<T>::ParametricEqDesigner(std::size_t filterCount, std::size_t sampleFrequency) :
@@ -78,7 +55,7 @@ namespace adaptone
     }
 
     template<class T>
-    inline void ParametricEqDesigner<T>::update(const std::vector<ParametricEqDesigner<T>::Parameters> parameters)
+    inline void ParametricEqDesigner<T>::update(const std::vector<ParametricEqParameters>& parameters)
     {
         if (m_filterCount != parameters.size())
         {
@@ -124,7 +101,7 @@ namespace adaptone
 
     template<class T>
     inline void ParametricEqDesigner<T>::designLowShelvingFilter(BiquadCoefficients<T>& coefficients,
-        const ParametricEqDesigner<T>::Parameters& parameter)
+        const ParametricEqParameters& parameter)
     {
         double k = std::tan((M_PI * parameter.cutoffFrequency) / m_sampleFrequency);
         double v0 = std::pow(10.0, parameter.gainDb / 20.0);
@@ -164,7 +141,7 @@ namespace adaptone
 
     template<class T>
     inline void ParametricEqDesigner<T>::designHighShelvingFilter(BiquadCoefficients<T>& coefficients,
-        const ParametricEqDesigner<T>::Parameters& parameter)
+        const ParametricEqParameters& parameter)
     {
         double k = std::tan((M_PI * parameter.cutoffFrequency) / m_sampleFrequency);
         double v0 = std::pow(10.0, parameter.gainDb / 20.0);
@@ -204,7 +181,7 @@ namespace adaptone
 
     template<class T>
     inline void ParametricEqDesigner<T>::designPeakFilter(BiquadCoefficients<T>& coefficients,
-        const ParametricEqDesigner<T>::Parameters& parameter)
+        const ParametricEqParameters& parameter)
     {
         double w_c = (2 * M_PI * parameter.cutoffFrequency / m_sampleFrequency);
         double mu = std::pow(10.0, parameter.gainDb / 20.0);

@@ -19,6 +19,15 @@ void SpecificSignalProcessor::setInputGains(const vector<double>& gainsDb)
 {
 }
 
+void SpecificSignalProcessor::setInputParametricEqParameters(std::size_t channel,
+    const std::vector<ParametricEqParameters>& parameters)
+{
+}
+
+void SpecificSignalProcessor::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
+{
+}
+
 void SpecificSignalProcessor::setMixingGain(size_t inputChannel, size_t outputChannel, double gainDb)
 {
 }
@@ -28,6 +37,15 @@ void SpecificSignalProcessor::setMixingGains(size_t outputChannel, const vector<
 }
 
 void SpecificSignalProcessor::setMixingGains(const vector<double>& gainsDb)
+{
+}
+
+void SpecificSignalProcessor::setOutputParametricEqParameters(std::size_t channel,
+    const std::vector<ParametricEqParameters>& parameters)
+{
+}
+
+void SpecificSignalProcessor::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
 {
 }
 

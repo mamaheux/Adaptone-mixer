@@ -1,6 +1,7 @@
 #ifndef SIGNAL_PROCESSING_CUDA_CUDA_SIGNAL_PROCESSOR_BUFFERS_H
 #define SIGNAL_PROCESSING_CUDA_CUDA_SIGNAL_PROCESSOR_BUFFERS_H
 
+#include <SignalProcessing/Cuda/CudaEqBuffers.h>
 #include <SignalProcessing/Cuda/Conversion/PcmToArrayConversion.h>
 
 #include <Utils/ClassMacro.h>
@@ -13,7 +14,7 @@
 
 namespace adaptone
 {
-    template <class T>
+    template<class T>
     class CudaSignalProcessorBuffers
     {
         uint8_t* m_inputPcmFrames;
@@ -22,7 +23,9 @@ namespace adaptone
         T* m_inputFrames;
 
         T* m_inputGains;
+        CudaEqBuffers<T> m_inputEqBuffers;
         T* m_mixingGains;
+        CudaEqBuffers<T> m_outputEqBuffers;
         T* m_outputGains;
 
         std::size_t m_currentFrameIndex;
@@ -47,7 +50,8 @@ namespace adaptone
             std::size_t inputChannelCount,
             std::size_t outputChannelCount,
             PcmAudioFrame::Format inputFormat,
-            PcmAudioFrame::Format outputFormat);
+            PcmAudioFrame::Format outputFormat,
+            std::size_t eqFilterCountPerChannel);
         __host__ CudaSignalProcessorBuffers(const CudaSignalProcessorBuffers& other);
         __host__ virtual ~CudaSignalProcessorBuffers();
 
@@ -63,7 +67,9 @@ namespace adaptone
         __device__ __host__ T* currentInputFrame();
 
         __device__ __host__ T* inputGains();
+        __device__ __host__ CudaEqBuffers<T>& inputEqBuffers();
         __device__ __host__ T* mixingGains();
+        __device__ __host__ CudaEqBuffers<T>& outputEqBuffers();
         __device__ __host__ T* outputGains();
 
         __device__ __host__ std::size_t currentFrameIndex();
@@ -82,13 +88,14 @@ namespace adaptone
         __device__ PcmToArrayConversionFunctionPointer<T> pcmToArrayConversionFunction();
     };
 
-    template <class T>
+    template<class T>
     inline __host__ CudaSignalProcessorBuffers<T>::CudaSignalProcessorBuffers(std::size_t frameCount,
         std::size_t frameSampleCount,
         std::size_t inputChannelCount,
         std::size_t outputChannelCount,
         PcmAudioFrame::Format inputFormat,
-        PcmAudioFrame::Format outputFormat) :
+        PcmAudioFrame::Format outputFormat,
+        std::size_t eqFilterCountPerChannel) :
         m_currentFrameIndex(0),
         m_inputPcmFrameSize(PcmAudioFrame::size(inputFormat, inputChannelCount, frameSampleCount)),
         m_outputPcmFrameSize(PcmAudioFrame::size(outputFormat, outputChannelCount, frameSampleCount)),
@@ -98,6 +105,8 @@ namespace adaptone
         m_outputChannelCount(outputChannelCount),
         m_frameSize(m_frameSampleCount * m_inputChannelCount),
         m_mixingGainsSize(m_inputChannelCount * m_outputChannelCount),
+        m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel),
+        m_outputEqBuffers(outputChannelCount, eqFilterCountPerChannel),
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_inputPcmFrames), m_inputPcmFrameSize * frameCount);
@@ -116,14 +125,16 @@ namespace adaptone
         m_pcmToArrayConversionFunction = getPcmToArrayConversionFunctionPointer<T>(inputFormat);
     }
 
-    template <class T>
+    template<class T>
     inline __host__ CudaSignalProcessorBuffers<T>::CudaSignalProcessorBuffers(
         const CudaSignalProcessorBuffers<T>& other) :
         m_inputPcmFrames(other.m_inputPcmFrames),
         m_outputPcmFrames(other.m_outputPcmFrames),
         m_inputFrames(other.m_inputFrames),
         m_inputGains(other.m_inputGains),
+        m_inputEqBuffers(other.m_inputEqBuffers),
         m_mixingGains(other.m_mixingGains),
+        m_outputEqBuffers(other.m_outputEqBuffers),
         m_outputGains(other.m_outputGains),
         m_currentFrameIndex(other.m_currentFrameIndex),
         m_inputPcmFrameSize(other.m_inputPcmFrameSize),
@@ -139,7 +150,7 @@ namespace adaptone
     {
     }
 
-    template <class T>
+    template<class T>
     inline __host__ CudaSignalProcessorBuffers<T>::~CudaSignalProcessorBuffers()
     {
         if (m_hasOwnership)
@@ -155,25 +166,25 @@ namespace adaptone
         }
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ uint8_t* CudaSignalProcessorBuffers<T>::inputPcmFrames()
     {
         return m_inputFrames;
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ uint8_t* CudaSignalProcessorBuffers<T>::currentInputPcmFrame()
     {
         return m_inputPcmFrames + m_currentFrameIndex * m_inputPcmFrameSize;
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ uint8_t* CudaSignalProcessorBuffers<T>::outputPcmFrames()
     {
         return m_outputPcmFrames;
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ uint8_t* CudaSignalProcessorBuffers<T>::currentOutputPcmFrame()
     {
         return m_outputPcmFrames + m_currentFrameIndex * m_outputPcmFrameSize;
@@ -198,9 +209,21 @@ namespace adaptone
     }
 
     template<class T>
+    inline __device__ __host__ CudaEqBuffers<T>& CudaSignalProcessorBuffers<T>::inputEqBuffers()
+    {
+        return m_inputEqBuffers;
+    }
+
+    template<class T>
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::mixingGains()
     {
         return m_mixingGains;
+    }
+
+    template<class T>
+    inline __device__ __host__ CudaEqBuffers<T>& CudaSignalProcessorBuffers<T>::outputEqBuffers()
+    {
+        return m_outputEqBuffers;
     }
 
     template<class T>
@@ -209,31 +232,31 @@ namespace adaptone
         return m_outputGains;
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::currentFrameIndex()
     {
         return m_currentFrameIndex;
     }
 
-    template <class T>
+    template<class T>
     inline __host__ void CudaSignalProcessorBuffers<T>::nextFrame()
     {
         m_currentFrameIndex = (m_currentFrameIndex + 1) % m_frameCount;
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::frameCount()
     {
         return m_frameCount;
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::inputPcmFrameSize()
     {
         return m_inputPcmFrameSize;
     }
 
-    template <class T>
+    template<class T>
     inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::outputPcmFrameSize()
     {
         return m_outputPcmFrameSize;
