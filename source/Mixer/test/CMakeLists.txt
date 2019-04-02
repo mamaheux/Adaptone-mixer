@@ -25,7 +25,10 @@ target_link_libraries(MixerTests
     Utils
     Mixer_Private
     gtest
-    gmock)
+    gmock
+    armadillo
+    ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+    gfortran)
 
 assign_source_group(${source_files})
 

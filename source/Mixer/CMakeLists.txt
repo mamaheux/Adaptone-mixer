@@ -34,21 +34,33 @@ if (UNIX)
         Utils
         SignalProcessing
         asound
-        pthread)
+        pthread
+        armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran)
 
     target_link_libraries(Mixer_Private
         Utils
         SignalProcessing
         asound
-        pthread)
+        pthread
+        armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran)
 else (UNIX)
     target_link_libraries(Mixer
         Utils
-        SignalProcessing)
+        SignalProcessing
+        armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran)
 
     target_link_libraries(Mixer_Private
         Utils
-        SignalProcessing)
+        SignalProcessing
+        armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran)
 endif (UNIX)
 
 assign_source_group(${source_files})

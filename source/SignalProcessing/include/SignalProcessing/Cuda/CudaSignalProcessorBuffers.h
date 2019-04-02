@@ -23,9 +23,9 @@ namespace adaptone
         T* m_inputFrames;
 
         T* m_inputGains;
-        CudaEqBuffers m_inputEqBuffers;
+        CudaEqBuffers<T> m_inputEqBuffers;
         T* m_mixingGains;
-        CudaEqBuffers m_outputEqBuffers;
+        CudaEqBuffers<T> m_outputEqBuffers;
         T* m_outputGains;
 
         std::size_t m_currentFrameIndex;
@@ -67,9 +67,9 @@ namespace adaptone
         __device__ __host__ T* currentInputFrame();
 
         __device__ __host__ T* inputGains();
-        __device__ __host__ CudaEqBuffers& inputEqBuffers();
+        __device__ __host__ CudaEqBuffers<T>& inputEqBuffers();
         __device__ __host__ T* mixingGains();
-        __device__ __host__ CudaEqBuffers& outputEqBuffers();
+        __device__ __host__ CudaEqBuffers<T>& outputEqBuffers();
         __device__ __host__ T* outputGains();
 
         __device__ __host__ std::size_t currentFrameIndex();
@@ -209,7 +209,7 @@ namespace adaptone
     }
 
     template<class T>
-    inline __device__ __host__ CudaEqBuffers& inputEqBuffers()
+    inline __device__ __host__ CudaEqBuffers<T>& CudaSignalProcessorBuffers<T>::inputEqBuffers()
     {
         return m_inputEqBuffers;
     }
@@ -221,7 +221,7 @@ namespace adaptone
     }
 
     template<class T>
-    inline __device__ __host__ CudaEqBuffers& outputEqBuffers()
+    inline __device__ __host__ CudaEqBuffers<T>& CudaSignalProcessorBuffers<T>::outputEqBuffers()
     {
         return m_outputEqBuffers;
     }

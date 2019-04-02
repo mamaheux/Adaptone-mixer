@@ -27,6 +27,8 @@ if (CUDA_FOUND)
 
     target_link_libraries(SignalProcessing
         armadillo
+        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        gfortran
         ${CUDA_LIBRARIES})
 
     add_definitions(-DUSE_CUDA)

@@ -16,13 +16,17 @@ TEST(CudaSignalProcessorTests, process_shouldCopyTheInputToTheOutput)
     constexpr size_t outputChannelCount = 1;
     constexpr PcmAudioFrame::Format inputFormat = PcmAudioFrame::Format::Signed8;
     constexpr PcmAudioFrame::Format outputFormat = PcmAudioFrame::Format::Signed8;
+    constexpr size_t parametricEqFilterCount = 2;
+    vector<double> frequencies{ 20, 50, 125 };
 
     CudaSignalProcessor<float> processor(frameSampleCount,
         sampleFrequency,
         inputChannelCount,
         outputChannelCount,
         inputFormat,
-        outputFormat);
+        outputFormat,
+        parametricEqFilterCount,
+        frequencies);
 
     PcmAudioFrame inputFrame(outputFormat, outputChannelCount, frameSampleCount);
 
@@ -48,13 +52,17 @@ TEST(CudaSignalProcessorTests, performance)
     constexpr size_t outputChannelCount = 16;
     constexpr PcmAudioFrame::Format inputFormat = PcmAudioFrame::Format::SignedPadded24;
     constexpr PcmAudioFrame::Format outputFormat = PcmAudioFrame::Format::SignedPadded24;
+    constexpr size_t parametricEqFilterCount = 2;
+    vector<double> frequencies{ 20, 50, 125 };
 
     CudaSignalProcessor<float> processor(frameSampleCount,
         sampleFrequency,
         inputChannelCount,
         outputChannelCount,
         inputFormat,
-        outputFormat);
+        outputFormat,
+        parametricEqFilterCount,
+        frequencies);
 
     PcmAudioFrame inputFrame(outputFormat, outputChannelCount, frameSampleCount);
 

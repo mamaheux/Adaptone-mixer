@@ -57,7 +57,7 @@ namespace adaptone
         m_biquadCoefficients(other.m_biquadCoefficients),
         m_d0(other.m_d0),
         m_channelCount(other.m_channelCount),
-        m_filterCountPerChannel(other.m_filterCountPerChannel)
+        m_filterCountPerChannel(other.m_filterCountPerChannel),
         m_hasOwnership(false)
     {
     }

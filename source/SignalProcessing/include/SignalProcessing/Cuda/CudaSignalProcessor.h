@@ -162,7 +162,7 @@ namespace adaptone
     template<class T>
     void CudaSignalProcessor<T>::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
     {
-        m_inputEqParameters.setInputGraphicEqGains(channel, gainsDb);
+        m_inputEqParameters.setGraphicEqGains(channel, gainsDb);
         pushInputEqUpdate(channel);
     }
 
@@ -198,7 +198,7 @@ namespace adaptone
     template<class T>
     void CudaSignalProcessor<T>::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
     {
-        m_outputEqParameters.setInputGraphicEqGains(channel, gainsDb);
+        m_outputEqParameters.setGraphicEqGains(channel, gainsDb);
         pushOutputEqUpdate(channel);
     }
 
@@ -268,15 +268,18 @@ namespace adaptone
     template<class T>
     void CudaSignalProcessor<T>::pushInputEqUpdate(std::size_t channel)
     {
-        m_updateFunctionQueue.push([channel, &]()
+
+        m_updateFunctionQueue.push([&, channel]()
         {
-            return m_inputEqParameters.tryApplyingUpdate([channel, &]()
+
+            return m_inputEqParameters.tryApplyingUpdate([&, channel]()
             {
-                CudaEqBuffers& eqBuffers = m_buffers.inputEqBuffers();
+
+                CudaEqBuffers<T>& eqBuffers = m_buffers.inputEqBuffers();
 
                 cudaMemcpy(eqBuffers.biquadCoefficients(channel),
                     m_inputEqParameters.biquadCoefficients(channel).data(),
-                    m_buffers.filterCountPerChannel() * sizeof(BiquadCoefficients<T>),
+                    eqBuffers.filterCountPerChannel() * sizeof(BiquadCoefficients<T>),
                     cudaMemcpyHostToDevice);
 
                 T d0 = m_inputEqParameters.d0(channel);
@@ -301,15 +304,15 @@ namespace adaptone
     template<class T>
     void CudaSignalProcessor<T>::pushOutputEqUpdate(std::size_t channel)
     {
-        m_updateFunctionQueue.push([channel, &]()
+        m_updateFunctionQueue.push([&, channel]()
         {
-            return m_outputEqParameters.tryApplyingUpdate([channel, &]()
+            return m_outputEqParameters.tryApplyingUpdate([&, channel]()
             {
-                CudaEqBuffers& eqBuffers = m_buffers.outputEqBuffers();
+                CudaEqBuffers<T>& eqBuffers = m_buffers.outputEqBuffers();
 
                 cudaMemcpy(eqBuffers.biquadCoefficients(channel),
                     m_outputEqParameters.biquadCoefficients(channel).data(),
-                    m_buffers.filterCountPerChannel() * sizeof(BiquadCoefficients<T>),
+                    eqBuffers.filterCountPerChannel() * sizeof(BiquadCoefficients<T>),
                     cudaMemcpyHostToDevice);
 
                 T d0 = m_outputEqParameters.d0(channel);
