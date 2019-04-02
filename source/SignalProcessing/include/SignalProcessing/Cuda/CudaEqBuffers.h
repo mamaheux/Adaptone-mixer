@@ -1,5 +1,5 @@
-#ifndef SIGNAL_PROCESSING_CUDA_CUDA_SIGNAL_PROCESSOR_BUFFERS_H
-#define SIGNAL_PROCESSING_CUDA_CUDA_SIGNAL_PROCESSOR_BUFFERS_H
+#ifndef SIGNAL_PROCESSING_CUDA_CUDA_EQ_BUFFERS_H
+#define SIGNAL_PROCESSING_CUDA_CUDA_EQ_BUFFERS_H
 
 #include <SignalProcessing/Filters/BiquadCoefficients.h>
 
@@ -26,7 +26,7 @@ namespace adaptone
 
     public:
         __host__ CudaEqBuffers(std::size_t channelCount, std::size_t filterCountPerChannel);
-        __host__ CudaEqBuffers(const CudaSignalProcessorBuffers& other);
+        __host__ CudaEqBuffers(const CudaEqBuffers& other);
         __host__ virtual ~CudaEqBuffers();
 
         DECLARE_NOT_MOVABLE(CudaEqBuffers);
@@ -40,7 +40,7 @@ namespace adaptone
     };
 
     template<class T>
-    inline __host__ CudaSignalProcessorBuffers<T>::CudaSignalProcessorBuffers(std::size_t channelCount,
+    inline __host__ CudaEqBuffers<T>::CudaEqBuffers(std::size_t channelCount,
         std::size_t filterCountPerChannel) :
         m_channelCount(channelCount),
         m_filterCountPerChannel(filterCountPerChannel),
@@ -53,7 +53,7 @@ namespace adaptone
 
     template<class T>
     inline __host__ CudaEqBuffers<T>::CudaEqBuffers(
-        const CudaSignalProcessorBuffers<T>& other) :
+        const CudaEqBuffers<T>& other) :
         m_biquadCoefficients(other.m_biquadCoefficients),
         m_d0(other.m_d0),
         m_channelCount(other.m_channelCount),
@@ -97,7 +97,7 @@ namespace adaptone
     }
 
     template<class T>
-    inline __device__ __host__ std::size_t CudaEqBuffers<T>::filterCount()
+    inline __device__ __host__ std::size_t CudaEqBuffers<T>::filterCountPerChannel()
     {
         return m_filterCountPerChannel;
     }
