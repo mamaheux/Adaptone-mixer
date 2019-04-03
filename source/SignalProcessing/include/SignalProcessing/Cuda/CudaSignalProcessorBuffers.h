@@ -14,6 +14,28 @@
 
 namespace adaptone
 {
+    /**
+     * Buffer format:
+     * c1 = channel 1
+     * s1 = sample 1
+     * gc1 = gain channel 1
+     * gic1oc1 = gain input channel 1 output channel 1
+     *
+     * m_inputPcmFrames: | frame1 | frame2 | ... |
+     *   frame: | c1s1 | c2s1 | c3s1 | ... | c1s2 | c2s2 | c3s2 |... |
+     *
+     * m_outputPcmFrames: | frame1 | frame2 | ... |
+     *   frame: | c1s1 | c2s1 | c3s1 | ... | c1s2 | c2s2 | c3s2 |... |
+     *
+     * m_inputFrames: | frame1 | frame2 | ... |
+     *   frame: | c1s1 | c1s2 | c1s3 | ... | c2s1 | c2s2 | c2s3 | ... |
+     *
+     * m_inputGains: | gc1 | gc2 | gc3 | ... |
+     *
+     * m_mixingGains: | gic1oc1 | gic2oc1 | gic3oc1 | ... | gic1oc2 | gic2oc2 | gic3oc2 | ... |
+     *
+     * m_outputGains:| gc1 | gc2 | gc3 | ... |
+     */
     template<class T>
     class CudaSignalProcessorBuffers
     {
