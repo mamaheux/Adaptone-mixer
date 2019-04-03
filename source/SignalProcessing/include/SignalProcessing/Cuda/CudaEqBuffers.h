@@ -13,6 +13,20 @@
 
 namespace adaptone
 {
+    /**
+     * Buffer format:
+     * c1 = channel 1
+     * f1 = filter 1
+     * s1 = sample 1
+     * foc1 = filter output channel 1
+     *
+     * m_biquadCoefficients: | c1f1 | c1f2 | ... | c2f1 | c2f2 | ... |
+     *
+     * m_d0: | c1 | c2 | ... |
+     *
+     * m_filterOutputs: | foc1 | foc2 | ... |
+     *   foc1: | f1s1 | f1s2 | f1s3 | ... | f2s1 | f2s2 | f2s3 | ... |
+     */
     template<class T>
     class CudaEqBuffers
     {
