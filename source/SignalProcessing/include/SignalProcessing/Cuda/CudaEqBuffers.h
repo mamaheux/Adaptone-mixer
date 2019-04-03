@@ -29,7 +29,8 @@ namespace adaptone
         bool m_hasOwnership;
 
     public:
-        __host__ CudaEqBuffers(std::size_t channelCount, std::size_t filterCountPerChannel);
+        __host__ CudaEqBuffers(std::size_t channelCount, std::size_t filterCountPerChannel, std::size_t frameCount,
+            std::size_t frameSampleCount);
         __host__ CudaEqBuffers(const CudaEqBuffers& other);
         __host__ virtual ~CudaEqBuffers();
 
