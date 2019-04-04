@@ -1,3 +1,5 @@
+#include <SignalProcessingTests/CudaFreeGuard.h>
+
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
 
 #include <Utils/Configuration/Properties.h>
@@ -46,7 +48,7 @@ void initEqBuffers(CudaEqBuffers<float>& eqBuffers, const vector<BiquadCoefficie
     cudaMemcpy(eqBuffers.d0(), d0.data(), d0.size() * sizeof(float), cudaMemcpyHostToDevice);
 }
 
-voidmallocFrames(float** inputFrames, float** outputFrame, size_t channelCount, size_t frameCount,
+void mallocFrames(float** inputFrames, float** outputFrame, size_t channelCount, size_t frameCount,
     size_t frameSampleCount)
 {
     size_t inputFramesSize = channelCount * frameCount * frameSampleCount * sizeof(float);
@@ -91,6 +93,8 @@ TEST(EqProcessingTests, processEq_shouldGenerateTheRightImpulseResponse)
     float* inputFrames;
     float* outputFrame;
     mallocFrames(&inputFrames, &outputFrame);
+    CudaFreeGuard inputFramesFreeGuard(inputFrames);
+    CudaFreeGuard outputFrameFreeGuard(outputFrame);
 
     inputFrames[0] = 1;
     inputFrames[FrameSampleCount] = 1;
@@ -149,6 +153,8 @@ TEST(EqProcessingTests, processEq_shouldGenerateTheRightSong)
     float* inputFrames;
     float* outputFrame;
     mallocFrames(&inputFrames, &outputFrame);
+    CudaFreeGuard inputFramesFreeGuard(inputFrames);
+    CudaFreeGuard outputFrameFreeGuard(outputFrame);
 
     vector<float> x = properties.get<vector<float>>("x");
     vector<float> y{ properties.get<vector<float>>("y_channel1"), properties.get<vector<float>>("y_channel2") };

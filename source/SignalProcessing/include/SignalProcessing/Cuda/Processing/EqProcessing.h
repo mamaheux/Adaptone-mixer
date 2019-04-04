@@ -31,11 +31,10 @@ namespace adaptone
 
         for (std::size_t i = startIndex; i < n; i += stride)
         {
-            std::size_t channelIndex = i / buffers.channelCount();
-            std::size_t sampleIndex = i % buffers.channelCount();
+            std::size_t channelIndex = i / buffers.frameSampleCount();
+            std::size_t sampleIndex = i % buffers.frameSampleCount();
 
-            T outputSample = buffers.d0()[channelIndex] *
-                currentInputFrame[channelIndex * buffers.frameSampleCount() + sampleIndex];
+            T outputSample = buffers.d0()[channelIndex] * currentInputFrame[i];
 
             std::size_t filterOutputIndex = getFirstFilterOutputIndex(buffers, currentFrameIndex, sampleIndex);
             for (std::size_t j = 0; j < buffers.filterCountPerChannel(); j++)
@@ -44,7 +43,7 @@ namespace adaptone
                 filterOutputIndex += buffers.frameSampleCount();
             }
 
-            currentOutputFrame[channelIndex * buffers.frameSampleCount() + sampleIndex] = outputSample;
+            currentOutputFrame[i] = outputSample;
         }
     }
 
@@ -75,8 +74,8 @@ namespace adaptone
 
         for (std::size_t i = startIndex; i < n; i += stride)
         {
-            std::size_t channelIndex = i / buffers.channelCount();
-            std::size_t filterIndex = i % buffers.channelCount();
+            std::size_t channelIndex = i / buffers.filterCountPerChannel();
+            std::size_t filterIndex = i % buffers.filterCountPerChannel();
 
             T* lastFilterOutput = getFilterOutput(buffers,
                 static_cast<int64_t>(currentFrameIndex - 1) % buffers.frameCount(), filterIndex);
