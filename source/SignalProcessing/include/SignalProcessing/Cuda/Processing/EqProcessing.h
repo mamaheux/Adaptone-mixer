@@ -93,7 +93,7 @@ namespace adaptone
             y0 = calculateBiquadOutput(bc, x0, x1, x2, y1, y2);
             currentFilterOutput[0] = y0;
 
-            for (int64_t sampleIndex = 1; i < buffers.frameSampleCount(); sampleIndex++)
+            for (int64_t sampleIndex = 1; sampleIndex < buffers.frameSampleCount(); sampleIndex++)
             {
                 x2 = x1;
                 x1 = x0;
