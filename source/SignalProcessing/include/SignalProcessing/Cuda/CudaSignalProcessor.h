@@ -4,6 +4,7 @@
 #include <SignalProcessing/ProcessingDataType.h>
 #include <SignalProcessing/SpecificSignalProcessor.h>
 #include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
+#include <SignalProcessing/Cuda/Processing/EqProcessing.h>
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
 #include <SignalProcessing/Parameters/MixingParameters.h>
@@ -219,17 +220,26 @@ namespace adaptone
     template<class T>
     __global__ void processKernel(CudaSignalProcessorBuffers<T> buffers)
     {
-        uint8_t* inputPcmFrame = buffers.currentInputPcmFrame();
-        T* inputFrame = buffers.currentInputFrame();
-        std::size_t frameSampleCount = buffers.frameSampleCount();
-        std::size_t inputChannelCount = buffers.inputChannelCount();
+        buffers.pcmToArrayConversionFunction()(buffers.currentInputPcmFrame(),
+            buffers.currentInputFrame(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount());
 
-        buffers.pcmToArrayConversionFunction()(inputPcmFrame, inputFrame, frameSampleCount, inputChannelCount);
+        processEq(buffers.inputEqBuffers(),
+            buffers.inputGainOutputFrames(),
+            buffers.currentInputEqOutputFrame(),
+            buffers.currentFrameIndex());
+
+        processEq(buffers.outputEqBuffers(),
+            buffers.mixingOutputFrames(),
+            buffers.currentOutputEqOutputFrame(),
+            buffers.currentFrameIndex());
 
         //TODO Remove the following code
         int index = threadIdx.x;
         int stride = blockDim.x;
 
+        uint8_t* inputPcmFrame = buffers.currentInputPcmFrame();
         uint8_t* outputPcmFrame = buffers.currentOutputPcmFrame();
 
         for (int i = index; i < buffers.inputPcmFrameSize() && i < buffers.outputPcmFrameSize(); i += stride)
