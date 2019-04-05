@@ -26,7 +26,7 @@ namespace adaptone
             std::size_t sampleIndex = i / channelCount;
 
             T sample = -static_cast<T>(input[i]) / std::numeric_limits<PcmT>::min();
-            output[channelIndex * channelCount + sampleIndex] = sample;
+            output[channelIndex * frameSampleCount + sampleIndex] = sample;
         }
     };
 
@@ -51,7 +51,7 @@ namespace adaptone
             int32_t sampleInteger = b0 | (b1 << 8) | (b2 << 16);
 
             T sample = static_cast<T>(sampleInteger) / AbsMin;
-            output[channelIndex * channelCount + sampleIndex] = sample;
+            output[channelIndex * frameSampleCount + sampleIndex] = sample;
         }
     }
 
@@ -73,7 +73,7 @@ namespace adaptone
             std::size_t sampleIndex = i / channelCount;
 
             T sample = static_cast<T>(input[i]) / AbsMin;
-            output[channelIndex * channelCount + sampleIndex] = sample;
+            output[channelIndex * frameSampleCount + sampleIndex] = sample;
         }
     };
 
@@ -93,7 +93,7 @@ namespace adaptone
             std::size_t sampleIndex = i / channelCount;
 
             T sample = 2 * static_cast<T>(input[i]) / std::numeric_limits<PcmT>::max() - 1;
-            output[channelIndex * channelCount + sampleIndex] = sample;
+            output[channelIndex * frameSampleCount + sampleIndex] = sample;
         }
     };
 
@@ -118,7 +118,7 @@ namespace adaptone
             uint32_t sampleInteger = b0 | (b1 << 8) | (b2 << 16);
 
             T sample = 2 * static_cast<T>(sampleInteger) / Max - 1;
-            output[channelIndex * channelCount + sampleIndex] = sample;
+            output[channelIndex * frameSampleCount + sampleIndex] = sample;
         }
     }
 
@@ -140,7 +140,7 @@ namespace adaptone
             std::size_t sampleIndex = i / channelCount;
 
             T sample = 2 * static_cast<T>(input[i]) / Max - 1;
-            output[channelIndex * channelCount + sampleIndex] = sample;
+            output[channelIndex * frameSampleCount + sampleIndex] = sample;
         }
     }
 
@@ -159,7 +159,7 @@ namespace adaptone
             std::size_t channelIndex = i % channelCount;
             std::size_t sampleIndex = i / channelCount;
 
-            output[channelIndex * channelCount + sampleIndex] = static_cast<T>(input[i]);
+            output[channelIndex * frameSampleCount + sampleIndex] = static_cast<T>(input[i]);
         }
     };
 
