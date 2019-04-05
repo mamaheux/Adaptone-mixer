@@ -1,5 +1,7 @@
 #include <SignalProcessing/Filters/Design/ParametricEqDesigner.h>
 
+#include <Utils/Exception/InvalidValueException.h>
+
 #include <gtest/gtest.h>
 
 #include <iostream>
