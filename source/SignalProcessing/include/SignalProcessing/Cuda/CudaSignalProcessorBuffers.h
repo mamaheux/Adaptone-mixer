@@ -30,6 +30,18 @@ namespace adaptone
      * m_inputFrames: | frame1 | frame2 | ... |
      *   frame: | c1s1 | c1s2 | c1s3 | ... | c2s1 | c2s2 | c2s3 | ... |
      *
+     * m_inputGainOutputFrames: | frame1 | frame2 | ... |
+     *   frame: | c1s1 | c1s2 | c1s3 | ... | c2s1 | c2s2 | c2s3 | ... |
+     *
+     * m_inputEqOutputFrames: | frame1 | frame2 | ... |
+     *   frame: | c1s1 | c1s2 | c1s3 | ... | c2s1 | c2s2 | c2s3 | ... |
+     *
+     * m_mixingOutputFrames: | frame1 | frame2 | ... |
+     *   frame: | c1s1 | c1s2 | c1s3 | ... | c2s1 | c2s2 | c2s3 | ... |
+     *
+     * m_outputEqOutputFrames: | frame1 | frame2 | ... |
+     *   frame: | c1s1 | c1s2 | c1s3 | ... | c2s1 | c2s2 | c2s3 | ... |
+     *
      * m_inputGains: | gc1 | gc2 | gc3 | ... |
      *
      * m_mixingGains: | gic1oc1 | gic2oc1 | gic3oc1 | ... | gic1oc2 | gic2oc2 | gic3oc2 | ... |
