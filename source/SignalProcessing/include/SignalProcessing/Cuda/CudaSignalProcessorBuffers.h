@@ -105,8 +105,8 @@ namespace adaptone
         m_outputChannelCount(outputChannelCount),
         m_inputFrameSize(m_frameSampleCount * m_inputChannelCount),
         m_mixingGainsSize(m_inputChannelCount * m_outputChannelCount),
-        m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel),
-        m_outputEqBuffers(outputChannelCount, eqFilterCountPerChannel),
+        m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
+        m_outputEqBuffers(outputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_inputPcmFrames), m_inputPcmFrameSize * frameCount);

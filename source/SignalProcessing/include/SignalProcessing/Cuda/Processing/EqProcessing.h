@@ -12,7 +12,7 @@ namespace adaptone
 {
     template<class T>
     inline __device__ std::size_t getFirstFilterOutputIndex(CudaEqBuffers<T>& buffers, std::size_t currentFrameIndex,
-        std::size_t sampleIndex)
+        std::size_t channelIndex, std::size_t sampleIndex)
     {
         std::size_t filterOutputFrameOffset = buffers.frameSampleCount() * buffers.channelCount() *
             buffers.filterCountPerChannel() * currentFrameIndex;
@@ -36,7 +36,7 @@ namespace adaptone
 
             T outputSample = buffers.d0()[channelIndex] * currentInputFrame[i];
 
-            std::size_t filterOutputIndex = getFirstFilterOutputIndex(buffers, currentFrameIndex, sampleIndex);
+            std::size_t filterOutputIndex = getFirstFilterOutputIndex(buffers, currentFrameIndex, channelIndex, sampleIndex);
             for (std::size_t j = 0; j < buffers.filterCountPerChannel(); j++)
             {
                 outputSample += buffers.filterOutputs()[filterOutputIndex];
@@ -49,17 +49,18 @@ namespace adaptone
 
     template<class T>
     inline __device__ T* getFilterOutput(CudaEqBuffers<T>& buffers, std::size_t currentFrameIndex,
-        std::size_t filterIndex)
+        std::size_t channelIndex, std::size_t filterIndex)
     {
         std::size_t filterOutputFrameOffset = buffers.frameSampleCount() * buffers.channelCount() *
             buffers.filterCountPerChannel() * currentFrameIndex;
         std::size_t specificChannelFilterOutputFrameOffset = filterOutputFrameOffset +
             channelIndex * buffers.frameSampleCount() * buffers.filterCountPerChannel();
-        return specificChannelFilterOutputFrameOffset + filterIndex * buffers.frameSampleCount();
+        return buffers.filterOutputs() +
+            specificChannelFilterOutputFrameOffset + filterIndex * buffers.frameSampleCount();
     }
 
     template<class T>
-    inline __device__ T calculateBiquadOutput(const BiquadCoefficients<T>& bc, T x0, T x1, T x2, T y1, T y2);
+    inline __device__ T calculateBiquadOutput(const BiquadCoefficients<T>& bc, T x0, T x1, T x2, T y1, T y2)
     {
         return (bc.b0 * x0 + bc.b1 * x1 + bc.b2 * x2) / (1 + bc.a1 * y1 + bc.a2 * y2);
     }
@@ -78,13 +79,14 @@ namespace adaptone
             std::size_t filterIndex = i % buffers.filterCountPerChannel();
 
             T* lastFilterOutput = getFilterOutput(buffers,
-                static_cast<int64_t>(currentFrameIndex - 1) % buffers.frameCount(), filterIndex);
-            T* currentFilterOutput = getFilterOutput(buffers, currentFrameIndex, filterIndex);
+                static_cast<int64_t>(currentFrameIndex - 1) % buffers.frameCount(), channelIndex, filterIndex);
+            T* currentFilterOutput = getFilterOutput(buffers, currentFrameIndex, channelIndex, filterIndex);
             BiquadCoefficients<T>& bc = buffers.biquadCoefficients(channelIndex)[filterIndex];
 
             T x0, x1, x2, y0, y1, y2;
 
-            x0 = currentInputFrame[0];
+            std::size_t channelOffset = channelIndex * buffers.frameSampleCount();
+            x0 = currentInputFrame[channelOffset];
             x1 = lastInputFrame[buffers.frameSampleCount() - 1];
             x2 = lastInputFrame[buffers.frameSampleCount() - 2];
             y1 = lastFilterOutput[buffers.frameSampleCount() - 1];
@@ -97,7 +99,7 @@ namespace adaptone
             {
                 x2 = x1;
                 x1 = x0;
-                x0 = currentFrameIndex[sampleIndex];
+                x0 = currentInputFrame[channelOffset + sampleIndex];
                 y2 = y1;
                 y1 = y0;
 
@@ -111,7 +113,7 @@ namespace adaptone
     __device__ void processEq(CudaEqBuffers<T>& buffers, T* inputFrames, T* currentOutputFrame,
         std::size_t currentFrameIndex)
     {
-        std::size_t frameSize = buffers.frameSampleCount() * buffers.inputChannelCount();
+        std::size_t frameSize = buffers.frameSampleCount() * buffers.channelCount();
         T* lastInputFrame = inputFrames + ((currentFrameIndex - 1) % buffers.frameCount()) * frameSize;
         T* currentInputFrame = inputFrames + currentFrameIndex * frameSize;
 
