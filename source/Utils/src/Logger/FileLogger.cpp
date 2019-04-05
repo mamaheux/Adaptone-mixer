@@ -1,7 +1,5 @@
 #include <Utils/Logger/FileLogger.h>
 
-#include <iostream>
-
 using namespace adaptone;
 using namespace std;
 

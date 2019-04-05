@@ -62,7 +62,7 @@ namespace adaptone
     template<class T>
     inline __device__ T calculateBiquadOutput(const BiquadCoefficients<T>& bc, T x0, T x1, T x2, T y1, T y2)
     {
-        return (bc.b0 * x0 + bc.b1 * x1 + bc.b2 * x2) / (1 + bc.a1 * y1 + bc.a2 * y2);
+        return (bc.b0 * x0 + bc.b1 * x1 + bc.b2 * x2 - bc.a1 * y1 - bc.a2 * y2);
     }
 
     template<class T>

@@ -19,7 +19,7 @@ if (CUDA_FOUND)
         src/*
         include/*)
 
-    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};-std=c++14;-DUSE_CUDA;--expt-relaxed-constexpr")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};-std=c++14;-DUSE_CUDA;--expt-relaxed-constexpr;-Xptxas;-O3")
 
     cuda_add_library(SignalProcessing
         STATIC
