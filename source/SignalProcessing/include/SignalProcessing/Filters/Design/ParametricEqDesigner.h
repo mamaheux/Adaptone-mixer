@@ -41,7 +41,6 @@ namespace adaptone
     template<class T>
     class ParametricEqDesigner
     {
-    protected:
         std::unique_ptr<ParametricEqDesignerPrivate> m_parametricEqDesignerPrivate;
 
     public:
