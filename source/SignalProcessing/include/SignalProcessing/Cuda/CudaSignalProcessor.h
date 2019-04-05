@@ -268,11 +268,9 @@ namespace adaptone
     template<class T>
     void CudaSignalProcessor<T>::pushInputEqUpdate(std::size_t channel)
     {
-
         m_updateFunctionQueue.push([&, channel]()
         {
-
-            return m_inputEqParameters.tryApplyingUpdate([&, channel]()
+            return m_inputEqParameters.tryApplyingUpdate(channel, [&, channel]()
             {
 
                 CudaEqBuffers<T>& eqBuffers = m_buffers.inputEqBuffers();
@@ -306,7 +304,7 @@ namespace adaptone
     {
         m_updateFunctionQueue.push([&, channel]()
         {
-            return m_outputEqParameters.tryApplyingUpdate([&, channel]()
+            return m_outputEqParameters.tryApplyingUpdate(channel, [&, channel]()
             {
                 CudaEqBuffers<T>& eqBuffers = m_buffers.outputEqBuffers();
 
