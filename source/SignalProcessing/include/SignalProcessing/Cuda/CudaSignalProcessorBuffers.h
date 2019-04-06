@@ -278,7 +278,6 @@ namespace adaptone
         return m_inputFrames + m_currentFrameIndex * m_inputFrameSize;
     }
 
-
     template<class T>
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::inputGainOutputFrames()
     {
