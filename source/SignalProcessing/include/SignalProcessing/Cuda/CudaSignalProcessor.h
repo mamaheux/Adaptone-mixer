@@ -224,16 +224,19 @@ namespace adaptone
             buffers.currentInputFrame(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount());
+        __syncthreads();
 
         processEq(buffers.inputEqBuffers(),
             buffers.inputGainOutputFrames(),
             buffers.currentInputEqOutputFrame(),
             buffers.currentFrameIndex());
+        __syncthreads();
 
         processEq(buffers.outputEqBuffers(),
             buffers.mixingOutputFrames(),
             buffers.currentOutputEqOutputFrame(),
             buffers.currentFrameIndex());
+        __syncthreads();
 
         //TODO Remove the following code
         int index = threadIdx.x;
