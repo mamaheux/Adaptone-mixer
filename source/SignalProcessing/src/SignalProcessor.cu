@@ -3,6 +3,7 @@
 #include <SignalProcessing/Cuda/CudaSignalProcessor.h>
 
 #include <Utils/Exception/NotSupportedException.h>
+#include <Utils/Exception/InvalidValueException.h>
 
 using namespace adaptone;
 using namespace std;
@@ -17,6 +18,11 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
     std::size_t parametricEqFilterCount,
     const std::vector<double>& eqCenterFrequencies)
 {
+    if (frameSampleCount < 2)
+    {
+        THROW_INVALID_VALUE_EXCEPTION("Invalid frame sample count value.", "< 2");
+    }
+
     if (processingDataType == ProcessingDataType::Float)
     {
         m_specificSignalProcessor = make_unique<CudaSignalProcessor<float>>(frameSampleCount,

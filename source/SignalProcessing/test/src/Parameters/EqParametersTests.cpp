@@ -2,6 +2,8 @@
 
 #include <gtest/gtest.h>
 
+#include <thread>
+
 using namespace adaptone;
 using namespace std;
 
@@ -60,10 +62,12 @@ TEST(EqParametersTests, setParametricEqParameters_shouldUpdateTheSpecifiedChanne
     vector<double> frequencies{ 20, 50, 125 };
 
     EqParameters<float> eqParameters(SampleFrequency, parameters.size(), frequencies, 2);
-    EXPECT_FALSE(eqParameters.isDirty());
+    EXPECT_FALSE(eqParameters.isDirty(0));
+    EXPECT_FALSE(eqParameters.isDirty(1));
 
     eqParameters.setParametricEqParameters(0, parameters);
-    EXPECT_TRUE(eqParameters.isDirty());
+    EXPECT_TRUE(eqParameters.isDirty(0));
+    EXPECT_FALSE(eqParameters.isDirty(1));
 
     ASSERT_EQ(eqParameters.biquadCoefficients(0).size(), 2 * frequencies.size());
 
@@ -126,10 +130,12 @@ TEST(EqParametersTests, setGraphicEqGains_invalidChannel_shouldUpdateTheSpecifie
     vector<double> frequencies{ 20, 50, 125 };
 
     EqParameters<float> eqParameters(SampleFrequency, 3, frequencies, 2);
-    EXPECT_FALSE(eqParameters.isDirty());
+    EXPECT_FALSE(eqParameters.isDirty(0));
+    EXPECT_FALSE(eqParameters.isDirty(1));
 
     eqParameters.setGraphicEqGains(0, gainsDb);
-    EXPECT_TRUE(eqParameters.isDirty());
+    EXPECT_TRUE(eqParameters.isDirty(0));
+    EXPECT_FALSE(eqParameters.isDirty(1));
 
     ASSERT_EQ(eqParameters.biquadCoefficients(0).size(), 2 * frequencies.size());
 
@@ -174,4 +180,46 @@ TEST(EqParametersTests, setGraphicEqGains_invalidChannel_shouldUpdateTheSpecifie
     EXPECT_NEAR(eqParameters.biquadCoefficients(1)[2].a2, 0.9980, MaxAbsError);
 
     EXPECT_NEAR(eqParameters.d0(1), 1, MaxAbsError);
+}
+
+TEST(EqParametersTests, applyUpdate_shouldExecuteTheFunctionOnlyIfTheParametersAreDirtyAndSetDirtyToFalse)
+{
+    vector<double> gainsDb{ -10.1143, -10.5725, -6.013 };
+    vector<double> frequencies{ 20, 50, 125 };
+
+    EqParameters<float> eqParameters(SampleFrequency, 3, frequencies, 2);
+
+    int counter = 0;
+    auto function = [&]()
+    {
+        counter++;
+    };
+
+    eqParameters.applyUpdate(0, function);
+    EXPECT_EQ(counter, 0);
+    EXPECT_FALSE(eqParameters.isDirty(0));
+
+    eqParameters.applyUpdate(1, function);
+    EXPECT_EQ(counter, 0);
+    EXPECT_FALSE(eqParameters.isDirty(1));
+
+    eqParameters.setGraphicEqGains(0, gainsDb);
+    EXPECT_TRUE(eqParameters.isDirty(0));
+    EXPECT_FALSE(eqParameters.isDirty(1));
+
+    eqParameters.applyUpdate(0, function);
+    eqParameters.applyUpdate(0, function);
+    EXPECT_EQ(counter, 1);
+    EXPECT_FALSE(eqParameters.isDirty(0));
+    EXPECT_FALSE(eqParameters.isDirty(1));
+
+    eqParameters.setGraphicEqGains(1, gainsDb);
+    EXPECT_FALSE(eqParameters.isDirty(0));
+    EXPECT_TRUE(eqParameters.isDirty(1));
+
+    eqParameters.applyUpdate(1, function);
+    eqParameters.applyUpdate(1, function);
+    EXPECT_EQ(counter, 2);
+    EXPECT_FALSE(eqParameters.isDirty(0));
+    EXPECT_FALSE(eqParameters.isDirty(1));
 }

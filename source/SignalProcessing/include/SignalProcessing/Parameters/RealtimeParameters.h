@@ -1,6 +1,8 @@
 #ifndef SIGNAL_PROCESSING_PARAMETERS_REALTIME_PARAMETERS_H
 #define SIGNAL_PROCESSING_PARAMETERS_REALTIME_PARAMETERS_H
 
+#include <Utils/ClassMacro.h>
+
 #include <functional>
 #include <mutex>
 
@@ -14,6 +16,9 @@ namespace adaptone
     public:
         RealtimeParameters();
         virtual ~RealtimeParameters();
+
+        DECLARE_NOT_COPYABLE(RealtimeParameters);
+        DECLARE_NOT_MOVABLE(RealtimeParameters);
 
         bool isDirty();
         void update(const std::function<void()>& function);
