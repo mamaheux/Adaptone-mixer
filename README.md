@@ -81,6 +81,15 @@ ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build; cmake .. -DCMAKE_BUILD_TYPE
 ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build; make"
 ```
 
+Pour exécuter les tests en `ssh` sur le Jetson TX2, il suffit d'utiliser ce script :
+```
+#!/usr/bin/env sh
+ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/Mixer/test; ./MixerTests"
+ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/SignalProcessing/test; ./SignalProcessingTests"
+ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/Utils/test; ./UtilsTests"
+ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/Communication/test; ./CommunicationTests"
+```
+
 Pour exécuter le code du mixeur, il suffit d'utiiser ce script `execute_mixer.sh`, en prenant soin de modifier les _paths_ si nécessaire :
 ```
 #!/usr/bin/env sh
