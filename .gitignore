@@ -34,6 +34,7 @@
 #build folders
 cmake-build-debug/
 cmake-build-release/
+source/build/
 
 #IDE folders
 .idea
