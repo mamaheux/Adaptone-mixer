@@ -5,6 +5,7 @@
 #include <Mixer/Configuration/AudioConfiguration.h>
 #include <Mixer/Configuration/AudioInputConfiguration.h>
 #include <Mixer/Configuration/AudioOutputConfiguration.h>
+#include <Mixer/Configuration/WebSocketConfiguration.h>
 
 #include <Utils/Configuration/Properties.h>
 
@@ -17,6 +18,7 @@ namespace adaptone
         AudioConfiguration m_audioConfiguration;
         AudioInputConfiguration m_audioInputConfiguration;
         AudioOutputConfiguration m_audioOutputConfiguration;
+        WebSocketConfiguration m_webSocketConfiguration;
 
     public:
         explicit Configuration(const Properties& properties);
@@ -26,6 +28,7 @@ namespace adaptone
         const AudioConfiguration& audio() const;
         const AudioInputConfiguration& audioInput() const;
         const AudioOutputConfiguration& audioOutput() const;
+        const WebSocketConfiguration webSocket() const;
     };
 
     inline const LoggerConfiguration& Configuration::logger() const
@@ -46,6 +49,11 @@ namespace adaptone
     inline const AudioOutputConfiguration& Configuration::audioOutput() const
     {
         return m_audioOutputConfiguration;
+    }
+
+    inline const WebSocketConfiguration Configuration::webSocket() const
+    {
+        return m_webSocketConfiguration;
     }
 }
 

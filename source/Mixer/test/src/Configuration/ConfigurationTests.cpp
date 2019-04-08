@@ -27,7 +27,10 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
 
         { "audio.output.type", "raw_file" },
         { "audio.output.format", "signed_8" },
-        { "audio.output.filename", "output.raw" }
+        { "audio.output.filename", "output.raw" },
+
+        { "web_socket.endpoint", "^/echo/?$" },
+        { "web_socket.port", "8080" }
     }));
 
     EXPECT_EQ(configuration.logger().type(), LoggerConfiguration::Type::Console);
@@ -49,4 +52,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audioOutput().type(), AudioOutputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.audioOutput().filename(), "output.raw");
+
+    EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
+    EXPECT_EQ(configuration.webSocket().port(), 8080);
 }
