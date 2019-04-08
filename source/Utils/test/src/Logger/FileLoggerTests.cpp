@@ -1,11 +1,13 @@
 #include <Utils/Logger/FileLogger.h>
 
 #include <gtest/gtest.h>
+#include <gmock/gmock.h>
 
 #include <cstdio>
 
 using namespace adaptone;
 using namespace std;
+using ::testing::EndsWith;
 
 constexpr const char* LogFilename = "log.txt";
 
@@ -42,7 +44,7 @@ TEST_F(FileLoggerTests, log_shouldWriteInTheFile)
     getline(logFileStream, lines[1]);
     getline(logFileStream, lines[2]);
 
-    EXPECT_EQ(lines[0], "Warning --> message 1");
-    EXPECT_EQ(lines[1], "Error --> message 2");
-    EXPECT_EQ(lines[2], "Warning --> message 3");
+    EXPECT_THAT(lines[0], EndsWith("Warning --> message 1"));
+    EXPECT_THAT(lines[1], EndsWith("Error --> message 2"));
+    EXPECT_THAT(lines[2], EndsWith("Warning --> message 3"));
 }

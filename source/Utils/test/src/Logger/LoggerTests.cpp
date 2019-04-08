@@ -7,6 +7,7 @@
 
 using namespace adaptone;
 using namespace std;
+using ::testing::EndsWith;
 
 
 class LoggerMock : public Logger
@@ -26,11 +27,11 @@ TEST(LoggerTests, log_shouldCallTheOverridedMethod)
 {
     LoggerMock logger;
 
-    EXPECT_CALL(logger, logMessage(string("Debug --> message 1")));
-    EXPECT_CALL(logger, logMessage(string("Information --> exception")));
-    EXPECT_CALL(logger, logMessage(string("Warning --> exception --> message 2")));
-    EXPECT_CALL(logger, logMessage(string("Error --> message 3")));
-    EXPECT_CALL(logger, logMessage(string("Performance --> message 4")));
+    EXPECT_CALL(logger, logMessage(EndsWith("Debug --> message 1")));
+    EXPECT_CALL(logger, logMessage(EndsWith("Information --> exception")));
+    EXPECT_CALL(logger, logMessage(EndsWith("Warning --> exception --> message 2")));
+    EXPECT_CALL(logger, logMessage(EndsWith("Error --> message 3")));
+    EXPECT_CALL(logger, logMessage(EndsWith("Performance --> message 4")));
 
     logger.log(Logger::Level::Debug, "message 1");
     logger.log(Logger::Level::Information, runtime_error("exception"));
