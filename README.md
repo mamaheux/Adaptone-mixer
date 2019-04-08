@@ -22,7 +22,9 @@ sudo apt-get install libasound2-dev
 
 Installez CLion sur votre machine Windows, puis suivez [ce tutoriel](https://www.jetbrains.com/help/clion/how-to-use-wsl-development-environment-in-clion.html) afin de configurer votre WSL sous CLion.
 
-Si votre compilation ne fonctionne pas sous CLion, soyez sans craintes (je n'ai personnellement pas réussi à le faire compiler à partir de CLion, si quelqu'un réussi, merci de mettre à jour ce guide) ! \
+Vous devriez pouvoir compiler le projet sous CLion. Pour ce faire, quand vous ouvrez le projet avec CLion, sélectionnez le dossier `source`. Le build devrait se faire automatiquement.
+
+Si votre compilation ne fonctionne pas sous CLion, soyez sans craintes ! \
 Dans Ubuntu, faites : 
 ```
 cd Adaptone-mixer/source
