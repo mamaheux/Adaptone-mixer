@@ -1,11 +1,13 @@
 #include <Communication/Dummy.h>
 
 #include <server_ws.hpp>
+#include <nlohmann/json.hpp>
 
 using namespace adaptone;
 using namespace std;
 
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
+using nlohmann::json;
 
 void adaptone::startWebSocket()
 {
@@ -48,5 +50,10 @@ void adaptone::startWebSocket()
             << "Error: " << ec << ", error message: " << ec.message() << endl;
     };
 
-    server.start();
+    json j = "{ \"happy\": true, \"pi\": 3.141 }"_json;
+    cout << j["happy"].get<bool>() << endl;
+    cout << j["pi"].get<double>() << endl;
+    cout << (j["other"].is_boolean() ? j["other"].get<bool>() : false) << endl;
+
+    //server.start();
 }
