@@ -238,17 +238,11 @@ namespace adaptone
             buffers.currentFrameIndex());
         __syncthreads();
 
-        //TODO Remove the following code
-        int index = threadIdx.x;
-        int stride = blockDim.x;
-
-        uint8_t* inputPcmFrame = buffers.currentInputPcmFrame();
-        uint8_t* outputPcmFrame = buffers.currentOutputPcmFrame();
-
-        for (int i = index; i < buffers.inputPcmFrameSize() && i < buffers.outputPcmFrameSize(); i += stride)
-        {
-            outputPcmFrame[i] = inputPcmFrame[i];
-        }
+        buffers.arrayToPcmConversionFunction() (buffers.currentInputFrame(),
+            buffers.currentOutputPcmFrame(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount());
+        __syncthreads();
     }
 
     template<class T>
