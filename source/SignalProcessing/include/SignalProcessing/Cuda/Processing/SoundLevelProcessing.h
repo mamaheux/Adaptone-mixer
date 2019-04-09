@@ -22,9 +22,11 @@ namespace adaptone
         {
             for (int64_t sampleIndex = 1; sampleIndex < soundLevelBuffer.frameSampleCount(); sampleIndex++)
             {
-                if (abs(currentInputFrame[channelIndex + sampleIndex]) > soundLevelBuffer.soundLevels()[channelIndex])
+                T currentInputSampleValue = abs(currentInputFrame[channelIndex * soundLevelBuffer.frameSampleCount() + sampleIndex]);
+
+                if (currentInputSampleValue > soundLevelBuffer.soundLevels()[channelIndex])
                 {
-                    *(soundLevelBuffer.soundLevels() + channelIndex) = currentInputFrame[channelIndex + sampleIndex];
+                    soundLevelBuffer.soundLevels()[channelIndex] = currentInputSampleValue;
                 }
             }
         }

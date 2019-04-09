@@ -55,7 +55,7 @@ namespace adaptone
         m_frameSampleCount(other.m_frameSampleCount),
         m_hasOwnership(false)
     {
-            cudaFree(m_soundLevels);
+        cudaFree(m_soundLevels);
     }
 
     template<class T>
