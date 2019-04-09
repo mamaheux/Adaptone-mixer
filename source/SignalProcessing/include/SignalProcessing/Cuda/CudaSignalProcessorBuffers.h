@@ -85,8 +85,8 @@ namespace adaptone
 
         std::size_t m_mixingGainsSize;
 
-        PcmToArrayConversionFunctionPointer<T> m_pcmToArrayConversionFunction;
-        ArrayToPcmConversionFunctionPointer<T> m_arrayToPcmConversionFunction;
+        PcmAudioFrame::Format m_inputFormat;
+        PcmAudioFrame::Format m_outputFormat;
 
         bool m_hasOwnership;
 
@@ -148,8 +148,8 @@ namespace adaptone
 
         __device__ __host__ std::size_t mixingGainsSize();
 
-        __device__ PcmToArrayConversionFunctionPointer<T> pcmToArrayConversionFunction();
-        __device__ ArrayToPcmConversionFunctionPointer<T> arrayToPcmConversionFunction();
+        __device__ __host__ PcmAudioFrame::Format inputFormat();
+        __device__ __host__ PcmAudioFrame::Format outputFormat();
     };
 
     template<class T>
@@ -163,6 +163,7 @@ namespace adaptone
         m_currentFrameIndex(0),
         m_inputPcmFrameSize(PcmAudioFrame::size(inputFormat, inputChannelCount, frameSampleCount)),
         m_outputPcmFrameSize(PcmAudioFrame::size(outputFormat, outputChannelCount, frameSampleCount)),
+
         m_frameCount(frameCount),
         m_frameSampleCount(frameSampleCount),
         m_inputChannelCount(inputChannelCount),
@@ -170,8 +171,13 @@ namespace adaptone
         m_inputFrameSize(m_frameSampleCount * m_inputChannelCount),
         m_outputFrameSize(m_frameSampleCount * m_outputChannelCount),
         m_mixingGainsSize(m_inputChannelCount * m_outputChannelCount),
+
         m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
         m_outputEqBuffers(outputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
+
+        m_inputFormat(inputFormat),
+        m_outputFormat(outputFormat),
+
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_inputPcmFrames), m_inputPcmFrameSize * frameCount);
@@ -192,9 +198,6 @@ namespace adaptone
         cudaMemset(m_inputGains, 0, m_inputChannelCount * sizeof(T));
         cudaMemset(m_mixingGains, 0, m_mixingGainsSize * sizeof(T));
         cudaMemset(m_outputGains, 0, m_outputChannelCount * sizeof(T));
-
-        m_pcmToArrayConversionFunction = getPcmToArrayConversionFunctionPointer<T>(inputFormat);
-        m_arrayToPcmConversionFunction = getArrayToPcmConversionFunctionPointer<T>(outputFormat);
     }
 
     template<class T>
@@ -228,8 +231,8 @@ namespace adaptone
         m_outputFrameSize(other.m_outputFrameSize),
         m_mixingGainsSize(other.m_mixingGainsSize),
 
-        m_pcmToArrayConversionFunction(other.m_pcmToArrayConversionFunction),
-        m_arrayToPcmConversionFunction(other.m_arrayToPcmConversionFunction),
+        m_inputFormat(other.m_inputFormat),
+        m_outputFormat(other.m_outputFormat),
 
         m_hasOwnership(false)
     {
@@ -288,12 +291,6 @@ namespace adaptone
     }
 
     template<class T>
-    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::outputFrames()
-    {
-        return m_outputFrames;
-    }
-
-    template<class T>
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::currentInputFrame()
     {
         return m_inputFrames + m_currentFrameIndex * m_inputFrameSize;
@@ -303,6 +300,12 @@ namespace adaptone
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::currentOutputFrame()
     {
         return m_outputFrames + m_currentFrameIndex * m_inputFrameSize;
+    }
+
+    template<class T>
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::outputFrames()
+    {
+        return m_outputFrames;
     }
 
     template<class T>
@@ -450,15 +453,15 @@ namespace adaptone
     }
 
     template<class T>
-    inline __device__ PcmToArrayConversionFunctionPointer<T> CudaSignalProcessorBuffers<T>::pcmToArrayConversionFunction()
+    inline __device__ __host__ PcmAudioFrame::Format CudaSignalProcessorBuffers<T>::inputFormat()
     {
-        return m_pcmToArrayConversionFunction;
+        return m_inputFormat;
     }
 
     template<class T>
-    inline __device__ ArrayToPcmConversionFunctionPointer<T> CudaSignalProcessorBuffers<T>::arrayToPcmConversionFunction()
+    inline __device__ __host__ PcmAudioFrame::Format CudaSignalProcessorBuffers<T>::outputFormat()
     {
-        return m_arrayToPcmConversionFunction;
+        return m_outputFormat;
     }
 }
 

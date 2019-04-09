@@ -5,22 +5,17 @@
 using namespace adaptone;
 using namespace std;
 
-static constexpr double MaxAbsError = 0.01;
-
 template<class T>
-__global__ void convert(const T* inputBytes, uint8_t* output, std::size_t frameSampleCount, std::size_t channelCount,
-    ArrayToPcmConversionFunctionPointer<T> conversionFunction)
+__global__ void convertArrayToPcmKernel(const T* input, uint8_t* output, size_t frameSampleCount, size_t channelCount,
+    PcmAudioFrame::Format format)
 {
-    conversionFunction(inputBytes, output, frameSampleCount, channelCount);
+    convertArrayToPcm(input, output, frameSampleCount, channelCount, format);
 }
 
 TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Signed8);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     int8_t* output;
 
@@ -34,16 +29,16 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Signed8);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], -128, MaxAbsError);
-    EXPECT_NEAR(output[1], 0, MaxAbsError);
-    EXPECT_NEAR(output[2], 127, MaxAbsError);
-    EXPECT_NEAR(output[3], 64, MaxAbsError);
-    EXPECT_NEAR(output[4], -64, MaxAbsError);
-    EXPECT_NEAR(output[5], 32, MaxAbsError);
-
+    EXPECT_EQ(output[0], -128);
+    EXPECT_EQ(output[1], 0);
+    EXPECT_EQ(output[2], 127);
+    EXPECT_EQ(output[3], 64);
+    EXPECT_EQ(output[4], -64);
+    EXPECT_EQ(output[5], 32);
 
     cudaFree(input);
     cudaFree(output);
@@ -51,11 +46,8 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
 
 TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Signed16);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     int16_t* output;
 
@@ -69,15 +61,16 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Signed16);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], -32768, MaxAbsError);
-    EXPECT_NEAR(output[1], 0, MaxAbsError);
-    EXPECT_NEAR(output[2], 32767, MaxAbsError);
-    EXPECT_NEAR(output[3], 16384, MaxAbsError);
-    EXPECT_NEAR(output[4], -16384, MaxAbsError);
-    EXPECT_NEAR(output[5], 8192, MaxAbsError);
+    EXPECT_EQ(output[0], -32768);
+    EXPECT_EQ(output[1], 0);
+    EXPECT_EQ(output[2], 32767);
+    EXPECT_EQ(output[3], 16384);
+    EXPECT_EQ(output[4], -16384);
+    EXPECT_EQ(output[5], 8192);
 
     cudaFree(input);
     cudaFree(output);
@@ -85,16 +78,13 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
 
 TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Signed24);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     uint8_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * 3);
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(uint8_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * 3);
 
     input[0] = -1;
     input[1] = 1;
@@ -103,32 +93,32 @@ TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloating
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, output, frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, output, frameSampleCount, channelCount, PcmAudioFrame::Format::Signed24);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[1], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[2], 0x80, MaxAbsError);
+    EXPECT_EQ(output[0], 0x00);
+    EXPECT_EQ(output[1], 0x00);
+    EXPECT_EQ(output[2], 0x80);
 
-    EXPECT_NEAR(output[3], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[4], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[5], 0x00, MaxAbsError);
+    EXPECT_EQ(output[3], 0x00);
+    EXPECT_EQ(output[4], 0x00);
+    EXPECT_EQ(output[5], 0x00);
 
-    EXPECT_NEAR(output[6], 0xff, MaxAbsError);
-    EXPECT_NEAR(output[7], 0xff, MaxAbsError);
-    EXPECT_NEAR(output[8], 0x7f, MaxAbsError);
+    EXPECT_EQ(output[6], 0xff);
+    EXPECT_EQ(output[7], 0xff);
+    EXPECT_EQ(output[8], 0x7f);
 
-    EXPECT_NEAR(output[9], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[10], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[11], 0x40, MaxAbsError);
+    EXPECT_EQ(output[9], 0x00);
+    EXPECT_EQ(output[10], 0x00);
+    EXPECT_EQ(output[11], 0x40);
 
-    EXPECT_NEAR(output[12], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[13], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[14], 0xc0, MaxAbsError);
+    EXPECT_EQ(output[12], 0x00);
+    EXPECT_EQ(output[13], 0x00);
+    EXPECT_EQ(output[14], 0xc0);
 
-    EXPECT_NEAR(output[15], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[16], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[17], 0x20, MaxAbsError);
+    EXPECT_EQ(output[15], 0x00);
+    EXPECT_EQ(output[16], 0x00);
+    EXPECT_EQ(output[17], 0x20);
 
     cudaFree(input);
     cudaFree(output);
@@ -136,11 +126,8 @@ TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloating
 
 TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::SignedPadded24);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     int32_t* output;
 
@@ -154,15 +141,16 @@ TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFl
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::SignedPadded24);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], -8388608, MaxAbsError);
-    EXPECT_NEAR(output[1], 0, MaxAbsError);
-    EXPECT_NEAR(output[2], 8388607, MaxAbsError);
-    EXPECT_NEAR(output[3], 4194304, MaxAbsError);
-    EXPECT_NEAR(output[4], -4194304, MaxAbsError);
-    EXPECT_NEAR(output[5], 2097152, MaxAbsError);
+    EXPECT_EQ(output[0], -8388608);
+    EXPECT_EQ(output[1], 0);
+    EXPECT_EQ(output[2], 8388607);
+    EXPECT_EQ(output[3], 4194304);
+    EXPECT_EQ(output[4], -4194304);
+    EXPECT_EQ(output[5], 2097152);
 
     cudaFree(input);
     cudaFree(output);
@@ -170,11 +158,8 @@ TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFl
 
 TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Signed32);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     int32_t* output;
 
@@ -188,16 +173,17 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Signed32);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], -2147483648, MaxAbsError);
-    EXPECT_NEAR(output[1], 0, MaxAbsError);
-    EXPECT_NEAR(output[2], 2147483647, MaxAbsError);
+    EXPECT_EQ(output[0], -2147483648);
+    EXPECT_EQ(output[1], 0);
+    EXPECT_EQ(output[2], 2147483647);
 
-    EXPECT_NEAR(output[3], 1073741824, MaxAbsError);
-    EXPECT_NEAR(output[4], -1073741824, MaxAbsError);
-    EXPECT_NEAR(output[5], 536870912, MaxAbsError);
+    EXPECT_EQ(output[3], 1073741824);
+    EXPECT_EQ(output[4], -1073741824);
+    EXPECT_EQ(output[5], 536870912);
 
     cudaFree(input);
     cudaFree(output);
@@ -205,11 +191,8 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
 
 TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Unsigned8);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     uint8_t* output;
 
@@ -223,16 +206,17 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, output, frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, output, frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Unsigned8);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], 0, MaxAbsError);
-    EXPECT_NEAR(output[1], 128, MaxAbsError);
-    EXPECT_NEAR(output[2], 255, MaxAbsError);
+    EXPECT_EQ(output[0], 0);
+    EXPECT_EQ(output[1], 128);
+    EXPECT_EQ(output[2], 255);
 
-    EXPECT_NEAR(output[3], 192, MaxAbsError);
-    EXPECT_NEAR(output[4], 64, MaxAbsError);
-    EXPECT_NEAR(output[5], 160, MaxAbsError);
+    EXPECT_EQ(output[3], 191);
+    EXPECT_EQ(output[4], 64);
+    EXPECT_EQ(output[5], 159);
 
     cudaFree(input);
     cudaFree(output);
@@ -240,11 +224,8 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
 
 TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Unsigned16);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     uint16_t* output;
 
@@ -258,16 +239,17 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Unsigned16);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], 0, MaxAbsError);
-    EXPECT_NEAR(output[1], 32768, MaxAbsError);
-    EXPECT_NEAR(output[2], 65535, MaxAbsError);
+    EXPECT_EQ(output[0], 0);
+    EXPECT_EQ(output[1], 32768);
+    EXPECT_EQ(output[2], 65535);
 
-    EXPECT_NEAR(output[3], 49152, MaxAbsError);
-    EXPECT_NEAR(output[4], 16384, MaxAbsError);
-    EXPECT_NEAR(output[5], 40960, MaxAbsError);
+    EXPECT_EQ(output[3], 49151);
+    EXPECT_EQ(output[4], 16384);
+    EXPECT_EQ(output[5], 40959);
 
     cudaFree(input);
     cudaFree(output);
@@ -275,16 +257,13 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
 
 TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Unsigned24);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     uint8_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * 3);
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(uint8_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * 3);
 
 
     input[0] = -1;
@@ -295,32 +274,33 @@ TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, output, frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, output, frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Unsigned24);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[1], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[2], 0x00, MaxAbsError);
+    EXPECT_EQ(output[0], 0x00);
+    EXPECT_EQ(output[1], 0x00);
+    EXPECT_EQ(output[2], 0x00);
 
-    EXPECT_NEAR(output[3], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[4], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[5], 0x80, MaxAbsError);
+    EXPECT_EQ(output[3], 0x00);
+    EXPECT_EQ(output[4], 0x00);
+    EXPECT_EQ(output[5], 0x80);
 
-    EXPECT_NEAR(output[6], 0xff, MaxAbsError);
-    EXPECT_NEAR(output[7], 0xff, MaxAbsError);
-    EXPECT_NEAR(output[8], 0xff, MaxAbsError);
+    EXPECT_EQ(output[6], 0xff);
+    EXPECT_EQ(output[7], 0xff);
+    EXPECT_EQ(output[8], 0xff);
 
-    EXPECT_NEAR(output[9], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[10], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[11], 0xc0, MaxAbsError);
+    EXPECT_EQ(output[9], 0xff);
+    EXPECT_EQ(output[10], 0xff);
+    EXPECT_EQ(output[11], 0xbf);
 
-    EXPECT_NEAR(output[12], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[13], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[14], 0x40, MaxAbsError);
+    EXPECT_EQ(output[12], 0x00);
+    EXPECT_EQ(output[13], 0x00);
+    EXPECT_EQ(output[14], 0x40);
 
-    EXPECT_NEAR(output[15], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[16], 0x00, MaxAbsError);
-    EXPECT_NEAR(output[17], 0xa0, MaxAbsError);
+    EXPECT_EQ(output[15], 0xff);
+    EXPECT_EQ(output[16], 0xff);
+    EXPECT_EQ(output[17], 0x9f);
 
     cudaFree(input);
     cudaFree(output);
@@ -328,11 +308,8 @@ TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloati
 
 TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::UnsignedPadded24);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     uint32_t* output;
 
@@ -346,16 +323,16 @@ TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFrom
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::UnsignedPadded24);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], 0, MaxAbsError);
-    EXPECT_NEAR(output[1], 8388608, MaxAbsError);
-    EXPECT_NEAR(output[2], 16777215, MaxAbsError);
-
-    EXPECT_NEAR(output[3], 12582912, MaxAbsError);
-    EXPECT_NEAR(output[4], 4194304, MaxAbsError);
-    EXPECT_NEAR(output[5], 10485760, MaxAbsError);
+    EXPECT_EQ(output[0], 0);
+    EXPECT_EQ(output[1], 8388608);
+    EXPECT_EQ(output[2], 16777215);
+    EXPECT_EQ(output[3], 12582911);
+    EXPECT_EQ(output[4], 4194304);
+    EXPECT_EQ(output[5], 10485759);
 
     cudaFree(input);
     cudaFree(output);
@@ -363,11 +340,8 @@ TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFrom
 
 TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Unsigned32);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     uint32_t* output;
 
@@ -381,16 +355,17 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Unsigned32);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], 0, MaxAbsError);
-    EXPECT_NEAR(output[1], 2147483648, MaxAbsError);
-    EXPECT_NEAR(output[2], 4294967295, MaxAbsError);
+    EXPECT_EQ(output[0], 0);
+    EXPECT_EQ(output[1], 2147483648);
+    EXPECT_EQ(output[2], 4294967295);
 
-    EXPECT_NEAR(output[3], 3221225472, MaxAbsError);
-    EXPECT_NEAR(output[4], 1073741824, MaxAbsError);
-    EXPECT_NEAR(output[5], 2684354560, MaxAbsError);
+    EXPECT_EQ(output[3], 3221225472);
+    EXPECT_EQ(output[4], 1073741824);
+    EXPECT_EQ(output[5], 2684354560);
 
     cudaFree(input);
     cudaFree(output);
@@ -398,11 +373,8 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
 
 TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Float);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     float* output;
 
@@ -416,16 +388,17 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Float);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], -1, MaxAbsError);
-    EXPECT_NEAR(output[1], 0, MaxAbsError);
-    EXPECT_NEAR(output[2], 1, MaxAbsError);
+    EXPECT_EQ(output[0], -1);
+    EXPECT_EQ(output[1], 0);
+    EXPECT_EQ(output[2], 1);
 
-    EXPECT_NEAR(output[3], 0.5, MaxAbsError);
-    EXPECT_NEAR(output[4], -0.5, MaxAbsError);
-    EXPECT_NEAR(output[5], 0.25, MaxAbsError);
+    EXPECT_EQ(output[3], 0.5);
+    EXPECT_EQ(output[4], -0.5);
+    EXPECT_EQ(output[5], 0.25);
 
     cudaFree(input);
     cudaFree(output);
@@ -433,11 +406,8 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
 
 TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPointArray)
 {
-    ArrayToPcmConversionFunctionPointer<float> conversionFunction =
-        getArrayToPcmConversionFunctionPointer<float>(PcmAudioFrame::Format::Double);
-
-    std::size_t frameSampleCount = 3;
-    std::size_t channelCount = 2;
+    size_t frameSampleCount = 3;
+    size_t channelCount = 2;
     float* input;
     double* output;
 
@@ -451,16 +421,17 @@ TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPo
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convert<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount, conversionFunction);
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+        PcmAudioFrame::Format::Double);
     cudaDeviceSynchronize();
 
-    EXPECT_NEAR(output[0], -1, MaxAbsError);
-    EXPECT_NEAR(output[1], 0, MaxAbsError);
-    EXPECT_NEAR(output[2], 1, MaxAbsError);
+    EXPECT_EQ(output[0], -1);
+    EXPECT_EQ(output[1], 0);
+    EXPECT_EQ(output[2], 1);
 
-    EXPECT_NEAR(output[3], 0.5, MaxAbsError);
-    EXPECT_NEAR(output[4], -0.5, MaxAbsError);
-    EXPECT_NEAR(output[5], 0.25, MaxAbsError);
+    EXPECT_EQ(output[3], 0.5);
+    EXPECT_EQ(output[4], -0.5);
+    EXPECT_EQ(output[5], 0.25);
 
     cudaFree(input);
     cudaFree(output);
