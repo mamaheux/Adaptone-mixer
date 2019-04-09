@@ -50,6 +50,7 @@ namespace adaptone
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_soundLevels), m_channelCount * sizeof(T));
+        resetBuffer();
     }
 
     template<class T>
@@ -97,10 +98,7 @@ namespace adaptone
     template<class T>
     inline __host__ void CudaSoundLevelBuffers<T>::resetBuffer()
     {
-        for (std::size_t i = 0; i < m_channelCount; i++)
-        {
-            m_soundLevels[i] = 0;
-        }
+        cudaMemset(m_soundLevels, 0, m_channelCount * sizeof(T));
     }
 }
 
