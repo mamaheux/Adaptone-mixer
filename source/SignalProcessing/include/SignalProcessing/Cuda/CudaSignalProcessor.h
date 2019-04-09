@@ -239,13 +239,9 @@ namespace adaptone
             buffers.currentFrameIndex());
         __syncthreads();
 
-        processSoundLevel(buffers.inputSoundLevelBuffers(),
-            buffers.currentInputGainOutputFrame());
-        _syncthreads();
+        processSoundLevel(buffers.inputSoundLevelBuffers(), buffers.currentInputGainOutputFrame());
 
-        processSoundLevel(buffers.inputSoundLevelBuffers(),
-            buffers.currentInputEqOutputFrame());
-        _syncthreads();
+        processSoundLevel(buffers.inputSoundLevelBuffers(), buffers.currentInputEqOutputFrame());
 
         /*
         processSoundLevel(buffers.outputSoundLevelBuffers(),

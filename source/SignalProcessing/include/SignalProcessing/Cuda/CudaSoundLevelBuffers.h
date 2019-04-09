@@ -8,6 +8,13 @@
 #include <cstddef>
 #include <cstdint>
 
+/**
+ * Buffer format:
+ * c1mv = channel 1 maximum value
+ *
+ * m_soundLevels: | c1mv | c2mv | c3mv | ... | c16mv |
+ *
+ */
 namespace adaptone
 {
     template<class T>
@@ -16,11 +23,12 @@ namespace adaptone
         T* m_soundLevels;
 
         std::size_t m_channelCount;
+        std::size_t m_frameSampleCount;
 
         bool m_hasOwnership;
 
     public:
-        __host__ explicit CudaSoundLevelBuffers(std::size_t channelCount);
+        __host__ CudaSoundLevelBuffers(std::size_t channelCount, std::size_t frameSampleCount);
         __host__ CudaSoundLevelBuffers(const CudaSoundLevelBuffers& other);
         __host__ virtual ~CudaSoundLevelBuffers();
 
@@ -28,11 +36,13 @@ namespace adaptone
 
         __device__ __host__ T* soundLevels();
         __device__ __host__ std::size_t channelCount();
+        __device__ __host__ std::size_t frameSampleCount();
     };
 
     template<class T>
-    inline __host__ CudaSoundLevelBuffers<T>::CudaSoundLevelBuffers(std::size_t channelCount) :
+    inline __host__ CudaSoundLevelBuffers<T>::CudaSoundLevelBuffers(std::size_t channelCount, std::size_t frameSampleCount) :
         m_channelCount(channelCount),
+        m_frameSampleCount(frameSampleCount),
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_soundLevels), m_channelCount);
@@ -42,8 +52,10 @@ namespace adaptone
     inline __host__ CudaSoundLevelBuffers<T>::CudaSoundLevelBuffers(const CudaSoundLevelBuffers<T>& other) :
         m_soundLevels(other.m_soundLevels),
         m_channelCount(other.m_channelCount),
+        m_frameSampleCount(other.m_frameSampleCount),
         m_hasOwnership(false)
     {
+            cudaFree(m_soundLevels);
     }
 
     template<class T>
@@ -61,6 +73,12 @@ namespace adaptone
     inline __device__ __host__ std::size_t CudaSoundLevelBuffers<T>::channelCount()
     {
         return m_channelCount;
+    }
+
+    template<class T>
+    inline __device__ __host__ std::size_t CudaSoundLevelBuffers<T>::frameSampleCount()
+    {
+        return m_frameSampleCount;
     }
 }
 
