@@ -25,6 +25,7 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -46,7 +47,7 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
 
 TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
+    size_t frameSampleCount = 4;
     size_t channelCount = 2;
     float* input;
     int16_t* output;
@@ -57,9 +58,12 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
-    input[3] = 0;
-    input[4] = 0.5;
-    input[5] = 0.25;
+    input[3] = -1.1;
+
+    input[4] = 0;
+    input[5] = 0.5;
+    input[6] = 0.25;
+    input[7] = 1.1;
 
     convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
         PcmAudioFrame::Format::Signed16);
@@ -71,6 +75,8 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
     EXPECT_EQ(output[3], 16384);
     EXPECT_EQ(output[4], -16384);
     EXPECT_EQ(output[5], 8192);
+    EXPECT_EQ(output[6], -32768);
+    EXPECT_EQ(output[7], 32767);
 
     cudaFree(input);
     cudaFree(output);
@@ -89,6 +95,7 @@ TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloating
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -137,6 +144,7 @@ TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFl
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -169,6 +177,7 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -202,6 +211,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -235,6 +245,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -319,6 +330,7 @@ TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFrom
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -351,6 +363,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -384,6 +397,7 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
@@ -417,6 +431,7 @@ TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPo
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+
     input[3] = 0;
     input[4] = 0.5;
     input[5] = 0.25;
