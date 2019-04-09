@@ -380,6 +380,10 @@ namespace adaptone
             m_buffers.inputEqSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputEq]);
             m_buffers.outputGainSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain]);
 
+            m_buffers.inputGainSoundLevelBuffers().resetBuffer();
+            m_buffers.inputEqSoundLevelBuffers().resetBuffer();
+            m_buffers.outputGainSoundLevelBuffers().resetBuffer();
+
             if (m_analysisDispatcher)
             {
                 m_analysisDispatcher->notifySoundLevel(m_soundLevels);

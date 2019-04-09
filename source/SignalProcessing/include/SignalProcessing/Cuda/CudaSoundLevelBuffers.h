@@ -40,6 +40,7 @@ namespace adaptone
         __device__ __host__ std::size_t frameSampleCount();
 
         __host__ void toVector(std::vector<T>& soundLevels);
+        __host__ void resetBuffer();
     };
 
     template<class T>
@@ -48,7 +49,7 @@ namespace adaptone
         m_frameSampleCount(frameSampleCount),
         m_hasOwnership(true)
     {
-        cudaMalloc(reinterpret_cast<void**>(&m_soundLevels), m_channelCount);
+        cudaMalloc(reinterpret_cast<void**>(&m_soundLevels), m_channelCount * sizeof(T));
     }
 
     template<class T>
@@ -58,12 +59,12 @@ namespace adaptone
         m_frameSampleCount(other.m_frameSampleCount),
         m_hasOwnership(false)
     {
-        cudaFree(m_soundLevels);
     }
 
     template<class T>
     inline __host__ CudaSoundLevelBuffers<T>::~CudaSoundLevelBuffers()
     {
+        cudaFree(m_soundLevels);
     }
 
     template<class T>
@@ -91,6 +92,15 @@ namespace adaptone
             m_soundLevels,
             m_channelCount * sizeof(T),
             cudaMemcpyDeviceToHost);
+    }
+
+    template<class T>
+    inline __host__ void CudaSoundLevelBuffers<T>::resetBuffer()
+    {
+        for (std::size_t i = 0; i < m_channelCount; i++)
+        {
+            m_soundLevels[i] = 0;
+        }
     }
 }
 
