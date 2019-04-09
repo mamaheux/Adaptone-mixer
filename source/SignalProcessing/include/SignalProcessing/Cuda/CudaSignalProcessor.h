@@ -5,6 +5,7 @@
 #include <SignalProcessing/SpecificSignalProcessor.h>
 #include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
+#include <SignalProcessing/Cuda/Processing/SoundLevelProcessing.h>
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
 #include <SignalProcessing/Parameters/MixingParameters.h>
@@ -237,6 +238,20 @@ namespace adaptone
             buffers.currentOutputEqOutputFrame(),
             buffers.currentFrameIndex());
         __syncthreads();
+
+        processSoundLevel(buffers.inputSoundLevelBuffers(),
+            buffers.currentInputGainOutputFrame());
+        _syncthreads();
+
+        processSoundLevel(buffers.inputSoundLevelBuffers(),
+            buffers.currentInputEqOutputFrame());
+        _syncthreads();
+
+        /*
+        processSoundLevel(buffers.outputSoundLevelBuffers(),
+            buffers.currentOutputEqOutputFrame());
+        _syncthreads();
+         */
 
         //TODO Remove the following code
         int index = threadIdx.x;

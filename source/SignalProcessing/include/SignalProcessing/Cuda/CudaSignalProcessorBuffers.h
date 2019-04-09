@@ -2,6 +2,7 @@
 #define SIGNAL_PROCESSING_CUDA_CUDA_SIGNAL_PROCESSOR_BUFFERS_H
 
 #include <SignalProcessing/Cuda/CudaEqBuffers.h>
+#include <SignalProcessing/Cuda/CudaSoundLevelBuffers.h>
 #include <SignalProcessing/Cuda/Conversion/PcmToArrayConversion.h>
 
 #include <Utils/ClassMacro.h>
@@ -67,6 +68,9 @@ namespace adaptone
         CudaEqBuffers<T> m_outputEqBuffers;
         T* m_outputGains;
 
+        CudaSoundLevelBuffers<T> m_inputSoundLevelBuffers;
+        CudaSoundLevelBuffers<T> m_outputSoundLevelBuffers;
+
         std::size_t m_currentFrameIndex;
         std::size_t m_frameCount;
         std::size_t m_inputPcmFrameSize;
@@ -124,6 +128,9 @@ namespace adaptone
         __device__ __host__ CudaEqBuffers<T>& outputEqBuffers();
         __device__ __host__ T* outputGains();
 
+        __device__ __host__ CudaSoundLevelBuffers<T>& inputSoundLevelBuffers();
+        __device__ __host__ CudaSoundLevelBuffers<T>& outputSoundLevelBuffers();
+
         __device__ __host__ std::size_t currentFrameIndex();
         __host__ void nextFrame();
 
@@ -162,6 +169,8 @@ namespace adaptone
         m_mixingGainsSize(m_inputChannelCount * m_outputChannelCount),
         m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
         m_outputEqBuffers(outputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
+        m_inputSoundLevelBuffers(inputChannelCount),
+        m_outputSoundLevelBuffers(outputChannelCount),
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_inputPcmFrames), m_inputPcmFrameSize * frameCount);
@@ -200,9 +209,11 @@ namespace adaptone
 
         m_inputGains(other.m_inputGains),
         m_inputEqBuffers(other.m_inputEqBuffers),
+        m_inputSoundLevelBuffers(other.m_inputSoundLevelBuffers),
         m_mixingGains(other.m_mixingGains),
         m_outputEqBuffers(other.m_outputEqBuffers),
         m_outputGains(other.m_outputGains),
+        m_outputSoundLevelBuffers(other.m_outputSoundLevelBuffers),
 
         m_currentFrameIndex(other.m_currentFrameIndex),
         m_inputPcmFrameSize(other.m_inputPcmFrameSize),
@@ -339,6 +350,12 @@ namespace adaptone
     }
 
     template<class T>
+    inline __device__ __host__ CudaSoundLevelBuffers<T>& CudaSignalProcessorBuffers<T>::inputSoundLevelBuffers()
+    {
+        return m_inputSoundLevelBuffers;
+    }
+
+    template<class T>
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::mixingGains()
     {
         return m_mixingGains;
@@ -354,6 +371,12 @@ namespace adaptone
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::outputGains()
     {
         return m_outputGains;
+    }
+
+    template<class T>
+    inline __device__ __host__ CudaSoundLevelBuffers<T>& CudaSignalProcessorBuffers<T>::outputSoundLevelBuffers()
+    {
+        return m_outputSoundLevelBuffers;
     }
 
     template<class T>
