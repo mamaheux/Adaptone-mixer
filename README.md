@@ -20,6 +20,8 @@ sudo apt-get install gfortran
 sudo apt-get install libasound2-dev
 ```
 
+Si vous avez un GPU Nvidia, vous devez télécharger le [CUDA toolkit](https://docs.nvidia.com/cuda/cuda-installation-guide-microsoft-windows/index.html).
+
 Installez CLion sur votre machine Windows, puis suivez [ce tutoriel](https://www.jetbrains.com/help/clion/how-to-use-wsl-development-environment-in-clion.html) afin de configurer votre WSL sous CLion.
 
 Vous devriez pouvoir compiler le projet sous CLion. Pour ce faire, quand vous ouvrez le projet avec CLion, sélectionnez le dossier `source`. Le build devrait se faire automatiquement.
