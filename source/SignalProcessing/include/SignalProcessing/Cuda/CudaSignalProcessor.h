@@ -220,10 +220,11 @@ namespace adaptone
     template<class T>
     __global__ void processKernel(CudaSignalProcessorBuffers<T> buffers)
     {
-        buffers.pcmToArrayConversionFunction()(buffers.currentInputPcmFrame(),
+        convertPcmToArray<T>(buffers.currentInputPcmFrame(),
             buffers.currentInputFrame(),
             buffers.frameSampleCount(),
-            buffers.inputChannelCount());
+            buffers.inputChannelCount(),
+            buffers.inputFormat());
         __syncthreads();
 
         processEq(buffers.inputEqBuffers(),
@@ -238,17 +239,12 @@ namespace adaptone
             buffers.currentFrameIndex());
         __syncthreads();
 
-        //TODO Remove the following code
-        int index = threadIdx.x;
-        int stride = blockDim.x;
-
-        uint8_t* inputPcmFrame = buffers.currentInputPcmFrame();
-        uint8_t* outputPcmFrame = buffers.currentOutputPcmFrame();
-
-        for (int i = index; i < buffers.inputPcmFrameSize() && i < buffers.outputPcmFrameSize(); i += stride)
-        {
-            outputPcmFrame[i] = inputPcmFrame[i];
-        }
+        convertArrayToPcm<T>(buffers.currentInputFrame(),
+            buffers.currentOutputPcmFrame(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount(),
+            buffers.outputFormat());
+        __syncthreads();
     }
 
     template<class T>
