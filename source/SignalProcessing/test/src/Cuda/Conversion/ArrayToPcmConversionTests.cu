@@ -14,7 +14,7 @@ __global__ void convertArrayToPcmKernel(const T* input, uint8_t* output, size_t 
 
 TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
+    size_t frameSampleCount = 4;
     size_t channelCount = 2;
     double* input;
     int8_t* output;
@@ -25,10 +25,12 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
     input[0] = -1;
     input[1] = 1;
     input[2] = -0.5;
+    input[3] = -1.1;
 
-    input[3] = 0;
-    input[4] = 0.5;
-    input[5] = 0.25;
+    input[4] = 0;
+    input[5] = 0.5;
+    input[6] = 0.25;
+    input[7] = 1.1;
 
     convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
         PcmAudioFrame::Format::Signed8);
@@ -40,6 +42,8 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
     EXPECT_EQ(output[3], 64);
     EXPECT_EQ(output[4], -64);
     EXPECT_EQ(output[5], 32);
+    EXPECT_EQ(output[6], -128);
+    EXPECT_EQ(output[7], 127);
 
     cudaFree(input);
     cudaFree(output);
@@ -189,7 +193,6 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
     EXPECT_EQ(output[0], -2147483648);
     EXPECT_EQ(output[1], 0);
     EXPECT_EQ(output[2], 2147483647);
-
     EXPECT_EQ(output[3], 1073741824);
     EXPECT_EQ(output[4], -1073741824);
     EXPECT_EQ(output[5], 536870912);
@@ -223,7 +226,6 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
     EXPECT_EQ(output[0], 0);
     EXPECT_EQ(output[1], 128);
     EXPECT_EQ(output[2], 255);
-
     EXPECT_EQ(output[3], 191);
     EXPECT_EQ(output[4], 64);
     EXPECT_EQ(output[5], 159);
@@ -257,7 +259,6 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
     EXPECT_EQ(output[0], 0);
     EXPECT_EQ(output[1], 32768);
     EXPECT_EQ(output[2], 65535);
-
     EXPECT_EQ(output[3], 49151);
     EXPECT_EQ(output[4], 16384);
     EXPECT_EQ(output[5], 40959);
@@ -375,7 +376,6 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
     EXPECT_EQ(output[0], 0);
     EXPECT_EQ(output[1], 2147483648);
     EXPECT_EQ(output[2], 4294967295);
-
     EXPECT_EQ(output[3], 3221225472);
     EXPECT_EQ(output[4], 1073741824);
     EXPECT_EQ(output[5], 2684354560);
@@ -409,7 +409,6 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
     EXPECT_EQ(output[0], -1);
     EXPECT_EQ(output[1], 0);
     EXPECT_EQ(output[2], 1);
-
     EXPECT_EQ(output[3], 0.5);
     EXPECT_EQ(output[4], -0.5);
     EXPECT_EQ(output[5], 0.25);
@@ -443,7 +442,6 @@ TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPo
     EXPECT_EQ(output[0], -1);
     EXPECT_EQ(output[1], 0);
     EXPECT_EQ(output[2], 1);
-
     EXPECT_EQ(output[3], 0.5);
     EXPECT_EQ(output[4], -0.5);
     EXPECT_EQ(output[5], 0.25);

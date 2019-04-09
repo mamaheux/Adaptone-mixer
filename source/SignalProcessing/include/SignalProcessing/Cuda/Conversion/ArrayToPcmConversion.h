@@ -10,7 +10,6 @@
 
 namespace adaptone
 {
-
     template<class T>
     inline __device__ T round(T value)
     {
@@ -36,7 +35,6 @@ namespace adaptone
         {
             return max;
         }
-
         if (value < min)
         {
             return min;
@@ -78,11 +76,11 @@ namespace adaptone
     __device__ void arrayToSigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
+        constexpr T AbsMin = 1 << 23;
+
         std::size_t startIndex = threadIdx.x;
         std::size_t stride = blockDim.x;
         std::size_t n = frameSampleCount * channelCount;
-
-        constexpr T AbsMin = 1 << 23;
 
         for (std::size_t i = startIndex; i < n; i += stride)
         {
