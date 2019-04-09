@@ -9,12 +9,15 @@
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
 #include <SignalProcessing/Parameters/MixingParameters.h>
+#include <SignalProcessing/AnalysisDispatcher.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Data/PcmAudioFrame.h>
 #include <Utils/Functional/FunctionQueue.h>
 
 #include <cuda_runtime.h>
+
+#include <memory>
 
 namespace adaptone
 {
@@ -43,6 +46,11 @@ namespace adaptone
 
         FunctionQueue<bool()> m_updateFunctionQueue;
 
+        std::size_t m_frameSampleCounter;
+        std::size_t m_soundLevelLength;
+        std::map<AnalysisDispatcher::SoundLevelType, std::vector<T>> m_soundLevels;
+        std::shared_ptr<AnalysisDispatcher> m_analysisDispatcher;
+
     public:
         CudaSignalProcessor(std::size_t frameSampleCount,
             std::size_t sampleFrequency,
@@ -51,7 +59,9 @@ namespace adaptone
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
             std::size_t parametricEqFilterCount,
-            const std::vector<double>& eqCenterFrequencies);
+            const std::vector<double>& eqCenterFrequencies,
+            std::size_t soundLevelLength,
+            std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
         ~CudaSignalProcessor() override;
 
         DECLARE_NOT_COPYABLE(CudaSignalProcessor);
@@ -83,6 +93,8 @@ namespace adaptone
         void pushMixingGainUpdate();
         void pushOutputEqUpdate(std::size_t channel);
         void pushOutputGainUpdate();
+
+        void notifySoundLevelUpdateIfNeeded();
     };
 
     template<class T>
@@ -93,7 +105,9 @@ namespace adaptone
         PcmAudioFrame::Format inputFormat,
         PcmAudioFrame::Format outputFormat,
         std::size_t parametricEqFilterCount,
-        const std::vector<double>& eqCenterFrequencies) :
+        const std::vector<double>& eqCenterFrequencies,
+        std::size_t soundLevelLength,
+        std::shared_ptr<AnalysisDispatcher> analysisDispatcher) :
         m_frameSampleCount(frameSampleCount),
         m_sampleFrequency(sampleFrequency),
         m_inputChannelCount(inputChannelCount),
@@ -112,8 +126,16 @@ namespace adaptone
         m_inputEqParameters(sampleFrequency, parametricEqFilterCount, eqCenterFrequencies, inputChannelCount),
         m_mixingGainParameters(inputChannelCount, outputChannelCount),
         m_outputEqParameters(sampleFrequency, parametricEqFilterCount, eqCenterFrequencies, outputChannelCount),
-        m_outputGainParameters(outputChannelCount)
+        m_outputGainParameters(outputChannelCount),
+
+        m_frameSampleCounter(0),
+        m_soundLevelLength(soundLevelLength),
+        m_analysisDispatcher(analysisDispatcher)
     {
+        m_soundLevels[AnalysisDispatcher::SoundLevelType::InputGain] = std::vector<T>(inputChannelCount);
+        m_soundLevels[AnalysisDispatcher::SoundLevelType::InputEq] = std::vector<T>(inputChannelCount);
+        m_soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain] = std::vector<T>(outputChannelCount);
+
         pushInputGainUpdate();
         pushMixingGainUpdate();
         pushOutputGainUpdate();
@@ -239,12 +261,12 @@ namespace adaptone
             buffers.currentFrameIndex());
         __syncthreads();
 
-        processSoundLevel(buffers.inputSoundLevelBuffers(), buffers.currentInputGainOutputFrame());
+        processSoundLevel(buffers.inputGainSoundLevelBuffers(), buffers.currentInputGainOutputFrame());
 
-        processSoundLevel(buffers.inputSoundLevelBuffers(), buffers.currentInputEqOutputFrame());
+        processSoundLevel(buffers.inputEqSoundLevelBuffers(), buffers.currentInputEqOutputFrame());
 
         /*
-        processSoundLevel(buffers.outputSoundLevelBuffers(),
+        processSoundLevel(buffers.outputGainSoundLevelBuffers(),
             buffers.currentOutputEqOutputFrame());
         _syncthreads();
          */
@@ -270,6 +292,8 @@ namespace adaptone
         cudaMemcpy(m_buffers.currentInputPcmFrame(), inputFrame.data(), inputFrame.size(), cudaMemcpyHostToDevice);
         processKernel<<<1, 256>>>(m_buffers);
         cudaMemcpy(&m_outputFrame[0], m_buffers.currentOutputPcmFrame(), m_outputFrame.size(), cudaMemcpyDeviceToHost);
+
+        notifySoundLevelUpdateIfNeeded();
 
         m_buffers.nextFrame();
 
@@ -354,6 +378,35 @@ namespace adaptone
                     m_buffers.outputChannelCount() * sizeof(T), cudaMemcpyHostToDevice);
             });
         });
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::notifySoundLevelUpdateIfNeeded()
+    {
+        m_frameSampleCounter += m_frameSampleCount;
+
+        if (m_frameSampleCounter >= m_soundLevelLength)
+        {
+            cudaMemcpy(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputGain].data(),
+                m_buffers.inputGainSoundLevelBuffers().soundLevels(),
+                m_inputChannelCount * sizeof(T),
+                cudaMemcpyDeviceToHost);
+
+            cudaMemcpy(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputEq].data(),
+                m_buffers.inputEqSoundLevelBuffers().soundLevels(),
+                m_inputChannelCount * sizeof(T),
+                cudaMemcpyDeviceToHost);
+
+            cudaMemcpy(m_soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain].data(),
+                m_buffers.outputGainSoundLevelBuffers().soundLevels(),
+                m_outputChannelCount * sizeof(T),
+                cudaMemcpyDeviceToHost);
+
+            if (m_analysisDispatcher)
+            {
+                m_analysisDispatcher->notifySoundLevel(m_soundLevels);
+            }
+        }
     }
 }
 

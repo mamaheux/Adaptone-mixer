@@ -17,7 +17,8 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
         { "audio.output_channel_count", "14" },
         { "audio.processing_data_type", "float" },
         { "audio.eq.parametric_filter_count", "5" },
-        { "audio.eq.center_frequencies", "[10, 20]" }
+        { "audio.eq.center_frequencies", "[10, 20]" },
+        { "audio.analysis.sound_level_length", "4096" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -27,6 +28,7 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
     EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Float);
     EXPECT_EQ(configuration.parametricEqFilterCount(), 5);
     EXPECT_EQ(configuration.eqCenterFrequencies(), vector<double>({ 10, 20 }));
+    EXPECT_EQ(configuration.soundLevelLength(), 4096);
 }
 
 TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheAttributes)
@@ -39,7 +41,8 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
         { "audio.output_channel_count", "14" },
         { "audio.processing_data_type", "double" },
         { "audio.eq.parametric_filter_count", "5" },
-        { "audio.eq.center_frequencies", "[10, 20]" }
+        { "audio.eq.center_frequencies", "[10, 20]" },
+        { "audio.analysis.sound_level_length", "4096" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -49,6 +52,7 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
     EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Double);
     EXPECT_EQ(configuration.parametricEqFilterCount(), 5);
     EXPECT_EQ(configuration.eqCenterFrequencies(), vector<double>({ 10, 20 }));
+    EXPECT_EQ(configuration.soundLevelLength(), 4096);
 }
 
 TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetTheAttributes)
@@ -59,7 +63,10 @@ TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetThe
             { "audio.sample_frequency", "48000" },
             { "audio.input_channel_count", "16" },
             { "audio.output_channel_count", "14" },
-            { "audio.processing_data_type", "asdasd" }
+            { "audio.processing_data_type", "sdfsdfdsfsd" },
+            { "audio.eq.parametric_filter_count", "5" },
+            { "audio.eq.center_frequencies", "[10, 20]" },
+            { "audio.analysis.sound_level_length", "4096" }
         })),
         InvalidValueException);
 }

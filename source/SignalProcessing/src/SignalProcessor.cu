@@ -15,8 +15,10 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
     size_t outputChannelCount,
     PcmAudioFrame::Format inputFormat,
     PcmAudioFrame::Format outputFormat,
-    std::size_t parametricEqFilterCount,
-    const std::vector<double>& eqCenterFrequencies)
+    size_t parametricEqFilterCount,
+    const std::vector<double>& eqCenterFrequencies,
+    size_t soundLevelLength,
+    shared_ptr<AnalysisDispatcher> analysisDispatcher)
 {
     if (frameSampleCount < 2)
     {
@@ -32,7 +34,9 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
             inputFormat,
             outputFormat,
             parametricEqFilterCount,
-            eqCenterFrequencies);
+            eqCenterFrequencies,
+            soundLevelLength,
+            analysisDispatcher);
     }
     else if (processingDataType == ProcessingDataType::Double)
     {
@@ -43,7 +47,9 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
             inputFormat,
             outputFormat,
             parametricEqFilterCount,
-            eqCenterFrequencies);
+            eqCenterFrequencies,
+            soundLevelLength,
+            analysisDispatcher);
     }
     else
     {

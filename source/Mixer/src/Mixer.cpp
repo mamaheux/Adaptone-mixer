@@ -1,5 +1,6 @@
 #include <Mixer/Mixer.h>
 
+#include <Mixer/MixerAnalysisDispatcher.h>
 #include <Mixer/AudioInput/RawFileAudioInput.h>
 #include <Mixer/AudioOutput/RawFileAudioOutput.h>
 
@@ -26,6 +27,8 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
 
     unique_ptr<SignalProcessor> signalProcessor = createSignalProcessor();
 
+    shared_ptr<SignalProcessor> analysisDispatcher = createAnalysisDispatcher();
+
     //Create all members, then assign them to the attributes to prevent memory leaks
     m_logger = logger;
 
@@ -33,6 +36,8 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     m_audioOutput = move(audioOutput);
 
     m_signalProcessor = move(signalProcessor);
+
+    m_analysisDispatcher = analysisDispatcher;
 }
 
 Mixer::~Mixer()
@@ -127,7 +132,13 @@ unique_ptr<SignalProcessor> Mixer::createSignalProcessor()
         m_configuration.audioInput().format(),
         m_configuration.audioOutput().format(),
         m_configuration.audio().parametricEqFilterCount(),
-        m_configuration.audio().eqCenterFrequencies());
+        m_configuration.audio().eqCenterFrequencies(),
+        m_configuration.audio().soundLevelLength());
+}
+
+shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher()
+{
+    return make_shared<MixerAnalysisDispatcher>();
 }
 
 void Mixer::analysisRun()
