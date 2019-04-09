@@ -66,8 +66,8 @@ void mallocFrames(double** inputFrames, double** outputFrame, size_t channelCoun
     cudaMallocManaged(reinterpret_cast<void**>(inputFrames), inputFramesSize);
     cudaMallocManaged(reinterpret_cast<void**>(outputFrame), outputFrameSize);
 
-    cudaMemset(inputFrames, 0, inputFramesSize);
-    cudaMemset(outputFrame, 0, outputFrameSize);
+    cudaMemset(*inputFrames, 0, inputFramesSize);
+    cudaMemset(*outputFrame, 0, outputFrameSize);
 }
 
 __global__ void processEqKernel(CudaEqBuffers<double> buffers, double* inputFrames, double* currentOutputFrame,

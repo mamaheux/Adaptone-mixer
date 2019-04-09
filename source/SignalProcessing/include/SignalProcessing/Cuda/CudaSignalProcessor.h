@@ -243,10 +243,11 @@ namespace adaptone
     template<class T>
     __global__ void processKernel(CudaSignalProcessorBuffers<T> buffers)
     {
-        buffers.pcmToArrayConversionFunction()(buffers.currentInputPcmFrame(),
+        convertPcmToArray<T>(buffers.currentInputPcmFrame(),
             buffers.currentInputFrame(),
             buffers.frameSampleCount(),
-            buffers.inputChannelCount());
+            buffers.inputChannelCount(),
+            buffers.inputFormat());
         __syncthreads();
 
         processEq(buffers.inputEqBuffers(),
@@ -261,6 +262,12 @@ namespace adaptone
             buffers.currentFrameIndex());
         __syncthreads();
 
+        convertArrayToPcm<T>(buffers.currentInputFrame(),
+            buffers.currentOutputPcmFrame(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount(),
+            buffers.outputFormat());
+        __syncthreads();
         processSoundLevel(buffers.inputGainSoundLevelBuffers(), buffers.currentInputGainOutputFrame());
 
         processSoundLevel(buffers.inputEqSoundLevelBuffers(), buffers.currentInputEqOutputFrame());
