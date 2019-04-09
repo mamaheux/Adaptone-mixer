@@ -16,10 +16,10 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
 {
     size_t frameSampleCount = 3;
     size_t channelCount = 2;
-    float* input;
+    double* input;
     int8_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(double));
     cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(int8_t));
 
     input[0] = -1;
