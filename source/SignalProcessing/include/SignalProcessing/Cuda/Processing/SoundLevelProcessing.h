@@ -1,7 +1,7 @@
 #ifndef SIGNAL_PROCESSING_CUDA_PROCESSING_SOUND_LEVEL_PROCESSING_H
 #define SIGNAL_PROCESSING_CUDA_PROCESSING_SOUND_LEVEL_PROCESSING_H
 
-#include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
+#include <SignalProcessing/Cuda/CudaSoundLevelBuffers.h>
 
 #include <Utils/Exception/NotSupportedException.h>
 
@@ -12,7 +12,7 @@
 namespace adaptone
 {
     template<class T>
-    __device__ void calculateSoundLevel(CudaSignalProcessorBuffers<T>& soundLevelBuffer, T* currentInputFrame)
+    __device__ void calculateSoundLevel(CudaSoundLevelBuffers<T>& soundLevelBuffer, T* currentInputFrame)
     {
         std::size_t startIndex = threadIdx.x;
         std::size_t stride = blockDim.x;
@@ -29,7 +29,7 @@ namespace adaptone
     }
 
     template<class T>
-    __device__ void processSoundLevel(CudaSignalProcessorBuffers<T>& soundLevelBuffer, T* inputFrame)
+    __device__ void processSoundLevel(CudaSoundLevelBuffers<T>& soundLevelBuffer, T* inputFrame)
     {
         calculateSoundLevel(soundLevelBuffer, inputFrame);
     }
