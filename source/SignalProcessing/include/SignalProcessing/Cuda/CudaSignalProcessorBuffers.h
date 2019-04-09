@@ -184,12 +184,13 @@ namespace adaptone
         m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
         m_outputEqBuffers(outputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
 
-        m_inputFormat(inputFormat),
-        m_outputFormat(outputFormat),
-
         m_inputGainSoundLevelBuffers(inputChannelCount, frameSampleCount),
         m_inputEqSoundLevelBuffers(inputChannelCount, frameSampleCount),
         m_outputGainSoundLevelBuffers(outputChannelCount, frameSampleCount),
+
+        m_inputFormat(inputFormat),
+        m_outputFormat(outputFormat),
+
         m_hasOwnership(true)
     {
         cudaMalloc(reinterpret_cast<void**>(&m_inputPcmFrames), m_inputPcmFrameSize * frameCount);

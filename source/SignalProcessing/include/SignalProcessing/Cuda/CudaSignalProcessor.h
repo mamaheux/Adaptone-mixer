@@ -268,27 +268,10 @@ namespace adaptone
             buffers.inputChannelCount(),
             buffers.outputFormat());
         __syncthreads();
+
         processSoundLevel(buffers.inputGainSoundLevelBuffers(), buffers.currentInputGainOutputFrame());
-
         processSoundLevel(buffers.inputEqSoundLevelBuffers(), buffers.currentInputEqOutputFrame());
-
-        /*
-        processSoundLevel(buffers.outputGainSoundLevelBuffers(),
-            buffers.currentOutputEqOutputFrame());
-        _syncthreads();
-         */
-
-        //TODO Remove the following code
-        int index = threadIdx.x;
-        int stride = blockDim.x;
-
-        uint8_t* inputPcmFrame = buffers.currentInputPcmFrame();
-        uint8_t* outputPcmFrame = buffers.currentOutputPcmFrame();
-
-        for (int i = index; i < buffers.inputPcmFrameSize() && i < buffers.outputPcmFrameSize(); i += stride)
-        {
-            outputPcmFrame[i] = inputPcmFrame[i];
-        }
+        processSoundLevel(buffers.outputGainSoundLevelBuffers(), buffers.currentOutputFrame());
     }
 
     template<class T>
@@ -327,7 +310,6 @@ namespace adaptone
         {
             return m_inputEqParameters.tryApplyingUpdate(channel, [&, channel]()
             {
-
                 CudaEqBuffers<T>& eqBuffers = m_buffers.inputEqBuffers();
 
                 cudaMemcpy(eqBuffers.biquadCoefficients(channel),
@@ -394,20 +376,9 @@ namespace adaptone
 
         if (m_frameSampleCounter >= m_soundLevelLength)
         {
-            cudaMemcpy(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputGain].data(),
-                m_buffers.inputGainSoundLevelBuffers().soundLevels(),
-                m_inputChannelCount * sizeof(T),
-                cudaMemcpyDeviceToHost);
-
-            cudaMemcpy(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputEq].data(),
-                m_buffers.inputEqSoundLevelBuffers().soundLevels(),
-                m_inputChannelCount * sizeof(T),
-                cudaMemcpyDeviceToHost);
-
-            cudaMemcpy(m_soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain].data(),
-                m_buffers.outputGainSoundLevelBuffers().soundLevels(),
-                m_outputChannelCount * sizeof(T),
-                cudaMemcpyDeviceToHost);
+            m_buffers.inputGainSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputGain]);
+            m_buffers.inputEqSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputEq]);
+            m_buffers.outputGainSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain]);
 
             if (m_analysisDispatcher)
             {

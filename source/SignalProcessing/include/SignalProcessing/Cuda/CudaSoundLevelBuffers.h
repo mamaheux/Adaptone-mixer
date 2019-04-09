@@ -7,16 +7,17 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <vector>
 
-/**
- * Buffer format:
- * c1mv = channel 1 maximum value
- *
- * m_soundLevels: | c1mv | c2mv | c3mv | ... | c16mv |
- *
- */
 namespace adaptone
 {
+    /**
+     * Buffer format:
+     * c1mv = channel 1 maximum value
+     *
+     * m_soundLevels: | c1mv | c2mv | c3mv | ... | c16mv |
+     *
+     */
     template<class T>
     class CudaSoundLevelBuffers
     {
@@ -37,6 +38,8 @@ namespace adaptone
         __device__ __host__ T* soundLevels();
         __device__ __host__ std::size_t channelCount();
         __device__ __host__ std::size_t frameSampleCount();
+
+        __host__ void toVector(std::vector<T>& soundLevels);
     };
 
     template<class T>
@@ -79,6 +82,15 @@ namespace adaptone
     inline __device__ __host__ std::size_t CudaSoundLevelBuffers<T>::frameSampleCount()
     {
         return m_frameSampleCount;
+    }
+
+    template<class T>
+    inline __host__ void CudaSoundLevelBuffers<T>::toVector(std::vector<T>& soundLevels)
+    {
+        cudaMemcpy(soundLevels.data(),
+            m_soundLevels,
+            m_channelCount * sizeof(T),
+            cudaMemcpyDeviceToHost);
     }
 }
 

@@ -27,7 +27,7 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
 
     unique_ptr<SignalProcessor> signalProcessor = createSignalProcessor();
 
-    shared_ptr<SignalProcessor> analysisDispatcher = createAnalysisDispatcher();
+    shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher();
 
     //Create all members, then assign them to the attributes to prevent memory leaks
     m_logger = logger;
@@ -133,7 +133,8 @@ unique_ptr<SignalProcessor> Mixer::createSignalProcessor()
         m_configuration.audioOutput().format(),
         m_configuration.audio().parametricEqFilterCount(),
         m_configuration.audio().eqCenterFrequencies(),
-        m_configuration.audio().soundLevelLength());
+        m_configuration.audio().soundLevelLength(),
+        m_analysisDispatcher);
 }
 
 shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher()

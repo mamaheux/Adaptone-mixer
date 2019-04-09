@@ -1,6 +1,8 @@
 #ifndef SIGNAL_PROCESSING_ANALYSIS_DISPATCHER_H
 #define SIGNAL_PROCESSING_ANALYSIS_DISPATCHER_H
 
+#include <Utils/ClassMacro.h>
+
 #include <vector>
 #include <map>
 
@@ -15,6 +17,9 @@ namespace adaptone
             InputEq,
             OutputGain
         };
+
+        DECLARE_NOT_COPYABLE(AnalysisDispatcher);
+        DECLARE_NOT_MOVABLE(AnalysisDispatcher);
 
         AnalysisDispatcher();
         virtual ~AnalysisDispatcher();
