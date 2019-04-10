@@ -6,47 +6,47 @@ using namespace adaptone;
 using namespace std;
 
 template<class T>
-__global__ void processGainKernel(T* inputFrames, T* outputFrames, T* gains, std::size_t frameSampleCount,
+__global__ void processGainKernel(T* inputFrame, T* outputFrame, T* gains, std::size_t frameSampleCount,
     std::size_t channelCount)
 {
-    processGain(inputFrames, outputFrames, gains, frameSampleCount, channelCount);
+    processGain(inputFrame, outputFrame, gains, frameSampleCount, channelCount);
 }
 
 TEST(GainProcessingTests, processGain_shouldApplyGainToInput)
 {
     size_t frameSampleCount = 3;
     size_t channelCount = 2;
-    float* inputFrames;
-    float* outputFrames;
+    float* inputFrame;
+    float* outputFrame;
     float* gains;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&inputFrames), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&outputFrames), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&gains), frameSampleCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&inputFrame), frameSampleCount * channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&outputFrame), frameSampleCount * channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&gains), channelCount * sizeof(float));
 
-    inputFrames[0] = -128;
-    inputFrames[1] = 1;
-    inputFrames[2] = 127;
+    inputFrame[0] = -128;
+    inputFrame[1] = 1;
+    inputFrame[2] = 127;
 
-    inputFrames[3] = 64;
-    inputFrames[4] = -64;
-    inputFrames[5] = 32;
+    inputFrame[3] = 64;
+    inputFrame[4] = -64;
+    inputFrame[5] = 32;
 
     gains[0] = 0.5;
-    gains[1] = 1;
-    gains[2] = 1.5;
+    gains[1] = 2;
 
-    processGainKernel<<<1, 256>>>(inputFrames, outputFrames, gains, frameSampleCount, channelCount);
+    processGainKernel<<<1, 256>>>(inputFrame, outputFrame, gains, frameSampleCount, channelCount);
     cudaDeviceSynchronize();
 
-    EXPECT_EQ(outputFrames[0], -64);
-    EXPECT_EQ(outputFrames[1], 1);
-    EXPECT_EQ(outputFrames[2], 190.5);
-    EXPECT_EQ(outputFrames[3], 32);
-    EXPECT_EQ(outputFrames[4], -64);
-    EXPECT_EQ(outputFrames[5], 48);
+    EXPECT_EQ(outputFrame[0], -64);
+    EXPECT_EQ(outputFrame[1], 0.5);
+    EXPECT_EQ(outputFrame[2], 63.5);
 
-    cudaFree(inputFrames);
-    cudaFree(outputFrames);
+    EXPECT_EQ(outputFrame[3], 128);
+    EXPECT_EQ(outputFrame[4], -128);
+    EXPECT_EQ(outputFrame[5], 64);
+
+    cudaFree(inputFrame);
+    cudaFree(outputFrame);
     cudaFree(gains);
 }

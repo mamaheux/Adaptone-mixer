@@ -9,7 +9,7 @@
 namespace adaptone
 {
     template<class T>
-    __device__ void processGain(T* inputFrames, T* outputFrames, T* gains, std::size_t frameSampleCount,
+    __device__ void processGain(T* inputFrame, T* outputFrame, T* gains, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
         std::size_t startIndex = threadIdx.x;
@@ -18,7 +18,7 @@ namespace adaptone
 
         for (std::size_t i = startIndex; i < n; i += stride)
         {
-            outputFrames[i] = inputFrames[i] * gains[i % frameSampleCount];
+            outputFrame[i] = inputFrame[i] * gains[i / frameSampleCount];
         }
     }
 }

@@ -274,7 +274,7 @@ namespace adaptone
             buffers.currentOutputFrame(),
             buffers.outputGains(),
             buffers.frameSampleCount(),
-            buffers.inputChannelCount());
+            buffers.outputChannelCount());
         __syncthreads();
 
         convertArrayToPcm<T>(buffers.currentOutputFrame(),
