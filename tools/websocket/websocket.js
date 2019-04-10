@@ -35,7 +35,7 @@ document.getElementById("stop-button").onclick = function() {
     }
     else
     {
-        console.error("Connexion déjà terminé.");
+        console.error("Connexion déjà terminée.");
     }
 }
 
