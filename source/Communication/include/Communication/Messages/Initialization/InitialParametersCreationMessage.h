@@ -2,7 +2,6 @@
 #define COMMUNICATION_MESAGES_INITIALIZATION_INITIAL_PARAMETERS_CREATION_MESSAGE_H
 
 #include <Communication/Messages/ApplicationMessage.h>
-#include <Communication/Messages/Initialization/ConfigurationPosition.h>
 
 #include <cstddef>
 #include <string>
