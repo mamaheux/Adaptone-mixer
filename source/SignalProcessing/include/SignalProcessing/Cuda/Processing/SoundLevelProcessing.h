@@ -20,9 +20,10 @@ namespace adaptone
 
         for (std::size_t channelIndex = startIndex; channelIndex < n; channelIndex += stride)
         {
-            for (std::size_t sampleIndex = 1; sampleIndex < soundLevelBuffer.frameSampleCount(); sampleIndex++)
+            for (std::size_t sampleIndex = 0; sampleIndex < soundLevelBuffer.frameSampleCount(); sampleIndex++)
             {
-                T currentInputSampleValue = abs(currentInputFrame[channelIndex * soundLevelBuffer.frameSampleCount() + sampleIndex]);
+                T currentInputSampleValue =
+                    abs(currentInputFrame[channelIndex * soundLevelBuffer.frameSampleCount() + sampleIndex]);
 
                 if (currentInputSampleValue > soundLevelBuffer.soundLevels()[channelIndex])
                 {

@@ -65,7 +65,10 @@ namespace adaptone
     template<class T>
     inline __host__ CudaSoundLevelBuffers<T>::~CudaSoundLevelBuffers()
     {
-        cudaFree(m_soundLevels);
+        if (m_hasOwnership)
+        {
+            cudaFree(m_soundLevels);
+        }
     }
 
     template<class T>

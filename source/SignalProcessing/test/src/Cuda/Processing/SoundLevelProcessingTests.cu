@@ -30,6 +30,7 @@ TEST(SoundLevelProcessingTests, processSoundLevel_shouldUpdateSoundLevelsAppropr
     currentFrame[5] = 32;
 
     processSoundLevelKernel<<<1, 256>>>(soundLevelsBuffers, currentFrame);
+    cudaDeviceSynchronize();
     soundLevelsBuffers.toVector(soundLevels);
 
     EXPECT_EQ(soundLevels[0], 128);
