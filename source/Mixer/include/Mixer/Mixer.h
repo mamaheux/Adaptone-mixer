@@ -12,6 +12,8 @@
 #include <SignalProcessing/AnalysisDispatcher.h>
 
 #include <Communication/ApplicationWebSocket.h>
+#include <Communication/Handlers/ConnectionHandler.h>
+#include <Communication/Handlers/ApplicationMessageHandler.h>
 
 #include <memory>
 #include <atomic>
@@ -27,9 +29,11 @@ namespace adaptone
         std::unique_ptr<AudioInput> m_audioInput;
         std::unique_ptr<AudioOutput> m_audioOutput;
 
-        std::unique_ptr<SignalProcessor> m_signalProcessor;
         std::shared_ptr<AnalysisDispatcher> m_analysisDispatcher;
+        std::shared_ptr<SignalProcessor> m_signalProcessor;
 
+        std::shared_ptr<ConnectionHandler> m_connectionHandler;
+        std::shared_ptr<ApplicationMessageHandler> m_applicationMessageHandler;
         std::unique_ptr<ApplicationWebSocket> m_applicationWebSocket;
 
         std::unique_ptr<std::thread> m_analysisThread;
@@ -52,10 +56,15 @@ namespace adaptone
         std::unique_ptr<AudioInput> createAudioInput();
         std::unique_ptr<AudioOutput> createAudioOutput();
 
-        std::unique_ptr<SignalProcessor> createSignalProcessor();
         std::shared_ptr<AnalysisDispatcher> createAnalysisDispatcher();
+        std::shared_ptr<SignalProcessor> createSignalProcessor(std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
 
-        std::unique_ptr<ApplicationWebSocket> createApplicationWebSocket(std::shared_ptr<Logger> logger);
+        std::shared_ptr<ConnectionHandler> createConnectionHandler(std::shared_ptr<SignalProcessor> signalProcessor);
+        std::shared_ptr<ApplicationMessageHandler> createApplicationMessageHandler(
+            std::shared_ptr<SignalProcessor> signalProcessor);
+        std::unique_ptr<ApplicationWebSocket> createApplicationWebSocket(std::shared_ptr<Logger> logger,
+            std::shared_ptr<ConnectionHandler> connectionHandler,
+            std::shared_ptr<ApplicationMessageHandler> applicationMessageHandler);
 
         void processingRun();
         void analysisRun();

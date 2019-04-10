@@ -1,6 +1,8 @@
 #include <Mixer/Mixer.h>
 
 #include <Mixer/MixerAnalysisDispatcher.h>
+#include <Mixer/MixerConnectionHandler.h>
+#include <Mixer/MixerApplicationMessageHandler.h>
 #include <Mixer/AudioInput/RawFileAudioInput.h>
 #include <Mixer/AudioOutput/RawFileAudioOutput.h>
 
@@ -25,10 +27,14 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     unique_ptr<AudioInput> audioInput = createAudioInput();
     unique_ptr<AudioOutput> audioOutput = createAudioOutput();
 
-    unique_ptr<SignalProcessor> signalProcessor = createSignalProcessor();
     shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher();
+    shared_ptr<SignalProcessor> signalProcessor = createSignalProcessor(analysisDispatcher);
 
-    unique_ptr<ApplicationWebSocket> applicationWebSocket = createApplicationWebSocket(logger);
+    shared_ptr<ConnectionHandler> connectionHandler = createConnectionHandler(signalProcessor);
+    shared_ptr<ApplicationMessageHandler> applicationMessageHandler = createApplicationMessageHandler(signalProcessor);
+    unique_ptr<ApplicationWebSocket> applicationWebSocket = createApplicationWebSocket(logger,
+        connectionHandler,
+        applicationMessageHandler);
 
     //Create all members, then assign them to the attributes to prevent memory leaks
     m_logger = logger;
@@ -36,9 +42,11 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     m_audioInput = move(audioInput);
     m_audioOutput = move(audioOutput);
 
-    m_signalProcessor = move(signalProcessor);
+    m_signalProcessor = signalProcessor;
     m_analysisDispatcher = analysisDispatcher;
 
+    m_connectionHandler = connectionHandler;
+    m_applicationMessageHandler = applicationMessageHandler;
     m_applicationWebSocket = move(applicationWebSocket);
 }
 
@@ -130,7 +138,12 @@ unique_ptr<AudioOutput> Mixer::createAudioOutput()
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
 }
 
-unique_ptr<SignalProcessor> Mixer::createSignalProcessor()
+shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher()
+{
+    return make_shared<MixerAnalysisDispatcher>();
+}
+
+shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatcher)
 {
     return make_unique<SignalProcessor>(m_configuration.audio().processingDataType(),
         m_configuration.audio().frameSampleCount(),
@@ -142,17 +155,27 @@ unique_ptr<SignalProcessor> Mixer::createSignalProcessor()
         m_configuration.audio().parametricEqFilterCount(),
         m_configuration.audio().eqCenterFrequencies(),
         m_configuration.audio().soundLevelLength(),
-        m_analysisDispatcher);
+        analysisDispatcher);
 }
 
-shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher()
+shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalProcessor> signalProcessor)
 {
-    return make_shared<MixerAnalysisDispatcher>();
+    return make_shared<MixerConnectionHandler>(signalProcessor);
 }
 
-unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger)
+shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
+    shared_ptr<SignalProcessor> signalProcessor)
+{
+    return make_shared<MixerApplicationMessageHandler>(signalProcessor);
+}
+
+unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger,
+    shared_ptr<ConnectionHandler> connectionHandler,
+    shared_ptr<ApplicationMessageHandler> applicationMessageHandler)
 {
     return make_unique<ApplicationWebSocket>(logger,
+        connectionHandler,
+        applicationMessageHandler,
         m_configuration.webSocket().endpoint(),
         m_configuration.webSocket().port());
 }

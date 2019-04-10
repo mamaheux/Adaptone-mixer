@@ -7,8 +7,14 @@ using namespace std::placeholders;
 using WsServer = SimpleWeb::SocketServer<SimpleWeb::WS>;
 using nlohmann::json;
 
-ApplicationWebSocket::ApplicationWebSocket(shared_ptr<Logger> logger, const string& endpoint, uint16_t port) :
+ApplicationWebSocket::ApplicationWebSocket(shared_ptr<Logger> logger,
+    shared_ptr<ConnectionHandler> connectionHandler,
+    shared_ptr<ApplicationMessageHandler> applicationMessageHandler,
+    const string& endpoint,
+    uint16_t port) :
     m_logger(logger),
+    m_connectionHandler(connectionHandler),
+    m_applicationMessageHandler(applicationMessageHandler),
 
     m_server(),
     m_endpoint(m_server.endpoint[endpoint]),
@@ -62,6 +68,7 @@ void ApplicationWebSocket::onOpen(shared_ptr<WsServer::Connection> connection)
     {
         m_logger->log(Logger::Level::Information, "Connection opened (" + connectionToString(connection) + ")");
         m_applicationConnection = connection;
+        m_connectionHandler->handleConnection();
     }
 }
 
@@ -72,6 +79,7 @@ void ApplicationWebSocket::onClose(shared_ptr<WsServer::Connection> connection, 
         m_logger->log(Logger::Level::Information,
             "Connection closed (" + connectionToString(connection) + " (" + to_string(status) + ", " + reason + "))");
         m_applicationConnection.reset();
+        m_connectionHandler->handleDisconnection();
     }
 }
 
@@ -82,6 +90,7 @@ void ApplicationWebSocket::onError(shared_ptr<WsServer::Connection> connection, 
         m_logger->log(Logger::Level::Error,
             "Connection closed (" + connectionToString(connection) + " (" + ec.message() + ")");
         m_applicationConnection.reset();
+        m_connectionHandler->handleDisconnection();
     }
 }
 
@@ -91,15 +100,13 @@ void ApplicationWebSocket::onMessage(shared_ptr<WsServer::Connection> connection
     try
     {
         json j = json::parse(message->string());
-        //TODO ajout le callback
-
-
+        m_applicationMessageHandler->handle(j);
     }
-    catch(exception& ex)
+    catch (exception& ex)
     {
         m_logger->log(Logger::Level::Error, ex, "message=" + message->string());
     }
-    catch(...)
+    catch (...)
     {
         m_logger->log(Logger::Level::Error, "Unknown error message=" + message->string());
     }
