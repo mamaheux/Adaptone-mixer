@@ -49,7 +49,6 @@ namespace adaptone
         if (m_applicationConnection)
         {
             nlohmann::json j = object;
-
             m_applicationConnection->send(j.dump());
         }
     }
