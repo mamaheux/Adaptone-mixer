@@ -26,8 +26,9 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     unique_ptr<AudioOutput> audioOutput = createAudioOutput();
 
     unique_ptr<SignalProcessor> signalProcessor = createSignalProcessor();
-
     shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher();
+
+    unique_ptr<ApplicationWebSocket> applicationWebSocket = createApplicationWebSocket(logger);
 
     //Create all members, then assign them to the attributes to prevent memory leaks
     m_logger = logger;
@@ -36,8 +37,9 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     m_audioOutput = move(audioOutput);
 
     m_signalProcessor = move(signalProcessor);
-
     m_analysisDispatcher = analysisDispatcher;
+
+    m_applicationWebSocket = move(applicationWebSocket);
 }
 
 Mixer::~Mixer()
@@ -48,17 +50,23 @@ void Mixer::run()
 {
     m_stopped.store(false);
     m_analysisThread = make_unique<thread>(&Mixer::analysisRun, this);
-    //TODO Add the websocket start
+    m_applicationWebSocketThread = make_unique<thread>(&Mixer::applicationWebSocketRun, this);
+    this_thread::sleep_for(1s); //Make sure the websocket is properly started.
 
     processingRun();
 
     m_analysisThread->join();
+    m_applicationWebSocketThread->join();
 }
 
 void Mixer::stop()
 {
+    if (!m_stopped.load())
+    {
+        m_applicationWebSocket->stop();
+    }
+
     m_stopped.store(true);
-    //TODO Add the websocket stop
 }
 
 shared_ptr<Logger> Mixer::createLogger()
@@ -142,20 +150,11 @@ shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher()
     return make_shared<MixerAnalysisDispatcher>();
 }
 
-void Mixer::analysisRun()
+unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger)
 {
-    try
-    {
-        while (!m_stopped.load())
-        {
-            //TODO Add the analysis code
-        }
-    }
-    catch (exception& ex)
-    {
-        m_logger->log(Logger::Level::Error, ex);
-    }
-    m_stopped.store(true);
+    return make_unique<ApplicationWebSocket>(logger,
+        m_configuration.webSocket().endpoint(),
+        m_configuration.webSocket().port());
 }
 
 void Mixer::processingRun()
@@ -173,5 +172,26 @@ void Mixer::processingRun()
     {
         m_logger->log(Logger::Level::Error, ex);
     }
-    m_stopped.store(true);
+    stop();
+}
+
+void Mixer::analysisRun()
+{
+    try
+    {
+        while (!m_stopped.load())
+        {
+            //TODO Add the analysis code
+        }
+    }
+    catch (exception& ex)
+    {
+        m_logger->log(Logger::Level::Error, ex);
+    }
+    stop();
+}
+
+void Mixer::applicationWebSocketRun()
+{
+    m_applicationWebSocket->start();
 }

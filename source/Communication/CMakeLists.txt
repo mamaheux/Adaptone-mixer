@@ -6,6 +6,7 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../3rdParty/Websocket)
 include_directories(../3rdParty/json/include)
+include_directories(../Utils/include)
 include_directories(include)
 
 file(GLOB_RECURSE
@@ -20,6 +21,7 @@ add_library(Communication
 set_property(TARGET Communication PROPERTY CXX_STANDARD 14)
 
 target_link_libraries(Communication
+    Utils
     simple-websocket-server
     nlohmann_json)
 

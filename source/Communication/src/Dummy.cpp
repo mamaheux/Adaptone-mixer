@@ -13,6 +13,7 @@ void adaptone::startWebSocket()
 {
     WsServer server;
     server.config.port = 8080;
+    server.config.thread_pool_size = 1;
 
     auto& echo = server.endpoint["^/echo/?$"];
 
