@@ -16,6 +16,8 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
     constexpr const char* ParametricEqFilterCountPropertyKey = "audio.eq.parametric_filter_count";
     constexpr const char* EqCenterFrequenciesPropertyKey = "audio.eq.center_frequencies";
 
+    constexpr const char* SoundLevelLengthPropertyKey = "audio.analysis.sound_level_length";
+
     m_frameSampleCount = properties.get<size_t>(FrameSampleCountPropertyKey);
     m_sampleFrequency = properties.get<size_t>(SampleFrequencyPropertyKey);
     m_inputChannelCount = properties.get<size_t>(InputChannelCountPropertyKey);
@@ -38,6 +40,8 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
 
     m_parametricEqFilterCount = properties.get<size_t>(ParametricEqFilterCountPropertyKey);
     m_eqCenterFrequencies = properties.get<vector<double>>(EqCenterFrequenciesPropertyKey);
+
+    m_soundLevelLength = properties.get<size_t>(SoundLevelLengthPropertyKey);
 }
 
 AudioConfiguration::~AudioConfiguration()
