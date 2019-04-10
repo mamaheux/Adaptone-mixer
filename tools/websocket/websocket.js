@@ -49,3 +49,4 @@ document.getElementById("send-button").onclick = function() {
         console.error("Connexion terminé.");
     }
 }
+
