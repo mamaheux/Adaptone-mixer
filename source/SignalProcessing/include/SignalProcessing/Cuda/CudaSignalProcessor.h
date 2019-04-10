@@ -6,6 +6,7 @@
 #include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
 #include <SignalProcessing/Cuda/Processing/GainProcessing.h>
+#include <SignalProcessing/Cuda/Processing/MixProcessing.h>
 #include <SignalProcessing/Cuda/Processing/SoundLevelProcessing.h>
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
@@ -262,6 +263,14 @@ namespace adaptone
             buffers.inputGainOutputFrames(),
             buffers.currentInputEqOutputFrame(),
             buffers.currentFrameIndex());
+        __syncthreads();
+
+        processMix(buffers.currentInputGainOutputFrame(),
+            buffers.currentMixingOutputFrame(),
+            buffers.mixingGains(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount(),
+            buffers.outputChannelCount());
         __syncthreads();
 
         processEq(buffers.outputEqBuffers(),
