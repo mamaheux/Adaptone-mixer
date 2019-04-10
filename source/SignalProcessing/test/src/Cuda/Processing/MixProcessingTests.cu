@@ -14,7 +14,7 @@ __global__ void processMixKernel(T* inputFrame, T* outputFrame, T* gains, std::s
 
 TEST(MixProcessingTests, processMix_shouldMixTheInput)
 {
-    size_t frameSampleCount = 3;
+    size_t frameSampleCount = 4;
     size_t inputChannelCount = 3;
     size_t outputChannelCount = 2;
     float* inputFrame;
@@ -28,18 +28,22 @@ TEST(MixProcessingTests, processMix_shouldMixTheInput)
     inputFrame[0] = -128;
     inputFrame[1] = 1;
     inputFrame[2] = 127;
+    inputFrame[3] = 16;
 
-    inputFrame[3] = 64;
-    inputFrame[4] = -64;
-    inputFrame[5] = 32;
+    inputFrame[4] = 64;
+    inputFrame[5] = -64;
+    inputFrame[6] = 32;
+    inputFrame[7] = 32;
 
-    inputFrame[3] = -32;
-    inputFrame[4] = 127;
-    inputFrame[5] = 64;
+    inputFrame[8] = -32;
+    inputFrame[9] = 127;
+    inputFrame[10] = 64;
+    inputFrame[11] = 64;
 
     gains[0] = 0.5;
     gains[1] = 2;
     gains[2] = -0.5;
+
     gains[3] = 0.25;
     gains[4] = 1.5;
     gains[5] = -1.5;
@@ -47,13 +51,15 @@ TEST(MixProcessingTests, processMix_shouldMixTheInput)
     processMixKernel<<<1, 256>>>(inputFrame, outputFrame, gains, frameSampleCount, inputChannelCount, outputChannelCount);
     cudaDeviceSynchronize();
 
-    EXPECT_EQ(outputFrame[0], -144);
-    EXPECT_EQ(outputFrame[1], 223);
-    EXPECT_EQ(outputFrame[2], 143.5);
+    EXPECT_EQ(outputFrame[0], 80);
+    EXPECT_EQ(outputFrame[1], -191);
+    EXPECT_EQ(outputFrame[2], 95.5);
+    EXPECT_EQ(outputFrame[3], 40);
 
-    EXPECT_EQ(outputFrame[3], -192);
-    EXPECT_EQ(outputFrame[4], -204.5);
-    EXPECT_EQ(outputFrame[5], 166);
+    EXPECT_EQ(outputFrame[4], 112);
+    EXPECT_EQ(outputFrame[5], -286.25);
+    EXPECT_EQ(outputFrame[6], -16.25);
+    EXPECT_EQ(outputFrame[7], -44);
 
     cudaFree(inputFrame);
     cudaFree(outputFrame);

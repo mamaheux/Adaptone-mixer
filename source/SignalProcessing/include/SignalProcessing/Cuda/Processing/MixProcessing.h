@@ -1,8 +1,6 @@
 #ifndef SIGNAL_PROCESSING_CUDA_PROCESSING_MIX_PROCESSING_H
 #define SIGNAL_PROCESSING_CUDA_PROCESSING_MIX_PROCESSING_H
 
-#include <SignalProcessing/Cuda/CudaEqBuffers.h>
-
 #include <cstddef>
 #include <cstdint>
 
@@ -14,16 +12,18 @@ namespace adaptone
     {
         std::size_t startIndex = threadIdx.x;
         std::size_t stride = blockDim.x;
-        std::size_t outputN = frameSampleCount * outputChannelCount;
-        std::size_t inputN = frameSampleCount * inputChannelCount;
+        std::size_t n = frameSampleCount * outputChannelCount;
 
-        for (std::size_t outputIndex = startIndex; outputIndex < outputN; outputIndex += stride)
+        for (std::size_t outputIndex = startIndex; outputIndex < n; outputIndex += stride)
         {
+            std::size_t outputChannel = outputIndex / frameSampleCount;
+            std::size_t sampleIndex = outputIndex % frameSampleCount;
+
             outputFrame[outputIndex] = 0;
-            for (std::size_t inputIndex = outputIndex; inputIndex < inputN; inputIndex += frameSampleCount)
+            for (std::size_t inputChannel = 0; inputChannel < frameSampleCount; inputChannel += 1)
             {
-                outputFrame[outputIndex] += inputFrame[inputIndex] *
-                    gains[(outputIndex % outputChannelCount) * inputChannelCount + (inputIndex % frameSampleCount)];
+                outputFrame[outputIndex] += inputFrame[inputChannel * frameSampleCount + sampleIndex] *
+                    gains[outputChannel * inputChannelCount + inputChannel];
             }
         }
     }
