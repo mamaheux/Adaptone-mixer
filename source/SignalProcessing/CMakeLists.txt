@@ -37,10 +37,12 @@ else (CUDA_FOUND)
 
     file(GLOB_RECURSE
         source_files
+        src/AnalysisDispatcher.cpp
         src/SignalProcessor.cpp
         src/SpecificSignalProcessor.cpp
         src/Filters/*
         src/Parameters/*
+        include/SignalProcessing/AnalysisDispatcher.h
         include/SignalProcessing/ProcessingDataType.h
         include/SignalProcessing/SignalProcessor.h
         include/SignalProcessing/SpecificSignalProcessor.h

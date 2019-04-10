@@ -6,6 +6,7 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../Utils/include)
 include_directories(../SignalProcessing/include)
+include_directories(../Communication/include)
 include_directories(include)
 
 file(GLOB_RECURSE
@@ -33,6 +34,7 @@ if (UNIX)
     target_link_libraries(Mixer
         Utils
         SignalProcessing
+        Communication
         asound
         pthread
         armadillo
@@ -42,6 +44,7 @@ if (UNIX)
     target_link_libraries(Mixer_Private
         Utils
         SignalProcessing
+        Communication
         asound
         pthread
         armadillo
@@ -51,6 +54,7 @@ else (UNIX)
     target_link_libraries(Mixer
         Utils
         SignalProcessing
+        Communication
         armadillo
         ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
         gfortran)
@@ -58,6 +62,7 @@ else (UNIX)
     target_link_libraries(Mixer_Private
         Utils
         SignalProcessing
+        Communication
         armadillo
         ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
         gfortran)
