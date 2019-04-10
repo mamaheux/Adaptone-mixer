@@ -442,10 +442,10 @@ TEST(GraphicEqDesignerTests, performance)
 
     GraphicEqDesigner<double> designer(SampleFrequency, frequencies);
 
-    constexpr std::size_t Count = 100;
+    constexpr size_t Count = 100;
 
     auto start = chrono::system_clock::now();
-    for (std::size_t i = 0; i < Count; i++)
+    for (size_t i = 0; i < Count; i++)
     {
         designer.update(gainsDb);
     }
