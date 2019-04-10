@@ -22,7 +22,7 @@ TEST(RelaunchInitializationMessageTests, serialization_shouldSerializaToJson)
 TEST(RelaunchInitializationMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 2"
+        "  \"seqId\": 4"
         "}";
 
     auto deserializedMessage = json::parse(serializedMessage).get<RelaunchInitializationMessage>();
