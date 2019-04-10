@@ -4,8 +4,7 @@
 #include <Communication/Messages/ApplicationMessage.h>
 #include <Communication/Messages/Initialization/ConfigurationPosition.h>
 
-#include <cstddef>
-#include <string>
+#include <vector>
 
 namespace adaptone
 {

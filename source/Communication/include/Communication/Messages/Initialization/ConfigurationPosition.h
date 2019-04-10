@@ -4,7 +4,6 @@
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
-#include <string>
 
 namespace adaptone
 {

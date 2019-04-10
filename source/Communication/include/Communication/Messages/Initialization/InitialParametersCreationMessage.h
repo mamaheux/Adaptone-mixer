@@ -4,7 +4,6 @@
 #include <Communication/Messages/ApplicationMessage.h>
 
 #include <cstddef>
-#include <string>
 
 namespace adaptone
 {

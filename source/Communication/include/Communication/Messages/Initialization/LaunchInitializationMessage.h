@@ -3,14 +3,10 @@
 
 #include <Communication/Messages/ApplicationMessage.h>
 
-#include <cstddef>
-#include <string>
-
 namespace adaptone
 {
     class LaunchInitializationMessage : public ApplicationMessage
     {
-
     public:
         LaunchInitializationMessage();
         virtual ~LaunchInitializationMessage();
