@@ -52,7 +52,6 @@ TEST(ConfigurationChoiceMessageTests, serialization_shouldSerializaToJson)
     const vector<ConfigurationPosition> positions{ ConfigurationPosition(x, y, type) };
 
     ConfigurationChoiceMessage message(id, name, monitorsNumber, speakersNumber, probesNumber, positions);
-
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 0);

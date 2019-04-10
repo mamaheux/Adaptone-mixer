@@ -37,7 +37,6 @@ TEST(InitialParametersCreationMessageTests, serialization_shouldSerializaToJson)
     constexpr size_t probesNumber = 3;
 
     InitialParametersCreationMessage message(id, name, monitorsNumber, speakersNumber, probesNumber);
-
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 1);
