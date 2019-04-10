@@ -8,46 +8,6 @@
 using namespace adaptone;
 using namespace std;
 
-TEST(CudaSignalProcessorTests, process_shouldCopyTheInputToTheOutput)
-{
-    constexpr size_t frameSampleCount = 2;
-    constexpr size_t sampleFrequency = 48000;
-    constexpr size_t inputChannelCount = 1;
-    constexpr size_t outputChannelCount = 1;
-    constexpr PcmAudioFrame::Format inputFormat = PcmAudioFrame::Format::Signed8;
-    constexpr PcmAudioFrame::Format outputFormat = PcmAudioFrame::Format::Signed8;
-    constexpr size_t parametricEqFilterCount = 2;
-    vector<double> frequencies{ 20, 50, 125 };
-    constexpr size_t soundLevelLength = 2;
-    shared_ptr<AnalysisDispatcher> analysisDispatcher;
-
-    CudaSignalProcessor<float> processor(frameSampleCount,
-        sampleFrequency,
-        inputChannelCount,
-        outputChannelCount,
-        inputFormat,
-        outputFormat,
-        parametricEqFilterCount,
-        frequencies,
-        soundLevelLength,
-        analysisDispatcher);
-
-    PcmAudioFrame inputFrame(outputFormat, outputChannelCount, frameSampleCount);
-
-    inputFrame[0] = 5;
-    inputFrame[1] = 10;
-    PcmAudioFrame outputFrame = processor.process(inputFrame);
-
-    EXPECT_EQ(outputFrame[0], 5);
-    EXPECT_EQ(outputFrame[1], 10);
-
-    inputFrame[0] = 15;
-    inputFrame[1] = 25;
-    outputFrame = processor.process(inputFrame);
-    EXPECT_EQ(outputFrame[0], 15);
-    EXPECT_EQ(outputFrame[1], 25);
-}
-
 TEST(CudaSignalProcessorTests, performance)
 {
     constexpr size_t frameSampleCount = 32;
