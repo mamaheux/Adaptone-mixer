@@ -16,7 +16,7 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
     PcmAudioFrame::Format inputFormat,
     PcmAudioFrame::Format outputFormat,
     size_t parametricEqFilterCount,
-    const std::vector<double>& eqCenterFrequencies,
+    const vector<double>& eqCenterFrequencies,
     size_t soundLevelLength,
     shared_ptr<AnalysisDispatcher> analysisDispatcher)
 {
