@@ -7,12 +7,19 @@ namespace adaptone
 {
     class ApplicationMessage
     {
+        std::size_t m_seqId;
+
     public:
-        ApplicationMessage();
+        ApplicationMessage(std::size_t seqId);
         virtual ~ApplicationMessage();
 
-        virtual std::size_t seqId() const = 0;
+        std::size_t seqId() const;
     };
+
+    inline std::size_t ApplicationMessage::seqId() const
+    {
+        return m_seqId;
+    }
 }
 
 #endif
