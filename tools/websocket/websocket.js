@@ -29,7 +29,7 @@ document.getElementById("start-button").onclick = function() {
 document.getElementById("stop-button").onclick = function() {
     if (socket != null)
     {
-        console.log("Connexion terminé.");
+        console.log("Connexion terminée.");
         socket.close();
         socket = null;
     }
