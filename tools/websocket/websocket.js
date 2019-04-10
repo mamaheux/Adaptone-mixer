@@ -13,7 +13,7 @@ document.getElementById("start-button").onclick = function() {
             console.log("Connexion établie.");
     
             this.onclose = function(event) {
-                console.log("Connexion terminé.");
+                console.log("Connexion terminée.");
                 socket = null;
             };
         
