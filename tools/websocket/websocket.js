@@ -13,7 +13,7 @@ document.getElementById("start-button").onclick = function() {
             console.log("Connexion établie.");
     
             this.onclose = function(event) {
-                console.log("Connexion terminé.");
+                console.log("Connexion terminée.");
                 socket = null;
             };
         
@@ -29,13 +29,13 @@ document.getElementById("start-button").onclick = function() {
 document.getElementById("stop-button").onclick = function() {
     if (socket != null)
     {
-        console.log("Connexion terminé.");
+        console.log("Connexion terminée.");
         socket.close();
         socket = null;
     }
     else
     {
-        console.error("Connexion déjà terminé.");
+        console.error("Connexion déjà terminée.");
     }
 }
 
