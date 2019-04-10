@@ -5,6 +5,7 @@
 #include <SignalProcessing/SpecificSignalProcessor.h>
 #include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
+#include <SignalProcessing/Cuda/Processing/GainProcessing.h>
 #include <SignalProcessing/Cuda/Processing/SoundLevelProcessing.h>
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
@@ -250,6 +251,13 @@ namespace adaptone
             buffers.inputFormat());
         __syncthreads();
 
+        processGain(buffers.currentInputFrame(),
+            buffers.currentInputGainOutputFrame(),
+            buffers.inputGains(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount());
+        __syncthreads();
+
         processEq(buffers.inputEqBuffers(),
             buffers.inputGainOutputFrames(),
             buffers.currentInputEqOutputFrame(),
@@ -262,7 +270,14 @@ namespace adaptone
             buffers.currentFrameIndex());
         __syncthreads();
 
-        convertArrayToPcm<T>(buffers.currentInputFrame(),
+        processGain(buffers.currentOutputEqOutputFrame(),
+            buffers.currentOutputFrame(),
+            buffers.outputGains(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount());
+        __syncthreads();
+
+        convertArrayToPcm<T>(buffers.currentOutputFrame(),
             buffers.currentOutputPcmFrame(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount(),
