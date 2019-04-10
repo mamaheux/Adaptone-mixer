@@ -14,7 +14,7 @@ class ArmaParametricEqDesignerPrivate : public ParametricEqDesignerPrivate
     size_t m_filterCount;
     double m_sampleFrequency;
 
-    std::vector<BiquadCoefficients<float>> m_floatBiquadCoefficients;
+    vector<BiquadCoefficients<float>> m_floatBiquadCoefficients;
     vector<BiquadCoefficients<double>> m_doubleBiquadCoefficients;
 
 public:

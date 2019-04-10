@@ -75,12 +75,12 @@ TEST(CudaSignalProcessorTests, performance)
     PcmAudioFrame inputFrame(outputFormat, outputChannelCount, frameSampleCount);
 
 
-    constexpr std::size_t Count = 10000;
+    constexpr size_t Count = 10000;
 
     auto start = chrono::system_clock::now();
-    for (std::size_t i = 0; i < Count; i++)
+    for (size_t i = 0; i < Count; i++)
     {
-        for (std::size_t j = 0; j < inputFrame.size(); j++)
+        for (size_t j = 0; j < inputFrame.size(); j++)
         {
             inputFrame[j] = 10;
         }
