@@ -9,6 +9,7 @@
 #include <Utils/Logger/Logger.h>
 
 #include <SignalProcessing/SignalProcessor.h>
+#include <SignalProcessing/AnalysisDispatcher.h>
 
 #include <memory>
 #include <atomic>
@@ -25,6 +26,8 @@ namespace adaptone
         std::unique_ptr<AudioOutput> m_audioOutput;
 
         std::unique_ptr<SignalProcessor> m_signalProcessor;
+
+        std::shared_ptr<AnalysisDispatcher> m_analysisDispatcher;
 
         std::unique_ptr<std::thread> m_analysisThread;
         std::atomic<bool> m_stopped;
@@ -46,6 +49,8 @@ namespace adaptone
         std::unique_ptr<AudioOutput> createAudioOutput();
 
         std::unique_ptr<SignalProcessor> createSignalProcessor();
+
+        std::shared_ptr<AnalysisDispatcher> createAnalysisDispatcher();
 
         void analysisRun();
         void processingRun();

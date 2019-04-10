@@ -4,6 +4,7 @@
 #include <SignalProcessing/ProcessingDataType.h>
 #include <SignalProcessing/SpecificSignalProcessor.h>
 #include <SignalProcessing/Filters/ParametricEqParameters.h>
+#include <SignalProcessing/AnalysisDispatcher.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Data/PcmAudioFrame.h>
@@ -25,7 +26,9 @@ namespace adaptone
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
             std::size_t parametricEqFilterCount,
-            const std::vector<double>& eqCenterFrequencies);
+            const std::vector<double>& eqCenterFrequencies,
+            std::size_t soundLevelLength,
+            std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
         virtual ~SignalProcessor();
 
         DECLARE_NOT_COPYABLE(SignalProcessor);

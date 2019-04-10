@@ -19,6 +19,8 @@ namespace adaptone
         std::size_t m_parametricEqFilterCount;
         std::vector<double> m_eqCenterFrequencies;
 
+        std::size_t m_soundLevelLength;
+
     public:
         explicit AudioConfiguration(const Properties& properties);
         virtual ~AudioConfiguration();
@@ -31,6 +33,8 @@ namespace adaptone
 
         std::size_t parametricEqFilterCount() const;
         const std::vector<double>& eqCenterFrequencies() const;
+
+        std::size_t soundLevelLength() const;
     };
 
     inline std::size_t AudioConfiguration::frameSampleCount() const
@@ -66,6 +70,11 @@ namespace adaptone
     inline const std::vector<double>& AudioConfiguration::eqCenterFrequencies() const
     {
         return m_eqCenterFrequencies;
+    }
+
+    inline std::size_t AudioConfiguration::soundLevelLength() const
+    {
+        return m_soundLevelLength;
     }
 }
 
