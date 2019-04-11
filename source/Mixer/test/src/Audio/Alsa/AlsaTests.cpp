@@ -12,9 +12,9 @@ using namespace std;
 JETSON_TEST(AlsaTests, captureThenPlay_device_shouldReplayASound)
 {
     PcmAudioFrame::Format format = PcmAudioFrame::Format::Signed32;
-    std::size_t channelCount = 10;
-    std::size_t frameSampleCount = 32;
-    std::size_t sampleFrequency = 44100;
+    size_t channelCount = 10;
+    size_t frameSampleCount = 32;
+    size_t sampleFrequency = 44100;
 
     AlsaPcmDevice playbackDevice("hw:CARD=x20,DEV=0",
         AlsaPcmDevice::Stream::Playback,
@@ -45,9 +45,9 @@ JETSON_TEST(AlsaTests, captureThenPlay_device_shouldReplayASound)
 JETSON_TEST(AlsaTests, captureThenPlay_shouldReplayASound)
 {
     PcmAudioFrame::Format format = PcmAudioFrame::Format::Signed32;
-    std::size_t channelCount = 10;
-    std::size_t frameSampleCount = 32;
-    std::size_t sampleFrequency = 44100;
+    size_t channelCount = 10;
+    size_t frameSampleCount = 32;
+    size_t sampleFrequency = 44100;
 
     AlsaAudioInput input(format,
         channelCount,

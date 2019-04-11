@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-AudioOutput::AudioOutput(PcmAudioFrame::Format format, std::size_t channelCount, std::size_t frameSampleCount) :
+AudioOutput::AudioOutput(PcmAudioFrame::Format format, size_t channelCount, size_t frameSampleCount) :
     m_format(format), m_channelCount(channelCount), m_frameSampleCount(frameSampleCount)
 {
 }

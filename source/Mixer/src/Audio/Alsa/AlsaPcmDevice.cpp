@@ -21,12 +21,12 @@ public:
     }
 };
 
-AlsaPcmDevice::AlsaPcmDevice(const std::string& device,
+AlsaPcmDevice::AlsaPcmDevice(const string& device,
     AlsaPcmDevice::Stream stream,
     PcmAudioFrame::Format format,
-    std::size_t channelCount,
-    std::size_t frameSampleCount,
-    std::size_t sampleFrequency) : m_format(format), m_channelCount(channelCount), m_frameSampleCount(frameSampleCount)
+    size_t channelCount,
+    size_t frameSampleCount,
+    size_t sampleFrequency) : m_format(format), m_channelCount(channelCount), m_frameSampleCount(frameSampleCount)
 {
     int err;
     snd_pcm_t* pcmHandlePointer;
@@ -37,14 +37,14 @@ AlsaPcmDevice::AlsaPcmDevice(const std::string& device,
         THROW_ALSA_EXCEPTION("Cannot open audio device: " + device, err, snd_strerror(err));
     }
 
-    std::unique_ptr<snd_pcm_t, PcmDeleter> pcmHandle(pcmHandlePointer);
+    unique_ptr<snd_pcm_t, PcmDeleter> pcmHandle(pcmHandlePointer);
 
     if ((err = snd_pcm_hw_params_malloc(&paramsPointer)) < 0)
     {
         THROW_ALSA_EXCEPTION("Cannot allocate hardware parameter structure", err, snd_strerror(err));
     }
 
-    std::unique_ptr<snd_pcm_hw_params_t, PcmParamsDeleter> params(paramsPointer);
+    unique_ptr<snd_pcm_hw_params_t, PcmParamsDeleter> params(paramsPointer);
 
     if ((err = snd_pcm_hw_params_any(pcmHandle.get(), params.get())) < 0)
     {

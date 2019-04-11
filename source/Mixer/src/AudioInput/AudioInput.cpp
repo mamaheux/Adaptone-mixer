@@ -19,7 +19,7 @@ bool AudioInput::hasGainControl()
     return false;
 }
 
-void AudioInput::setGain(std::size_t channelIndex, uint8_t gain)
+void AudioInput::setGain(size_t channelIndex, uint8_t gain)
 {
     THROW_NOT_SUPPORTED_EXCEPTION("");
 }
