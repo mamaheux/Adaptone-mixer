@@ -5,12 +5,12 @@
 using namespace adaptone;
 using namespace std;
 
-AlsaException::AlsaException(const std::string& filename,
-    const std::string& function,
+AlsaException::AlsaException(const string& filename,
+    const string& function,
     int line,
-    const std::string& message,
+    const string& message,
     int errorCode,
-    const std::string& errorDescription) :
+    const string& errorDescription) :
     LoggedException(filename,
         function,
         line,

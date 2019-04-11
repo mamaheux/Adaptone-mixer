@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+using namespace std;
+
 #if defined(_WIN32) || defined(_WIN64)
 
 #include <windows.h>
@@ -13,7 +15,7 @@ BOOL WINAPI consoleHandler(DWORD signal)
     if (signal == CTRL_C_EVENT)
     {
         globalMixer->stop();
-        std::cout << "Interrupt signal" << std::endl;
+        cout << "Interrupt signal" << endl;
     }
 
     return TRUE;
@@ -34,7 +36,7 @@ static adaptone::Mixer* globalMixer;
 void my_handler(int s)
 {
     globalMixer->stop();
-    std::cout << "Interrupt signal" << std::endl;
+    cout << "Interrupt signal" << endl;
 }
 
 bool setupInterruptSignalHandler(adaptone::Mixer& mixer)

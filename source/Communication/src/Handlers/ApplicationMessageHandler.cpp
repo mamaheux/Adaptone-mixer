@@ -1,0 +1,47 @@
+#include <Communication/Handlers/ApplicationMessageHandler.h>
+
+#include <Communication/Messages/Initialization/ConfigurationChoiceMessage.h>
+#include <Communication/Messages/Initialization/InitialParametersCreationMessage.h>
+#include <Communication/Messages/Initialization/LaunchInitializationMessage.h>
+#include <Communication/Messages/Initialization/PositionConfirmationMessage.h>
+#include <Communication/Messages/Initialization/RelaunchInitializationMessage.h>
+#include <Communication/Messages/Initialization/SymmetryConfirmationMessage.h>
+#include <Communication/Messages/Initialization/OptimizePositionMessage.h>
+#include <Communication/Messages/Initialization/OptimizedPositionMessage.h>
+#include <Communication/Messages/Initialization/ReoptimizePositionMessage.h>
+#include <Communication/Messages/Initialization/ConfigurationConfirmationMessage.h>
+
+using namespace adaptone;
+using namespace nlohmann;
+using namespace std;
+
+#define ADD_HANDLE_FUNCTION(type) m_handleFunctions[type::SeqId] = [this](const json& j, \
+        const function<void(const ApplicationMessage&)>& send) \
+    { \
+        type message = j.get<type>(); \
+        handleDeserialized(message, send);\
+    }
+
+ApplicationMessageHandler::ApplicationMessageHandler()
+{
+    ADD_HANDLE_FUNCTION(ConfigurationChoiceMessage);
+    ADD_HANDLE_FUNCTION(InitialParametersCreationMessage);
+    ADD_HANDLE_FUNCTION(LaunchInitializationMessage);
+    ADD_HANDLE_FUNCTION(PositionConfirmationMessage);
+    ADD_HANDLE_FUNCTION(RelaunchInitializationMessage);
+    ADD_HANDLE_FUNCTION(SymmetryConfirmationMessage);
+    ADD_HANDLE_FUNCTION(OptimizePositionMessage);
+    ADD_HANDLE_FUNCTION(OptimizedPositionMessage);
+    ADD_HANDLE_FUNCTION(ReoptimizePositionMessage);
+    ADD_HANDLE_FUNCTION(ConfigurationConfirmationMessage);
+}
+
+ApplicationMessageHandler::~ApplicationMessageHandler()
+{
+}
+
+void ApplicationMessageHandler::handle(const json& j, const function<void(const ApplicationMessage&)>& send)
+{
+    size_t seqId = j.at("seqId").get<size_t>();
+    m_handleFunctions.at(seqId)(j, send);
+}

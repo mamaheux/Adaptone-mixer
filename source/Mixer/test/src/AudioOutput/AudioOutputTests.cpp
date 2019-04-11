@@ -27,12 +27,12 @@ public:
         return m_format;
     }
 
-    std::size_t channelCount() const
+    size_t channelCount() const
     {
         return m_channelCount;
     }
 
-    std::size_t frameSampleCount() const
+    size_t frameSampleCount() const
     {
         return m_frameSampleCount;
     }
