@@ -20,7 +20,7 @@ MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<Signal
     size_t outputChannelCount) :
     m_signalProcessor(signalProcessor),
     m_masterOutputCount(2), //TODO Obtenir la valeur à partir de la configuration de l'application
-    m_outputChannelCount(outputChannelCount),
+    m_outputChannelCount(outputChannelCount)
 {
     ADD_HANDLE_FUNCTION(ConfigurationChoiceMessage);
     ADD_HANDLE_FUNCTION(InitialParametersCreationMessage);
@@ -152,7 +152,7 @@ void MixerApplicationMessageHandler::handleChangeMasterOutputEqGainsMessage(
     const ChangeMasterOutputEqGainsMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-
+    m_signalProcessor->setOutputGraphicEqGains(0, m_masterOutputCount, message.gainsDb());
 }
 
 void MixerApplicationMessageHandler::handleChangeAuxiliaryOutputEqGainsMessage(

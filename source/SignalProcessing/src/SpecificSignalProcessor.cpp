@@ -39,6 +39,10 @@ void SpecificSignalProcessor::setOutputGraphicEqGains(size_t channel, const vect
 {
 }
 
+void SpecificSignalProcessor::setOutputGraphicEqGains(size_t startChannelIndex, size_t n, const vector<double>& gainsDb)
+{
+}
+
 void SpecificSignalProcessor::setOutputGain(size_t channel, double gainDb)
 {
 }

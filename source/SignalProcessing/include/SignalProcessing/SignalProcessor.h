@@ -42,6 +42,7 @@ namespace adaptone
         void setMixingGains(const std::vector<double>& gainsDb);
 
         void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
+        void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n, const std::vector<double>& gainsDb);
 
         void setOutputGain(std::size_t channel, double gainDb);
         void setOutputGains(const std::vector<double>& gainsDb);
@@ -82,6 +83,12 @@ namespace adaptone
     inline void SignalProcessor::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
     {
         m_specificSignalProcessor->setOutputGraphicEqGains(channel, gainsDb);
+    }
+
+    inline void SignalProcessor::setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+        const std::vector<double>& gainsDb)
+    {
+        m_specificSignalProcessor->setOutputGraphicEqGains(startChannelIndex, n, gainsDb);
     }
 
     inline void SignalProcessor::setOutputGain(std::size_t channel, double gainDb)

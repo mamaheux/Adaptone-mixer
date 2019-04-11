@@ -165,7 +165,8 @@ shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalPr
 shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
     shared_ptr<SignalProcessor> signalProcessor)
 {
-    return make_shared<MixerApplicationMessageHandler>(signalProcessor);
+    return make_shared<MixerApplicationMessageHandler>(signalProcessor,
+        m_configuration.audio().outputChannelCount());
 }
 
 unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger,

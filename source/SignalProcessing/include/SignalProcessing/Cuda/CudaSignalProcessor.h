@@ -78,6 +78,9 @@ namespace adaptone
         void setMixingGains(const std::vector<double>& gainsDb) override;
 
         void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb) override;
+        void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+            const std::vector<double>& gainsDb) override;
+
 
         void setOutputGain(std::size_t channel, double gainDb) override;
         void setOutputGains(const std::vector<double>& gainsDb) override;
@@ -203,6 +206,18 @@ namespace adaptone
     {
         m_outputEqParameters.setGraphicEqGains(channel, gainsDb);
         pushOutputEqUpdate(channel);
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+        const std::vector<double>& gainsDb)
+    {
+        m_outputEqParameters.setGraphicEqGains(startChannelIndex, n, gainsDb);
+
+        for (std::size_t i; i < n; i++)
+        {
+            pushOutputEqUpdate(startChannelIndex + i);
+        }
     }
 
     template<class T>
