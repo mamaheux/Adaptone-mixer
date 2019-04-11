@@ -100,7 +100,10 @@ void ApplicationWebSocket::onMessage(shared_ptr<WsServer::Connection> connection
     try
     {
         json j = json::parse(message->string());
-        m_applicationMessageHandler->handle(j);
+        m_applicationMessageHandler->handle(j, [this](const ApplicationMessage& messageToSend)
+        {
+            send(messageToSend);
+        });
     }
     catch (exception& ex)
     {

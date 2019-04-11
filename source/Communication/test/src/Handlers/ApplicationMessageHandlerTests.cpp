@@ -17,6 +17,7 @@
 using namespace adaptone;
 using namespace nlohmann;
 using namespace std;
+using namespace ::testing;
 
 #define DEFINE_TYPE_MATCHER(type) MATCHER(Is##type, "") \
     { \
@@ -43,13 +44,13 @@ public:
     ~ApplicationMessageHandlerMock() override
     {}
 
-    MOCK_METHOD1(handleDeserialized, void(const ApplicationMessage&));
+    MOCK_METHOD2(handleDeserialized, void(const ApplicationMessage&, const function<void(const ApplicationMessage&)>&));
 };
 
 TEST(ApplicationMessageHandlerTests, handle_ConfigurationChoiceMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsConfigurationChoiceMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsConfigurationChoiceMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 0,"
@@ -70,13 +71,13 @@ TEST(ApplicationMessageHandlerTests, handle_ConfigurationChoiceMessage_shouldCal
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_InitialParametersCreationMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsInitialParametersCreationMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsInitialParametersCreationMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 1,"
@@ -90,26 +91,26 @@ TEST(ApplicationMessageHandlerTests, handle_InitialParametersCreationMessage_sho
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_LaunchInitializationMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsLaunchInitializationMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsLaunchInitializationMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 2"
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_PositionConfirmationMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsPositionConfirmationMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsPositionConfirmationMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 3,"
@@ -132,26 +133,26 @@ TEST(ApplicationMessageHandlerTests, handle_PositionConfirmationMessage_shouldCa
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_RelaunchInitializationMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsRelaunchInitializationMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsRelaunchInitializationMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 4"
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_SymmetryConfirmationMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsSymmetryConfirmationMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsSymmetryConfirmationMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 5,"
@@ -161,26 +162,26 @@ TEST(ApplicationMessageHandlerTests, handle_SymmetryConfirmationMessage_shouldCa
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_OptimizePositionMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsOptimizePositionMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsOptimizePositionMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 6"
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_OptimizedPositionMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsOptimizedPositionMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsOptimizedPositionMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 7,"
@@ -196,31 +197,31 @@ TEST(ApplicationMessageHandlerTests, handle_OptimizedPositionMessage_shouldCallH
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_ReoptimizePositionMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsReoptimizePositionMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsReoptimizePositionMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 8"
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }
 
 TEST(ApplicationMessageHandlerTests, handle_ConfigurationConfirmationMessage_shouldCallHandleWithTheRightType)
 {
     ApplicationMessageHandlerMock applicationMessageHandler;
-    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsConfigurationConfirmationMessage()));
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsConfigurationConfirmationMessage(), _));
 
     string serializedMessage = "{"
         "  \"seqId\": 9"
         "}";
 
     json j = json::parse(serializedMessage);
-    applicationMessageHandler.handle(j);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
 }

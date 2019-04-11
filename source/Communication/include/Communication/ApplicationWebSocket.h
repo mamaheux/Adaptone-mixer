@@ -43,7 +43,7 @@ namespace adaptone
 
     private:
         SimpleWeb::StatusCode onHandshake(std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>::Connection>
-        connection);
+            connection);
         void onOpen(std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>::Connection> connection);
         void onClose(std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>::Connection> connection, int status,
             const std::string& reason);

@@ -15,10 +15,11 @@ using namespace adaptone;
 using namespace nlohmann;
 using namespace std;
 
-#define ADD_HANDLE_FUNCTION(type) m_handleFunctions[type::SeqId] = [this](json& j) \
+#define ADD_HANDLE_FUNCTION(type) m_handleFunctions[type::SeqId] = [this](const json& j, \
+        const function<void(const ApplicationMessage&)>& send) \
     { \
         type message = j.get<type>(); \
-        handleDeserialized(message);\
+        handleDeserialized(message, send);\
     }
 
 ApplicationMessageHandler::ApplicationMessageHandler()
@@ -39,8 +40,8 @@ ApplicationMessageHandler::~ApplicationMessageHandler()
 {
 }
 
-void ApplicationMessageHandler::handle(json& j)
+void ApplicationMessageHandler::handle(const json& j, const function<void(const ApplicationMessage&)>& send)
 {
     size_t seqId = j.at("seqId").get<size_t>();
-    m_handleFunctions.at(seqId)(j);
+    m_handleFunctions.at(seqId)(j, send);
 }

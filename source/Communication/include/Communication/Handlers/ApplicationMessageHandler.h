@@ -15,7 +15,8 @@ namespace adaptone
 {
     class ApplicationMessageHandler
     {
-        std::unordered_map<std::size_t, std::function<void(nlohmann::json&)>> m_handleFunctions;
+        std::unordered_map<std::size_t,std::function<void(const nlohmann::json&,
+            const std::function<void(const ApplicationMessage&)>&)>> m_handleFunctions;
 
     public:
         ApplicationMessageHandler();
@@ -24,10 +25,11 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(ApplicationMessageHandler);
         DECLARE_NOT_MOVABLE(ApplicationMessageHandler);
 
-        void handle(nlohmann::json& j);
+        void handle(const nlohmann::json& j, const std::function<void(const ApplicationMessage&)>& send);
 
     protected:
-        virtual void handleDeserialized(const ApplicationMessage& message) = 0;
+        virtual void handleDeserialized(const ApplicationMessage& message,
+            const std::function<void(const ApplicationMessage&)>& send) = 0;
     };
 }
 

@@ -12,6 +12,7 @@ MixerApplicationMessageHandler::~MixerApplicationMessageHandler()
 {
 }
 
-void MixerApplicationMessageHandler::handleDeserialized(const ApplicationMessage& message)
+void MixerApplicationMessageHandler::handleDeserialized(const ApplicationMessage& message,
+    const std::function<void(const ApplicationMessage&)>& send)
 {
 }
