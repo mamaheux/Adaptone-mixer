@@ -16,7 +16,9 @@ TEST(LaunchInitializationMessageTests, serialization_shouldSerializaToJson)
 {
     LaunchInitializationMessage message;
     json serializedMessage = message;
+
     EXPECT_EQ(serializedMessage.at("seqId"), 2);
+    EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 
 TEST(LaunchInitializationMessageTests, deserialization_shouldDeserializeFromJson)

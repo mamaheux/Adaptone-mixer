@@ -47,6 +47,8 @@ TEST(InitialParametersCreationMessageTests, serialization_shouldSerializaToJson)
     EXPECT_EQ(serializedMessage.at("data").at("monitorsNumber"), monitorsNumber);
     EXPECT_EQ(serializedMessage.at("data").at("speakersNumber"), speakersNumber);
     EXPECT_EQ(serializedMessage.at("data").at("probesNumber"), probesNumber);
+
+    EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 
 TEST(InitialParametersCreationMessageTests, deserialization_shouldDeserializeFromJson)

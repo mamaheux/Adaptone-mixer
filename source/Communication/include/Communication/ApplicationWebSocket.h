@@ -3,6 +3,7 @@
 
 #include <Communication/Handlers/ConnectionHandler.h>
 #include <Communication/Handlers/ApplicationMessageHandler.h>
+#include <Communication/Messages/ApplicationMessage.h>
 
 #include <Utils/Logger/Logger.h>
 
@@ -38,6 +39,7 @@ namespace adaptone
 
         template<class T>
         void send(const T& object);
+        void send(const ApplicationMessage& message);
 
     private:
         SimpleWeb::StatusCode onHandshake(std::shared_ptr<SimpleWeb::SocketServer<SimpleWeb::WS>::Connection>
@@ -53,12 +55,20 @@ namespace adaptone
     };
 
     template<class T>
-    void ApplicationWebSocket::send(const T& object)
+    inline void ApplicationWebSocket::send(const T& object)
     {
         if (m_applicationConnection)
         {
             nlohmann::json j = object;
             m_applicationConnection->send(j.dump());
+        }
+    }
+
+    inline void ApplicationWebSocket::send(const ApplicationMessage& message)
+    {
+        if (m_applicationConnection)
+        {
+            m_applicationConnection->send(message.toJson());
         }
     }
 }

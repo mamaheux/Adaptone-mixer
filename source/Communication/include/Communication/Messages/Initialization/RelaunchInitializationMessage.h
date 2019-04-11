@@ -13,9 +13,16 @@ namespace adaptone
         RelaunchInitializationMessage();
         virtual ~RelaunchInitializationMessage();
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const RelaunchInitializationMessage& o);
         friend void from_json(const nlohmann::json& j, RelaunchInitializationMessage& o);
     };
+
+    inline std::string RelaunchInitializationMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
+    }
 
     inline void to_json(nlohmann::json& j, const RelaunchInitializationMessage& o)
     {

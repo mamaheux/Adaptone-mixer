@@ -43,6 +43,7 @@ namespace adaptone
 
         const std::vector<ConfigurationPosition>& positions() const;
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ConfigurationChoiceMessage& o);
         friend void from_json(const nlohmann::json& j, ConfigurationChoiceMessage& o);
     };
@@ -75,6 +76,12 @@ namespace adaptone
     inline const std::vector<ConfigurationPosition>& ConfigurationChoiceMessage::positions() const
     {
         return m_positions;
+    }
+
+    inline std::string ConfigurationChoiceMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
     }
 
     inline void to_json(nlohmann::json& j, const ConfigurationChoiceMessage& o)

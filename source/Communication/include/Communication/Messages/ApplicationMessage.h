@@ -14,6 +14,7 @@ namespace adaptone
         virtual ~ApplicationMessage();
 
         std::size_t seqId() const;
+        virtual std::string toJson() const = 0;
     };
 
     inline std::size_t ApplicationMessage::seqId() const

@@ -13,9 +13,16 @@ namespace adaptone
         ConfigurationConfirmationMessage();
         virtual ~ConfigurationConfirmationMessage();
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ConfigurationConfirmationMessage& o);
         friend void from_json(const nlohmann::json& j, ConfigurationConfirmationMessage& o);
     };
+
+    inline std::string ConfigurationConfirmationMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
+    }
 
     inline void to_json(nlohmann::json& j, const ConfigurationConfirmationMessage& o)
     {

@@ -13,9 +13,16 @@ namespace adaptone
         LaunchInitializationMessage();
         virtual ~LaunchInitializationMessage();
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const LaunchInitializationMessage& o);
         friend void from_json(const nlohmann::json& j, LaunchInitializationMessage& o);
     };
+
+    inline std::string LaunchInitializationMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
+    }
 
     inline void to_json(nlohmann::json& j, const LaunchInitializationMessage& o)
     {

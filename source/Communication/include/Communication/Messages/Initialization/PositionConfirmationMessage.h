@@ -26,6 +26,7 @@ namespace adaptone
         const std::vector<ConfigurationPosition>& firstSymmetryPositions() const;
         const std::vector<ConfigurationPosition>& secondSymmetryPositions() const;
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const PositionConfirmationMessage& o);
         friend void from_json(const nlohmann::json& j, PositionConfirmationMessage& o);
     };
@@ -38,6 +39,12 @@ namespace adaptone
     inline const std::vector<ConfigurationPosition>& PositionConfirmationMessage::secondSymmetryPositions() const
     {
         return m_secondSymmetryPositions;
+    }
+
+    inline std::string PositionConfirmationMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
     }
 
     inline void to_json(nlohmann::json& j, const PositionConfirmationMessage& o)

@@ -39,6 +39,8 @@ TEST(OptimizedPositionMessageTests, serialization_shouldSerializaToJson)
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("x"), x);
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("y"), y);
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("type"), "s");
+
+    EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 
 TEST(OptimizedPositionMessageTests, deserialization_shouldDeserializeFromJson)

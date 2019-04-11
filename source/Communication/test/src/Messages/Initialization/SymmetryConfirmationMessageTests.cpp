@@ -22,8 +22,8 @@ TEST(SymmetryConfirmationMessageTests, serialization_shouldSerializaToJson)
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 5);
-
     EXPECT_EQ(serializedMessage.at("data").at("symmetry"), symmetry);
+    EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 
 TEST(SymmetryConfirmationMessageTests, deserialization_shouldDeserializeFromJson)

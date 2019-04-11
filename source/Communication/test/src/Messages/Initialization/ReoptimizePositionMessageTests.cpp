@@ -16,7 +16,9 @@ TEST(ReoptimizePositionMessageTests, serialization_shouldSerializaToJson)
 {
     ReoptimizePositionMessage message;
     json serializedMessage = message;
+
     EXPECT_EQ(serializedMessage.at("seqId"), 8);
+    EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 
 TEST(ReoptimizePositionMessageTests, deserialization_shouldDeserializeFromJson)

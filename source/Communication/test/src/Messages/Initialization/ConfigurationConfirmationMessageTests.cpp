@@ -16,7 +16,9 @@ TEST(ConfigurationConfirmationMessageTests, serialization_shouldSerializaToJson)
 {
     ConfigurationConfirmationMessage message;
     json serializedMessage = message;
+
     EXPECT_EQ(serializedMessage.at("seqId"), 9);
+    EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 
 TEST(ConfigurationConfirmationMessageTests, deserialization_shouldDeserializeFromJson)

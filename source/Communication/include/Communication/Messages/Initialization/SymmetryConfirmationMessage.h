@@ -22,6 +22,7 @@ namespace adaptone
 
         std::size_t symmetry() const;
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const SymmetryConfirmationMessage& o);
         friend void from_json(const nlohmann::json& j, SymmetryConfirmationMessage& o);
     };
@@ -29,6 +30,12 @@ namespace adaptone
     inline std::size_t SymmetryConfirmationMessage::symmetry() const
     {
         return m_symmetry;
+    }
+
+    inline std::string SymmetryConfirmationMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
     }
 
     inline void to_json(nlohmann::json& j, const SymmetryConfirmationMessage& o)

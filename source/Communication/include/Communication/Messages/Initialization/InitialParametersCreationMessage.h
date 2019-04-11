@@ -36,6 +36,7 @@ namespace adaptone
         std::size_t speakersNumber() const;
         std::size_t probesNumber() const;
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const InitialParametersCreationMessage& o);
         friend void from_json(const nlohmann::json& j, InitialParametersCreationMessage& o);
     };
@@ -63,6 +64,12 @@ namespace adaptone
     inline std::size_t InitialParametersCreationMessage::probesNumber() const
     {
         return m_probesNumber;
+    }
+
+    inline std::string InitialParametersCreationMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
     }
 
     inline void to_json(nlohmann::json& j, const InitialParametersCreationMessage& o)

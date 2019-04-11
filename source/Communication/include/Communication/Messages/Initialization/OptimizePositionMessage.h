@@ -13,9 +13,16 @@ namespace adaptone
         OptimizePositionMessage();
         virtual ~OptimizePositionMessage();
 
+        std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const OptimizePositionMessage& o);
         friend void from_json(const nlohmann::json& j, OptimizePositionMessage& o);
     };
+
+    inline std::string OptimizePositionMessage::toJson() const
+    {
+        nlohmann::json serializedMessage = *this;
+        return serializedMessage.dump();
+    }
 
     inline void to_json(nlohmann::json& j, const OptimizePositionMessage& o)
     {
