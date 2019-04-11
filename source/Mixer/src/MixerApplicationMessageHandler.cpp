@@ -1,5 +1,7 @@
 #include <Mixer/MixerApplicationMessageHandler.h>
 
+#include <thread>
+
 using namespace adaptone;
 using namespace std;
 
@@ -39,7 +41,8 @@ void MixerApplicationMessageHandler::handleConfigurationChoiceMessage(const Conf
 {
 }
 
-void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(const InitialParametersCreationMessage& message,
+void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(
+    const InitialParametersCreationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
 }
@@ -47,6 +50,9 @@ void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(cons
 void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const LaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    this_thread::sleep_for(2s);
+    send(PositionConfirmationMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) },
+        { ConfigurationPosition(10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
 void MixerApplicationMessageHandler::handlePositionConfirmationMessage(const PositionConfirmationMessage& message,
@@ -57,16 +63,23 @@ void MixerApplicationMessageHandler::handlePositionConfirmationMessage(const Pos
 void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const RelaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    this_thread::sleep_for(2s);
+    send(PositionConfirmationMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) },
+        { ConfigurationPosition(10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
 void MixerApplicationMessageHandler::handleSymmetryConfirmationMessage(const SymmetryConfirmationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    send(PositionConfirmationMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) },
+        { ConfigurationPosition(10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
 void MixerApplicationMessageHandler::handleOptimizePositionMessage(const OptimizePositionMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    this_thread::sleep_for(2s);
+    send(OptimizedPositionMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
 void MixerApplicationMessageHandler::handleOptimizedPositionMessage(const OptimizedPositionMessage& message,
@@ -77,9 +90,12 @@ void MixerApplicationMessageHandler::handleOptimizedPositionMessage(const Optimi
 void MixerApplicationMessageHandler::handleReoptimizePositionMessage(const ReoptimizePositionMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    this_thread::sleep_for(2s);
+    send(OptimizedPositionMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
-void MixerApplicationMessageHandler::handleConfigurationConfirmationMessage(const ConfigurationConfirmationMessage& message,
+void MixerApplicationMessageHandler::handleConfigurationConfirmationMessage(
+    const ConfigurationConfirmationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
 }
