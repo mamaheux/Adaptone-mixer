@@ -1,8 +1,6 @@
 #ifndef SIGNAL_PROCESSING_CUDA_PROCESSING_GAIN_PROCESSING_H
 #define SIGNAL_PROCESSING_CUDA_PROCESSING_GAIN_PROCESSING_H
 
-#include <SignalProcessing/Cuda/CudaEqBuffers.h>
-
 #include <cstddef>
 #include <cstdint>
 

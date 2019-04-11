@@ -6,6 +6,7 @@
 #include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
 #include <SignalProcessing/Cuda/Processing/GainProcessing.h>
+#include <SignalProcessing/Cuda/Processing/MixProcessing.h>
 #include <SignalProcessing/Cuda/Processing/SoundLevelProcessing.h>
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
@@ -86,6 +87,8 @@ namespace adaptone
         void setOutputGain(std::size_t channel, double gainDb) override;
         void setOutputGains(const std::vector<double>& gainsDb) override;
 
+        void forceRefreshParameters();
+
         const PcmAudioFrame& process(const PcmAudioFrame& inputFrame) override;
 
     private:
@@ -151,10 +154,7 @@ namespace adaptone
             pushOutputEqUpdate(i);
         }
 
-        while (m_updateFunctionQueue.size() > 0)
-        {
-            m_updateFunctionQueue.execute();
-        }
+        forceRefreshParameters();
     }
 
     template<class T>
@@ -242,6 +242,15 @@ namespace adaptone
     }
 
     template<class T>
+    void CudaSignalProcessor<T>::forceRefreshParameters()
+    {
+        while (m_updateFunctionQueue.size() > 0)
+        {
+            m_updateFunctionQueue.execute();
+        }
+    }
+
+    template<class T>
     __global__ void processKernel(CudaSignalProcessorBuffers<T> buffers)
     {
         convertPcmToArray<T>(buffers.currentInputPcmFrame(),
@@ -262,6 +271,14 @@ namespace adaptone
             buffers.inputGainOutputFrames(),
             buffers.currentInputEqOutputFrame(),
             buffers.currentFrameIndex());
+        __syncthreads();
+
+        processMix(buffers.currentInputEqOutputFrame(),
+            buffers.currentMixingOutputFrame(),
+            buffers.mixingGains(),
+            buffers.frameSampleCount(),
+            buffers.inputChannelCount(),
+            buffers.outputChannelCount());
         __syncthreads();
 
         processEq(buffers.outputEqBuffers(),
