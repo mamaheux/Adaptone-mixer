@@ -10,6 +10,10 @@ namespace adaptone
 {
     class OptimizedPositionMessage : public ApplicationMessage
     {
+    public:
+        static constexpr std::size_t SeqId = 7;
+
+    private:
         std::vector<ConfigurationPosition> m_positions;
 
     public:

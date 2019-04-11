@@ -3,13 +3,15 @@
 using namespace adaptone;
 using namespace std;
 
-OptimizedPositionMessage::OptimizedPositionMessage() : ApplicationMessage(7),
+constexpr size_t OptimizedPositionMessage::SeqId;
+
+OptimizedPositionMessage::OptimizedPositionMessage() : ApplicationMessage(SeqId),
     m_positions()
 {
 }
 
 OptimizedPositionMessage::OptimizedPositionMessage(const vector<ConfigurationPosition>& positions) :
-    ApplicationMessage(7),
+    ApplicationMessage(SeqId),
     m_positions(positions)
 {
 }

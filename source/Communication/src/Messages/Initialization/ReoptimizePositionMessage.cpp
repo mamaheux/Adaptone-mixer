@@ -2,7 +2,9 @@
 
 using namespace adaptone;
 
-ReoptimizePositionMessage::ReoptimizePositionMessage() : ApplicationMessage(8)
+constexpr size_t ReoptimizePositionMessage::SeqId;
+
+ReoptimizePositionMessage::ReoptimizePositionMessage() : ApplicationMessage(SeqId)
 {
 }
 

@@ -8,6 +8,8 @@ namespace adaptone
     class OptimizePositionMessage : public ApplicationMessage
     {
     public:
+        static constexpr std::size_t SeqId = 6;
+
         OptimizePositionMessage();
         virtual ~OptimizePositionMessage();
 

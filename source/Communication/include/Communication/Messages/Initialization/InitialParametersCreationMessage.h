@@ -9,6 +9,10 @@ namespace adaptone
 {
     class InitialParametersCreationMessage : public ApplicationMessage
     {
+    public:
+        static constexpr std::size_t SeqId = 1;
+
+    private:
         std::size_t m_id;
         std::string m_name;
 

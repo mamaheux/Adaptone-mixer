@@ -8,6 +8,8 @@ namespace adaptone
     class RelaunchInitializationMessage : public ApplicationMessage
     {
     public:
+        static constexpr std::size_t SeqId = 4;
+
         RelaunchInitializationMessage();
         virtual ~RelaunchInitializationMessage();
 

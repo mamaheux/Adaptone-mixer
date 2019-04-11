@@ -8,6 +8,8 @@ namespace adaptone
     class LaunchInitializationMessage : public ApplicationMessage
     {
     public:
+        static constexpr std::size_t SeqId = 2;
+
         LaunchInitializationMessage();
         virtual ~LaunchInitializationMessage();
 

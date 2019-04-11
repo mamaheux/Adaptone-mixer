@@ -9,6 +9,10 @@ namespace adaptone
 {
     class SymmetryConfirmationMessage : public ApplicationMessage
     {
+    public:
+        static constexpr std::size_t SeqId = 5;
+
+    private:
         std::size_t m_symmetry;
 
     public:

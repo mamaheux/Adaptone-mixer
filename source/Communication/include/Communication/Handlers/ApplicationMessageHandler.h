@@ -7,10 +7,16 @@
 
 #include <nlohmann/json.hpp>
 
+#include <cstddef>
+#include <unordered_map>
+#include <functional>
+
 namespace adaptone
 {
     class ApplicationMessageHandler
     {
+        std::unordered_map<std::size_t, std::function<void(nlohmann::json&)>> m_handleFunctions;
+
     public:
         ApplicationMessageHandler();
         virtual ~ApplicationMessageHandler();
@@ -21,7 +27,7 @@ namespace adaptone
         void handle(nlohmann::json& j);
 
     protected:
-        virtual void handle(const ApplicationMessage& message) = 0;
+        virtual void handleDeserialized(const ApplicationMessage& message) = 0;
     };
 }
 

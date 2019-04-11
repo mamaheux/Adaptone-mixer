@@ -3,12 +3,14 @@
 using namespace adaptone;
 using namespace std;
 
-SymmetryConfirmationMessage::SymmetryConfirmationMessage() : ApplicationMessage(5),
+constexpr size_t SymmetryConfirmationMessage::SeqId;
+
+SymmetryConfirmationMessage::SymmetryConfirmationMessage() : ApplicationMessage(SeqId),
     m_symmetry(0)
 {
 }
 
-SymmetryConfirmationMessage::SymmetryConfirmationMessage(size_t symmetry) : ApplicationMessage(5),
+SymmetryConfirmationMessage::SymmetryConfirmationMessage(size_t symmetry) : ApplicationMessage(SeqId),
     m_symmetry(symmetry)
 {
 }

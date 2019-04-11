@@ -2,7 +2,9 @@
 
 using namespace adaptone;
 
-RelaunchInitializationMessage::RelaunchInitializationMessage() : ApplicationMessage(4)
+constexpr size_t RelaunchInitializationMessage::SeqId;
+
+RelaunchInitializationMessage::RelaunchInitializationMessage() : ApplicationMessage(SeqId)
 {
 }
 

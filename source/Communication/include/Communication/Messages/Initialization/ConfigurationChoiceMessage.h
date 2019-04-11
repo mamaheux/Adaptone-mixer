@@ -11,6 +11,10 @@ namespace adaptone
 {
     class ConfigurationChoiceMessage : public ApplicationMessage
     {
+    public:
+        static constexpr std::size_t SeqId = 0;
+
+    private:
         std::size_t m_id;
         std::string m_name;
 

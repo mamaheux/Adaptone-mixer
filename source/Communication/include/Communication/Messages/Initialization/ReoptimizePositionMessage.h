@@ -1,5 +1,5 @@
-#ifndef COMMUNICATION_MESAGES_INITIALIZATION_OPTIMIZE_POSITION_MESSAGE_H
-#define COMMUNICATION_MESAGES_INITIALIZATION_OPTIMIZE_POSITION_MESSAGE_H
+#ifndef COMMUNICATION_MESAGES_INITIALIZATION_REOPTIMIZE_POSITION_MESSAGE_H
+#define COMMUNICATION_MESAGES_INITIALIZATION_REOPTIMIZE_POSITION_MESSAGE_H
 
 #include <Communication/Messages/ApplicationMessage.h>
 
@@ -8,6 +8,8 @@ namespace adaptone
     class ReoptimizePositionMessage : public ApplicationMessage
     {
     public:
+        static constexpr std::size_t SeqId = 8;
+
         ReoptimizePositionMessage();
         virtual ~ReoptimizePositionMessage();
 

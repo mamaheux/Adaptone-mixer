@@ -2,7 +2,9 @@
 
 using namespace adaptone;
 
-ConfigurationConfirmationMessage::ConfigurationConfirmationMessage() : ApplicationMessage(9)
+constexpr size_t ConfigurationConfirmationMessage::SeqId;
+
+ConfigurationConfirmationMessage::ConfigurationConfirmationMessage() : ApplicationMessage(SeqId)
 {
 }
 

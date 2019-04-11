@@ -1,5 +1,5 @@
-#ifndef COMMUNICATION_MESAGES_INITIALIZATION_OPTIMIZE_POSITION_MESSAGE_H
-#define COMMUNICATION_MESAGES_INITIALIZATION_OPTIMIZE_POSITION_MESSAGE_H
+#ifndef COMMUNICATION_MESAGES_INITIALIZATION_CONFIGURATION_CONFIRMATION_MESSAGE_H
+#define COMMUNICATION_MESAGES_INITIALIZATION_CONFIGURATION_CONFIRMATION_MESSAGE_H
 
 #include <Communication/Messages/ApplicationMessage.h>
 
@@ -8,6 +8,8 @@ namespace adaptone
     class ConfigurationConfirmationMessage : public ApplicationMessage
     {
     public:
+        static constexpr std::size_t SeqId = 9;
+
         ConfigurationConfirmationMessage();
         virtual ~ConfigurationConfirmationMessage();
 

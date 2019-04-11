@@ -20,7 +20,7 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(MixerApplicationMessageHandler);
         DECLARE_NOT_MOVABLE(MixerApplicationMessageHandler);
 
-        void handle(const ApplicationMessage& message) override;
+        void handleDeserialized(const ApplicationMessage& message) override;
     };
 }
 

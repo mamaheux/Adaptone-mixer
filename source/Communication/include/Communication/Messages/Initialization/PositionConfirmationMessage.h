@@ -10,6 +10,10 @@ namespace adaptone
 {
     class PositionConfirmationMessage : public ApplicationMessage
     {
+    public:
+        static constexpr std::size_t SeqId = 3;
+
+    private:
         std::vector<ConfigurationPosition> m_firstSymmetryPositions;
         std::vector<ConfigurationPosition> m_secondSymmetryPositions;
 

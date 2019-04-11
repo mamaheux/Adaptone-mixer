@@ -3,7 +3,9 @@
 using namespace adaptone;
 using namespace std;
 
-InitialParametersCreationMessage::InitialParametersCreationMessage() : ApplicationMessage(1),
+constexpr size_t InitialParametersCreationMessage::SeqId;
+
+InitialParametersCreationMessage::InitialParametersCreationMessage() : ApplicationMessage(SeqId),
     m_id(0),
     m_name(""),
     m_monitorsNumber(0),
@@ -16,7 +18,7 @@ InitialParametersCreationMessage::InitialParametersCreationMessage(size_t id,
     const string& name,
     size_t monitorsNumber,
     size_t speakersNumber,
-    size_t probesNumber) : ApplicationMessage(1),
+    size_t probesNumber) : ApplicationMessage(SeqId),
     m_id(id),
     m_name(name),
     m_monitorsNumber(monitorsNumber),

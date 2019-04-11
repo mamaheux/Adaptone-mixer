@@ -3,7 +3,9 @@
 using namespace adaptone;
 using namespace std;
 
-ConfigurationChoiceMessage::ConfigurationChoiceMessage() : ApplicationMessage(0),
+constexpr size_t ConfigurationChoiceMessage::SeqId;
+
+ConfigurationChoiceMessage::ConfigurationChoiceMessage() : ApplicationMessage(SeqId),
     m_id(0),
     m_name(""),
     m_monitorsNumber(0),
@@ -18,7 +20,7 @@ ConfigurationChoiceMessage::ConfigurationChoiceMessage(size_t id,
     size_t monitorsNumber,
     size_t speakersNumber,
     size_t probesNumber,
-    const vector<ConfigurationPosition>& positions) : ApplicationMessage(0),
+    const vector<ConfigurationPosition>& positions) : ApplicationMessage(SeqId),
     m_id(id),
     m_name(name),
     m_monitorsNumber(monitorsNumber),
