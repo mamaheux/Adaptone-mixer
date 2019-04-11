@@ -60,7 +60,6 @@ namespace adaptone
             std::size_t outputChannelCount,
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
-            std::size_t parametricEqFilterCount,
             const std::vector<double>& eqCenterFrequencies,
             std::size_t soundLevelLength,
             std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
@@ -72,16 +71,12 @@ namespace adaptone
         void setInputGain(std::size_t channel, double gainDb) override;
         void setInputGains(const std::vector<double>& gainsDb) override;
 
-        void setInputParametricEqParameters(std::size_t channel,
-            const std::vector<ParametricEqParameters>& parameters) override;
         void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb) override;
 
         void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb) override;
         void setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb) override;
         void setMixingGains(const std::vector<double>& gainsDb) override;
 
-        void setOutputParametricEqParameters(std::size_t channel,
-            const std::vector<ParametricEqParameters>& parameters) override;
         void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb) override;
 
         void setOutputGain(std::size_t channel, double gainDb) override;
@@ -108,7 +103,6 @@ namespace adaptone
         size_t outputChannelCount,
         PcmAudioFrame::Format inputFormat,
         PcmAudioFrame::Format outputFormat,
-        std::size_t parametricEqFilterCount,
         const std::vector<double>& eqCenterFrequencies,
         std::size_t soundLevelLength,
         std::shared_ptr<AnalysisDispatcher> analysisDispatcher) :
@@ -127,9 +121,9 @@ namespace adaptone
             outputFormat,
             2 * eqCenterFrequencies.size()),
         m_inputGainParameters(inputChannelCount),
-        m_inputEqParameters(sampleFrequency, parametricEqFilterCount, eqCenterFrequencies, inputChannelCount),
+        m_inputEqParameters(sampleFrequency, eqCenterFrequencies, inputChannelCount),
         m_mixingGainParameters(inputChannelCount, outputChannelCount),
-        m_outputEqParameters(sampleFrequency, parametricEqFilterCount, eqCenterFrequencies, outputChannelCount),
+        m_outputEqParameters(sampleFrequency, eqCenterFrequencies, outputChannelCount),
         m_outputGainParameters(outputChannelCount),
 
         m_frameSampleCounter(0),
@@ -177,14 +171,6 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setInputParametricEqParameters(std::size_t channel,
-        const std::vector<ParametricEqParameters>& parameters)
-    {
-        m_inputEqParameters.setParametricEqParameters(channel, parameters);
-        pushInputEqUpdate(channel);
-    }
-
-    template<class T>
     void CudaSignalProcessor<T>::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
     {
         m_inputEqParameters.setGraphicEqGains(channel, gainsDb);
@@ -210,14 +196,6 @@ namespace adaptone
     {
         m_mixingGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
         pushMixingGainUpdate();
-    }
-
-    template<class T>
-    void CudaSignalProcessor<T>::setOutputParametricEqParameters(std::size_t channel,
-        const std::vector<ParametricEqParameters>& parameters)
-    {
-        m_outputEqParameters.setParametricEqParameters(channel, parameters);
-        pushOutputEqUpdate(channel);
     }
 
     template<class T>

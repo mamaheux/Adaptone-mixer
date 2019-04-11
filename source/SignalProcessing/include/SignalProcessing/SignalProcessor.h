@@ -3,7 +3,6 @@
 
 #include <SignalProcessing/ProcessingDataType.h>
 #include <SignalProcessing/SpecificSignalProcessor.h>
-#include <SignalProcessing/Filters/ParametricEqParameters.h>
 #include <SignalProcessing/AnalysisDispatcher.h>
 
 #include <Utils/ClassMacro.h>
@@ -25,7 +24,6 @@ namespace adaptone
             std::size_t outputChannelCount,
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
-            std::size_t parametricEqFilterCount,
             const std::vector<double>& eqCenterFrequencies,
             std::size_t soundLevelLength,
             std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
@@ -37,15 +35,12 @@ namespace adaptone
         void setInputGain(std::size_t channel, double gainDb);
         void setInputGains(const std::vector<double>& gainsDb);
 
-        void setInputParametricEqParameters(std::size_t channel, const std::vector<ParametricEqParameters>& parameters);
         void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
 
         void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb);
         void setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb);
         void setMixingGains(const std::vector<double>& gainsDb);
 
-        void setOutputParametricEqParameters(std::size_t channel,
-            const std::vector<ParametricEqParameters>& parameters);
         void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
 
         void setOutputGain(std::size_t channel, double gainDb);
@@ -62,12 +57,6 @@ namespace adaptone
     inline void SignalProcessor::setInputGains(const std::vector<double>& gainsDb)
     {
         m_specificSignalProcessor->setInputGains(gainsDb);
-    }
-
-    inline void SignalProcessor::setInputParametricEqParameters(std::size_t channel,
-        const std::vector<ParametricEqParameters>& parameters)
-    {
-        m_specificSignalProcessor->setInputParametricEqParameters(channel, parameters);
     }
 
     inline void SignalProcessor::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
@@ -88,12 +77,6 @@ namespace adaptone
     inline void SignalProcessor::setMixingGains(const std::vector<double>& gainsDb)
     {
         m_specificSignalProcessor->setMixingGains(gainsDb);
-    }
-
-    inline void SignalProcessor::setOutputParametricEqParameters(std::size_t channel,
-        const std::vector<ParametricEqParameters>& parameters)
-    {
-        m_specificSignalProcessor->setOutputParametricEqParameters(channel, parameters);
     }
 
     inline void SignalProcessor::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)

@@ -152,7 +152,6 @@ shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDisp
         m_configuration.audio().outputChannelCount(),
         m_configuration.audioInput().format(),
         m_configuration.audioOutput().format(),
-        m_configuration.audio().parametricEqFilterCount(),
         m_configuration.audio().eqCenterFrequencies(),
         m_configuration.audio().soundLevelLength(),
         analysisDispatcher);
@@ -204,6 +203,7 @@ void Mixer::analysisRun()
     {
         while (!m_stopped.load())
         {
+            this_thread::sleep_for(100ms);
             //TODO Add the analysis code
         }
     }
