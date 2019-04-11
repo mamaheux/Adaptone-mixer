@@ -5,6 +5,7 @@
 
 #include <SignalProcessing/SignalProcessor.h>
 
+#include <cstddef>
 #include <memory>
 
 namespace adaptone
@@ -13,8 +14,10 @@ namespace adaptone
     {
         std::shared_ptr<SignalProcessor> m_signalProcessor;
 
+        std::size_t m_outputChannelCount;
+
     public:
-        MixerConnectionHandler(std::shared_ptr<SignalProcessor> signalProcessor);
+        MixerConnectionHandler(std::shared_ptr<SignalProcessor> signalProcessor, std::size_t outputChannelCount);
         ~MixerConnectionHandler() override;
 
         DECLARE_NOT_COPYABLE(MixerConnectionHandler);

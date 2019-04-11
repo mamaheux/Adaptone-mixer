@@ -214,7 +214,7 @@ namespace adaptone
     {
         m_outputEqParameters.setGraphicEqGains(startChannelIndex, n, gainsDb);
 
-        for (std::size_t i; i < n; i++)
+        for (std::size_t i = 0; i < n; i++)
         {
             pushOutputEqUpdate(startChannelIndex + i);
         }

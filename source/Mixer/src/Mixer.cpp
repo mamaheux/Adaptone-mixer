@@ -159,7 +159,8 @@ shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDisp
 
 shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalProcessor> signalProcessor)
 {
-    return make_shared<MixerConnectionHandler>(signalProcessor);
+    return make_shared<MixerConnectionHandler>(signalProcessor,
+        m_configuration.audio().outputChannelCount());
 }
 
 shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
