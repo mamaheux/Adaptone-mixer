@@ -12,7 +12,7 @@ ChangeAuxiliaryOutputEqGainsMessage::ChangeAuxiliaryOutputEqGainsMessage() : App
 }
 
 ChangeAuxiliaryOutputEqGainsMessage::ChangeAuxiliaryOutputEqGainsMessage(size_t auxiliaryId,
-    const std::vector<double>& gains) :
+    const vector<double>& gains) :
     ApplicationMessage(SeqId),
     m_auxiliaryId(auxiliaryId),
     m_gains(gains)

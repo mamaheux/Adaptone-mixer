@@ -11,7 +11,7 @@ ChangeMasterMixInputVolumeMessage::ChangeMasterMixInputVolumeMessage() : Applica
 {
 }
 
-ChangeMasterMixInputVolumeMessage::ChangeMasterMixInputVolumeMessage(std::size_t channelId, double gain) :
+ChangeMasterMixInputVolumeMessage::ChangeMasterMixInputVolumeMessage(size_t channelId, double gain) :
     ApplicationMessage(SeqId),
     m_channelId(channelId),
     m_gain(gain)

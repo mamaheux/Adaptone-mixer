@@ -10,7 +10,7 @@ ChangeMasterOutputEqGainsMessage::ChangeMasterOutputEqGainsMessage() : Applicati
 {
 }
 
-ChangeMasterOutputEqGainsMessage::ChangeMasterOutputEqGainsMessage(const std::vector<double>& gains) :
+ChangeMasterOutputEqGainsMessage::ChangeMasterOutputEqGainsMessage(const vector<double>& gains) :
     ApplicationMessage(SeqId),
     m_gains(gains)
 {

@@ -11,7 +11,7 @@ ChangeInputEqGainsMessage::ChangeInputEqGainsMessage() : ApplicationMessage(SeqI
 {
 }
 
-ChangeInputEqGainsMessage::ChangeInputEqGainsMessage(size_t channelId, const std::vector<double>& gains) :
+ChangeInputEqGainsMessage::ChangeInputEqGainsMessage(size_t channelId, const vector<double>& gains) :
     ApplicationMessage(SeqId),
     m_channelId(channelId),
     m_gains(gains)

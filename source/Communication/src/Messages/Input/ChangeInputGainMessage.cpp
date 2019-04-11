@@ -11,7 +11,7 @@ ChangeInputGainMessage::ChangeInputGainMessage() : ApplicationMessage(SeqId),
 {
 }
 
-ChangeInputGainMessage::ChangeInputGainMessage(std::size_t channelId, double gain) : ApplicationMessage(SeqId),
+ChangeInputGainMessage::ChangeInputGainMessage(size_t channelId, double gain) : ApplicationMessage(SeqId),
     m_channelId(channelId),
     m_gain(gain)
 {
