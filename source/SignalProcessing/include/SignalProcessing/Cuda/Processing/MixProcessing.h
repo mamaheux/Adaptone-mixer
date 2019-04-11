@@ -20,7 +20,7 @@ namespace adaptone
             std::size_t sampleIndex = outputIndex % frameSampleCount;
 
             outputFrame[outputIndex] = 0;
-            for (std::size_t inputChannel = 0; inputChannel < frameSampleCount; inputChannel += 1)
+            for (std::size_t inputChannel = 0; inputChannel < inputChannelCount; inputChannel++)
             {
                 outputFrame[outputIndex] += inputFrame[inputChannel * frameSampleCount + sampleIndex] *
                     gains[outputChannel * inputChannelCount + inputChannel];
