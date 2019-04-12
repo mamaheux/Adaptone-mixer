@@ -230,7 +230,7 @@ namespace adaptone
     template<class T>
     void CudaSignalProcessor<T>::setOutputGains(const std::vector<double>& gainsDb)
     {
-        m_inputGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        m_outputGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
         pushOutputGainUpdate();
     }
 
@@ -401,6 +401,8 @@ namespace adaptone
 
         if (m_frameSampleCounter >= m_soundLevelLength)
         {
+            m_frameSampleCounter = 0;
+
             m_buffers.inputGainSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputGain]);
             m_buffers.inputEqSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::InputEq]);
             m_buffers.outputGainSoundLevelBuffers().toVector(m_soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain]);
