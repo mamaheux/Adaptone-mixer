@@ -16,7 +16,7 @@ TEST(CudaSignalProcessorTests, performance)
     constexpr size_t outputChannelCount = 16;
     constexpr PcmAudioFrame::Format inputFormat = PcmAudioFrame::Format::SignedPadded24;
     constexpr PcmAudioFrame::Format outputFormat = PcmAudioFrame::Format::SignedPadded24;
-    constexpr size_t parametricEqFilterCount = 2;
+    constexpr size_t parametricEqFilterCount = 4096;
     vector<double> frequencies{ 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000,
         1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000 };
     constexpr size_t soundLevelLength = 2;
@@ -38,19 +38,31 @@ TEST(CudaSignalProcessorTests, performance)
 
     constexpr size_t Count = 10000;
 
-    auto start = chrono::system_clock::now();
+    double minElapsedTimeSeconds = 1;
+    double maxElapsedTimeSeconds = 0;
+    double totalElapsedTimeSeconds = 0;
+
     for (size_t i = 0; i < Count; i++)
     {
+        auto start = chrono::system_clock::now();
+
         for (size_t j = 0; j < inputFrame.size(); j++)
         {
             inputFrame[j] = 10;
         }
         PcmAudioFrame outputFrame = processor.process(inputFrame);
-    }
-    auto end = chrono::system_clock::now();
-    chrono::duration<double> elapsedSeconds = end - start;
 
-    cout << "Elapsed time = " << elapsedSeconds.count() / Count << " s" << endl;
+        auto end = chrono::system_clock::now();
+        chrono::duration<double> elapsedSeconds = end - start;
+
+        totalElapsedTimeSeconds += elapsedSeconds.count();
+        minElapsedTimeSeconds = elapsedSeconds.count() < minElapsedTimeSeconds ? elapsedSeconds.count() : minElapsedTimeSeconds;
+        maxElapsedTimeSeconds = elapsedSeconds.count() > maxElapsedTimeSeconds ? elapsedSeconds.count() : maxElapsedTimeSeconds;
+    }
+
+    cout << "Elapsed time (avg) = " << totalElapsedTimeSeconds / Count << " s" << endl;
+    cout << "Elapsed time (min) = " << minElapsedTimeSeconds << " s" << endl;
+    cout << "Elapsed time (max) = " << maxElapsedTimeSeconds << " s" << endl;
 }
 
 TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
