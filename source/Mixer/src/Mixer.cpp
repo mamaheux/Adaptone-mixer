@@ -152,7 +152,6 @@ shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDisp
         m_configuration.audio().outputChannelCount(),
         m_configuration.audioInput().format(),
         m_configuration.audioOutput().format(),
-        m_configuration.audio().parametricEqFilterCount(),
         m_configuration.audio().eqCenterFrequencies(),
         m_configuration.audio().soundLevelLength(),
         analysisDispatcher);
@@ -160,13 +159,15 @@ shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDisp
 
 shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalProcessor> signalProcessor)
 {
-    return make_shared<MixerConnectionHandler>(signalProcessor);
+    return make_shared<MixerConnectionHandler>(signalProcessor,
+        m_configuration.audio().outputChannelCount());
 }
 
 shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
     shared_ptr<SignalProcessor> signalProcessor)
 {
-    return make_shared<MixerApplicationMessageHandler>(signalProcessor);
+    return make_shared<MixerApplicationMessageHandler>(signalProcessor,
+        m_configuration.audio().outputChannelCount());
 }
 
 unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger,
@@ -204,6 +205,7 @@ void Mixer::analysisRun()
     {
         while (!m_stopped.load())
         {
+            this_thread::sleep_for(100ms);
             //TODO Add the analysis code
         }
     }

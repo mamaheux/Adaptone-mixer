@@ -1,8 +1,6 @@
 #ifndef SIGNAL_PROCESSING_SPECIFIC_SIGNAL_PROCESSOR_H
 #define SIGNAL_PROCESSING_SPECIFIC_SIGNAL_PROCESSOR_H
 
-#include <SignalProcessing/Filters/ParametricEqParameters.h>
-
 #include <Utils/ClassMacro.h>
 #include <Utils/Data/PcmAudioFrame.h>
 
@@ -22,8 +20,6 @@ namespace adaptone
         virtual void setInputGain(std::size_t channel, double gainDb);
         virtual void setInputGains(const std::vector<double>& gainsDb);
 
-        virtual void setInputParametricEqParameters(std::size_t channel,
-            const std::vector<ParametricEqParameters>& parameters);
         virtual void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
 
         virtual void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb);
@@ -33,9 +29,9 @@ namespace adaptone
         virtual void setOutputGain(std::size_t channel, double gainDb);
         virtual void setOutputGains(const std::vector<double>& gainsDb);
 
-        virtual void setOutputParametricEqParameters(std::size_t channel,
-            const std::vector<ParametricEqParameters>& parameters);
         virtual void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
+        virtual void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+            const std::vector<double>& gainsDb);
 
         virtual const PcmAudioFrame& process(const PcmAudioFrame& inputFrame);
     };
