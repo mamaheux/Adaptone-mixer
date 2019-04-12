@@ -200,4 +200,3 @@ TEST(EqProcessingTests, processEq_song_shouldGenerateTheRightOutput)
         currentFrameIndex = (currentFrameIndex + 1) % FrameCount;
     }
 }
-
