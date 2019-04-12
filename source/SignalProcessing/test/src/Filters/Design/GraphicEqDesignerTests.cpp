@@ -432,6 +432,30 @@ TEST(GraphicEqDesignerTests, update_shouldSetTheRightCoefficents)
     EXPECT_NEAR(designer.d0(), 0.702345, MaxAbsError);
 }
 
+TEST(GraphicEqDesignerTests, update_biquadCoefficients_shouldCopyTheBiquadCoefficients)
+{
+    vector<double> frequencies{ 20, 25, 31.5 };
+
+    vector<double> gainsDb{ 12, 11.5, 11 };
+
+    GraphicEqDesigner<double> designer1(SampleFrequency, frequencies);
+    GraphicEqDesigner<double> designer2(SampleFrequency, frequencies);
+
+    designer1.update(gainsDb);
+    designer2.update(designer1.biquadCoefficients(), designer1.d0());
+
+    for (size_t i = 0; i < designer1.biquadCoefficients().size(); i++)
+    {
+        EXPECT_NEAR(designer1.biquadCoefficients()[i].b0, designer2.biquadCoefficients()[i].b0, MaxAbsError);
+        EXPECT_NEAR(designer1.biquadCoefficients()[i].b1, designer2.biquadCoefficients()[i].b1, MaxAbsError);
+        EXPECT_NEAR(designer1.biquadCoefficients()[i].b2, designer2.biquadCoefficients()[i].b2, MaxAbsError);
+        EXPECT_NEAR(designer1.biquadCoefficients()[i].a1, designer2.biquadCoefficients()[i].a1, MaxAbsError);
+        EXPECT_NEAR(designer1.biquadCoefficients()[i].a2, designer2.biquadCoefficients()[i].a2, MaxAbsError);
+    }
+
+    EXPECT_NEAR(designer1.d0(), designer2.d0(), MaxAbsError);
+}
+
 TEST(GraphicEqDesignerTests, performance)
 {
     vector<double> frequencies{ 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000,

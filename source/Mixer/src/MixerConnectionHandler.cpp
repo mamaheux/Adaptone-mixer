@@ -1,10 +1,13 @@
 #include <Mixer/MixerConnectionHandler.h>
 
+#include <limits>
+
 using namespace adaptone;
 using namespace std;
 
-MixerConnectionHandler::MixerConnectionHandler(shared_ptr<SignalProcessor> signalProcessor) :
-    m_signalProcessor(signalProcessor)
+MixerConnectionHandler::MixerConnectionHandler(shared_ptr<SignalProcessor> signalProcessor, size_t outputChannelCount) :
+    m_signalProcessor(signalProcessor),
+    m_outputChannelCount(outputChannelCount)
 {
 }
 
@@ -18,4 +21,5 @@ void MixerConnectionHandler::handleConnection()
 
 void MixerConnectionHandler::handleDisconnection()
 {
+    m_signalProcessor->setOutputGains(vector<double>(m_outputChannelCount, -numeric_limits<double>::infinity()));
 }

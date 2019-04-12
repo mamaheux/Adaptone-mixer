@@ -11,6 +11,16 @@
 #include <Communication/Messages/Initialization/ReoptimizePositionMessage.h>
 #include <Communication/Messages/Initialization/ConfigurationConfirmationMessage.h>
 
+#include <Communication/Messages/Input/ChangeInputGainMessage.h>
+#include <Communication/Messages/Input/ChangeInputGainsMessage.h>
+#include <Communication/Messages/Input/ChangeInputEqGainsMessage.h>
+#include <Communication/Messages/Input/ChangeMasterMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeMasterOutputEqGainsMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
+#include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
+
 using namespace adaptone;
 using namespace nlohmann;
 using namespace std;
@@ -34,6 +44,16 @@ ApplicationMessageHandler::ApplicationMessageHandler()
     ADD_HANDLE_FUNCTION(OptimizedPositionMessage);
     ADD_HANDLE_FUNCTION(ReoptimizePositionMessage);
     ADD_HANDLE_FUNCTION(ConfigurationConfirmationMessage);
+
+    ADD_HANDLE_FUNCTION(ChangeInputGainMessage);
+    ADD_HANDLE_FUNCTION(ChangeInputGainsMessage);
+    ADD_HANDLE_FUNCTION(ChangeInputEqGainsMessage);
+    ADD_HANDLE_FUNCTION(ChangeMasterMixInputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeAuxiliaryMixInputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeMasterOutputEqGainsMessage);
+    ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputEqGainsMessage);
+    ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputVolumeMessage);
 }
 
 ApplicationMessageHandler::~ApplicationMessageHandler()

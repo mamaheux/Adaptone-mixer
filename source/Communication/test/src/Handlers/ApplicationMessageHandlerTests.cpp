@@ -11,6 +11,16 @@
 #include <Communication/Messages/Initialization/ReoptimizePositionMessage.h>
 #include <Communication/Messages/Initialization/ConfigurationConfirmationMessage.h>
 
+#include <Communication/Messages/Input/ChangeInputGainMessage.h>
+#include <Communication/Messages/Input/ChangeInputGainsMessage.h>
+#include <Communication/Messages/Input/ChangeInputEqGainsMessage.h>
+#include <Communication/Messages/Input/ChangeMasterMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeMasterOutputEqGainsMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
+#include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -34,6 +44,16 @@ DEFINE_TYPE_MATCHER(OptimizePositionMessage);
 DEFINE_TYPE_MATCHER(OptimizedPositionMessage);
 DEFINE_TYPE_MATCHER(ReoptimizePositionMessage);
 DEFINE_TYPE_MATCHER(ConfigurationConfirmationMessage);
+
+DEFINE_TYPE_MATCHER(ChangeInputGainMessage);
+DEFINE_TYPE_MATCHER(ChangeInputGainsMessage);
+DEFINE_TYPE_MATCHER(ChangeInputEqGainsMessage);
+DEFINE_TYPE_MATCHER(ChangeMasterMixInputVolumeMessage);
+DEFINE_TYPE_MATCHER(ChangeAuxiliaryMixInputVolumeMessage);
+DEFINE_TYPE_MATCHER(ChangeMasterOutputEqGainsMessage);
+DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputEqGainsMessage);
+DEFINE_TYPE_MATCHER(ChangeMasterOutputVolumeMessage);
+DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputVolumeMessage);
 
 class ApplicationMessageHandlerMock : public ApplicationMessageHandler
 {
@@ -220,6 +240,157 @@ TEST(ApplicationMessageHandlerTests, handle_ConfigurationConfirmationMessage_sho
 
     string serializedMessage = "{"
         "  \"seqId\": 9"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeInputGainMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeInputGainMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 10,"
+        "  \"data\": {"
+        "    \"channelId\": 0,"
+        "    \"gain\": 1.2"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_hangeInputGainsMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeInputGainsMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 11,"
+        "  \"data\": {"
+        "    \"gains\": [1.0, 1.2, 1.23]"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeInputEqGainsMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeInputEqGainsMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 12,"
+        "  \"data\": {"
+        "    \"channelId\": 0,"
+        "    \"gains\": [1.0, 1.2, 1.23]"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeMasterMixInputVolumeMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeMasterMixInputVolumeMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 13,"
+        "  \"data\": {"
+        "    \"channelId\": 0,"
+        "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryMixInputVolumeMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeAuxiliaryMixInputVolumeMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 14,"
+        "  \"data\": {"
+        "    \"channelId\": 0,"
+        "    \"auxiliaryId\": 0,"
+        "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeMasterOutputEqGainsMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeMasterOutputEqGainsMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 15,"
+        "  \"data\": {"
+        "    \"gains\": [1.0, 1.2, 1.23]"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputEqGainsMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeAuxiliaryOutputEqGainsMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 16,"
+        "  \"data\": {"
+        "    \"auxiliaryId\": 0,"
+        "    \"gains\": [1.0, 1.2, 1.23]"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeMasterOutputVolumeMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeMasterOutputVolumeMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 17,"
+        "  \"data\": {"
+        "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputVolumeMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeAuxiliaryOutputVolumeMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 18,"
+        "  \"data\": {"
+        "    \"auxiliaryId\": 0,"
+        "    \"gain\": 1.0"
+        "  }"
         "}";
 
     json j = json::parse(serializedMessage);

@@ -52,6 +52,9 @@ public:
     DECLARE_NOT_MOVABLE(ArmaGraphicEqDesignerPrivate);
 
     void update(const vector<double>& gainsDb) override;
+    void update(const vector<BiquadCoefficients<float>>& biquadCoefficients, float d0) override;
+    void update(const vector<BiquadCoefficients<double>>& biquadCoefficients, double d0) override;
+
     const vector<BiquadCoefficients<float>>& floatBiquadCoefficients() const override;
     const vector<BiquadCoefficients<double>>& doubleBiquadCoefficients() const override;
     double d0() const override;
@@ -145,6 +148,47 @@ void ArmaGraphicEqDesignerPrivate::update(const vector<double>& gainsDb)
     updateMr();
 
     updateBCoefficients();
+}
+
+void ArmaGraphicEqDesignerPrivate::update(const vector<BiquadCoefficients<float>>& biquadCoefficients, float d0)
+{
+    if (m_floatBiquadCoefficients.size() != biquadCoefficients.size())
+    {
+        THROW_INVALID_VALUE_EXCEPTION("biquadCoefficients.size()", "");
+    }
+
+    m_floatBiquadCoefficients.assign(biquadCoefficients.cbegin(), biquadCoefficients.cend());
+
+    for (size_t i = 0; i < m_doubleBiquadCoefficients.size(); i++)
+    {
+        m_doubleBiquadCoefficients[i].b0 = biquadCoefficients[i].b0;
+        m_doubleBiquadCoefficients[i].b1 = biquadCoefficients[i].b1;
+        m_doubleBiquadCoefficients[i].b2 = biquadCoefficients[i].b2;
+        m_doubleBiquadCoefficients[i].a1 = biquadCoefficients[i].a1;
+        m_doubleBiquadCoefficients[i].a2 = biquadCoefficients[i].a2;
+    }
+
+    m_d0 = d0;
+}
+
+void ArmaGraphicEqDesignerPrivate::update(const vector<BiquadCoefficients<double>>& biquadCoefficients, double d0)
+{
+    if (m_floatBiquadCoefficients.size() != biquadCoefficients.size())
+    {
+        THROW_INVALID_VALUE_EXCEPTION("biquadCoefficients.size()", "");
+    }
+
+    m_doubleBiquadCoefficients.assign(biquadCoefficients.cbegin(), biquadCoefficients.cend());
+    for (size_t i = 0; i < m_floatBiquadCoefficients.size(); i++)
+    {
+        m_floatBiquadCoefficients[i].b0 = static_cast<float>(biquadCoefficients[i].b0);
+        m_floatBiquadCoefficients[i].b1 = static_cast<float>(biquadCoefficients[i].b1);
+        m_floatBiquadCoefficients[i].b2 = static_cast<float>(biquadCoefficients[i].b2);
+        m_floatBiquadCoefficients[i].a1 = static_cast<float>(biquadCoefficients[i].a1);
+        m_floatBiquadCoefficients[i].a2 = static_cast<float>(biquadCoefficients[i].a2);
+    }
+
+    m_d0 = d0;
 }
 
 const vector<BiquadCoefficients<float>>& ArmaGraphicEqDesignerPrivate::floatBiquadCoefficients() const

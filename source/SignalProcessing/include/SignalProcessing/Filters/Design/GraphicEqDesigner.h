@@ -28,6 +28,9 @@ namespace adaptone
         DECLARE_NOT_MOVABLE(GraphicEqDesignerPrivate);
 
         virtual void update(const std::vector<double>& gainsDb) = 0;
+        virtual void update(const std::vector<BiquadCoefficients<float>>& biquadCoefficients, float d0) = 0;
+        virtual void update(const std::vector<BiquadCoefficients<double>>& biquadCoefficients, double d0) = 0;
+
         virtual const std::vector<BiquadCoefficients<float>>& floatBiquadCoefficients() const = 0;
         virtual const std::vector<BiquadCoefficients<double>>& doubleBiquadCoefficients() const = 0;
         virtual double d0() const = 0;
@@ -57,6 +60,7 @@ namespace adaptone
         DECLARE_NOT_MOVABLE(GraphicEqDesigner);
 
         void update(const std::vector<double>& gainsDb);
+        void update(const std::vector<BiquadCoefficients<T>>& biquadCoefficients, T d0);
         const std::vector<BiquadCoefficients<T>>& biquadCoefficients() const;
         T d0() const;
     };
@@ -77,6 +81,12 @@ namespace adaptone
     inline void GraphicEqDesigner<T>::update(const std::vector<double>& gainsDb)
     {
         m_graphicEqDesignerPrivate->update(gainsDb);
+    }
+
+    template<class T>
+    inline void GraphicEqDesigner<T>::update(const std::vector<BiquadCoefficients<T>>& biquadCoefficients, T d0)
+    {
+        m_graphicEqDesignerPrivate->update(biquadCoefficients, d0);
     }
 
     template<class T>
