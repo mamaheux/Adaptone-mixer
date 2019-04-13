@@ -71,7 +71,7 @@ AlsaPcmDevice::AlsaPcmDevice(const string& device,
         THROW_ALSA_EXCEPTION("Cannot set channel count", err, snd_strerror(err));
     }
 
-    unsigned int periodSize = static_cast<int>(frameSampleCount);
+    snd_pcm_uframes_t periodSize = static_cast<snd_pcm_uframes_t>(frameSampleCount);
     if ((err = snd_pcm_hw_params_set_period_size(pcmHandle.get(), params.get(), periodSize, 0)) < 0)
     {
         THROW_ALSA_EXCEPTION("Cannot set period size", err, snd_strerror(err));
