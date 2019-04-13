@@ -19,7 +19,7 @@ namespace adaptone
     public:
         ChangeInputGainMessage();
         ChangeInputGainMessage(std::size_t channelId, double gain);
-        virtual ~ChangeInputGainMessage();
+        ~ChangeInputGainMessage() override;
 
         std::size_t channelId() const;
         double gain() const;

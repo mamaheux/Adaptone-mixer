@@ -11,7 +11,7 @@ namespace adaptone
         static constexpr std::size_t SeqId = 4;
 
         RelaunchInitializationMessage();
-        virtual ~RelaunchInitializationMessage();
+        ~RelaunchInitializationMessage() override;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const RelaunchInitializationMessage& o);

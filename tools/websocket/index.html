@@ -6,11 +6,19 @@
     </head>
 
     <body>
-        <button id="start-button" type="button">Start</button>
-        <button id="stop-button" type="button">Stop</button>
+        <div>
+            <button id="start-button" type="button">Start</button>
+            <button id="stop-button" type="button">Stop</button>
 
-        <textarea id="message-textarea" name="messge" cols="40" rows="5"></textarea>
-        <button id="send-button" type="button">Send</button>
+            <textarea id="message-textarea" name="messge" cols="40" rows="5"></textarea>
+            <button id="send-button" type="button">Send</button>
+        </div>
+        <div>
+            <strong>Input 0 : </strong><span id="input0Level"></span><span>dB</span>
+        </div>
+        <div>
+            <strong>Input 1 : </strong><span id="input1Level"></span><span>dB</span>
+        </div>
     </body>
 
     <script type="text/javascript" src="websocket.js"></script>

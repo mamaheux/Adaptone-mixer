@@ -3,17 +3,22 @@
 
 #include <SignalProcessing/AnalysisDispatcher.h>
 
+#include <Communication/Messages/ApplicationMessage.h>
+
 #include <Utils/ClassMacro.h>
 
 #include <vector>
 #include <map>
+#include <functional>
 
 namespace adaptone
 {
     class MixerAnalysisDispatcher : public AnalysisDispatcher
     {
+        std::function<void(const ApplicationMessage&)> m_send;
+
     public:
-        MixerAnalysisDispatcher();
+        MixerAnalysisDispatcher(std::function<void(const ApplicationMessage&)> send);
         ~MixerAnalysisDispatcher() override;
 
         DECLARE_NOT_COPYABLE(MixerAnalysisDispatcher);

@@ -27,7 +27,7 @@ namespace adaptone
             std::size_t monitorsNumber,
             std::size_t speakersNumber,
             std::size_t probesNumber);
-        virtual ~InitialParametersCreationMessage();
+        ~InitialParametersCreationMessage() override;
 
         std::size_t id() const;
         std::string name() const;

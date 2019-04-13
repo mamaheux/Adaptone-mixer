@@ -20,7 +20,7 @@ namespace adaptone
     public:
         ChangeAuxiliaryMixInputVolumeMessage();
         ChangeAuxiliaryMixInputVolumeMessage(std::size_t channelId, std::size_t auxiliaryId, double gain);
-        virtual ~ChangeAuxiliaryMixInputVolumeMessage();
+        ~ChangeAuxiliaryMixInputVolumeMessage() override;
 
         std::size_t channelId() const;
         std::size_t auxiliaryId() const;

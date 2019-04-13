@@ -21,7 +21,7 @@ namespace adaptone
     public:
         ChangeInputEqGainsMessage();
         ChangeInputEqGainsMessage(std::size_t channelId, const std::vector<double>& gains);
-        virtual ~ChangeInputEqGainsMessage();
+        ~ChangeInputEqGainsMessage() override;
 
         std::size_t channelId() const;
         const std::vector<double>& gains() const;

@@ -19,7 +19,7 @@ namespace adaptone
     public:
         ChangeAuxiliaryOutputVolumeMessage();
         ChangeAuxiliaryOutputVolumeMessage(std::size_t auxiliaryId, double gain);
-        virtual ~ChangeAuxiliaryOutputVolumeMessage();
+        ~ChangeAuxiliaryOutputVolumeMessage() override;
 
         std::size_t auxiliaryId() const;
         double gain() const;
