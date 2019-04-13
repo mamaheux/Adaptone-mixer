@@ -32,7 +32,7 @@ namespace adaptone
         arma::interp1(x, y, xx, yy, "*linear");
 
         std::size_t notNaNIndex = 0;
-        while (std::isnan(yy(notNaNIndex)) && notNaNIndex < yy.n_elem)
+        while (notNaNIndex < yy.n_elem && std::isnan(yy(notNaNIndex)))
         {
             notNaNIndex++;
         }
@@ -42,7 +42,7 @@ namespace adaptone
         }
 
         notNaNIndex = yy.n_elem - 1;
-        while (std::isnan(yy(notNaNIndex)) && notNaNIndex > 0)
+        while (notNaNIndex > 0 && std::isnan(yy(notNaNIndex)))
         {
             notNaNIndex--;
         }

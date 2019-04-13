@@ -20,6 +20,14 @@ document.getElementById("start-button").onclick = function() {
             this.onmessage = function(event) {
                 console.log("Message:", event.data);
             };
+
+            socket.send("{\"seqId\": 11, \"data\": {\"gains\": [3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] }}");
+            socket.send("{\"seqId\": 13, \"data\": {\"channelId\": 0, \"gain\": 1.0 }}");
+            socket.send("{\"seqId\": 13, \"data\": {\"channelId\": 1, \"gain\": 1.0 }}");
+            socket.send("{\"seqId\": 17, \"data\": {\"gain\": 1.0}}");
+            socket.send("{\"seqId\": 12, \"data\": {\"channelId\": 0, \"gains\": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] }}");
+            socket.send("{\"seqId\": 12, \"data\": {\"channelId\": 1, \"gains\": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1] }}");
+            socket.send("{\"seqId\": 15, \"data\": {\"gains\": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}}");
         };
     } catch (ex) {
         console.error(ex);
