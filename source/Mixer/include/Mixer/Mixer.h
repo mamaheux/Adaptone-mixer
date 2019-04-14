@@ -34,7 +34,7 @@ namespace adaptone
 
         std::shared_ptr<ConnectionHandler> m_connectionHandler;
         std::shared_ptr<ApplicationMessageHandler> m_applicationMessageHandler;
-        std::unique_ptr<ApplicationWebSocket> m_applicationWebSocket;
+        std::shared_ptr<ApplicationWebSocket> m_applicationWebSocket;
 
         std::unique_ptr<std::thread> m_analysisThread;
         std::unique_ptr<std::thread> m_applicationWebSocketThread;

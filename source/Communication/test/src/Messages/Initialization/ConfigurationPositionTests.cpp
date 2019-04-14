@@ -38,7 +38,7 @@ TEST(ConfigurationPositionTests, serialization_shouldSerializaToJson)
 
     EXPECT_EQ(serializedPosition2.at("x"), x);
     EXPECT_EQ(serializedPosition2.at("y"), y);
-    EXPECT_EQ(serializedPosition2.at("type"), "p");
+    EXPECT_EQ(serializedPosition2.at("type"), "m");
 }
 
 TEST(ConfigurationPositionTests, deserialization_shouldDeserializeFromJson)

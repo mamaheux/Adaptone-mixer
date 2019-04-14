@@ -53,7 +53,7 @@ namespace adaptone
 
     inline void to_json(nlohmann::json& j, const ConfigurationPosition& o)
     {
-        const char* type = o.m_type == ConfigurationPosition::Type::Speaker ? "s" : "p";
+        const char* type = o.m_type == ConfigurationPosition::Type::Speaker ? "s" : "m";
         j = nlohmann::json{{ "x", o.m_x }, { "y", o.m_y }, { "type", type }};
     }
 

@@ -140,7 +140,10 @@ unique_ptr<AudioOutput> Mixer::createAudioOutput()
 
 shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher()
 {
-    return make_shared<MixerAnalysisDispatcher>();
+    return make_shared<MixerAnalysisDispatcher>([&](const ApplicationMessage& message)
+    {
+        m_applicationWebSocket->send(message);
+    });
 }
 
 shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatcher)

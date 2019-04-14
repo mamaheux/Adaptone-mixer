@@ -20,7 +20,7 @@ namespace adaptone
     public:
         ChangeInputGainsMessage();
         ChangeInputGainsMessage(const std::vector<double>& gains);
-        virtual ~ChangeInputGainsMessage();
+        ~ChangeInputGainsMessage() override;
 
         const std::vector<double>& gains() const;
         std::vector<double> gainsDb() const;

@@ -18,7 +18,7 @@ namespace adaptone
     public:
         ChangeMasterOutputVolumeMessage();
         ChangeMasterOutputVolumeMessage(double gain);
-        virtual ~ChangeMasterOutputVolumeMessage();
+        ~ChangeMasterOutputVolumeMessage() override;
 
         double gain() const;
         double gainDb() const;

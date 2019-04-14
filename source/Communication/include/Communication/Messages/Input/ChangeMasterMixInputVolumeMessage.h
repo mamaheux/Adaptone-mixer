@@ -19,7 +19,7 @@ namespace adaptone
     public:
         ChangeMasterMixInputVolumeMessage();
         ChangeMasterMixInputVolumeMessage(std::size_t channelId, double gain);
-        virtual ~ChangeMasterMixInputVolumeMessage();
+        ~ChangeMasterMixInputVolumeMessage() override;
 
         std::size_t channelId() const;
         double gain() const;

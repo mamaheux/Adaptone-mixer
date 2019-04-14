@@ -32,7 +32,7 @@ namespace adaptone
             std::size_t speakersNumber,
             std::size_t probesNumber,
             const std::vector<ConfigurationPosition>& positions);
-        virtual ~ConfigurationChoiceMessage();
+        ~ConfigurationChoiceMessage() override;
 
         std::size_t id() const;
         std::string name() const;

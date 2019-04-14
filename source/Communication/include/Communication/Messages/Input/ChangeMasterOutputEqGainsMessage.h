@@ -20,7 +20,7 @@ namespace adaptone
     public:
         ChangeMasterOutputEqGainsMessage();
         ChangeMasterOutputEqGainsMessage(const std::vector<double>& gains);
-        virtual ~ChangeMasterOutputEqGainsMessage();
+        ~ChangeMasterOutputEqGainsMessage() override;
 
         const std::vector<double>& gains() const;
         std::vector<double> gainsDb() const;

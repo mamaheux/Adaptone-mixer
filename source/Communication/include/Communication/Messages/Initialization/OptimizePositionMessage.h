@@ -11,7 +11,7 @@ namespace adaptone
         static constexpr std::size_t SeqId = 6;
 
         OptimizePositionMessage();
-        virtual ~OptimizePositionMessage();
+        ~OptimizePositionMessage() override;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const OptimizePositionMessage& o);

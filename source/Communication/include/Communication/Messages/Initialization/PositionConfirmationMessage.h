@@ -21,7 +21,7 @@ namespace adaptone
         PositionConfirmationMessage();
         PositionConfirmationMessage(const std::vector<ConfigurationPosition>& firstSymmetryPositions,
             const std::vector<ConfigurationPosition>& secondSymmetryPositions);
-        virtual ~PositionConfirmationMessage();
+        ~PositionConfirmationMessage() override;
 
         const std::vector<ConfigurationPosition>& firstSymmetryPositions() const;
         const std::vector<ConfigurationPosition>& secondSymmetryPositions() const;

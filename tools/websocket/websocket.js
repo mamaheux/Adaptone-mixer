@@ -18,7 +18,12 @@ document.getElementById("start-button").onclick = function() {
             };
         
             this.onmessage = function(event) {
-                console.log("Message:", event.data);
+                var message = JSON.parse(event.data);
+                if (message.seqId == 21)
+                {
+                    document.getElementById("input0Level").innerHTML = (20 * Math.log10(message.data.inputAfterGain[0])).toString();
+                    document.getElementById("input1Level").innerHTML = (20 * Math.log10(message.data.inputAfterGain[1])).toString();
+                }
             };
 
             socket.send("{\"seqId\": 11, \"data\": {\"gains\": [3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] }}");

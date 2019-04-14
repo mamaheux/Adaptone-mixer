@@ -58,7 +58,7 @@ TEST(PositionConfirmationMessageTests, serialization_shouldSerializaToJson)
     EXPECT_EQ(serializedMessage.at("data").at("secondSymmetryPositions").size(), 1);
     EXPECT_EQ(serializedMessage.at("data").at("secondSymmetryPositions")[0].at("x"), x2);
     EXPECT_EQ(serializedMessage.at("data").at("secondSymmetryPositions")[0].at("y"), y2);
-    EXPECT_EQ(serializedMessage.at("data").at("secondSymmetryPositions")[0].at("type"), "p");
+    EXPECT_EQ(serializedMessage.at("data").at("secondSymmetryPositions")[0].at("type"), "m");
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }

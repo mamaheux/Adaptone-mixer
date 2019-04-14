@@ -72,7 +72,15 @@ void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const Lau
     const function<void(const ApplicationMessage&)>& send)
 {
     this_thread::sleep_for(2s);
-    send(PositionConfirmationMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) },
+    send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(2.5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(7.5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(10, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(1.25, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(3.75, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(6.25, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(8.75, 10, ConfigurationPosition::Type::Probe) },
         { ConfigurationPosition(10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
@@ -80,14 +88,30 @@ void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const R
     const function<void(const ApplicationMessage&)>& send)
 {
     this_thread::sleep_for(2s);
-    send(PositionConfirmationMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) },
+    send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(2.5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(7.5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(10, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(1.25, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(3.75, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(6.25, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(8.75, 10, ConfigurationPosition::Type::Probe) },
         { ConfigurationPosition(10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
 void MixerApplicationMessageHandler::handleSymmetryConfirmationMessage(const SymmetryConfirmationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    send(PositionConfirmationMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) },
+    send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(2.5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(7.5, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(10, 0, ConfigurationPosition::Type::Speaker),
+            ConfigurationPosition(1.25, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(3.75, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(6.25, 10, ConfigurationPosition::Type::Probe),
+            ConfigurationPosition(8.75, 10, ConfigurationPosition::Type::Probe) },
         { ConfigurationPosition(10, 10, ConfigurationPosition::Type::Speaker) }));
 }
 
@@ -102,7 +126,15 @@ void MixerApplicationMessageHandler::handleReoptimizePositionMessage(const Reopt
     const function<void(const ApplicationMessage&)>& send)
 {
     this_thread::sleep_for(2s);
-    send(OptimizedPositionMessage({ ConfigurationPosition(-10, 10, ConfigurationPosition::Type::Speaker) }));
+    send(OptimizedPositionMessage({ ConfigurationPosition(0, 0, ConfigurationPosition::Type::Speaker),
+        ConfigurationPosition(2.5, 0, ConfigurationPosition::Type::Speaker),
+        ConfigurationPosition(5, 0, ConfigurationPosition::Type::Speaker),
+        ConfigurationPosition(7.5, 0, ConfigurationPosition::Type::Speaker),
+        ConfigurationPosition(10, 0, ConfigurationPosition::Type::Speaker),
+        ConfigurationPosition(1.25, 10, ConfigurationPosition::Type::Probe),
+        ConfigurationPosition(3.75, 10, ConfigurationPosition::Type::Probe),
+        ConfigurationPosition(6.25, 10, ConfigurationPosition::Type::Probe),
+        ConfigurationPosition(8.75, 10, ConfigurationPosition::Type::Probe) }));
 }
 
 void MixerApplicationMessageHandler::handleConfigurationConfirmationMessage(

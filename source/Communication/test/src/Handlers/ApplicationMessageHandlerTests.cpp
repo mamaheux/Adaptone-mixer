@@ -21,6 +21,8 @@
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
 
+#include <Communication/Messages/Output/SoundLevelMessage.h>
+
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
@@ -54,6 +56,8 @@ DEFINE_TYPE_MATCHER(ChangeMasterOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeMasterOutputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputVolumeMessage);
+
+DEFINE_TYPE_MATCHER(SoundLevelMessage);
 
 class ApplicationMessageHandlerMock : public ApplicationMessageHandler
 {
@@ -390,6 +394,24 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputVolumeMessage_s
         "  \"data\": {"
         "    \"auxiliaryId\": 0,"
         "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_SoundLevelMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsSoundLevelMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 21,"
+        "  \"data\": {"
+        "    \"inputAfterGain\": [0.5, 1.5],"
+        "    \"inputAfterEq\": [0.5, 1.5],"
+        "    \"outputAfterGain\": [0.5, 1.5]"
         "  }"
         "}";
 
