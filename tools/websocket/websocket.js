@@ -40,25 +40,19 @@ document.getElementById("start-button").onclick = function() {
 };
 
 document.getElementById("stop-button").onclick = function() {
-    if (socket != null)
-    {
+    if (socket != null) {
         console.log("Connexion terminée.");
         socket.close();
         socket = null;
-    }
-    else
-    {
+    } else {
         console.error("Connexion déjà terminée.");
     }
 }
 
 document.getElementById("send-button").onclick = function() {
-    if (socket != null)
-    {
+    if (socket != null) {
         socket.send(document.getElementById("message-textarea").value);
-    }
-    else
-    {
+    } else {
         console.error("Connexion terminé.");
     }
 }
