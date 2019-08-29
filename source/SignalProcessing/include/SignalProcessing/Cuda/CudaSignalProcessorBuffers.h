@@ -159,6 +159,13 @@ namespace adaptone
 
         __device__ __host__ PcmAudioFrame::Format inputFormat();
         __device__ __host__ PcmAudioFrame::Format outputFormat();
+
+        __host__ void updateInputGains(const T* data);
+        __host__ void updateMixingGain(const T* data);
+        __host__ void updateOutputGain(const T* data);
+
+        __host__ void copyInputFrame(const PcmAudioFrame& frame);
+        __host__ void copyOutputFrame(PcmAudioFrame& frame);
     };
 
     template<class T>
@@ -496,6 +503,36 @@ namespace adaptone
     inline __device__ __host__ PcmAudioFrame::Format CudaSignalProcessorBuffers<T>::outputFormat()
     {
         return m_outputFormat;
+    }
+
+    template<class T>
+    inline __host__ void CudaSignalProcessorBuffers<T>::updateInputGains(const T* data)
+    {
+        cudaMemcpy(m_inputGains, data, m_inputChannelCount * sizeof(T), cudaMemcpyHostToDevice);
+    }
+
+    template<class T>
+    inline __host__ void CudaSignalProcessorBuffers<T>::updateMixingGain(const T* data)
+    {
+        cudaMemcpy(m_mixingGains, data, m_mixingGainsSize * sizeof(T), cudaMemcpyHostToDevice);
+    }
+
+    template<class T>
+    inline __host__ void CudaSignalProcessorBuffers<T>::updateOutputGain(const T* data)
+    {
+        cudaMemcpy(m_outputGains, data, m_outputChannelCount * sizeof(T), cudaMemcpyHostToDevice);
+    }
+
+    template<class T>
+    inline __host__ void CudaSignalProcessorBuffers<T>::copyInputFrame(const PcmAudioFrame& frame)
+    {
+        cudaMemcpy(currentInputPcmFrame(), frame.data(), frame.size(), cudaMemcpyHostToDevice);
+    }
+
+    template<class T>
+    inline __host__ void CudaSignalProcessorBuffers<T>::copyOutputFrame(PcmAudioFrame& frame)
+    {
+        cudaMemcpy(&frame[0], currentOutputPcmFrame(), frame.size(), cudaMemcpyDeviceToHost);
     }
 }
 

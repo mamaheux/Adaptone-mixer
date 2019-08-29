@@ -304,9 +304,9 @@ namespace adaptone
     {
         m_updateFunctionQueue.tryExecute();
 
-        cudaMemcpy(m_buffers.currentInputPcmFrame(), inputFrame.data(), inputFrame.size(), cudaMemcpyHostToDevice);
+        m_buffers.copyInputFrame(inputFrame);
         processKernel<<<1, 256>>>(m_buffers);
-        cudaMemcpy(&m_outputFrame[0], m_buffers.currentOutputPcmFrame(), m_outputFrame.size(), cudaMemcpyDeviceToHost);
+        m_buffers.copyOutputFrame(m_outputFrame);
 
         notifySoundLevelUpdateIfNeeded();
 
@@ -322,8 +322,7 @@ namespace adaptone
         {
             return m_inputGainParameters.tryApplyingUpdate([&]()
             {
-                cudaMemcpy(m_buffers.inputGains(), m_inputGainParameters.gains().data(),
-                    m_buffers.inputChannelCount() * sizeof(T), cudaMemcpyHostToDevice);
+                m_buffers.updateInputGains(m_inputGainParameters.gains().data());
             });
         });
     }
@@ -335,15 +334,9 @@ namespace adaptone
         {
             return m_inputEqParameters.tryApplyingUpdate(channel, [&, channel]()
             {
-                CudaEqBuffers<T>& eqBuffers = m_buffers.inputEqBuffers();
-
-                cudaMemcpy(eqBuffers.biquadCoefficients(channel),
+                m_buffers.inputEqBuffers().update(channel,
                     m_inputEqParameters.biquadCoefficients(channel).data(),
-                    eqBuffers.filterCountPerChannel() * sizeof(BiquadCoefficients<T>),
-                    cudaMemcpyHostToDevice);
-
-                T d0 = m_inputEqParameters.d0(channel);
-                cudaMemcpy(eqBuffers.d0() + channel, &d0, sizeof(T), cudaMemcpyHostToDevice);
+                    m_inputEqParameters.d0(channel));
             });
         });
     }
@@ -355,8 +348,7 @@ namespace adaptone
         {
             return m_mixingGainParameters.tryApplyingUpdate([&]()
             {
-                cudaMemcpy(m_buffers.mixingGains(), m_mixingGainParameters.gains().data(),
-                    m_buffers.mixingGainsSize() * sizeof(T), cudaMemcpyHostToDevice);
+                m_buffers.updateMixingGain(m_mixingGainParameters.gains().data());
             });
         });
     }
@@ -368,15 +360,9 @@ namespace adaptone
         {
             return m_outputEqParameters.tryApplyingUpdate(channel, [&, channel]()
             {
-                CudaEqBuffers<T>& eqBuffers = m_buffers.outputEqBuffers();
-
-                cudaMemcpy(eqBuffers.biquadCoefficients(channel),
+                m_buffers.outputEqBuffers().update(channel,
                     m_outputEqParameters.biquadCoefficients(channel).data(),
-                    eqBuffers.filterCountPerChannel() * sizeof(BiquadCoefficients<T>),
-                    cudaMemcpyHostToDevice);
-
-                T d0 = m_outputEqParameters.d0(channel);
-                cudaMemcpy(eqBuffers.d0() + channel, &d0, sizeof(T), cudaMemcpyHostToDevice);
+                    m_outputEqParameters.d0(channel));
             });
         });
     }
@@ -388,8 +374,7 @@ namespace adaptone
         {
             return m_outputGainParameters.tryApplyingUpdate([&]()
             {
-                cudaMemcpy(m_buffers.outputGains(), m_outputGainParameters.gains().data(),
-                    m_buffers.outputChannelCount() * sizeof(T), cudaMemcpyHostToDevice);
+                m_buffers.updateOutputGain(m_outputGainParameters.gains().data());
             });
         });
     }
