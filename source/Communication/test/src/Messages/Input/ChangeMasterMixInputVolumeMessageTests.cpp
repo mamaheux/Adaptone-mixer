@@ -16,7 +16,6 @@ TEST(ChangeMasterMixInputVolumeMessageTests, constructor_shouldSetTheAttributes)
 
     EXPECT_EQ(message.channelId(), channelId);
     EXPECT_EQ(message.gain(), gain);
-    EXPECT_EQ(message.gainDb(), 20);
 }
 
 TEST(ChangeMasterMixInputVolumeMessageTests, serialization_shouldSerializaToJson)
@@ -51,5 +50,4 @@ TEST(ChangeMasterMixInputVolumeMessageTests, deserialization_shouldDeserializeFr
 
     EXPECT_EQ(deserializedMessage.channelId(), 0);
     EXPECT_EQ(deserializedMessage.gain(), 100);
-    EXPECT_EQ(deserializedMessage.gainDb(), 40);
 }

@@ -224,10 +224,10 @@ TEST(GraphicEqDesignerTests, update_invalidGainCount_shouldThrowInvalidValueExce
     vector<double> frequencies{ 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000,
         1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000 };
 
-    vector<double> gainsDb{ 12, 2 };
+    vector<double> gains{ 3.98107170553, 1.25892541179 };
 
     GraphicEqDesigner<double> designer(SampleFrequency, frequencies);
-    EXPECT_THROW(designer.update(gainsDb), InvalidValueException);
+    EXPECT_THROW(designer.update(gains), InvalidValueException);
 }
 
 TEST(GraphicEqDesignerTests, update_shouldSetTheRightCoefficents)
@@ -235,11 +235,13 @@ TEST(GraphicEqDesignerTests, update_shouldSetTheRightCoefficents)
     vector<double> frequencies{ 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000,
         1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000 };
 
-    vector<double> gainsDb{ 12, 11.5, 11, 9.5, 6, 4, 2, 1, 0, 6, 6, 12, 6, 6, -12, 12, -12, -12, -12, -12, 0, 0, 0, 0,
-        -3, -6, -9, -12, 0, 0, 0 };
+    vector<double> gains{ 3.98107170553, 3.75837404288, 3.54813389234, 2.98538261892, 1.99526231497, 1.58489319246,
+        1.25892541179, 1.1220184543, 1, 1.99526231497, 1.99526231497, 3.98107170553, 1.99526231497, 1.99526231497,
+        0.25118864315, 3.98107170553, 0.25118864315, 0.25118864315, 0.25118864315, 0.25118864315, 1, 1, 1, 1,
+        0.70794578438, 0.50118723362, 0.35481338923, 0.25118864315, 1, 1, 1 };
 
     GraphicEqDesigner<double> designer(SampleFrequency, frequencies);
-    designer.update(gainsDb);
+    designer.update(gains);
 
     ASSERT_EQ(designer.biquadCoefficients().size(), frequencies.size() * 2);
 
@@ -436,12 +438,12 @@ TEST(GraphicEqDesignerTests, update_biquadCoefficients_shouldCopyTheBiquadCoeffi
 {
     vector<double> frequencies{ 20, 25, 31.5 };
 
-    vector<double> gainsDb{ 12, 11.5, 11 };
+    vector<double> gains{ 3.98107170553, 3.75837404288, 3.54813389234 };
 
     GraphicEqDesigner<double> designer1(SampleFrequency, frequencies);
     GraphicEqDesigner<double> designer2(SampleFrequency, frequencies);
 
-    designer1.update(gainsDb);
+    designer1.update(gains);
     designer2.update(designer1.biquadCoefficients(), designer1.d0());
 
     for (size_t i = 0; i < designer1.biquadCoefficients().size(); i++)
@@ -461,8 +463,10 @@ TEST(GraphicEqDesignerTests, performance)
     vector<double> frequencies{ 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000,
         1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000 };
 
-    vector<double> gainsDb{ 12, 11.5, 11, 9.5, 6, 4, 2, 1, 0, 6, 6, 12, 6, 6, -12, 12, -12, -12, -12, -12, 0, 0, 0, 0,
-        -3, -6, -9, -12, 0, 0, 0 };
+    vector<double> gains{ 3.98107170553, 3.75837404288, 3.54813389234, 2.98538261892, 1.99526231497, 1.58489319246,
+        1.25892541179, 1.1220184543, 1, 1.99526231497, 1.99526231497, 3.98107170553, 1.99526231497, 1.99526231497,
+        0.25118864315, 3.98107170553, 0.25118864315, 0.25118864315, 0.25118864315, 0.25118864315, 1, 1, 1, 1,
+        0.70794578438, 0.50118723362, 0.35481338923, 0.25118864315, 1, 1, 1 };
 
     GraphicEqDesigner<double> designer(SampleFrequency, frequencies);
 
@@ -471,7 +475,7 @@ TEST(GraphicEqDesignerTests, performance)
     auto start = chrono::system_clock::now();
     for (size_t i = 0; i < Count; i++)
     {
-        designer.update(gainsDb);
+        designer.update(gains);
     }
     auto end = chrono::system_clock::now();
     chrono::duration<double> elapsedSeconds = end - start;

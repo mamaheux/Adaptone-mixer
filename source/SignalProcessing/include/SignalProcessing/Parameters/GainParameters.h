@@ -8,7 +8,6 @@
 
 #include <cstddef>
 #include <vector>
-#include <cmath>
 
 namespace adaptone
 {
@@ -24,8 +23,8 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(GainParameters);
         DECLARE_NOT_MOVABLE(GainParameters);
 
-        void setGain(std::size_t channel, T gainDb);
-        void setGains(const std::vector<T>& gainsDb);
+        void setGain(std::size_t channel, T gain);
+        void setGains(const std::vector<T>& gains);
         const std::vector<T>& gains() const;
     };
 
@@ -40,7 +39,7 @@ namespace adaptone
     }
 
     template<class T>
-    void GainParameters<T>::setGain(std::size_t channel, T gainDb)
+    void GainParameters<T>::setGain(std::size_t channel, T gain)
     {
         if (channel >= m_gains.size())
         {
@@ -49,24 +48,21 @@ namespace adaptone
 
         update([&]()
         {
-            m_gains[channel] = std::pow(10, gainDb / 20);
+            m_gains[channel] = gain;
         });
     }
 
     template<class T>
-    void GainParameters<T>::setGains(const std::vector<T>& gainsDb)
+    void GainParameters<T>::setGains(const std::vector<T>& gains)
     {
-        if (gainsDb.size() != m_gains.size())
+        if (gains.size() != m_gains.size())
         {
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel count", "");
         }
 
         update([&]()
         {
-            for (std::size_t i = 0; i < gainsDb.size(); i++)
-            {
-                m_gains[i] = std::pow(10, gainsDb[i] / 20);
-            }
+            m_gains = gains;
         });
     }
 

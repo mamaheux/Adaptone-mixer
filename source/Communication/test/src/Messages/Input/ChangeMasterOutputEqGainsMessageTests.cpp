@@ -14,7 +14,6 @@ TEST(ChangeMasterOutputEqGainsMessageTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(message.seqId(), 15);
 
     EXPECT_EQ(message.gains(), gains);
-    EXPECT_EQ(message.gainsDb(), vector<double>({ 0, 20 }));
 }
 
 TEST(ChangeMasterOutputEqGainsMessageTests, serialization_shouldSerializaToJson)
@@ -45,5 +44,4 @@ TEST(ChangeMasterOutputEqGainsMessageTests, deserialization_shouldDeserializeFro
     EXPECT_EQ(deserializedMessage.seqId(), 15);
 
     EXPECT_EQ(deserializedMessage.gains(), vector<double>({ 1, 10, 100 }));
-    EXPECT_EQ(deserializedMessage.gainsDb(), vector<double>({ 0, 20, 40 }));
 }

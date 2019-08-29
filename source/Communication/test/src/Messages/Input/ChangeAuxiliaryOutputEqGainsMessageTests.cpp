@@ -16,7 +16,6 @@ TEST(ChangeAuxiliaryOutputEqGainsMessageTests, constructor_shouldSetTheAttribute
 
     EXPECT_EQ(message.auxiliaryId(), auxiliaryId);
     EXPECT_EQ(message.gains(), gains);
-    EXPECT_EQ(message.gainsDb(), vector<double>({ 0, 20 }));
 }
 
 TEST(ChangeAuxiliaryOutputEqGainsMessageTests, serialization_shouldSerializaToJson)
@@ -51,5 +50,4 @@ TEST(ChangeAuxiliaryOutputEqGainsMessageTests, deserialization_shouldDeserialize
 
     EXPECT_EQ(deserializedMessage.auxiliaryId(), 0);
     EXPECT_EQ(deserializedMessage.gains(), vector<double>({ 1, 10, 100 }));
-    EXPECT_EQ(deserializedMessage.gainsDb(), vector<double>({ 0, 20, 40 }));
 }

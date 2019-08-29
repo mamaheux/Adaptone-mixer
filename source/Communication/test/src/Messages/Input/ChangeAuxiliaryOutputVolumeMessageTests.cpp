@@ -16,7 +16,6 @@ TEST(ChangeAuxiliaryOutputVolumeMessageTests, constructor_shouldSetTheAttributes
 
     EXPECT_EQ(message.auxiliaryId(), auxiliaryId);
     EXPECT_EQ(message.gain(), gain);
-    EXPECT_EQ(message.gainDb(), 20);
 }
 
 TEST(ChangeAuxiliaryOutputVolumeMessageTests, serialization_shouldSerializaToJson)
@@ -51,5 +50,4 @@ TEST(ChangeAuxiliaryOutputVolumeMessageTests, deserialization_shouldDeserializeF
 
     EXPECT_EQ(deserializedMessage.auxiliaryId(), 0);
     EXPECT_EQ(deserializedMessage.gain(), 100);
-    EXPECT_EQ(deserializedMessage.gainDb(), 40);
 }

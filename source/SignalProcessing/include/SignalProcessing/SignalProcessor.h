@@ -32,73 +32,73 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(SignalProcessor);
         DECLARE_NOT_MOVABLE(SignalProcessor);
 
-        void setInputGain(std::size_t channel, double gainDb);
-        void setInputGains(const std::vector<double>& gainsDb);
+        void setInputGain(std::size_t channel, double gain);
+        void setInputGains(const std::vector<double>& gains);
 
-        void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
+        void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gains);
 
-        void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb);
-        void setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb);
-        void setMixingGains(const std::vector<double>& gainsDb);
+        void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gain);
+        void setMixingGains(std::size_t outputChannel, const std::vector<double>& gains);
+        void setMixingGains(const std::vector<double>& gains);
 
-        void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
-        void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n, const std::vector<double>& gainsDb);
+        void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gains);
+        void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n, const std::vector<double>& gains);
 
-        void setOutputGain(std::size_t channel, double gainDb);
-        void setOutputGains(const std::vector<double>& gainsDb);
+        void setOutputGain(std::size_t channel, double gain);
+        void setOutputGains(const std::vector<double>& gains);
 
         const PcmAudioFrame& process(const PcmAudioFrame& inputFrame);
     };
 
-    inline void SignalProcessor::setInputGain(std::size_t channel, double gainDb)
+    inline void SignalProcessor::setInputGain(std::size_t channel, double gain)
     {
-        m_specificSignalProcessor->setInputGain(channel, gainDb);
+        m_specificSignalProcessor->setInputGain(channel, gain);
     }
 
-    inline void SignalProcessor::setInputGains(const std::vector<double>& gainsDb)
+    inline void SignalProcessor::setInputGains(const std::vector<double>& gains)
     {
-        m_specificSignalProcessor->setInputGains(gainsDb);
+        m_specificSignalProcessor->setInputGains(gains);
     }
 
-    inline void SignalProcessor::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
+    inline void SignalProcessor::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gains)
     {
-        m_specificSignalProcessor->setInputGraphicEqGains(channel, gainsDb);
+        m_specificSignalProcessor->setInputGraphicEqGains(channel, gains);
     }
 
-    inline void SignalProcessor::setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb)
+    inline void SignalProcessor::setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gain)
     {
-        m_specificSignalProcessor->setMixingGain(inputChannel, outputChannel, gainDb);
+        m_specificSignalProcessor->setMixingGain(inputChannel, outputChannel, gain);
     }
 
-    inline void SignalProcessor::setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb)
+    inline void SignalProcessor::setMixingGains(std::size_t outputChannel, const std::vector<double>& gains)
     {
-        m_specificSignalProcessor->setMixingGains(outputChannel, gainsDb);
+        m_specificSignalProcessor->setMixingGains(outputChannel, gains);
     }
 
-    inline void SignalProcessor::setMixingGains(const std::vector<double>& gainsDb)
+    inline void SignalProcessor::setMixingGains(const std::vector<double>& gains)
     {
-        m_specificSignalProcessor->setMixingGains(gainsDb);
+        m_specificSignalProcessor->setMixingGains(gains);
     }
 
-    inline void SignalProcessor::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
+    inline void SignalProcessor::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gains)
     {
-        m_specificSignalProcessor->setOutputGraphicEqGains(channel, gainsDb);
+        m_specificSignalProcessor->setOutputGraphicEqGains(channel, gains);
     }
 
     inline void SignalProcessor::setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
-        const std::vector<double>& gainsDb)
+        const std::vector<double>& gains)
     {
-        m_specificSignalProcessor->setOutputGraphicEqGains(startChannelIndex, n, gainsDb);
+        m_specificSignalProcessor->setOutputGraphicEqGains(startChannelIndex, n, gains);
     }
 
-    inline void SignalProcessor::setOutputGain(std::size_t channel, double gainDb)
+    inline void SignalProcessor::setOutputGain(std::size_t channel, double gain)
     {
-        m_specificSignalProcessor->setOutputGain(channel, gainDb);
+        m_specificSignalProcessor->setOutputGain(channel, gain);
     }
 
-    inline void SignalProcessor::setOutputGains(const std::vector<double>& gainsDb)
+    inline void SignalProcessor::setOutputGains(const std::vector<double>& gains)
     {
-        m_specificSignalProcessor->setOutputGains(gainsDb);
+        m_specificSignalProcessor->setOutputGains(gains);
     }
 
     inline const PcmAudioFrame& SignalProcessor::process(const PcmAudioFrame& inputFrame)

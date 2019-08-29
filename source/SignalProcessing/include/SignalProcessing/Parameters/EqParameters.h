@@ -29,8 +29,8 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(EqParameters);
         DECLARE_NOT_MOVABLE(EqParameters);
 
-        void setGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb);
-        void setGraphicEqGains(std::size_t startChannelIndex, std::size_t n, const std::vector<double>& gainsDb);
+        void setGraphicEqGains(std::size_t channel, const std::vector<double>& gains);
+        void setGraphicEqGains(std::size_t startChannelIndex, std::size_t n, const std::vector<double>& gains);
 
         const std::vector<BiquadCoefficients<T>>& biquadCoefficients(std::size_t channel) const;
         const T d0(std::size_t channel) const;
@@ -59,7 +59,7 @@ namespace adaptone
     }
 
     template<class T>
-    void EqParameters<T>::setGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
+    void EqParameters<T>::setGraphicEqGains(std::size_t channel, const std::vector<double>& gains)
     {
         if (channel >= m_realtimeParameters.size())
         {
@@ -68,13 +68,13 @@ namespace adaptone
 
         m_realtimeParameters[channel].update([&]()
         {
-            m_graphicEqDesigners[channel].update(gainsDb);
+            m_graphicEqDesigners[channel].update(gains);
         });
     }
 
     template<class T>
     void EqParameters<T>::setGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
-        const std::vector<double>& gainsDb)
+        const std::vector<double>& gains)
     {
         if (startChannelIndex + n > m_realtimeParameters.size())
         {
@@ -85,7 +85,7 @@ namespace adaptone
         {
             m_realtimeParameters[startChannelIndex].update([&]()
             {
-                m_graphicEqDesigners[startChannelIndex].update(gainsDb);
+                m_graphicEqDesigners[startChannelIndex].update(gains);
             });
 
             for (std::size_t i = 1; i < n; i++)

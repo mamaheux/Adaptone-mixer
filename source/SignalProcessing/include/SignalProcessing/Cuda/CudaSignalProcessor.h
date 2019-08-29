@@ -68,22 +68,22 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(CudaSignalProcessor);
         DECLARE_NOT_MOVABLE(CudaSignalProcessor);
 
-        void setInputGain(std::size_t channel, double gainDb) override;
-        void setInputGains(const std::vector<double>& gainsDb) override;
+        void setInputGain(std::size_t channel, double gain) override;
+        void setInputGains(const std::vector<double>& gains) override;
 
-        void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb) override;
+        void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gains) override;
 
-        void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb) override;
-        void setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb) override;
-        void setMixingGains(const std::vector<double>& gainsDb) override;
+        void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gain) override;
+        void setMixingGains(std::size_t outputChannel, const std::vector<double>& gains) override;
+        void setMixingGains(const std::vector<double>& gains) override;
 
-        void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb) override;
+        void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gains) override;
         void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
-            const std::vector<double>& gainsDb) override;
+            const std::vector<double>& gains) override;
 
 
-        void setOutputGain(std::size_t channel, double gainDb) override;
-        void setOutputGains(const std::vector<double>& gainsDb) override;
+        void setOutputGain(std::size_t channel, double gain) override;
+        void setOutputGains(const std::vector<double>& gains) override;
 
         void forceRefreshParameters();
 
@@ -160,59 +160,59 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setInputGain(std::size_t channel, double gainDb)
+    void CudaSignalProcessor<T>::setInputGain(std::size_t channel, double gain)
     {
-        m_inputGainParameters.setGain(channel, static_cast<T>(gainDb));
+        m_inputGainParameters.setGain(channel, static_cast<T>(gain));
         pushInputGainUpdate();
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setInputGains(const std::vector<double>& gainsDb)
+    void CudaSignalProcessor<T>::setInputGains(const std::vector<double>& gains)
     {
-        m_inputGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        m_inputGainParameters.setGains(std::vector<T>(gains.begin(), gains.end()));
         pushInputGainUpdate();
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
+    void CudaSignalProcessor<T>::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gains)
     {
-        m_inputEqParameters.setGraphicEqGains(channel, gainsDb);
+        m_inputEqParameters.setGraphicEqGains(channel, gains);
         pushInputEqUpdate(channel);
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gainDb)
+    void CudaSignalProcessor<T>::setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gain)
     {
-        m_mixingGainParameters.setGain(inputChannel, outputChannel, static_cast<T>(gainDb));
+        m_mixingGainParameters.setGain(inputChannel, outputChannel, static_cast<T>(gain));
         pushMixingGainUpdate();
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setMixingGains(std::size_t outputChannel, const std::vector<double>& gainsDb)
+    void CudaSignalProcessor<T>::setMixingGains(std::size_t outputChannel, const std::vector<double>& gains)
     {
-        m_mixingGainParameters.setGains(outputChannel, std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        m_mixingGainParameters.setGains(outputChannel, std::vector<T>(gains.begin(), gains.end()));
         pushMixingGainUpdate();
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setMixingGains(const std::vector<double>& gainsDb)
+    void CudaSignalProcessor<T>::setMixingGains(const std::vector<double>& gains)
     {
-        m_mixingGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        m_mixingGainParameters.setGains(std::vector<T>(gains.begin(), gains.end()));
         pushMixingGainUpdate();
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gainsDb)
+    void CudaSignalProcessor<T>::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gains)
     {
-        m_outputEqParameters.setGraphicEqGains(channel, gainsDb);
+        m_outputEqParameters.setGraphicEqGains(channel, gains);
         pushOutputEqUpdate(channel);
     }
 
     template<class T>
     void CudaSignalProcessor<T>::setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
-        const std::vector<double>& gainsDb)
+        const std::vector<double>& gains)
     {
-        m_outputEqParameters.setGraphicEqGains(startChannelIndex, n, gainsDb);
+        m_outputEqParameters.setGraphicEqGains(startChannelIndex, n, gains);
 
         for (std::size_t i = 0; i < n; i++)
         {
@@ -221,16 +221,16 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setOutputGain(std::size_t channel, double gainDb)
+    void CudaSignalProcessor<T>::setOutputGain(std::size_t channel, double gain)
     {
-        m_outputGainParameters.setGain(channel, static_cast<T>(gainDb));
+        m_outputGainParameters.setGain(channel, static_cast<T>(gain));
         pushOutputGainUpdate();
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setOutputGains(const std::vector<double>& gainsDb)
+    void CudaSignalProcessor<T>::setOutputGains(const std::vector<double>& gains)
     {
-        m_outputGainParameters.setGains(std::vector<T>(gainsDb.begin(), gainsDb.end()));
+        m_outputGainParameters.setGains(std::vector<T>(gains.begin(), gains.end()));
         pushOutputGainUpdate();
     }
 

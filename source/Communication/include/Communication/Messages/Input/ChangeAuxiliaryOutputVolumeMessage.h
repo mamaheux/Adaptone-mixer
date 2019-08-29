@@ -3,8 +3,6 @@
 
 #include <Communication/Messages/ApplicationMessage.h>
 
-#include <Utils/Math.h>
-
 namespace adaptone
 {
     class ChangeAuxiliaryOutputVolumeMessage : public ApplicationMessage
@@ -23,7 +21,6 @@ namespace adaptone
 
         std::size_t auxiliaryId() const;
         double gain() const;
-        double gainDb() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeAuxiliaryOutputVolumeMessage& o);
@@ -38,11 +35,6 @@ namespace adaptone
     inline double ChangeAuxiliaryOutputVolumeMessage::gain() const
     {
         return m_gain;
-    }
-
-    inline double ChangeAuxiliaryOutputVolumeMessage::gainDb() const
-    {
-        return scalarToDb(m_gain);
     }
 
     inline std::string ChangeAuxiliaryOutputVolumeMessage::toJson() const

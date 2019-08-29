@@ -25,7 +25,7 @@ TEST(GainParametersTests, setGain_shouldSetSpecifiedChannelGainNotInDb)
 
     EXPECT_FALSE(gainParameters.isDirty());
 
-    gainParameters.setGain(0, 20);
+    gainParameters.setGain(0, 10);
 
     EXPECT_TRUE(gainParameters.isDirty());
     EXPECT_EQ(gainParameters.gains(), vector<float>({ 10, 1 }));
@@ -43,7 +43,7 @@ TEST(GainParametersTests, setGains_shouldSetAllGainsNotInDb)
 
     EXPECT_FALSE(gainParameters.isDirty());
 
-    gainParameters.setGains({ 20, 40 });
+    gainParameters.setGains({ 10, 100 });
 
     EXPECT_TRUE(gainParameters.isDirty());
     EXPECT_EQ(gainParameters.gains(), vector<float>({ 10, 100 }));
