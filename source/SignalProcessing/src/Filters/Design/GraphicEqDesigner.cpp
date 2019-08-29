@@ -5,8 +5,6 @@
 
 #include <armadillo>
 
-#include <cmath>
-
 using namespace adaptone;
 using namespace std;
 
@@ -51,7 +49,7 @@ public:
     DECLARE_NOT_COPYABLE(ArmaGraphicEqDesignerPrivate);
     DECLARE_NOT_MOVABLE(ArmaGraphicEqDesignerPrivate);
 
-    void update(const vector<double>& gainsDb) override;
+    void update(const vector<double>& gains) override;
     void update(const vector<BiquadCoefficients<float>>& biquadCoefficients, float d0) override;
     void update(const vector<BiquadCoefficients<double>>& biquadCoefficients, double d0) override;
 
@@ -122,24 +120,20 @@ ArmaGraphicEqDesignerPrivate::ArmaGraphicEqDesignerPrivate(size_t sampleFrequenc
     initPoles();
     initM();
 
-    update(arma::conv_to<vector<double>>::from(arma::zeros(m_centerW.n_elem)));
+    update(arma::conv_to<vector<double>>::from(arma::ones(m_centerW.n_elem)));
 }
 
 ArmaGraphicEqDesignerPrivate::~ArmaGraphicEqDesignerPrivate()
 {
 }
 
-void ArmaGraphicEqDesignerPrivate::update(const vector<double>& gainsDb)
+void ArmaGraphicEqDesignerPrivate::update(const vector<double>& gains)
 {
-    if (m_centerW.n_elem != gainsDb.size())
+    if (m_centerW.n_elem != gains.size())
     {
-        THROW_INVALID_VALUE_EXCEPTION("gainsDb.size()", "");
+        THROW_INVALID_VALUE_EXCEPTION("gains.size()", "");
     }
-
-    for (size_t i = 0; i < m_gains.n_elem; i++)
-    {
-        m_gains(i) = pow(10, gainsDb[i] / 20.0);
-    }
+    m_gains = gains;
 
     updateHt();
     applyWeighting();

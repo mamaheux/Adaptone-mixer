@@ -3,8 +3,6 @@
 
 #include <Communication/Messages/ApplicationMessage.h>
 
-#include <Utils/Math.h>
-
 #include <vector>
 
 namespace adaptone
@@ -23,7 +21,6 @@ namespace adaptone
         ~ChangeInputGainsMessage() override;
 
         const std::vector<double>& gains() const;
-        std::vector<double> gainsDb() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeInputGainsMessage& o);
@@ -33,11 +30,6 @@ namespace adaptone
     inline const std::vector<double>& ChangeInputGainsMessage::gains() const
     {
         return m_gains;
-    }
-
-    inline std::vector<double> ChangeInputGainsMessage::gainsDb() const
-    {
-        return vectorToDb(m_gains);
     }
 
     inline std::string ChangeInputGainsMessage::toJson() const

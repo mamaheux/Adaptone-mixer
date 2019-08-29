@@ -3,8 +3,6 @@
 
 #include <Communication/Messages/ApplicationMessage.h>
 
-#include <Utils/Math.h>
-
 #include <vector>
 
 namespace adaptone
@@ -25,7 +23,6 @@ namespace adaptone
 
         std::size_t channelId() const;
         const std::vector<double>& gains() const;
-        std::vector<double> gainsDb() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeInputEqGainsMessage& o);
@@ -40,11 +37,6 @@ namespace adaptone
     inline const std::vector<double>& ChangeInputEqGainsMessage::gains() const
     {
         return m_gains;
-    }
-
-    inline std::vector<double> ChangeInputEqGainsMessage::gainsDb() const
-    {
-        return vectorToDb(m_gains);
     }
 
     inline std::string ChangeInputEqGainsMessage::toJson() const

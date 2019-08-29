@@ -3,8 +3,6 @@
 
 #include <Communication/Messages/ApplicationMessage.h>
 
-#include <Utils/Math.h>
-
 namespace adaptone
 {
     class ChangeAuxiliaryOutputEqGainsMessage : public ApplicationMessage
@@ -23,7 +21,6 @@ namespace adaptone
 
         std::size_t auxiliaryId() const;
         const std::vector<double>& gains() const;
-        std::vector<double> gainsDb() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeAuxiliaryOutputEqGainsMessage& o);
@@ -38,11 +35,6 @@ namespace adaptone
     inline const std::vector<double>& ChangeAuxiliaryOutputEqGainsMessage::gains() const
     {
         return m_gains;
-    }
-
-    inline std::vector<double> ChangeAuxiliaryOutputEqGainsMessage::gainsDb() const
-    {
-        return vectorToDb(m_gains);
     }
 
     inline std::string ChangeAuxiliaryOutputEqGainsMessage::toJson() const

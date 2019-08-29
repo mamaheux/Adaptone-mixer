@@ -14,7 +14,6 @@ TEST(ChangeMasterOutputVolumeMessageTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(message.seqId(), 17);
 
     EXPECT_EQ(message.gain(), gain);
-    EXPECT_EQ(message.gainDb(), 20);
 }
 
 TEST(ChangeMasterOutputVolumeMessageTests, serialization_shouldSerializaToJson)
@@ -45,5 +44,4 @@ TEST(ChangeMasterOutputVolumeMessageTests, deserialization_shouldDeserializeFrom
     EXPECT_EQ(deserializedMessage.seqId(), 17);
 
     EXPECT_EQ(deserializedMessage.gain(), 100);
-    EXPECT_EQ(deserializedMessage.gainDb(), 40);
 }

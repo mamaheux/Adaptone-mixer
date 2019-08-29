@@ -1,7 +1,7 @@
 #ifndef SIGNAL_PROCESSING_CUDA_PROCESSING_EQ_PROCESSING_H
 #define SIGNAL_PROCESSING_CUDA_PROCESSING_EQ_PROCESSING_H
 
-#include <SignalProcessing/Cuda/CudaEqBuffers.h>
+#include <SignalProcessing/Cuda/Buffers/CudaEqBuffers.h>
 
 #include <Utils/Exception/NotSupportedException.h>
 

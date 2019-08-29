@@ -9,8 +9,6 @@
 using namespace adaptone;
 using namespace std;
 
-constexpr double NInf = -numeric_limits<double>::infinity();
-
 TEST(CudaSignalProcessorTests, performance)
 {
     constexpr size_t FrameSampleCount = 32;
@@ -90,14 +88,14 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
         SoundLevelLength,
         analysisDispatcher);
 
-    processor.setInputGains({ 0, 0 });
-    processor.setMixingGains({ 0, NInf, NInf, 0 });
-    processor.setOutputGains({ 0, 0 });
+    processor.setInputGains({ 1, 1 });
+    processor.setMixingGains({ 1, 0, 0, 1 });
+    processor.setOutputGains({ 1, 1 });
 
-    processor.setInputGraphicEqGains(0, { 0, 0, 0 });
-    processor.setInputGraphicEqGains(1, { 0, 0, 0 });
-    processor.setOutputGraphicEqGains(0, { 0, 0, 0 });
-    processor.setOutputGraphicEqGains(1, { 0, 0, 0 });
+    processor.setInputGraphicEqGains(0, { 1, 1, 1 });
+    processor.setInputGraphicEqGains(1, { 1, 1, 1 });
+    processor.setOutputGraphicEqGains(0, { 1, 1, 1 });
+    processor.setOutputGraphicEqGains(1, { 1, 1, 1 });
 
     processor.forceRefreshParameters();
 
@@ -117,7 +115,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.02, MaxAbsError);
 
 
-    processor.setInputGains({ 6.02059991328, 6.02059991328 });
+    processor.setInputGains({ 2, 2 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.01, MaxAbsError);
@@ -126,7 +124,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.04, MaxAbsError);
 
 
-    processor.setInputGraphicEqGains(0, { 6.02059991328, 6.02059991328, 6.02059991328 });
+    processor.setInputGraphicEqGains(0, { 2, 2, 2 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.02, MaxAbsError);
@@ -135,7 +133,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.04, MaxAbsError);
 
 
-    processor.setInputGraphicEqGains(1, { 6.02059991328, 6.02059991328, 6.02059991328 });
+    processor.setInputGraphicEqGains(1, { 2, 2, 2 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.02, MaxAbsError);
@@ -144,7 +142,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.08, MaxAbsError);
 
 
-    processor.setMixingGains({ NInf, 0, 0, NInf });
+    processor.setMixingGains({ 0, 1, 1, 0 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.04, MaxAbsError);
@@ -153,7 +151,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.06, MaxAbsError);
 
 
-    processor.setOutputGraphicEqGains(0, { 6.02059991328, 6.02059991328, 6.02059991328 });
+    processor.setOutputGraphicEqGains(0, { 2, 2, 2 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.08, MaxAbsError);
@@ -162,7 +160,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.06, MaxAbsError);
 
 
-    processor.setOutputGraphicEqGains(1, { 6.02059991328, 6.02059991328, 6.02059991328 });
+    processor.setOutputGraphicEqGains(1, { 2, 2, 2 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.08, MaxAbsError);
@@ -171,7 +169,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
 
-    processor.setOutputGains({ 6.02059991328, 6.02059991328 });
+    processor.setOutputGains({ 2, 2 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.16, MaxAbsError);
@@ -180,7 +178,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.24, MaxAbsError);
 
 
-    processor.setInputGain(0, 12.0411998266);
+    processor.setInputGain(0, 4);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.16, MaxAbsError);
@@ -189,7 +187,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.48, MaxAbsError);
 
 
-    processor.setInputGain(1, 12.0411998266);
+    processor.setInputGain(1, 4);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.32, MaxAbsError);
@@ -198,7 +196,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.48, MaxAbsError);
 
 
-    processor.setOutputGain(0, 0);
+    processor.setOutputGain(0, 1);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.16, MaxAbsError);
@@ -207,7 +205,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.48, MaxAbsError);
 
 
-    processor.setOutputGain(1, 0);
+    processor.setOutputGain(1, 1);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.16, MaxAbsError);
@@ -216,7 +214,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.24, MaxAbsError);
 
 
-    processor.setOutputGraphicEqGains(0, 2, { 0, 0, 0 });
+    processor.setOutputGraphicEqGains(0, 2, { 1, 1, 1 });
     reinterpret_cast<const double*>(processor.process(inputFrame).data());
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
@@ -226,7 +224,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
 
-    processor.setMixingGain(1, 0, NInf);
+    processor.setMixingGain(1, 0, 0);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0, MaxAbsError);
@@ -235,7 +233,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
 
-    processor.setMixingGains(1, { NInf, NInf });
+    processor.setMixingGains(1, { 0, 0 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0, MaxAbsError);

@@ -16,7 +16,6 @@ TEST(ChangeInputEqGainsMessageTests, constructor_shouldSetTheAttributes)
 
     EXPECT_EQ(message.channelId(), channelId);
     EXPECT_EQ(message.gains(), gains);
-    EXPECT_EQ(message.gainsDb(), vector<double>({ 0, 20 }));
 }
 
 TEST(ChangeInputEqGainsMessageTests, serialization_shouldSerializaToJson)
@@ -51,5 +50,4 @@ TEST(ChangeInputEqGainsMessageTests, deserialization_shouldDeserializeFromJson)
 
     EXPECT_EQ(deserializedMessage.channelId(), 1);
     EXPECT_EQ(deserializedMessage.gains(), vector<double>({ 1, 10, 100 }));
-    EXPECT_EQ(deserializedMessage.gainsDb(), vector<double>({ 0, 20, 40 }));
 }

@@ -27,13 +27,13 @@ TEST(MixingParametersTests, setGain_shouldSetSpecifiedChannelGainNotInDb)
 
     EXPECT_FALSE(mixingParameters.isDirty());
 
-    mixingParameters.setGain(0, 0, 0);
-    mixingParameters.setGain(1, 0, 20);
-    mixingParameters.setGain(2, 0, 40);
+    mixingParameters.setGain(0, 0, 1);
+    mixingParameters.setGain(1, 0, 10);
+    mixingParameters.setGain(2, 0, 100);
 
-    mixingParameters.setGain(0, 1, 40);
-    mixingParameters.setGain(1, 1, 20);
-    mixingParameters.setGain(2, 1, 0);
+    mixingParameters.setGain(0, 1, 100);
+    mixingParameters.setGain(1, 1, 10);
+    mixingParameters.setGain(2, 1, 1);
 
     EXPECT_TRUE(mixingParameters.isDirty());
     EXPECT_EQ(mixingParameters.gains(), vector<float>({ 1, 10, 100, 100, 10, 1 }));
@@ -60,9 +60,9 @@ TEST(MixingParametersTests, setGains_outputSpecific_shouldSetOutputGainsNotInDb)
 
     EXPECT_FALSE(mixingParameters.isDirty());
 
-    mixingParameters.setGains(0, { -40, -20 });
-    mixingParameters.setGains(1, { 0, 20 });
-    mixingParameters.setGains(2, { 40, 60 });
+    mixingParameters.setGains(0, { 0.01, 0.1 });
+    mixingParameters.setGains(1, { 1, 10 });
+    mixingParameters.setGains(2, { 100, 1000 });
 
     EXPECT_TRUE(mixingParameters.isDirty());
     EXPECT_EQ(mixingParameters.gains(), vector<float>({ 0.01, 0.1, 1, 10, 100, 1000 }));
@@ -74,7 +74,7 @@ TEST(MixingParametersTests, setGains_shouldSetOutputGainsNotInDb)
 
     EXPECT_FALSE(mixingParameters.isDirty());
 
-    mixingParameters.setGains({ -40, -20, 0, 20, 40, 60 });
+    mixingParameters.setGains({ 0.01, 0.1, 1, 10, 100, 1000 });
 
     EXPECT_TRUE(mixingParameters.isDirty());
     EXPECT_EQ(mixingParameters.gains(), vector<float>({ 0.01, 0.1, 1, 10, 100, 1000 }));

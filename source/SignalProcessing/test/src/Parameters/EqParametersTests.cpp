@@ -30,27 +30,27 @@ TEST(EqParametersTests, d0_invalidChannel_shouldThrowInvalidValueException)
 
 TEST(EqParametersTests, setGraphicEqGains_invalidChannel_shouldThrowInvalidValueException)
 {
-    vector<double> gainsDb{ -10, 0, 10 };
+    vector<double> gains{ 0.31622776601, 1, 3.16227766017 };
     vector<double> frequencies{ 20, 25, 50 };
 
     EqParameters<float> eqParameters(SampleFrequency, frequencies, 2);
 
-    EXPECT_THROW(eqParameters.setGraphicEqGains(2, gainsDb), InvalidValueException);
-    EXPECT_THROW(eqParameters.setGraphicEqGains(1, 2, gainsDb), InvalidValueException);
-    EXPECT_THROW(eqParameters.setGraphicEqGains(2, 1, gainsDb), InvalidValueException);
-    EXPECT_NO_THROW(eqParameters.setGraphicEqGains(1, 1, gainsDb));
+    EXPECT_THROW(eqParameters.setGraphicEqGains(2, gains), InvalidValueException);
+    EXPECT_THROW(eqParameters.setGraphicEqGains(1, 2, gains), InvalidValueException);
+    EXPECT_THROW(eqParameters.setGraphicEqGains(2, 1, gains), InvalidValueException);
+    EXPECT_NO_THROW(eqParameters.setGraphicEqGains(1, 1, gains));
 }
 
 TEST(EqParametersTests, setGraphicEqGains_shouldUpdateTheSpecifiedChannelDesigner)
 {
-    vector<double> gainsDb{ -10.1143, -10.5725, -6.013 };
+    vector<double> gains{ 0.31209369857, 0.29605677228, 0.50043767762 };
     vector<double> frequencies{ 20, 50, 125 };
 
     EqParameters<float> eqParameters(SampleFrequency, frequencies, 2);
     EXPECT_FALSE(eqParameters.isDirty(0));
     EXPECT_FALSE(eqParameters.isDirty(1));
 
-    eqParameters.setGraphicEqGains(0, gainsDb);
+    eqParameters.setGraphicEqGains(0, gains);
     EXPECT_TRUE(eqParameters.isDirty(0));
     EXPECT_FALSE(eqParameters.isDirty(1));
 
@@ -101,14 +101,14 @@ TEST(EqParametersTests, setGraphicEqGains_shouldUpdateTheSpecifiedChannelDesigne
 
 TEST(EqParametersTests, setGraphicEqGains_range_shouldUpdateTheSpecifiedChannelDesigner)
 {
-    vector<double> gainsDb{ -10.1143, -10.5725, -6.013 };
+    vector<double> gains{ 0.31209369857, 0.29605677228, 0.50043767762 };
     vector<double> frequencies{ 20, 50, 125 };
 
     EqParameters<float> eqParameters(SampleFrequency, frequencies, 4);
     EXPECT_FALSE(eqParameters.isDirty(0));
     EXPECT_FALSE(eqParameters.isDirty(1));
 
-    eqParameters.setGraphicEqGains(1, 3, gainsDb);
+    eqParameters.setGraphicEqGains(1, 3, gains);
     EXPECT_FALSE(eqParameters.isDirty(0));
     EXPECT_TRUE(eqParameters.isDirty(1));
     EXPECT_TRUE(eqParameters.isDirty(2));
@@ -179,7 +179,7 @@ TEST(EqParametersTests, setGraphicEqGains_range_shouldUpdateTheSpecifiedChannelD
 
 TEST(EqParametersTests, applyUpdate_shouldExecuteTheFunctionOnlyIfTheParametersAreDirtyAndSetDirtyToFalse)
 {
-    vector<double> gainsDb{ -10.1143, -10.5725, -6.013 };
+    vector<double> gains{ 0.31209369857, 0.29605677228, 0.50043767762 };
     vector<double> frequencies{ 20, 50, 125 };
 
     EqParameters<float> eqParameters(SampleFrequency, frequencies, 2);
@@ -198,7 +198,7 @@ TEST(EqParametersTests, applyUpdate_shouldExecuteTheFunctionOnlyIfTheParametersA
     EXPECT_EQ(counter, 0);
     EXPECT_FALSE(eqParameters.isDirty(1));
 
-    eqParameters.setGraphicEqGains(0, gainsDb);
+    eqParameters.setGraphicEqGains(0, gains);
     EXPECT_TRUE(eqParameters.isDirty(0));
     EXPECT_FALSE(eqParameters.isDirty(1));
 
@@ -208,7 +208,7 @@ TEST(EqParametersTests, applyUpdate_shouldExecuteTheFunctionOnlyIfTheParametersA
     EXPECT_FALSE(eqParameters.isDirty(0));
     EXPECT_FALSE(eqParameters.isDirty(1));
 
-    eqParameters.setGraphicEqGains(1, gainsDb);
+    eqParameters.setGraphicEqGains(1, gains);
     EXPECT_FALSE(eqParameters.isDirty(0));
     EXPECT_TRUE(eqParameters.isDirty(1));
 

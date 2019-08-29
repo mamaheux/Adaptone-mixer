@@ -3,8 +3,6 @@
 
 #include <Communication/Messages/ApplicationMessage.h>
 
-#include <Utils/Math.h>
-
 namespace adaptone
 {
     class ChangeInputGainMessage : public ApplicationMessage
@@ -23,7 +21,6 @@ namespace adaptone
 
         std::size_t channelId() const;
         double gain() const;
-        double gainDb() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeInputGainMessage& o);
@@ -38,11 +35,6 @@ namespace adaptone
     inline double ChangeInputGainMessage::gain() const
     {
         return m_gain;
-    }
-
-    inline double ChangeInputGainMessage::gainDb() const
-    {
-        return scalarToDb(m_gain);
     }
 
     inline std::string ChangeInputGainMessage::toJson() const

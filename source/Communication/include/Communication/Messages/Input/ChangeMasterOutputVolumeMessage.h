@@ -21,7 +21,6 @@ namespace adaptone
         ~ChangeMasterOutputVolumeMessage() override;
 
         double gain() const;
-        double gainDb() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeMasterOutputVolumeMessage& o);
@@ -31,11 +30,6 @@ namespace adaptone
     inline double ChangeMasterOutputVolumeMessage::gain() const
     {
         return m_gain;
-    }
-
-    inline double ChangeMasterOutputVolumeMessage::gainDb() const
-    {
-        return scalarToDb(m_gain);
     }
 
     inline std::string ChangeMasterOutputVolumeMessage::toJson() const

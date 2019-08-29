@@ -26,9 +26,9 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(MixingParameters);
         DECLARE_NOT_MOVABLE(MixingParameters);
 
-        void setGain(std::size_t inputChannel, std::size_t outputChannel, T gainDb);
-        void setGains(std::size_t outputChannel, const std::vector<T>& gainsDb);
-        void setGains(const std::vector<T>& gainsDb);
+        void setGain(std::size_t inputChannel, std::size_t outputChannel, T gain);
+        void setGains(std::size_t outputChannel, const std::vector<T>& gains);
+        void setGains(const std::vector<T>& gains);
         const std::vector<T>& gains() const;
     };
 
@@ -46,7 +46,7 @@ namespace adaptone
     }
 
     template<class T>
-    void MixingParameters<T>::setGain(std::size_t inputChannel, std::size_t outputChannel, T gainDb)
+    void MixingParameters<T>::setGain(std::size_t inputChannel, std::size_t outputChannel, T gain)
     {
         if (inputChannel >= m_inputChannelCount || outputChannel >= m_outputChannelCount)
         {
@@ -55,18 +55,18 @@ namespace adaptone
 
         update([&]()
         {
-            m_gains[outputChannel * m_inputChannelCount + inputChannel] = std::pow(10, gainDb / 20);
+            m_gains[outputChannel * m_inputChannelCount + inputChannel] = gain;
         });
     }
 
     template<class T>
-    void MixingParameters<T>::setGains(std::size_t outputChannel, const std::vector<T>& gainsDb)
+    void MixingParameters<T>::setGains(std::size_t outputChannel, const std::vector<T>& gains)
     {
         if (outputChannel >= m_outputChannelCount)
         {
             THROW_INVALID_VALUE_EXCEPTION("Invalid output channel", "");
         }
-        if (gainsDb.size() != m_inputChannelCount)
+        if (gains.size() != m_inputChannelCount)
         {
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel count", "");
         }
@@ -75,24 +75,24 @@ namespace adaptone
         {
             for (std::size_t i = 0; i < m_inputChannelCount; i++)
             {
-                m_gains[outputChannel * m_inputChannelCount + i] = std::pow(10, gainsDb[i] / 20);
+                m_gains[outputChannel * m_inputChannelCount + i] = gains[i];
             }
         });
     }
 
     template<class T>
-    void MixingParameters<T>::setGains(const std::vector<T>& gainsDb)
+    void MixingParameters<T>::setGains(const std::vector<T>& gains)
     {
-        if (gainsDb.size() != m_gains.size())
+        if (gains.size() != m_gains.size())
         {
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel count", "");
         }
 
         update([&]()
         {
-            for (std::size_t i = 0; i < gainsDb.size(); i++)
+            for (std::size_t i = 0; i < gains.size(); i++)
             {
-                m_gains[i] = std::pow(10, gainsDb[i] / 20);
+                m_gains[i] = gains[i];
             }
         });
     }
