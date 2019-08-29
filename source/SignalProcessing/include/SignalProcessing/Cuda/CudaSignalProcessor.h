@@ -3,7 +3,7 @@
 
 #include <SignalProcessing/ProcessingDataType.h>
 #include <SignalProcessing/SpecificSignalProcessor.h>
-#include <SignalProcessing/Cuda/CudaSignalProcessorBuffers.h>
+#include <SignalProcessing/Cuda/Buffers/CudaSignalProcessorBuffers.h>
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
 #include <SignalProcessing/Cuda/Processing/GainProcessing.h>
 #include <SignalProcessing/Cuda/Processing/MixProcessing.h>

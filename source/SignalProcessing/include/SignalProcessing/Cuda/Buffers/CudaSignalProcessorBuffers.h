@@ -1,8 +1,8 @@
 #ifndef SIGNAL_PROCESSING_CUDA_CUDA_SIGNAL_PROCESSOR_BUFFERS_H
 #define SIGNAL_PROCESSING_CUDA_CUDA_SIGNAL_PROCESSOR_BUFFERS_H
 
-#include <SignalProcessing/Cuda/CudaEqBuffers.h>
-#include <SignalProcessing/Cuda/CudaSoundLevelBuffers.h>
+#include <SignalProcessing/Cuda/Buffers/CudaEqBuffers.h>
+#include <SignalProcessing/Cuda/Buffers/CudaSoundLevelBuffers.h>
 #include <SignalProcessing/Cuda/Conversion/PcmToArrayConversion.h>
 #include <SignalProcessing/Cuda/Conversion/ArrayToPcmConversion.h>
 
