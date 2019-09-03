@@ -9,6 +9,7 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 include_directories(../../3rdParty/googletest/googletest/include)
 include_directories(../../3rdParty/googletest/googlemock/include)
 include_directories(../../3rdParty/armadillo-code/include)
+include_directories(${fftw_INCLUDE_DIR})
 include_directories(../../Utils/include)
 include_directories(../include)
 include_directories(include)
@@ -29,7 +30,8 @@ if (CUDA_FOUND)
         SignalProcessing
         Utils
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
+        ${fftw_LIBRARY}
         gfortran
         gtest
         gmock
@@ -52,7 +54,8 @@ else (CUDA_FOUND)
         SignalProcessing
         Utils
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
+        ${fftw_LIBRARY}
         gfortran
         gtest
         gmock)

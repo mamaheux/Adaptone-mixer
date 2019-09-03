@@ -38,7 +38,7 @@ if (UNIX)
         asound
         pthread
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
         gfortran)
 
     target_link_libraries(Mixer_Private
@@ -48,7 +48,7 @@ if (UNIX)
         asound
         pthread
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
         gfortran)
 else (UNIX)
     target_link_libraries(Mixer
@@ -56,7 +56,7 @@ else (UNIX)
         SignalProcessing
         Communication
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
         gfortran)
 
     target_link_libraries(Mixer_Private
@@ -64,7 +64,7 @@ else (UNIX)
         SignalProcessing
         Communication
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
         gfortran)
 endif (UNIX)
 

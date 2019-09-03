@@ -7,6 +7,7 @@ find_package(CUDA 9.0 QUIET)
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../3rdParty/armadillo-code/include)
+include_directories(${fftw_INCLUDE_DIR})
 include_directories(../Utils/include)
 include_directories(include)
 
@@ -27,7 +28,8 @@ if (CUDA_FOUND)
 
     target_link_libraries(SignalProcessing
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
+        ${fftw_LIBRARY}
         gfortran
         ${CUDA_LIBRARIES})
 
@@ -55,12 +57,14 @@ else (CUDA_FOUND)
 
     target_link_libraries(SignalProcessing
         armadillo
-        ${CMAKE_HOME_DIRECTORY}/3rdParty/OpenBLAS/libopenblas.a
+        ${openblas_LIBRARY}
+        ${fftw_LIBRARY}
         gfortran)
 
 endif (CUDA_FOUND)
 
 set_property(TARGET SignalProcessing PROPERTY CXX_STANDARD 14)
+add_dependencies(SignalProcessing fftw)
 
 assign_source_group(${source_files})
 
