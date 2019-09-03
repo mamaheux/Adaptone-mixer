@@ -11,7 +11,7 @@ elseif (UNIX)
     set(openblas_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/OpenBLAS/libopenblas.a")
 
     add_custom_target(openblas
-        COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/make_openblas_unix.bash"
+        COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/make_openblas_unix.bash"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/OpenBLAS)
 
 
@@ -19,7 +19,7 @@ elseif (UNIX)
     set(fftw_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/fftw/install/usr/local/lib/libfftw3f.a")
 
     add_custom_target(fftw
-        COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/make_fftw_unix.bash"
+        COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/make_fftw_unix.bash"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/fftw)
 endif (WIN32)
 
