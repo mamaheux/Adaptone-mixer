@@ -13,6 +13,7 @@ namespace adaptone
     template<class T, class S>
     class BasicBoundedBuffer
     {
+    protected:
         std::vector<T> m_buffers;
         S m_mutex;
         S m_empty;
@@ -34,14 +35,14 @@ namespace adaptone
     };
 
     template<class T, class S>
-    BasicBoundedBuffer<T, S>::BasicBoundedBuffer(std::size_t count) :
+    inline BasicBoundedBuffer<T, S>::BasicBoundedBuffer(std::size_t count) :
         m_buffers(count), m_mutex(1), m_empty(count), m_full(0), m_readIndex(0), m_writeIndex(0)
     {
         m_deleter = [](T& o) {};
     }
 
     template<class T, class S>
-    BasicBoundedBuffer<T, S>::BasicBoundedBuffer(std::size_t count, std::function<T()> initializer) :
+    inline BasicBoundedBuffer<T, S>::BasicBoundedBuffer(std::size_t count, std::function<T()> initializer) :
         BasicBoundedBuffer(count)
     {
         for (std::size_t i = 0; i < m_buffers.size(); i++)
@@ -51,14 +52,14 @@ namespace adaptone
     }
 
     template<class T, class S>
-    BasicBoundedBuffer<T, S>::BasicBoundedBuffer(std::size_t count, std::function<T()> initializer,
+    inline BasicBoundedBuffer<T, S>::BasicBoundedBuffer(std::size_t count, std::function<T()> initializer,
         std::function<void(T&)> deleter) : BasicBoundedBuffer(count, initializer)
     {
         m_deleter = deleter;
     }
 
     template<class T, class S>
-    BasicBoundedBuffer<T, S>::~BasicBoundedBuffer()
+    inline BasicBoundedBuffer<T, S>::~BasicBoundedBuffer()
     {
         for (std::size_t i = 0; i < m_buffers.size(); i++)
         {
@@ -67,7 +68,7 @@ namespace adaptone
     }
 
     template<class T, class S>
-    void BasicBoundedBuffer<T, S>::read(std::function<void(const T&)> callback)
+    inline void BasicBoundedBuffer<T, S>::read(std::function<void(const T&)> readFunction)
     {
         m_full.wait();
         m_mutex.wait();
@@ -78,7 +79,7 @@ namespace adaptone
 
         try
         {
-            callback(buffer);
+            readFunction(buffer);
         }
         catch (...)
         {
@@ -89,7 +90,7 @@ namespace adaptone
     }
 
     template<class T, class S>
-    void BasicBoundedBuffer<T, S>::write(std::function<void(T&)> callback)
+    inline void BasicBoundedBuffer<T, S>::write(std::function<void(T&)> writeFunction)
     {
         m_empty.wait();
         m_mutex.wait();
@@ -100,7 +101,7 @@ namespace adaptone
 
         try
         {
-            callback(buffer);
+            writeFunction(buffer);
         }
         catch (...)
         {
