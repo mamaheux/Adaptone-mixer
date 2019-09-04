@@ -32,9 +32,9 @@ map<AnalysisDispatcher::SoundLevelType, vector<float>> getDummySoundLevels()
     return soundLevels;
 }
 
-constexpr std::size_t FrameSampleCount = 10;
-constexpr std::size_t SampleFrequency = 48000;
-constexpr std::size_t InputChannelCount = 2;
+constexpr size_t FrameSampleCount = 10;
+constexpr size_t SampleFrequency = 48000;
+constexpr size_t InputChannelCount = 2;
 
 TEST(MixerAnalysisDispatcherTests, startStop_shouldStartAndStopProperlyTheDispatcher)
 {

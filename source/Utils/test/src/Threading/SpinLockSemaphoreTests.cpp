@@ -17,7 +17,7 @@ TEST(SpinLockSemaphoreTests, binarySpinLockSemaphore_shouldProtectResources)
     SpinLockSemaphore s0(0), s1(1), s2(0);
     volatile int value = -1;
 
-    std::thread t0([&]()
+    thread t0([&]()
     {
         while (!isFinished.load())
         {
@@ -27,7 +27,7 @@ TEST(SpinLockSemaphoreTests, binarySpinLockSemaphore_shouldProtectResources)
         }
     });
 
-    std::thread t1([&]()
+    thread t1([&]()
     {
         while (!isFinished.load())
         {
@@ -37,7 +37,7 @@ TEST(SpinLockSemaphoreTests, binarySpinLockSemaphore_shouldProtectResources)
         }
     });
 
-    std::thread t2([&]()
+    thread t2([&]()
     {
         while (!isFinished.load())
         {
@@ -82,7 +82,7 @@ TEST(SpinLockSemaphoreTests, ternarySpinLockSemaphore_shouldProtectResources)
     SpinLockSemaphore s0(2);
     volatile int value = 0;
 
-    std::thread t0([&]()
+    thread t0([&]()
     {
         while (!isFinished.load())
         {

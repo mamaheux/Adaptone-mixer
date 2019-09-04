@@ -21,7 +21,7 @@ TEST(SpinLockTests, spinLock_shouldProtectResources)
     s1.lock();
     s2.lock();
 
-    std::thread t0([&]()
+    thread t0([&]()
     {
         while (!isFinished.load())
         {
@@ -31,7 +31,7 @@ TEST(SpinLockTests, spinLock_shouldProtectResources)
         }
     });
 
-    std::thread t1([&]()
+    thread t1([&]()
     {
         while (!isFinished.load())
         {
@@ -41,7 +41,7 @@ TEST(SpinLockTests, spinLock_shouldProtectResources)
         }
     });
 
-    std::thread t2([&]()
+    thread t2([&]()
     {
         while (!isFinished.load())
         {
