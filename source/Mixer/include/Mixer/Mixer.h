@@ -36,7 +36,6 @@ namespace adaptone
         std::shared_ptr<ApplicationMessageHandler> m_applicationMessageHandler;
         std::shared_ptr<ApplicationWebSocket> m_applicationWebSocket;
 
-        std::unique_ptr<std::thread> m_analysisThread;
         std::unique_ptr<std::thread> m_applicationWebSocketThread;
         std::atomic<bool> m_stopped;
 
@@ -56,7 +55,7 @@ namespace adaptone
         std::unique_ptr<AudioInput> createAudioInput();
         std::unique_ptr<AudioOutput> createAudioOutput();
 
-        std::shared_ptr<AnalysisDispatcher> createAnalysisDispatcher();
+        std::shared_ptr<AnalysisDispatcher> createAnalysisDispatcher(std::shared_ptr<Logger> logger);
         std::shared_ptr<SignalProcessor> createSignalProcessor(std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
 
         std::shared_ptr<ConnectionHandler> createConnectionHandler(std::shared_ptr<SignalProcessor> signalProcessor);
@@ -67,7 +66,6 @@ namespace adaptone
             std::shared_ptr<ApplicationMessageHandler> applicationMessageHandler);
 
         void processingRun();
-        void analysisRun();
         void applicationWebSocketRun();
     };
 }

@@ -1,7 +1,6 @@
 #include <Utils/Threading/SpinLock.h>
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 
 #include <thread>
 #include <chrono>

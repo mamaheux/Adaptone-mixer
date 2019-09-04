@@ -1,7 +1,6 @@
 #include <Utils/Threading/OneWriterBoundedBuffer.h>
 
 #include <gtest/gtest.h>
-#include <gmock/gmock.h>
 
 #include <atomic>
 #include <string>

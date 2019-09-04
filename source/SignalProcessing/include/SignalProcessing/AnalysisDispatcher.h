@@ -18,11 +18,14 @@ namespace adaptone
             OutputGain
         };
 
+        AnalysisDispatcher();
+        virtual ~AnalysisDispatcher();
+
         DECLARE_NOT_COPYABLE(AnalysisDispatcher);
         DECLARE_NOT_MOVABLE(AnalysisDispatcher);
 
-        AnalysisDispatcher();
-        virtual ~AnalysisDispatcher();
+        virtual void start() = 0;
+        virtual void stop() = 0;
 
         virtual void notifySoundLevel(const std::map<SoundLevelType, std::vector<float>>& soundLevels) = 0;
         virtual void notifySoundLevel(const std::map<SoundLevelType, std::vector<double>>& soundLevels) = 0;
