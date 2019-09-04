@@ -32,9 +32,11 @@ namespace adaptone
         std::unique_ptr<std::thread> m_soundLevelThread;
         BoundedBuffer<SoundLevelMessage> m_soundLevelBoundedBuffer;
 
-        std::unique_ptr<std::thread> m_inputSampleThread;
-        BoundedBuffer<float*> m_floatInputSampleBoundedBuffer;
-        BoundedBuffer<double*> m_doubleInputSampleBoundedBuffer;
+        std::unique_ptr<std::thread> m_inputEqOutputFrameThread;
+        BoundedBuffer<float*> m_floatInputEqOutputFrameBoundedBuffer;
+        BoundedBuffer<double*> m_doubleInputEqOutputFrameBoundedBuffer;
+
+        std::unique_ptr<std::thread> m_inputEqOutputFrameSpectrumAnalysisThread;
 
     public:
         MixerAnalysisDispatcher(std::shared_ptr<Logger> logger,
@@ -59,14 +61,17 @@ namespace adaptone
 
     private:
         void soundLevelRun();
-        void floatInputSampleRun();
-        void doubleInputSampleRun();
+        void floatInputEqOutputFrameRun();
+        void doubleInputEqOutputFrameRun();
+        void inputEqOutputFrameSpectrumAnalysisRun();
 
         void startSoundLevelThread();
-        void startInputSampleThread();
+        void startInputEqOutputFrameThread();
+        void startInputEqOutputFrameSpectrumAnalysisThread();
 
         void stopSoundLevelThread();
-        void stopInputSampleThread();
+        void stopInputEqOutputFrameThread();
+        void stopInputEqOutputFrameSpectrumAnalysisThread();
     };
 }
 

@@ -18,9 +18,9 @@ MixerAnalysisDispatcher::MixerAnalysisDispatcher(shared_ptr<Logger> logger,
     m_send(send),
     m_processingDataType(processingDataType),
     m_soundLevelBoundedBuffer(SoundLevelBoundedBufferSize),
-    m_floatInputSampleBoundedBuffer(InputSampleBoundedBufferSize,
+    m_floatInputEqOutputFrameBoundedBuffer(InputSampleBoundedBufferSize,
         [=]() { return new float[frameSampleCount * inputChannelCount]; }, [](float*& b) { delete[] b; }),
-    m_doubleInputSampleBoundedBuffer(InputSampleBoundedBufferSize,
+    m_doubleInputEqOutputFrameBoundedBuffer(InputSampleBoundedBufferSize,
         [=]() { return new double[frameSampleCount * inputChannelCount]; }, [](double*& b) { delete[] b; })
 {
 }
@@ -37,7 +37,8 @@ void MixerAnalysisDispatcher::start()
 {
     m_stopped.store(false);
     startSoundLevelThread();
-    startInputSampleThread();
+    startInputEqOutputFrameThread();
+    startInputEqOutputFrameSpectrumAnalysisThread();
 }
 
 void MixerAnalysisDispatcher::stop()
@@ -47,7 +48,8 @@ void MixerAnalysisDispatcher::stop()
     if (!wasStopped)
     {
         stopSoundLevelThread();
-        stopInputSampleThread();
+        stopInputEqOutputFrameThread();
+        stopInputEqOutputFrameSpectrumAnalysisThread();
     }
 }
 
@@ -82,7 +84,7 @@ void MixerAnalysisDispatcher::notifyInputEqOutputFrame(const function<void(float
         THROW_NOT_SUPPORTED_EXCEPTION("Invalid processing data type");
     }
 
-    m_floatInputSampleBoundedBuffer.write([&](float*& buffer)
+    m_floatInputEqOutputFrameBoundedBuffer.write([&](float*& buffer)
     {
         notifyFunction(buffer);
     });
@@ -95,7 +97,7 @@ void MixerAnalysisDispatcher::notifyInputEqOutputFrame(const function<void(doubl
         THROW_NOT_SUPPORTED_EXCEPTION("Invalid processing data type");
     }
 
-    m_doubleInputSampleBoundedBuffer.write([&](double*& buffer)
+    m_doubleInputEqOutputFrameBoundedBuffer.write([&](double*& buffer)
     {
         notifyFunction(buffer);
     });
@@ -122,7 +124,7 @@ void MixerAnalysisDispatcher::soundLevelRun()
     }
 }
 
-void MixerAnalysisDispatcher::floatInputSampleRun()
+void MixerAnalysisDispatcher::floatInputEqOutputFrameRun()
 {
     while (!m_stopped.load())
     {
@@ -137,13 +139,28 @@ void MixerAnalysisDispatcher::floatInputSampleRun()
     }
 }
 
-void MixerAnalysisDispatcher::doubleInputSampleRun()
+void MixerAnalysisDispatcher::doubleInputEqOutputFrameRun()
 {
     while (!m_stopped.load())
     {
         try
         {
             //TODO add write call
+        }
+        catch (exception& ex)
+        {
+            m_logger->log(Logger::Level::Error, ex);
+        }
+    }
+}
+
+void MixerAnalysisDispatcher::inputEqOutputFrameSpectrumAnalysisRun()
+{
+    while (!m_stopped.load())
+    {
+        try
+        {
+            //TODO add spectrum analysis call
         }
         catch (exception& ex)
         {
@@ -157,21 +174,27 @@ void MixerAnalysisDispatcher::startSoundLevelThread()
     m_soundLevelThread = make_unique<thread>(&MixerAnalysisDispatcher::soundLevelRun, this);
 }
 
-void MixerAnalysisDispatcher::startInputSampleThread()
+void MixerAnalysisDispatcher::startInputEqOutputFrameThread()
 {
     switch (m_processingDataType)
     {
         case ProcessingDataType::Float:
-            m_inputSampleThread = make_unique<thread>(&MixerAnalysisDispatcher::floatInputSampleRun, this);
+            m_inputEqOutputFrameThread = make_unique<thread>(&MixerAnalysisDispatcher::floatInputEqOutputFrameRun, this);
             break;
 
         case ProcessingDataType::Double:
-            m_inputSampleThread = make_unique<thread>(&MixerAnalysisDispatcher::doubleInputSampleRun, this);
+            m_inputEqOutputFrameThread = make_unique<thread>(&MixerAnalysisDispatcher::doubleInputEqOutputFrameRun, this);
             break;
 
         default:
             THROW_NOT_SUPPORTED_EXCEPTION("Invalid processing data type");
     }
+}
+
+void MixerAnalysisDispatcher::startInputEqOutputFrameSpectrumAnalysisThread()
+{
+    m_inputEqOutputFrameSpectrumAnalysisThread =
+        make_unique<thread>(&MixerAnalysisDispatcher::inputEqOutputFrameSpectrumAnalysisRun, this);
 }
 
 void MixerAnalysisDispatcher::stopSoundLevelThread()
@@ -182,23 +205,31 @@ void MixerAnalysisDispatcher::stopSoundLevelThread()
     m_soundLevelThread.release();
 }
 
-void MixerAnalysisDispatcher::stopInputSampleThread()
+void MixerAnalysisDispatcher::stopInputEqOutputFrameThread()
 {
     // Write an empty message to unlock the input sample thread.
     switch (m_processingDataType)
     {
         case ProcessingDataType::Float:
-            m_floatInputSampleBoundedBuffer.write([](float*& m) { });
+            m_floatInputEqOutputFrameBoundedBuffer.write([](float*& m) { });
             break;
 
         case ProcessingDataType::Double:
-            m_doubleInputSampleBoundedBuffer.write([](double*& m) { });
+            m_doubleInputEqOutputFrameBoundedBuffer.write([](double*& m) { });
             break;
 
         default:
             THROW_NOT_SUPPORTED_EXCEPTION("Invalid processing data type");
     }
 
-    m_inputSampleThread->join();
-    m_inputSampleThread.release();
+    m_inputEqOutputFrameThread->join();
+    m_inputEqOutputFrameThread.release();
+}
+
+void MixerAnalysisDispatcher::stopInputEqOutputFrameSpectrumAnalysisThread()
+{
+    // Write an empty message to unlock the sound level thread.
+    //TODO add the write call
+    m_inputEqOutputFrameSpectrumAnalysisThread->join();
+    m_inputEqOutputFrameSpectrumAnalysisThread.release();
 }
