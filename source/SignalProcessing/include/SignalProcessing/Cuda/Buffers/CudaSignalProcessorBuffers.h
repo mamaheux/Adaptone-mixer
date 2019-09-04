@@ -166,6 +166,7 @@ namespace adaptone
 
         __host__ void copyInputFrame(const PcmAudioFrame& frame);
         __host__ void copyOutputFrame(PcmAudioFrame& frame);
+        __host__ void copyCurrentInputEqOutputFrame(T* data);
     };
 
     template<class T>
@@ -533,6 +534,12 @@ namespace adaptone
     inline __host__ void CudaSignalProcessorBuffers<T>::copyOutputFrame(PcmAudioFrame& frame)
     {
         cudaMemcpy(&frame[0], currentOutputPcmFrame(), frame.size(), cudaMemcpyDeviceToHost);
+    }
+
+    template<class T>
+    inline __host__ void CudaSignalProcessorBuffers<T>::copyCurrentInputEqOutputFrame(T* data)
+    {
+        cudaMemcpy(data, currentInputEqOutputFrame(), m_inputFrameSize * sizeof(T), cudaMemcpyDeviceToHost);
     }
 }
 

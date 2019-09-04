@@ -27,7 +27,7 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     unique_ptr<AudioInput> audioInput = createAudioInput();
     unique_ptr<AudioOutput> audioOutput = createAudioOutput();
 
-    shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher();
+    shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher(logger);
     shared_ptr<SignalProcessor> signalProcessor = createSignalProcessor(analysisDispatcher);
 
     shared_ptr<ConnectionHandler> connectionHandler = createConnectionHandler(signalProcessor);
@@ -52,19 +52,24 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
 
 Mixer::~Mixer()
 {
+    if (!m_stopped.load())
+    {
+        stop();
+    }
 }
 
 void Mixer::run()
 {
     m_stopped.store(false);
-    m_analysisThread = make_unique<thread>(&Mixer::analysisRun, this);
     m_applicationWebSocketThread = make_unique<thread>(&Mixer::applicationWebSocketRun, this);
+    m_analysisDispatcher->start();
+
     this_thread::sleep_for(1s); //Make sure the websocket is properly started.
 
     processingRun();
 
-    m_analysisThread->join();
     m_applicationWebSocketThread->join();
+    m_analysisDispatcher->stop();
 }
 
 void Mixer::stop()
@@ -138,12 +143,17 @@ unique_ptr<AudioOutput> Mixer::createAudioOutput()
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
 }
 
-shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher()
+shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(shared_ptr<Logger> logger)
 {
-    return make_shared<MixerAnalysisDispatcher>([&](const ApplicationMessage& message)
-    {
-        m_applicationWebSocket->send(message);
-    });
+    return make_shared<MixerAnalysisDispatcher>(logger,
+        [&](const ApplicationMessage& message)
+        {
+            m_applicationWebSocket->send(message);
+        },
+        m_configuration.audio().processingDataType(),
+        m_configuration.audio().frameSampleCount(),
+        m_configuration.audio().sampleFrequency(),
+        m_configuration.audio().inputChannelCount());
 }
 
 shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatcher)
@@ -193,23 +203,6 @@ void Mixer::processingRun()
             const PcmAudioFrame& inputFrame = m_audioInput->read();
             const PcmAudioFrame& outputFrame = m_signalProcessor->process(inputFrame);
             m_audioOutput->write(outputFrame);
-        }
-    }
-    catch (exception& ex)
-    {
-        m_logger->log(Logger::Level::Error, ex);
-    }
-    stop();
-}
-
-void Mixer::analysisRun()
-{
-    try
-    {
-        while (!m_stopped.load())
-        {
-            this_thread::sleep_for(100ms);
-            //TODO Add the analysis code
         }
     }
     catch (exception& ex)

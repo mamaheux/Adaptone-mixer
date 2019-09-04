@@ -19,8 +19,7 @@ public:
     ~LoggerMock() override
     {}
 
-    MOCK_METHOD1(logMessage, void(
-        const string&));
+    MOCK_METHOD1(logMessage, void(const string&));
 };
 
 TEST(LoggerTests, log_shouldCallTheOverridedMethod)

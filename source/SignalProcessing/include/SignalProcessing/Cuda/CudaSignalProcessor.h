@@ -96,7 +96,8 @@ namespace adaptone
         void pushOutputEqUpdate(std::size_t channel);
         void pushOutputGainUpdate();
 
-        void notifySoundLevelUpdateIfNeeded();
+        void notifySoundLevelIfNeeded();
+        void notifyInputEqOutputFrame();
     };
 
     template<class T>
@@ -308,7 +309,8 @@ namespace adaptone
         processKernel<<<1, 256>>>(m_buffers);
         m_buffers.copyOutputFrame(m_outputFrame);
 
-        notifySoundLevelUpdateIfNeeded();
+        notifySoundLevelIfNeeded();
+        notifyInputEqOutputFrame();
 
         m_buffers.nextFrame();
 
@@ -380,7 +382,7 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::notifySoundLevelUpdateIfNeeded()
+    void CudaSignalProcessor<T>::notifySoundLevelIfNeeded()
     {
         m_frameSampleCounter += m_frameSampleCount;
 
@@ -400,6 +402,18 @@ namespace adaptone
             {
                 m_analysisDispatcher->notifySoundLevel(m_soundLevels);
             }
+        }
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::notifyInputEqOutputFrame()
+    {
+        if (m_analysisDispatcher)
+        {
+            m_analysisDispatcher->notifyInputEqOutputFrame([&](T* buffer)
+            {
+                m_buffers.copyCurrentInputEqOutputFrame(buffer);
+            });
         }
     }
 }
