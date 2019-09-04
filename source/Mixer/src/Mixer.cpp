@@ -143,12 +143,17 @@ unique_ptr<AudioOutput> Mixer::createAudioOutput()
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
 }
 
-shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(std::shared_ptr<Logger> logger)
+shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(shared_ptr<Logger> logger)
 {
-    return make_shared<MixerAnalysisDispatcher>(logger, [&](const ApplicationMessage& message)
-    {
-        m_applicationWebSocket->send(message);
-    });
+    return make_shared<MixerAnalysisDispatcher>(logger,
+        [&](const ApplicationMessage& message)
+        {
+            m_applicationWebSocket->send(message);
+        },
+        m_configuration.audio().processingDataType(),
+        m_configuration.audio().frameSampleCount(),
+        m_configuration.audio().sampleFrequency(),
+        m_configuration.audio().inputChannelCount());
 }
 
 shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatcher)
