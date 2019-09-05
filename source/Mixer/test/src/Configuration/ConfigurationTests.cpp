@@ -19,6 +19,8 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.processing_data_type", "double" },
         { "audio.eq.center_frequencies", "[10, 20]" },
         { "audio.analysis.sound_level_length", "4096" },
+        { "audio.analysis.spectrum.fft_length", "2048" },
+        { "audio.analysis.spectrum.point_count_per_decade", "10" },
 
         { "audio.input.type", "raw_file" },
         { "audio.input.format", "signed_8" },
@@ -43,6 +45,8 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().processingDataType(), ProcessingDataType::Double);
     EXPECT_EQ(configuration.audio().eqCenterFrequencies(), vector<double>({ 10, 20 }));
     EXPECT_EQ(configuration.audio().soundLevelLength(), 4096);
+    EXPECT_EQ(configuration.audio().spectrumAnalysisFftLength(), 2048);
+    EXPECT_EQ(configuration.audio().spectrumAnalysisPointCountPerDecade(), 10);
 
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrame::Format::Signed8);

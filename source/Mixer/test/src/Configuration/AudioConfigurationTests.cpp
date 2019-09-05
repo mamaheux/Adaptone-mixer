@@ -17,7 +17,9 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
         { "audio.output_channel_count", "14" },
         { "audio.processing_data_type", "float" },
         { "audio.eq.center_frequencies", "[10, 20]" },
-        { "audio.analysis.sound_level_length", "4096" }
+        { "audio.analysis.sound_level_length", "4096" },
+        { "audio.analysis.spectrum.fft_length", "2048" },
+        { "audio.analysis.spectrum.point_count_per_decade", "10" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -27,6 +29,8 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
     EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Float);
     EXPECT_EQ(configuration.eqCenterFrequencies(), vector<double>({ 10, 20 }));
     EXPECT_EQ(configuration.soundLevelLength(), 4096);
+    EXPECT_EQ(configuration.spectrumAnalysisFftLength(), 2048);
+    EXPECT_EQ(configuration.spectrumAnalysisPointCountPerDecade(), 10);
 }
 
 TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheAttributes)
@@ -39,7 +43,9 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
         { "audio.output_channel_count", "14" },
         { "audio.processing_data_type", "double" },
         { "audio.eq.center_frequencies", "[10, 20]" },
-        { "audio.analysis.sound_level_length", "4096" }
+        { "audio.analysis.sound_level_length", "4096" },
+        { "audio.analysis.spectrum.fft_length", "2048" },
+        { "audio.analysis.spectrum.point_count_per_decade", "10" }
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -49,6 +55,8 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
     EXPECT_EQ(configuration.processingDataType(), ProcessingDataType::Double);
     EXPECT_EQ(configuration.eqCenterFrequencies(), vector<double>({ 10, 20 }));
     EXPECT_EQ(configuration.soundLevelLength(), 4096);
+    EXPECT_EQ(configuration.spectrumAnalysisFftLength(), 2048);
+    EXPECT_EQ(configuration.spectrumAnalysisPointCountPerDecade(), 10);
 }
 
 TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetTheAttributes)
@@ -61,7 +69,27 @@ TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetThe
             { "audio.output_channel_count", "14" },
             { "audio.processing_data_type", "sdfsdfdsfsd" },
             { "audio.eq.center_frequencies", "[10, 20]" },
-            { "audio.analysis.sound_level_length", "4096" }
+            { "audio.analysis.sound_level_length", "4096" },
+            { "audio.analysis.spectrum.fft_length", "2048" },
+            { "audio.analysis.spectrum.point_count_per_decade", "10" }
+        })),
+        InvalidValueException);
+}
+
+
+TEST(AudioConfigurationTests, constructor_invalidSpectrumAnalysisFftLength_shouldSetTheAttributes)
+{
+    EXPECT_THROW(AudioConfiguration configuration(Properties(
+        {
+            { "audio.frame_sample_count", "32" },
+            { "audio.sample_frequency", "48000" },
+            { "audio.input_channel_count", "16" },
+            { "audio.output_channel_count", "14" },
+            { "audio.processing_data_type", "float" },
+            { "audio.eq.center_frequencies", "[10, 20]" },
+            { "audio.analysis.sound_level_length", "4096" },
+            { "audio.analysis.spectrum.fft_length", "2047" },
+            { "audio.analysis.spectrum.point_count_per_decade", "10" }
         })),
         InvalidValueException);
 }

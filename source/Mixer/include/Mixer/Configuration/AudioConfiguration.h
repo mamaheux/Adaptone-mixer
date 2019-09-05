@@ -19,6 +19,8 @@ namespace adaptone
         std::vector<double> m_eqCenterFrequencies;
 
         std::size_t m_soundLevelLength;
+        std::size_t m_spectrumAnalysisFftLength;
+        std::size_t m_spectrumAnalysisPointCountPerDecade;
 
     public:
         explicit AudioConfiguration(const Properties& properties);
@@ -33,6 +35,8 @@ namespace adaptone
         const std::vector<double>& eqCenterFrequencies() const;
 
         std::size_t soundLevelLength() const;
+        std::size_t spectrumAnalysisFftLength() const;
+        std::size_t spectrumAnalysisPointCountPerDecade() const;
     };
 
     inline std::size_t AudioConfiguration::frameSampleCount() const
@@ -68,6 +72,16 @@ namespace adaptone
     inline std::size_t AudioConfiguration::soundLevelLength() const
     {
         return m_soundLevelLength;
+    }
+
+    inline std::size_t AudioConfiguration::spectrumAnalysisFftLength() const
+    {
+        return m_spectrumAnalysisFftLength;
+    }
+
+    inline std::size_t AudioConfiguration::spectrumAnalysisPointCountPerDecade() const
+    {
+        return m_spectrumAnalysisPointCountPerDecade;
     }
 }
 
