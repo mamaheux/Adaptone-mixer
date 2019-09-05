@@ -9,7 +9,7 @@ TEST(RealtimeSpectrumAnalyserTests, analyse_shouldReturnTheSpectrumOfEachInput)
 {
     constexpr size_t fftSize = 4;
     constexpr size_t sampleFrequency = 48000;
-    constexpr size_t channelCount = 4;
+    constexpr size_t channelCount = 1;
 
     RealtimeSpectrumAnalyser analyser(fftSize, sampleFrequency, channelCount);
 
