@@ -21,6 +21,7 @@
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
 
+#include <Communication/Messages/Output/InputSpectrumMessage.h>
 #include <Communication/Messages/Output/SoundLevelMessage.h>
 
 using namespace adaptone;
@@ -57,6 +58,7 @@ ApplicationMessageHandler::ApplicationMessageHandler()
     ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputVolumeMessage);
 
+    ADD_HANDLE_FUNCTION(InputSpectrumMessage);
     ADD_HANDLE_FUNCTION(SoundLevelMessage);
 }
 

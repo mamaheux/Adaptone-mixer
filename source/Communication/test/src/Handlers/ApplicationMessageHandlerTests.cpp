@@ -22,6 +22,7 @@
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
 
 #include <Communication/Messages/Output/SoundLevelMessage.h>
+#include <Communication/Messages/Output/InputSpectrumMessage.h>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -57,6 +58,7 @@ DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeMasterOutputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputVolumeMessage);
 
+DEFINE_TYPE_MATCHER(InputSpectrumMessage);
 DEFINE_TYPE_MATCHER(SoundLevelMessage);
 
 class ApplicationMessageHandlerMock : public ApplicationMessageHandler
@@ -394,6 +396,32 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputVolumeMessage_s
         "  \"data\": {"
         "    \"auxiliaryId\": 0,"
         "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_InputSpectrumMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsInputSpectrumMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 20,"
+        "  \"data\": {"
+        "    \"spectrums\": ["
+        "      {"
+        "        \"channelId\": 5,"
+        "        \"points\": ["
+        "          {"
+        "            \"freq\": 1,"
+        "            \"amplitude\": 2"
+        "          }"
+        "        ]"
+        "      }"
+        "    ]"
         "  }"
         "}";
 
