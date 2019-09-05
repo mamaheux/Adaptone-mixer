@@ -32,6 +32,8 @@ namespace adaptone
 
         void read(std::function<void(const T&)> callback);
         void write(std::function<void(T&)> callback);
+
+        std::vector<T> buffers();
     };
 
     template<class T, class S>
@@ -110,6 +112,12 @@ namespace adaptone
         }
         m_full.notify();
     }
+
+    template<class T, class S>
+    inline std::vector<T> BasicBoundedBuffer<T, S>::buffers()
+    {
+        return m_buffers;
+    };
 
     template<class T>
     using BoundedBuffer = BasicBoundedBuffer<T, Semaphore>;

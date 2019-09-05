@@ -7,7 +7,7 @@ find_package(CUDA 9.0 QUIET)
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../3rdParty/armadillo-code/include)
-include_directories(${fftw_INCLUDE_DIR})
+include_directories(../3rdParty/fftw/build/include)
 include_directories(../Utils/include)
 include_directories(include)
 
@@ -42,12 +42,14 @@ else (CUDA_FOUND)
         src/AnalysisDispatcher.cpp
         src/SignalProcessor.cpp
         src/SpecificSignalProcessor.cpp
+        src/Analysis/*
         src/Filters/*
         src/Parameters/*
         include/SignalProcessing/AnalysisDispatcher.h
         include/SignalProcessing/ProcessingDataType.h
         include/SignalProcessing/SignalProcessor.h
         include/SignalProcessing/SpecificSignalProcessor.h
+        include/SignalProcessing/Analysis/*
         include/SignalProcessing/Filters/*
         include/SignalProcessing/Parameters/*)
 
