@@ -2,50 +2,51 @@
 
 #include <SignalProcessing/Analysis/Math.h>
 
-#include <iostream>
-
 using namespace adaptone;
 using namespace std;
 
 constexpr size_t RealtimeSpectrumAnalyser::BufferCount;
 
-RealtimeSpectrumAnalyser::RealtimeSpectrumAnalyser(size_t fftSize,
+RealtimeSpectrumAnalyser::RealtimeSpectrumAnalyser(size_t inputFftSize,
     size_t sampleFrequency,
-    size_t channelCount) :
-    m_fftSize(fftSize),
+    size_t channelCount,
+    size_t decimatorPointCountPerDecade) :
+    m_inputFftSize(inputFftSize),
+    m_outputFftSize(inputFftSize / 2 + 1),
     m_sampleFrequency(sampleFrequency),
     m_channelCount(channelCount),
-    m_inputBufferSize(fftSize * channelCount),
-    m_fftBufferSize((fftSize / 2 + 1) * channelCount),
+    m_inputBufferSize(inputFftSize * channelCount),
+    m_fftBufferSize((inputFftSize / 2 + 1) * channelCount),
     m_inputBoundedBuffers(BufferCount,
         [=]()
         { return fftwf_alloc_real(m_inputBufferSize); },
         [](float*& b)
         { fftwf_free(b); }),
-    m_writingCount(0)
+    m_writingCount(0),
+    m_spectrumDecimator(m_outputFftSize, sampleFrequency, decimatorPointCountPerDecade)
 {
     constexpr int Rank = 1;
-    const int N[] = { static_cast<int>(fftSize) };
+    const int N[] = { static_cast<int>(inputFftSize) };
     const int Howmany = static_cast<int>(channelCount);
     const int* Onembed = N;
     constexpr int Stride = 1;
-    const int Dist = static_cast<int>(fftSize);
+    const int InDist = static_cast<int>(inputFftSize);
+    const int OutDist = static_cast<int>(m_outputFftSize);
 
     for (float* inputBuffer : m_inputBoundedBuffers.buffers())
     {
         fftwf_complex* outputBuffer = fftwf_alloc_complex(m_fftBufferSize);
         m_fftBuffersByInputBuffer[inputBuffer] = outputBuffer;
         m_fftPlansByInputBuffer[inputBuffer] = fftwf_plan_many_dft_r2c(Rank, N, Howmany,
-            inputBuffer, Onembed, Stride, Dist,
-            outputBuffer, Onembed, Stride, Dist,
-            FFTW_MEASURE);
-        //m_fftPlansByInputBuffer[inputBuffer] = fftwf_plan_dft_r2c_1d(N[0], inputBuffer, outputBuffer, FFTW_MEASURE);
+            inputBuffer, Onembed, Stride, InDist,
+            outputBuffer, Onembed, Stride, OutDist,
+            FFTW_PATIENT);
     }
 
     m_hammingWindows = arma::fvec(m_inputBufferSize);
     for (size_t i = 0; i < m_channelCount; i++)
     {
-        m_hammingWindows(arma::span(i * fftSize, (i + 1) * fftSize - 1)) = hamming<arma::fvec>(fftSize);
+        m_hammingWindows(arma::span(i * inputFftSize, (i + 1) * inputFftSize - 1)) = hamming<arma::fvec>(inputFftSize);
     }
 }
 
@@ -61,25 +62,33 @@ RealtimeSpectrumAnalyser::~RealtimeSpectrumAnalyser()
     }
 }
 
-arma::cx_fvec RealtimeSpectrumAnalyser::analyse()
+vector<arma::cx_fvec> RealtimeSpectrumAnalyser::calculateFftAnalysis()
 {
-    fftwf_complex* fft;
-    m_inputBoundedBuffers.read([&](float* const& b)
+    complex<float>* fft = reinterpret_cast<complex<float>*>(analyse());
+    vector<arma::cx_fvec> channelFfts;
+    channelFfts.reserve(m_channelCount);
+
+    for (size_t i = 0; i < m_channelCount; i++)
     {
-        float* rawBuffer = const_cast<float*&>(b);
+        channelFfts.push_back(arma::cx_fvec(fft + i * m_outputFftSize, m_outputFftSize));
+    }
 
-        arma::fvec buffer(rawBuffer, m_inputBufferSize, false);
-        buffer.print();
-        cout << endl;
+    return channelFfts;
+}
 
-        //buffer %= m_hammingWindows;
-        fftwf_execute(m_fftPlansByInputBuffer[rawBuffer]);
-        fft = m_fftBuffersByInputBuffer[rawBuffer];
-    });
+std::vector<std::vector<SpectrumPoint>> RealtimeSpectrumAnalyser::calculateDecimatedSpectrumAnalysis()
+{
+    complex<float>* fft = reinterpret_cast<complex<float>*>(analyse());
+    std::vector<std::vector<SpectrumPoint>> decimatedSpectrumAnalysisResult;
+    decimatedSpectrumAnalysisResult.reserve(m_channelCount);
 
-    cout << "m_fftBufferSize=" << m_fftBufferSize << endl;
-    cout << "m_inputBufferSize=" << m_inputBufferSize << endl;
-    return arma::cx_fvec(reinterpret_cast<complex<float>*>(fft), m_fftBufferSize);
+    for (size_t i = 0; i < m_channelCount; i++)
+    {
+        arma::fvec amplitudes = arma::abs(arma::cx_fvec(fft + i * m_outputFftSize, m_outputFftSize));
+        decimatedSpectrumAnalysisResult.push_back(m_spectrumDecimator.getDecimatedAmplitudes(amplitudes));
+    }
+
+    return decimatedSpectrumAnalysisResult;
 }
 
 void RealtimeSpectrumAnalyser::writePartialData(function<void(size_t, float*)> writeFunction)
@@ -95,4 +104,21 @@ void RealtimeSpectrumAnalyser::finishWriting()
 {
     m_inputBoundedBuffers.finishWriting();
     m_writingCount = 0;
+}
+
+fftwf_complex* RealtimeSpectrumAnalyser::analyse()
+{
+    fftwf_complex* fft;
+    m_inputBoundedBuffers.read([&](float* const& b)
+    {
+        float* rawBuffer = const_cast<float*&>(b);
+
+        arma::fvec buffer(rawBuffer, m_inputBufferSize, false);
+
+        buffer %= m_hammingWindows;
+        fftwf_execute(m_fftPlansByInputBuffer[rawBuffer]);
+        fft = m_fftBuffersByInputBuffer[rawBuffer];
+    });
+
+    return fft;
 }
