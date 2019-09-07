@@ -1,6 +1,10 @@
 #include <Mixer/MixerAnalysisDispatcher.h>
 
+#include <Communication/Messages/Output/InputSpectrumMessage.h>
+
 #include <Utils/Exception/NotSupportedException.h>
+
+#include <cstring>
 
 using namespace adaptone;
 using namespace std;
@@ -13,15 +17,22 @@ MixerAnalysisDispatcher::MixerAnalysisDispatcher(shared_ptr<Logger> logger,
     ProcessingDataType processingDataType,
     size_t frameSampleCount,
     size_t sampleFrequency,
-    size_t inputChannelCount) :
+    size_t inputChannelCount,
+    size_t spectrumAnalysisFftLength,
+    size_t spectrumAnalysisPointCountPerDecade) :
     m_logger(logger),
     m_send(send),
     m_processingDataType(processingDataType),
+    m_frameSampleCount(frameSampleCount),
+    m_inputChannelCount(inputChannelCount),
+    m_spectrumAnalysisFftLength(spectrumAnalysisFftLength),
     m_soundLevelBoundedBuffer(SoundLevelBoundedBufferSize),
     m_floatInputEqOutputFrameBoundedBuffer(InputSampleBoundedBufferSize,
         [=]() { return new float[frameSampleCount * inputChannelCount]; }, [](float*& b) { delete[] b; }),
     m_doubleInputEqOutputFrameBoundedBuffer(InputSampleBoundedBufferSize,
-        [=]() { return new double[frameSampleCount * inputChannelCount]; }, [](double*& b) { delete[] b; })
+        [=]() { return new double[frameSampleCount * inputChannelCount]; }, [](double*& b) { delete[] b; }),
+    m_inputEqOutputSpectrumAnalyser(spectrumAnalysisFftLength, sampleFrequency, inputChannelCount,
+        spectrumAnalysisPointCountPerDecade)
 {
 }
 
@@ -130,7 +141,26 @@ void MixerAnalysisDispatcher::floatInputEqOutputFrameRun()
     {
         try
         {
-            //TODO add write call
+            bool isFinished;
+            m_floatInputEqOutputFrameBoundedBuffer.read([&](float* const& inputBuffer)
+            {
+                m_inputEqOutputSpectrumAnalyser.writePartialData([&](size_t writeIndex, float* analysisBuffer)
+                {
+                    for (size_t inputIndex = 0; inputIndex < m_inputChannelCount; inputIndex++)
+                    {
+                        float* destination = analysisBuffer + inputIndex * m_spectrumAnalysisFftLength +
+                            writeIndex * m_frameSampleCount;
+                        float* source = inputBuffer + inputIndex * m_frameSampleCount;
+                        memcpy(destination, source, m_frameSampleCount * sizeof(float));
+                    }
+                    isFinished = (writeIndex + 1) * m_frameSampleCount >= m_spectrumAnalysisFftLength;
+                });
+            });
+
+            if (isFinished)
+            {
+                m_inputEqOutputSpectrumAnalyser.finishWriting();
+            }
         }
         catch (exception& ex)
         {
@@ -145,7 +175,29 @@ void MixerAnalysisDispatcher::doubleInputEqOutputFrameRun()
     {
         try
         {
-            //TODO add write call
+            bool isFinished;
+            m_doubleInputEqOutputFrameBoundedBuffer.read([&](double* const& inputBuffer)
+            {
+                m_inputEqOutputSpectrumAnalyser.writePartialData([&](size_t writeIndex, float* analysisBuffer)
+                {
+                    for (size_t inputIndex = 0; inputIndex < m_inputChannelCount; inputIndex++)
+                    {
+                        float* destination = analysisBuffer + inputIndex * m_spectrumAnalysisFftLength +
+                            writeIndex * m_frameSampleCount;
+                        double* source = inputBuffer + inputIndex * m_frameSampleCount;
+                        for (size_t i = 0; i < m_frameSampleCount; i++)
+                        {
+                            destination[i] = static_cast<float>(source[i]);
+                        }
+                    }
+                    isFinished = (writeIndex + 1) * m_frameSampleCount >= m_spectrumAnalysisFftLength;
+                });
+
+                if (isFinished)
+                {
+                    m_inputEqOutputSpectrumAnalyser.finishWriting();
+                }
+            });
         }
         catch (exception& ex)
         {
@@ -160,7 +212,8 @@ void MixerAnalysisDispatcher::inputEqOutputFrameSpectrumAnalysisRun()
     {
         try
         {
-            //TODO add spectrum analysis call
+            auto spectrums = m_inputEqOutputSpectrumAnalyser.calculateDecimatedSpectrumAnalysis();
+            sendInputSpectrumMessage(spectrums);
         }
         catch (exception& ex)
         {
@@ -229,7 +282,20 @@ void MixerAnalysisDispatcher::stopInputEqOutputFrameThread()
 void MixerAnalysisDispatcher::stopInputEqOutputFrameSpectrumAnalysisThread()
 {
     // Write an empty message to unlock the sound level thread.
-    //TODO add the write call
+    m_inputEqOutputSpectrumAnalyser.finishWriting();
     m_inputEqOutputFrameSpectrumAnalysisThread->join();
     m_inputEqOutputFrameSpectrumAnalysisThread.release();
+}
+
+void MixerAnalysisDispatcher::sendInputSpectrumMessage(const vector<vector<SpectrumPoint>>& spectrums)
+{
+    vector<ChannelSpectrum> channelSpectrums;
+    channelSpectrums.reserve(spectrums.size());
+
+    for (size_t i = 0; i < spectrums.size(); i++)
+    {
+        channelSpectrums.emplace_back(i, spectrums[i]);
+    }
+
+    m_send(InputSpectrumMessage(channelSpectrums));
 }

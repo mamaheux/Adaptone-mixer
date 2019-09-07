@@ -4,6 +4,7 @@ project(Mixer)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
+include_directories(../3rdParty/fftw/build/include)
 include_directories(../Utils/include)
 include_directories(../SignalProcessing/include)
 include_directories(../Communication/include)

@@ -1,5 +1,7 @@
 #include <Mixer/MixerAnalysisDispatcher.h>
 
+#include <Communication/Messages/Output/InputSpectrumMessage.h>
+
 #include <Utils/Exception/InvalidValueException.h>
 #include <Utils/Exception/NotSupportedException.h>
 
@@ -32,9 +34,11 @@ map<AnalysisDispatcher::SoundLevelType, vector<float>> getDummySoundLevels()
     return soundLevels;
 }
 
-constexpr size_t FrameSampleCount = 10;
+constexpr size_t FrameSampleCount = 2;
 constexpr size_t SampleFrequency = 48000;
 constexpr size_t InputChannelCount = 2;
+constexpr size_t SpectrumAnalysisFftLength = 4;
+constexpr size_t SpectrumAnalysisPointCountPerDecade = 2;
 
 TEST(MixerAnalysisDispatcherTests, startStop_shouldStartAndStopProperlyTheDispatcher)
 {
@@ -44,7 +48,9 @@ TEST(MixerAnalysisDispatcherTests, startStop_shouldStartAndStopProperlyTheDispat
         ProcessingDataType::Float,
         FrameSampleCount,
         SampleFrequency,
-        InputChannelCount);
+        InputChannelCount,
+        SpectrumAnalysisFftLength,
+        SpectrumAnalysisPointCountPerDecade);
 
     dispatcher.start();
     this_thread::sleep_for(100ms);
@@ -54,7 +60,7 @@ TEST(MixerAnalysisDispatcherTests, startStop_shouldStartAndStopProperlyTheDispat
 TEST(MixerAnalysisDispatcherTests, thread_shouldLogExceptions)
 {
     shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
-    EXPECT_CALL((*logger.get()), logMessage(HasSubstr("InvalidValueException")));
+    EXPECT_CALL((*logger.get()), logMessage(HasSubstr("InvalidValueException"))).Times(2);
 
 
     MixerAnalysisDispatcher dispatcher(logger,
@@ -65,7 +71,9 @@ TEST(MixerAnalysisDispatcherTests, thread_shouldLogExceptions)
         ProcessingDataType::Float,
         FrameSampleCount,
         SampleFrequency,
-        InputChannelCount);
+        InputChannelCount,
+        SpectrumAnalysisFftLength,
+        SpectrumAnalysisPointCountPerDecade);
 
     dispatcher.start();
     dispatcher.notifySoundLevel(getDummySoundLevels());
@@ -75,6 +83,7 @@ TEST(MixerAnalysisDispatcherTests, thread_shouldLogExceptions)
 
 TEST(MixerAnalysisDispatcherTests, thread_shouldSendMessages)
 {
+    SoundLevelMessage soundLevelMessage;
     shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
 
     map<AnalysisDispatcher::SoundLevelType, vector<float>> soundLevels = getDummySoundLevels();
@@ -85,24 +94,24 @@ TEST(MixerAnalysisDispatcherTests, thread_shouldSendMessages)
             const SoundLevelMessage* message = dynamic_cast<const SoundLevelMessage*>(&m);
             if (message != nullptr)
             {
-                EXPECT_EQ(message->inputAfterGain()[0], soundLevels[AnalysisDispatcher::SoundLevelType::InputGain][0]);
-                EXPECT_EQ(message->inputAfterEq()[0], soundLevels[AnalysisDispatcher::SoundLevelType::InputEq][0]);
-                EXPECT_EQ(message->outputAfterGain()[0], soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain][0]);
-            }
-            else
-            {
-                FAIL();
+                soundLevelMessage = *message;
             }
         },
         ProcessingDataType::Float,
         FrameSampleCount,
         SampleFrequency,
-        InputChannelCount);
+        InputChannelCount,
+        SpectrumAnalysisFftLength,
+        SpectrumAnalysisPointCountPerDecade);
 
     dispatcher.start();
     dispatcher.notifySoundLevel(soundLevels);
     this_thread::sleep_for(100ms);
     dispatcher.stop();
+
+    EXPECT_EQ(soundLevelMessage.inputAfterGain()[0], soundLevels[AnalysisDispatcher::SoundLevelType::InputGain][0]);
+    EXPECT_EQ(soundLevelMessage.inputAfterEq()[0], soundLevels[AnalysisDispatcher::SoundLevelType::InputEq][0]);
+    EXPECT_EQ(soundLevelMessage.outputAfterGain()[0], soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain][0]);
 }
 
 TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_wrongProcessingType_shouldThrowNotSupportedException)
@@ -113,14 +122,18 @@ TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_wrongProcessingType_
         ProcessingDataType::Float,
         FrameSampleCount,
         SampleFrequency,
-        InputChannelCount);
+        InputChannelCount,
+        SpectrumAnalysisFftLength,
+        SpectrumAnalysisPointCountPerDecade);
 
     MixerAnalysisDispatcher doubleDispatcher(logger,
         [](const ApplicationMessage& m) { },
         ProcessingDataType::Double,
         FrameSampleCount,
         SampleFrequency,
-        InputChannelCount);
+        InputChannelCount,
+        SpectrumAnalysisFftLength,
+        SpectrumAnalysisPointCountPerDecade);
 
 
     floatDispatcher.start();
@@ -132,4 +145,118 @@ TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_wrongProcessingType_
     this_thread::sleep_for(100ms);
     floatDispatcher.stop();
     doubleDispatcher.stop();
+}
+
+TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_float_shouldSendInputSpectrumMessage)
+{
+    bool isReceived = false;
+    InputSpectrumMessage inputSpectrumMessage;
+    shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
+    MixerAnalysisDispatcher floatDispatcher(logger,
+        [&](const ApplicationMessage& m)
+        {
+            const InputSpectrumMessage* message = dynamic_cast<const InputSpectrumMessage*>(&m);
+            if (message != nullptr && !isReceived)
+            {
+                inputSpectrumMessage = *message;
+                isReceived = true;
+            }
+        },
+        ProcessingDataType::Float,
+        FrameSampleCount,
+        SampleFrequency,
+        InputChannelCount,
+        SpectrumAnalysisFftLength,
+        SpectrumAnalysisPointCountPerDecade);
+
+
+    floatDispatcher.start();
+
+    float frame0[] = { 0, 1, 1, 1 };
+    float frame1[] = { 2, 3, 2, 2 };
+
+    floatDispatcher.notifyInputEqOutputFrame([&](float* b)
+    {
+       memcpy(b, frame0, InputChannelCount * FrameSampleCount * sizeof(float));
+    });
+    floatDispatcher.notifyInputEqOutputFrame([&](float* b)
+    {
+       memcpy(b, frame1, InputChannelCount * FrameSampleCount * sizeof(float));
+    });
+
+    this_thread::sleep_for(100ms);
+    floatDispatcher.stop();
+
+    ASSERT_EQ(inputSpectrumMessage.channelSpectrums().size(), InputChannelCount);
+
+    EXPECT_EQ(inputSpectrumMessage.channelSpectrums()[0].channelId(), 0);
+    ASSERT_EQ(inputSpectrumMessage.channelSpectrums()[0].points().size(), 2);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[0].frequency(), 8000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[0].amplitude(), 1.6286497116088867);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[1].frequency(), 16000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[1].amplitude(), 0.52999985218048096);
+
+    EXPECT_EQ(inputSpectrumMessage.channelSpectrums()[1].channelId(), 1);
+    ASSERT_EQ(inputSpectrumMessage.channelSpectrums()[1].points().size(), 2);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[0].frequency(), 8000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[0].amplitude(), 1.5823084115982056);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[1].frequency(), 16000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[1].amplitude(), 0.68999993801116943);
+}
+
+TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_double_shouldSendInputSpectrumMessage)
+{
+    bool isReceived = false;
+    InputSpectrumMessage inputSpectrumMessage;
+    shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
+    MixerAnalysisDispatcher floatDispatcher(logger,
+        [&](const ApplicationMessage& m)
+        {
+            const InputSpectrumMessage* message = dynamic_cast<const InputSpectrumMessage*>(&m);
+            if (message != nullptr && !isReceived)
+            {
+                inputSpectrumMessage = *message;
+                isReceived = true;
+            }
+        },
+        ProcessingDataType::Double,
+        FrameSampleCount,
+        SampleFrequency,
+        InputChannelCount,
+        SpectrumAnalysisFftLength,
+        SpectrumAnalysisPointCountPerDecade);
+
+
+    floatDispatcher.start();
+
+    double frame0[] = { 0, 1, 1, 1 };
+    double frame1[] = { 2, 3, 2, 2 };
+
+    floatDispatcher.notifyInputEqOutputFrame([&](double* b)
+    {
+       memcpy(b, frame0, InputChannelCount * FrameSampleCount * sizeof(double));
+    });
+    floatDispatcher.notifyInputEqOutputFrame([&](double* b)
+    {
+       memcpy(b, frame1, InputChannelCount * FrameSampleCount * sizeof(double));
+    });
+
+    this_thread::sleep_for(100ms);
+    floatDispatcher.stop();
+
+    ASSERT_EQ(inputSpectrumMessage.channelSpectrums().size(), InputChannelCount);
+
+    EXPECT_EQ(inputSpectrumMessage.channelSpectrums()[0].channelId(), 0);
+    ASSERT_EQ(inputSpectrumMessage.channelSpectrums()[0].points().size(), 2);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[0].frequency(), 8000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[0].amplitude(), 1.6286497116088867);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[1].frequency(), 16000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[0].points()[1].amplitude(), 0.52999985218048096);
+
+    EXPECT_EQ(inputSpectrumMessage.channelSpectrums()[1].channelId(), 1);
+    ASSERT_EQ(inputSpectrumMessage.channelSpectrums()[1].points().size(), 2);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[0].frequency(), 8000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[0].amplitude(), 1.5823084115982056);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[1].frequency(), 16000);
+    EXPECT_DOUBLE_EQ(inputSpectrumMessage.channelSpectrums()[1].points()[1].amplitude(), 0.68999993801116943);
 }

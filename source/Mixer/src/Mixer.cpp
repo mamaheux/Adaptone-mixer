@@ -153,7 +153,9 @@ shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(shared_ptr<Logger
         m_configuration.audio().processingDataType(),
         m_configuration.audio().frameSampleCount(),
         m_configuration.audio().sampleFrequency(),
-        m_configuration.audio().inputChannelCount());
+        m_configuration.audio().inputChannelCount(),
+        m_configuration.audio().spectrumAnalysisFftLength(),
+        m_configuration.audio().spectrumAnalysisPointCountPerDecade());
 }
 
 shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatcher)
