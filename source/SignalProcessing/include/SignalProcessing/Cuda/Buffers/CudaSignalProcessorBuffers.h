@@ -149,12 +149,14 @@ namespace adaptone
         __device__ __host__ T* mixingGains();
         __device__ __host__ CudaEqBuffers<T>& outputEqBuffers();
         __device__ __host__ T* outputGains();
+        __device__ __host__ std::size_t* outputDelays();
 
         __device__ __host__ CudaSoundLevelBuffers<T>& inputGainSoundLevelBuffers();
         __device__ __host__ CudaSoundLevelBuffers<T>& inputEqSoundLevelBuffers();
         __device__ __host__ CudaSoundLevelBuffers<T>& outputGainSoundLevelBuffers();
 
         __device__ __host__ std::size_t currentFrameIndex();
+        __device__ __host__ std::size_t currentDelayedOutputFrameIndex();
         __host__ void nextFrame();
 
         __device__ __host__ std::size_t frameCount();
@@ -168,6 +170,7 @@ namespace adaptone
         __device__ __host__ std::size_t outputFrameSize();
 
         __device__ __host__ std::size_t mixingGainsSize();
+        __device__ __host__ std::size_t delayedOutputFrameCount();
 
         __device__ __host__ PcmAudioFrame::Format inputFormat();
         __device__ __host__ PcmAudioFrame::Format outputFormat();
@@ -468,10 +471,23 @@ namespace adaptone
         return m_outputGains;
     }
 
+
+    template<class T>
+    inline __device__ __host__ std::size_t* CudaSignalProcessorBuffers<T>::outputDelays()
+    {
+        return m_outputDelays;
+    }
+
     template<class T>
     inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::currentFrameIndex()
     {
         return m_currentFrameIndex;
+    }
+
+    template<class T>
+    inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::currentDelayedOutputFrameIndex()
+    {
+        return m_currentDelayedOutputFrameIndex;
     }
 
     template<class T>
@@ -533,6 +549,12 @@ namespace adaptone
     inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::mixingGainsSize()
     {
         return m_mixingGainsSize;
+    }
+
+    template<class T>
+    inline __device__ __host__ std::size_t CudaSignalProcessorBuffers<T>::delayedOutputFrameCount()
+    {
+        return m_delayedOutputFrameCount;
     }
 
     template<class T>

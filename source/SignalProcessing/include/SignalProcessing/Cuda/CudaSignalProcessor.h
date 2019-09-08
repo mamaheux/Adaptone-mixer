@@ -311,7 +311,16 @@ namespace adaptone
             buffers.outputChannelCount());
         __syncthreads();
 
-        convertArrayToPcm<T>(buffers.currentOutputFrame(),
+        processDelay(buffers.currentOutputFrame(),
+            buffers.delayedOutputFrames(),
+            buffers.outputDelays(),
+            buffers.frameSampleCount(),
+            buffers.outputChannelCount(),
+            buffers.currentDelayedOutputFrameIndex(),
+            buffers.delayedOutputFrameCount());
+        __syncthreads();
+
+        convertArrayToPcm<T>(buffers.currentDelayedOutputFrames(),
             buffers.currentOutputPcmFrame(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount(),

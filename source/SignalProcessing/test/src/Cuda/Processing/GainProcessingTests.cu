@@ -14,15 +14,15 @@ __global__ void processGainKernel(T* inputFrame, T* outputFrame, T* gains, std::
 
 TEST(GainProcessingTests, processGain_shouldApplyGainToInput)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr  size_t ChannelCount = 2;
     float* inputFrame;
     float* outputFrame;
     float* gains;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&inputFrame), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&outputFrame), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&gains), channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&inputFrame), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&outputFrame), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&gains), ChannelCount * sizeof(float));
 
     inputFrame[0] = -128;
     inputFrame[1] = 1;
@@ -35,7 +35,7 @@ TEST(GainProcessingTests, processGain_shouldApplyGainToInput)
     gains[0] = 0.5;
     gains[1] = 2;
 
-    processGainKernel<<<1, 256>>>(inputFrame, outputFrame, gains, frameSampleCount, channelCount);
+    processGainKernel<<<1, 256>>>(inputFrame, outputFrame, gains, FrameSampleCount, ChannelCount);
     cudaDeviceSynchronize();
 
     EXPECT_EQ(outputFrame[0], -64);

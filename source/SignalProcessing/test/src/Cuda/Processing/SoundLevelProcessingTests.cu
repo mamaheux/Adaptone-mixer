@@ -13,13 +13,13 @@ __global__ void processSoundLevelKernel(CudaSoundLevelBuffers<T> buffers, T* cur
 
 TEST(SoundLevelProcessingTests, processSoundLevel_shouldUpdateSoundLevelsAppropriately)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* currentFrame;
-    CudaSoundLevelBuffers<float> soundLevelsBuffers(channelCount, frameSampleCount);
-    vector<float> soundLevels(channelCount);
+    CudaSoundLevelBuffers<float> soundLevelsBuffers(ChannelCount, FrameSampleCount);
+    vector<float> soundLevels(ChannelCount);
 
-    cudaMallocManaged(reinterpret_cast<void**>(&currentFrame), frameSampleCount * channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&currentFrame), FrameSampleCount * ChannelCount * sizeof(float));
 
     currentFrame[0] = -128;
     currentFrame[1] = 0;
