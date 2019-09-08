@@ -9,7 +9,7 @@ set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 include_directories(../../3rdParty/googletest/googletest/include)
 include_directories(../../3rdParty/googletest/googlemock/include)
 include_directories(../../3rdParty/armadillo-code/include)
-include_directories(${fftw_INCLUDE_DIR})
+include_directories(../../3rdParty/fftw/build/include)
 include_directories(../../Utils/include)
 include_directories(../include)
 include_directories(include)
@@ -44,6 +44,7 @@ else (CUDA_FOUND)
     file(GLOB_RECURSE
         source_files
         src/main.cpp
+        src/Analysis/*
         src/Filters/Design/*
         src/Parameters/*)
 
@@ -56,7 +57,6 @@ else (CUDA_FOUND)
         armadillo
         ${openblas_LIBRARY}
         ${fftw_LIBRARY}
-        gfortran
         gtest
         gmock)
 endif (CUDA_FOUND)

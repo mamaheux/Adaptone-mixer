@@ -108,3 +108,9 @@ tools/Makefile
 tools/fftw-wisdom-to-conf
 tools/fftw_wisdom.1
 tools/fftwf-wisdom
+FFTW3Config.cmake
+FFTW3ConfigVersion.cmake
+build/
+fftw3.pc
+tools/fftw-wisdom
+tools/fftw-wisdom.1

@@ -24,6 +24,10 @@ document.getElementById("start-button").onclick = function() {
                     document.getElementById("input0Level").innerHTML = (20 * Math.log10(message.data.inputAfterGain[0])).toString();
                     document.getElementById("input1Level").innerHTML = (20 * Math.log10(message.data.inputAfterGain[1])).toString();
                 }
+                else
+                {
+                    console.log(message);
+                }
             };
 
             socket.send("{\"seqId\": 11, \"data\": {\"gains\": [3.0, 3.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0] }}");

@@ -8,15 +8,10 @@ if (WIN32)
     #TODO
 elseif (UNIX)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -march=native")
-    set(openblas_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/OpenBLAS/libopenblas.a")
 
     add_custom_target(openblas
         COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/make_openblas_unix.bash"
         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/OpenBLAS)
-
-
-    set(fftw_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/fftw/install/usr/local/include")
-    set(fftw_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/fftw/install/usr/local/lib/libfftw3f.a")
 
     add_custom_target(fftw
         COMMAND bash "${CMAKE_CURRENT_SOURCE_DIR}/make_fftw_unix.bash"

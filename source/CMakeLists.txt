@@ -38,6 +38,11 @@ function(assign_source_group)
     endforeach ()
 endfunction(assign_source_group)
 
+
+set(openblas_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/OpenBLAS/libopenblas.a")
+set(fftw_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/fftw/build/lib/libfftw3f.a")
+
+
 add_subdirectory(3rdParty)
 add_subdirectory(Mixer)
 add_subdirectory(Utils)

@@ -1,5 +1,5 @@
 #!/bin/bash
 
-if [ ! -d ./install ]; then
-    ./configure --enable-float --enable-type-prefix && make && export DESTDIR="$PWD/install" && make install
+if [ ! -d ./build ]; then
+    ./configure --enable-float --prefix=$PWD/build && make && make install
 fi

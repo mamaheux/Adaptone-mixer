@@ -16,6 +16,9 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
     constexpr const char* EqCenterFrequenciesPropertyKey = "audio.eq.center_frequencies";
 
     constexpr const char* SoundLevelLengthPropertyKey = "audio.analysis.sound_level_length";
+    constexpr const char* SpectrumAnalysisFftLengthPropertyKey = "audio.analysis.spectrum.fft_length";
+    constexpr const char* SpectrumAnalysisPointCountPerDecadePropertyKey =
+        "audio.analysis.spectrum.point_count_per_decade";
 
     m_frameSampleCount = properties.get<size_t>(FrameSampleCountPropertyKey);
     m_sampleFrequency = properties.get<size_t>(SampleFrequencyPropertyKey);
@@ -40,6 +43,14 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
     m_eqCenterFrequencies = properties.get<vector<double>>(EqCenterFrequenciesPropertyKey);
 
     m_soundLevelLength = properties.get<size_t>(SoundLevelLengthPropertyKey);
+    m_spectrumAnalysisFftLength = properties.get<size_t>(SpectrumAnalysisFftLengthPropertyKey);
+    m_spectrumAnalysisPointCountPerDecade = properties.get<size_t>(SpectrumAnalysisPointCountPerDecadePropertyKey);
+
+    if (m_spectrumAnalysisFftLength % m_frameSampleCount != 0)
+    {
+        THROW_INVALID_VALUE_EXCEPTION(SpectrumAnalysisFftLengthPropertyKey,
+            "Must be a multiple of audio.frame_sample_count");
+    }
 }
 
 AudioConfiguration::~AudioConfiguration()

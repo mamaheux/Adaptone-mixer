@@ -6,6 +6,8 @@
 
 #include <Communication/Messages/Output/SoundLevelMessage.h>
 
+#include <SignalProcessing/Analysis/RealtimeSpectrumAnalyser.h>
+
 #include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
 #include <Utils/Threading/BoundedBuffer.h>
@@ -26,6 +28,9 @@ namespace adaptone
         std::shared_ptr<Logger> m_logger;
         std::function<void(const ApplicationMessage&)> m_send;
         ProcessingDataType m_processingDataType;
+        std::size_t m_frameSampleCount;
+        std::size_t m_inputChannelCount;
+        std::size_t m_spectrumAnalysisFftLength;
 
         std::atomic<bool> m_stopped;
 
@@ -37,6 +42,7 @@ namespace adaptone
         BoundedBuffer<double*> m_doubleInputEqOutputFrameBoundedBuffer;
 
         std::unique_ptr<std::thread> m_inputEqOutputFrameSpectrumAnalysisThread;
+        RealtimeSpectrumAnalyser m_inputEqOutputSpectrumAnalyser;
 
     public:
         MixerAnalysisDispatcher(std::shared_ptr<Logger> logger,
@@ -44,7 +50,9 @@ namespace adaptone
             ProcessingDataType processingDataType,
             std::size_t frameSampleCount,
             std::size_t sampleFrequency,
-            std::size_t inputChannelCount);
+            std::size_t inputChannelCount,
+            size_t spectrumAnalysisFftLength,
+            size_t spectrumAnalysisPointCountPerDecade);
         ~MixerAnalysisDispatcher() override;
 
         DECLARE_NOT_COPYABLE(MixerAnalysisDispatcher);
@@ -72,6 +80,8 @@ namespace adaptone
         void stopSoundLevelThread();
         void stopInputEqOutputFrameThread();
         void stopInputEqOutputFrameSpectrumAnalysisThread();
+
+        void sendInputSpectrumMessage(const std::vector<std::vector<SpectrumPoint>>& spectrums);
     };
 }
 
