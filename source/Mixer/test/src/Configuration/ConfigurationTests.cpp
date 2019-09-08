@@ -18,6 +18,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.output_channel_count", "14" },
         { "audio.processing_data_type", "double" },
         { "audio.eq.center_frequencies", "[10, 20]" },
+        { "audio.max_output_delay", "8192" },
         { "audio.analysis.sound_level_length", "4096" },
         { "audio.analysis.spectrum.fft_length", "2048" },
         { "audio.analysis.spectrum.point_count_per_decade", "10" },
@@ -44,6 +45,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().outputChannelCount(), 14);
     EXPECT_EQ(configuration.audio().processingDataType(), ProcessingDataType::Double);
     EXPECT_EQ(configuration.audio().eqCenterFrequencies(), vector<double>({ 10, 20 }));
+    EXPECT_EQ(configuration.audio().maxOutputDelay(), 8192);
     EXPECT_EQ(configuration.audio().soundLevelLength(), 4096);
     EXPECT_EQ(configuration.audio().spectrumAnalysisFftLength(), 2048);
     EXPECT_EQ(configuration.audio().spectrumAnalysisPointCountPerDecade(), 10);

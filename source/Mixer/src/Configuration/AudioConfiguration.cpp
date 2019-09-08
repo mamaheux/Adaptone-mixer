@@ -15,6 +15,8 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
 
     constexpr const char* EqCenterFrequenciesPropertyKey = "audio.eq.center_frequencies";
 
+    constexpr const char* MaxOutputDelayPropertyKey = "audio.max_output_delay";
+
     constexpr const char* SoundLevelLengthPropertyKey = "audio.analysis.sound_level_length";
     constexpr const char* SpectrumAnalysisFftLengthPropertyKey = "audio.analysis.spectrum.fft_length";
     constexpr const char* SpectrumAnalysisPointCountPerDecadePropertyKey =
@@ -41,6 +43,13 @@ AudioConfiguration::AudioConfiguration(const Properties& properties)
     }
 
     m_eqCenterFrequencies = properties.get<vector<double>>(EqCenterFrequenciesPropertyKey);
+
+    m_maxOutputDelay = properties.get<size_t>(MaxOutputDelayPropertyKey);
+    if (m_maxOutputDelay % m_frameSampleCount != 0)
+    {
+        THROW_INVALID_VALUE_EXCEPTION(MaxOutputDelayPropertyKey,
+            "Must be a multiple of audio.frame_sample_count");
+    }
 
     m_soundLevelLength = properties.get<size_t>(SoundLevelLengthPropertyKey);
     m_spectrumAnalysisFftLength = properties.get<size_t>(SpectrumAnalysisFftLengthPropertyKey);
