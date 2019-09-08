@@ -26,12 +26,15 @@ namespace adaptone
         virtual void setMixingGains(std::size_t outputChannel, const std::vector<double>& gains);
         virtual void setMixingGains(const std::vector<double>& gains);
 
-        virtual void setOutputGain(std::size_t channel, double gain);
-        virtual void setOutputGains(const std::vector<double>& gains);
-
         virtual void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gains);
         virtual void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
             const std::vector<double>& gains);
+
+        virtual void setOutputGain(std::size_t channel, double gain);
+        virtual void setOutputGains(const std::vector<double>& gains);
+
+        virtual void setOutputDelay(std::size_t channel, std::size_t delay);
+        virtual void setOutputDelays(const std::vector<std::size_t>& delays);
 
         virtual const PcmAudioFrame& process(const PcmAudioFrame& inputFrame);
     };
