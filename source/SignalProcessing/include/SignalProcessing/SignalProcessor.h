@@ -25,6 +25,7 @@ namespace adaptone
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
             const std::vector<double>& eqCenterFrequencies,
+            std::size_t maxOutputDelay,
             std::size_t soundLevelLength,
             std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
         virtual ~SignalProcessor();
@@ -46,6 +47,9 @@ namespace adaptone
 
         void setOutputGain(std::size_t channel, double gain);
         void setOutputGains(const std::vector<double>& gains);
+
+        void setOutputDelay(std::size_t channel, std::size_t delay);
+        void setOutputDelays(const std::vector<std::size_t>& delays);
 
         const PcmAudioFrame& process(const PcmAudioFrame& inputFrame);
     };
@@ -99,6 +103,16 @@ namespace adaptone
     inline void SignalProcessor::setOutputGains(const std::vector<double>& gains)
     {
         m_specificSignalProcessor->setOutputGains(gains);
+    }
+
+    inline void SignalProcessor::setOutputDelay(std::size_t channel, std::size_t delay)
+    {
+        m_specificSignalProcessor->setOutputDelay(channel, delay);
+    }
+
+    inline void SignalProcessor::setOutputDelays(const std::vector<std::size_t>& delays)
+    {
+        m_specificSignalProcessor->setOutputDelays(delays);
     }
 
     inline const PcmAudioFrame& SignalProcessor::process(const PcmAudioFrame& inputFrame)

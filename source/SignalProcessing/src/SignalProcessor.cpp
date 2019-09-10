@@ -13,6 +13,7 @@ SignalProcessor::SignalProcessor(ProcessingDataType processingDataType,
     PcmAudioFrame::Format inputFormat,
     PcmAudioFrame::Format outputFormat,
     const vector<double>& eqCenterFrequencies,
+    size_t maxOutputDelay,
     size_t soundLevelLength,
     shared_ptr<AnalysisDispatcher> analysisDispatcher)
 {

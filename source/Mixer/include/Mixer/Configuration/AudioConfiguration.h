@@ -18,6 +18,8 @@ namespace adaptone
 
         std::vector<double> m_eqCenterFrequencies;
 
+        std::size_t m_maxOutputDelay; // Sample
+
         std::size_t m_soundLevelLength;
         std::size_t m_spectrumAnalysisFftLength;
         std::size_t m_spectrumAnalysisPointCountPerDecade;
@@ -33,6 +35,8 @@ namespace adaptone
         ProcessingDataType processingDataType() const;
 
         const std::vector<double>& eqCenterFrequencies() const;
+
+        std::size_t maxOutputDelay() const;
 
         std::size_t soundLevelLength() const;
         std::size_t spectrumAnalysisFftLength() const;
@@ -67,6 +71,11 @@ namespace adaptone
     inline const std::vector<double>& AudioConfiguration::eqCenterFrequencies() const
     {
         return m_eqCenterFrequencies;
+    }
+
+    inline std::size_t AudioConfiguration::maxOutputDelay() const
+    {
+        return m_maxOutputDelay;
     }
 
     inline std::size_t AudioConfiguration::soundLevelLength() const

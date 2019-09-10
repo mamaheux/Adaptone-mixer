@@ -51,6 +51,14 @@ void SpecificSignalProcessor::setOutputGains(const vector<double>& gains)
 {
 }
 
+void SpecificSignalProcessor::setOutputDelay(size_t channel, size_t delay)
+{
+}
+
+void SpecificSignalProcessor::setOutputDelays(const vector<size_t>& delays)
+{
+}
+
 const PcmAudioFrame& SpecificSignalProcessor::process(const PcmAudioFrame& inputFrame)
 {
     return inputFrame;

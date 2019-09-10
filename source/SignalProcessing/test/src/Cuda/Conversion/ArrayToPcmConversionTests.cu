@@ -14,13 +14,13 @@ __global__ void convertArrayToPcmKernel(const T* input, uint8_t* output, size_t 
 
 TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 4;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 4;
+    constexpr size_t ChannelCount = 2;
     double* input;
     int8_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(double));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(int8_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(double));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(int8_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -32,7 +32,7 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
     input[6] = 0.25;
     input[7] = 1.1;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Signed8);
     cudaDeviceSynchronize();
 
@@ -51,13 +51,13 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
 
 TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 4;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 4;
+    constexpr size_t ChannelCount = 2;
     float* input;
     int16_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(int16_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(int16_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -69,7 +69,7 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
     input[6] = 0.25;
     input[7] = 1.1;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Signed16);
     cudaDeviceSynchronize();
 
@@ -88,13 +88,13 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
 
 TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     uint8_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * 3);
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * 3);
 
     input[0] = -1;
     input[1] = 1;
@@ -104,7 +104,7 @@ TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloating
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, output, frameSampleCount, channelCount, PcmAudioFrame::Format::Signed24);
+    convertArrayToPcmKernel<<<1, 256>>>(input, output, FrameSampleCount, ChannelCount, PcmAudioFrame::Format::Signed24);
     cudaDeviceSynchronize();
 
     EXPECT_EQ(output[0], 0x00);
@@ -137,13 +137,13 @@ TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloating
 
 TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     int32_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(int32_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(int32_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -153,7 +153,7 @@ TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFl
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::SignedPadded24);
     cudaDeviceSynchronize();
 
@@ -170,13 +170,13 @@ TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFl
 
 TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     int32_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(int32_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(int32_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -186,7 +186,7 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Signed32);
     cudaDeviceSynchronize();
 
@@ -203,13 +203,13 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
 
 TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     uint8_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(uint8_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(uint8_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -219,7 +219,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, output, frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, output, FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Unsigned8);
     cudaDeviceSynchronize();
 
@@ -236,13 +236,13 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
 
 TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     uint16_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(uint16_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(uint16_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -252,7 +252,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Unsigned16);
     cudaDeviceSynchronize();
 
@@ -269,13 +269,13 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
 
 TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     uint8_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * 3);
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * 3);
 
 
     input[0] = -1;
@@ -286,7 +286,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, output, frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, output, FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Unsigned24);
     cudaDeviceSynchronize();
 
@@ -320,13 +320,13 @@ TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloati
 
 TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     uint32_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(uint32_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(uint32_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -336,7 +336,7 @@ TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFrom
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::UnsignedPadded24);
     cudaDeviceSynchronize();
 
@@ -353,13 +353,13 @@ TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFrom
 
 TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     uint32_t* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(uint32_t));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(uint32_t));
 
     input[0] = -1;
     input[1] = 1;
@@ -369,7 +369,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Unsigned32);
     cudaDeviceSynchronize();
 
@@ -386,13 +386,13 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
 
 TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     float* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(float));
 
     input[0] = -1;
     input[1] = 1;
@@ -402,7 +402,7 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Float);
     cudaDeviceSynchronize();
 
@@ -419,13 +419,13 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
 
 TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPointArray)
 {
-    size_t frameSampleCount = 3;
-    size_t channelCount = 2;
+    constexpr size_t FrameSampleCount = 3;
+    constexpr size_t ChannelCount = 2;
     float* input;
     double* output;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&input), frameSampleCount * channelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&output), frameSampleCount * channelCount * sizeof(double));
+    cudaMallocManaged(reinterpret_cast<void**>(&input), FrameSampleCount * ChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&output), FrameSampleCount * ChannelCount * sizeof(double));
 
     input[0] = -1;
     input[1] = 1;
@@ -435,7 +435,7 @@ TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPo
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), frameSampleCount, channelCount,
+    convertArrayToPcmKernel<<<1, 256>>>(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
         PcmAudioFrame::Format::Double);
     cudaDeviceSynchronize();
 

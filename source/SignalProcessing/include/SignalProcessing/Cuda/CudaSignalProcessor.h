@@ -7,10 +7,12 @@
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
 #include <SignalProcessing/Cuda/Processing/GainProcessing.h>
 #include <SignalProcessing/Cuda/Processing/MixProcessing.h>
+#include <SignalProcessing/Cuda/Processing/DelayProcessing.h>
 #include <SignalProcessing/Cuda/Processing/SoundLevelProcessing.h>
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
 #include <SignalProcessing/Parameters/MixingParameters.h>
+#include <SignalProcessing/Parameters/DelayParameters.h>
 #include <SignalProcessing/AnalysisDispatcher.h>
 
 #include <Utils/ClassMacro.h>
@@ -45,6 +47,7 @@ namespace adaptone
         MixingParameters<T> m_mixingGainParameters;
         EqParameters<T> m_outputEqParameters;
         GainParameters<T> m_outputGainParameters;
+        DelayParameters m_outputDelayParameters;
 
         FunctionQueue<bool()> m_updateFunctionQueue;
 
@@ -61,6 +64,7 @@ namespace adaptone
             PcmAudioFrame::Format inputFormat,
             PcmAudioFrame::Format outputFormat,
             const std::vector<double>& eqCenterFrequencies,
+            std::size_t maxOutputDelay,
             std::size_t soundLevelLength,
             std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
         ~CudaSignalProcessor() override;
@@ -81,9 +85,11 @@ namespace adaptone
         void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
             const std::vector<double>& gains) override;
 
-
         void setOutputGain(std::size_t channel, double gain) override;
         void setOutputGains(const std::vector<double>& gains) override;
+
+        void setOutputDelay(std::size_t channel, std::size_t delay) override;
+        void setOutputDelays(const std::vector<std::size_t>& delays) override;
 
         void forceRefreshParameters();
 
@@ -95,6 +101,7 @@ namespace adaptone
         void pushMixingGainUpdate();
         void pushOutputEqUpdate(std::size_t channel);
         void pushOutputGainUpdate();
+        void pushOutputDelayUpdate();
 
         void notifySoundLevelIfNeeded();
         void notifyInputEqOutputFrame();
@@ -108,6 +115,7 @@ namespace adaptone
         PcmAudioFrame::Format inputFormat,
         PcmAudioFrame::Format outputFormat,
         const std::vector<double>& eqCenterFrequencies,
+        std::size_t maxOutputDelay,
         std::size_t soundLevelLength,
         std::shared_ptr<AnalysisDispatcher> analysisDispatcher) :
         m_frameSampleCount(frameSampleCount),
@@ -123,12 +131,14 @@ namespace adaptone
             outputChannelCount,
             inputFormat,
             outputFormat,
-            2 * eqCenterFrequencies.size()),
+            2 * eqCenterFrequencies.size(),
+            maxOutputDelay),
         m_inputGainParameters(inputChannelCount),
         m_inputEqParameters(sampleFrequency, eqCenterFrequencies, inputChannelCount),
         m_mixingGainParameters(inputChannelCount, outputChannelCount),
         m_outputEqParameters(sampleFrequency, eqCenterFrequencies, outputChannelCount),
         m_outputGainParameters(outputChannelCount),
+        m_outputDelayParameters(outputChannelCount, maxOutputDelay),
 
         m_frameSampleCounter(0),
         m_soundLevelLength(soundLevelLength),
@@ -236,6 +246,20 @@ namespace adaptone
     }
 
     template<class T>
+    void CudaSignalProcessor<T>::setOutputDelay(std::size_t channel, std::size_t delay)
+    {
+        m_outputDelayParameters.setDelay(channel, delay);
+        pushOutputDelayUpdate();
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setOutputDelays(const std::vector<std::size_t>& delays)
+    {
+        m_outputDelayParameters.setDelays(delays);
+        pushOutputDelayUpdate();
+    }
+
+    template<class T>
     void CudaSignalProcessor<T>::forceRefreshParameters()
     {
         while (m_updateFunctionQueue.size() > 0)
@@ -288,7 +312,16 @@ namespace adaptone
             buffers.outputChannelCount());
         __syncthreads();
 
-        convertArrayToPcm<T>(buffers.currentOutputFrame(),
+        processDelay(buffers.currentOutputFrame(),
+            buffers.delayedOutputFrames(),
+            buffers.outputDelays(),
+            buffers.frameSampleCount(),
+            buffers.outputChannelCount(),
+            buffers.currentDelayedOutputFrameIndex(),
+            buffers.delayedOutputFrameCount());
+        __syncthreads();
+
+        convertArrayToPcm<T>(buffers.currentDelayedOutputFrame(),
             buffers.currentOutputPcmFrame(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount(),
@@ -350,7 +383,7 @@ namespace adaptone
         {
             return m_mixingGainParameters.tryApplyingUpdate([&]()
             {
-                m_buffers.updateMixingGain(m_mixingGainParameters.gains().data());
+                m_buffers.updateMixingGains(m_mixingGainParameters.gains().data());
             });
         });
     }
@@ -376,7 +409,19 @@ namespace adaptone
         {
             return m_outputGainParameters.tryApplyingUpdate([&]()
             {
-                m_buffers.updateOutputGain(m_outputGainParameters.gains().data());
+                m_buffers.updateOutputGains(m_outputGainParameters.gains().data());
+            });
+        });
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::pushOutputDelayUpdate()
+    {
+        m_updateFunctionQueue.push([&]()
+        {
+            return m_outputDelayParameters.tryApplyingUpdate([&]()
+            {
+               m_buffers.updateOutputDelays(m_outputDelayParameters.delays().data());
             });
         });
     }

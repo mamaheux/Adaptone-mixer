@@ -168,6 +168,7 @@ shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDisp
         m_configuration.audioInput().format(),
         m_configuration.audioOutput().format(),
         m_configuration.audio().eqCenterFrequencies(),
+        m_configuration.audio().maxOutputDelay(),
         m_configuration.audio().soundLevelLength(),
         analysisDispatcher);
 }

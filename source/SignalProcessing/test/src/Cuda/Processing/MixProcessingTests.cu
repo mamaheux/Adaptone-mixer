@@ -14,16 +14,16 @@ __global__ void processMixKernel(T* inputFrame, T* outputFrame, T* gains, std::s
 
 TEST(MixProcessingTests, processMix_shouldMixTheInput)
 {
-    size_t frameSampleCount = 4;
-    size_t inputChannelCount = 3;
-    size_t outputChannelCount = 2;
+    constexpr size_t FrameSampleCount = 4;
+    constexpr size_t InputChannelCount = 3;
+    constexpr size_t OutputChannelCount = 2;
     float* inputFrame;
     float* outputFrame;
     float* gains;
 
-    cudaMallocManaged(reinterpret_cast<void**>(&inputFrame), frameSampleCount * inputChannelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&outputFrame), frameSampleCount * outputChannelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&gains), inputChannelCount * outputChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&inputFrame), FrameSampleCount * InputChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&outputFrame), FrameSampleCount * OutputChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&gains), InputChannelCount * OutputChannelCount * sizeof(float));
 
     inputFrame[0] = -128;
     inputFrame[1] = 1;
@@ -48,7 +48,7 @@ TEST(MixProcessingTests, processMix_shouldMixTheInput)
     gains[4] = 1.5;
     gains[5] = -1.5;
 
-    processMixKernel<<<1, 256>>>(inputFrame, outputFrame, gains, frameSampleCount, inputChannelCount, outputChannelCount);
+    processMixKernel<<<1, 256>>>(inputFrame, outputFrame, gains, FrameSampleCount, InputChannelCount, OutputChannelCount);
     cudaDeviceSynchronize();
 
     EXPECT_EQ(outputFrame[0], 80);
