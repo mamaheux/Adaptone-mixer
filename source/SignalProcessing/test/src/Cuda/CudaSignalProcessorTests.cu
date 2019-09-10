@@ -227,7 +227,13 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[2], 0.16, MaxAbsError);
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
-    processor.setOutputDelays({1, 1});
+    processor.setOutputDelay(0, 1);
+    outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
+    EXPECT_NEAR(outputFrameDouble[2], 0.08, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[1], 0.04, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
+
+    processor.setOutputDelay(1, 1);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
     EXPECT_NEAR(outputFrameDouble[2], 0.08, MaxAbsError);
     EXPECT_NEAR(outputFrameDouble[3], 0.04, MaxAbsError);

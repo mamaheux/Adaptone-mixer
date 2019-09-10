@@ -7,6 +7,7 @@
 #include <SignalProcessing/Cuda/Processing/EqProcessing.h>
 #include <SignalProcessing/Cuda/Processing/GainProcessing.h>
 #include <SignalProcessing/Cuda/Processing/MixProcessing.h>
+#include <SignalProcessing/Cuda/Processing/DelayProcessing.h>
 #include <SignalProcessing/Cuda/Processing/SoundLevelProcessing.h>
 #include <SignalProcessing/Parameters/EqParameters.h>
 #include <SignalProcessing/Parameters/GainParameters.h>
@@ -320,7 +321,7 @@ namespace adaptone
             buffers.delayedOutputFrameCount());
         __syncthreads();
 
-        convertArrayToPcm<T>(buffers.currentDelayedOutputFrames(),
+        convertArrayToPcm<T>(buffers.currentDelayedOutputFrame(),
             buffers.currentOutputPcmFrame(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount(),

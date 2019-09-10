@@ -1,4 +1,4 @@
-#include <SignalProcessing/Cuda/Processing/GainProcessing.h>
+#include <SignalProcessing/Cuda/Processing/DelayProcessing.h>
 
 #include <gtest/gtest.h>
 
@@ -6,7 +6,7 @@ using namespace adaptone;
 using namespace std;
 
 template<class T>
-__global__ void processGainKernel(T* inputFrame,
+__global__ void processDelayKernel(T* inputFrame,
     T* delayedOutputFrames,
     std::size_t* delays,
     std::size_t frameSampleCount,
@@ -23,7 +23,7 @@ __global__ void processGainKernel(T* inputFrame,
         delayedOutputFrameCount);
 }
 
-TEST(GainProcessingTests, processDelay_shouldDelayTheInput)
+TEST(DelayProcessingTests, processDelay_shouldDelayTheInput)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 4;
@@ -33,7 +33,7 @@ TEST(GainProcessingTests, processDelay_shouldDelayTheInput)
     size_t* delays;
 
     cudaMallocManaged(reinterpret_cast<void**>(&inputFrame), FrameSampleCount * ChannelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&delaydOutputFrames),
+    cudaMallocManaged(reinterpret_cast<void**>(&delayedOutputFrames),
         DelayedOutputFrameCount * FrameSampleCount * ChannelCount * sizeof(float));
     cudaMallocManaged(reinterpret_cast<void**>(&delays), ChannelCount * sizeof(size_t));
 
@@ -58,11 +58,11 @@ TEST(GainProcessingTests, processDelay_shouldDelayTheInput)
     delays[2] = 2;
     delays[3] = 3;
 
-    cudaMemset(reinterpret_cast<void**>(&delaydOutputFrames), 0,
+    cudaMemset(delayedOutputFrames, 0,
         DelayedOutputFrameCount * FrameSampleCount * ChannelCount * sizeof(float));
 
     size_t currentDelayedOutputFrameIndex = 0;
-    processGainKernel<<<1, 256>>>(inputFrame,
+    processDelayKernel<<<1, 256>>>(inputFrame,
         delayedOutputFrames,
         delays,
         FrameSampleCount,
@@ -88,7 +88,7 @@ TEST(GainProcessingTests, processDelay_shouldDelayTheInput)
     EXPECT_EQ(delayedOutputFrames[FrameSampleCount * ChannelCount + 11], 32);
 
     currentDelayedOutputFrameIndex = 2;
-    processGainKernel<<<1, 256>>>(inputFrame,
+    processDelayKernel<<<1, 256>>>(inputFrame,
         delayedOutputFrames,
         delays,
         FrameSampleCount,

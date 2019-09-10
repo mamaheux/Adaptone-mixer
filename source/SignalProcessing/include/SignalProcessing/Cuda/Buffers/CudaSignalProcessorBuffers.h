@@ -231,7 +231,7 @@ namespace adaptone
         cudaMalloc(reinterpret_cast<void**>(&m_mixingOutputFrames), m_outputFrameSize * frameCount * sizeof(T));
         cudaMalloc(reinterpret_cast<void**>(&m_outputEqOutputFrames), m_outputFrameSize * frameCount * sizeof(T));
         cudaMalloc(reinterpret_cast<void**>(&m_outputFrames), m_outputFrameSize * frameCount * sizeof(T));
-        cudaMalloc(reinterpret_cast<void**>(&m_delayedOutputFrames), m_outputChannelCount * m_delayedOutputFrameCount *
+        cudaMalloc(reinterpret_cast<void**>(&m_delayedOutputFrames), m_outputFrameSize * m_delayedOutputFrameCount *
             sizeof(T));
 
         cudaMalloc(reinterpret_cast<void**>(&m_inputGains), m_inputChannelCount * sizeof(T));
@@ -258,7 +258,7 @@ namespace adaptone
         m_mixingOutputFrames(other.m_mixingOutputFrames),
         m_outputEqOutputFrames(other.m_outputEqOutputFrames),
         m_outputFrames(other.m_outputFrames),
-        m_delayedOutputFrames(other.m_delayedOutputFrames)
+        m_delayedOutputFrames(other.m_delayedOutputFrames),
 
         m_inputGains(other.m_inputGains),
         m_inputEqBuffers(other.m_inputEqBuffers),

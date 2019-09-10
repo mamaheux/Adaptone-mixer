@@ -23,7 +23,7 @@ TEST(MixProcessingTests, processMix_shouldMixTheInput)
 
     cudaMallocManaged(reinterpret_cast<void**>(&inputFrame), FrameSampleCount * InputChannelCount * sizeof(float));
     cudaMallocManaged(reinterpret_cast<void**>(&outputFrame), FrameSampleCount * OutputChannelCount * sizeof(float));
-    cudaMallocManaged(reinterpret_cast<void**>(&gains), inputChannelCount * OutputChannelCount * sizeof(float));
+    cudaMallocManaged(reinterpret_cast<void**>(&gains), InputChannelCount * OutputChannelCount * sizeof(float));
 
     inputFrame[0] = -128;
     inputFrame[1] = 1;
