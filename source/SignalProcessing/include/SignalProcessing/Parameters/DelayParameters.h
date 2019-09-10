@@ -34,7 +34,7 @@ namespace adaptone
         {
             THROW_INVALID_VALUE_EXCEPTION("Invalid channel", "");
         }
-        if (delay >= m_maxDelay)
+        if (delay > m_maxDelay)
         {
             THROW_INVALID_VALUE_EXCEPTION("Invalid delay", "");
         }
@@ -53,7 +53,7 @@ namespace adaptone
         }
         for (std::size_t delay : delays)
         {
-            if (delay >= m_maxDelay)
+            if (delay > m_maxDelay)
             {
                 THROW_INVALID_VALUE_EXCEPTION("Invalid delay", "");
             }

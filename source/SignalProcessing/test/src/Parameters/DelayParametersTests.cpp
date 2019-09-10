@@ -25,7 +25,7 @@ TEST(DelayParametersTests, setDelay_invalidDelay_shouldThrowInvalidException)
 {
     DelayParameters delayParameters(2, MaxDelay);
 
-    EXPECT_THROW(delayParameters.setDelay(2, MaxDelay), InvalidValueException);
+    EXPECT_THROW(delayParameters.setDelay(2, MaxDelay + 1), InvalidValueException);
 }
 
 TEST(DelayParametersTests, setDelay_shouldSetSpecifiedChannelDelay)
@@ -49,7 +49,7 @@ TEST(DelayParametersTests, setDelays_invalidChannelCount_shouldThrowInvalidExcep
 TEST(DelayParametersTests, setDelays_invalidDelay_shouldThrowInvalidException)
 {
     DelayParameters delayParameters(2, MaxDelay);
-    EXPECT_THROW(delayParameters.setDelays({ 1, MaxDelay }), InvalidValueException);
+    EXPECT_THROW(delayParameters.setDelays({ 1, MaxDelay + 1 }), InvalidValueException);
 }
 
 TEST(DelayParametersTests, setDelays_shouldSetAllDelays)

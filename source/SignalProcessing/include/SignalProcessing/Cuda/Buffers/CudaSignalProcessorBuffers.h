@@ -206,7 +206,7 @@ namespace adaptone
         m_inputFrameSize(m_frameSampleCount * m_inputChannelCount),
         m_outputFrameSize(m_frameSampleCount * m_outputChannelCount),
         m_mixingGainsSize(m_inputChannelCount * m_outputChannelCount),
-        m_delayedOutputFrameCount(maxOutputDelay / m_frameSampleCount + 1),
+        m_delayedOutputFrameCount(maxOutputDelay / m_frameSampleCount + 2),
         m_maxOutputDelay(maxOutputDelay),
 
         m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
