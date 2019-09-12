@@ -11,7 +11,7 @@ SpecificSignalProcessor::~SpecificSignalProcessor()
 {
 }
 
-void SpecificSignalProcessor::setInputGain(size_t channel, double gain)
+void SpecificSignalProcessor::setInputGain(size_t channelIndex, double gain)
 {
 }
 
@@ -19,15 +19,15 @@ void SpecificSignalProcessor::setInputGains(const vector<double>& gains)
 {
 }
 
-void SpecificSignalProcessor::setInputGraphicEqGains(size_t channel, const vector<double>& gains)
+void SpecificSignalProcessor::setInputGraphicEqGains(size_t channelIndex, const vector<double>& gains)
 {
 }
 
-void SpecificSignalProcessor::setMixingGain(size_t inputChannel, size_t outputChannel, double gain)
+void SpecificSignalProcessor::setMixingGain(size_t inputChannelIndex, size_t outputChannelIndex, double gain)
 {
 }
 
-void SpecificSignalProcessor::setMixingGains(size_t outputChannel, const vector<double>& gains)
+void SpecificSignalProcessor::setMixingGains(size_t outputChannelIndex, const vector<double>& gains)
 {
 }
 
@@ -35,7 +35,7 @@ void SpecificSignalProcessor::setMixingGains(const vector<double>& gains)
 {
 }
 
-void SpecificSignalProcessor::setOutputGraphicEqGains(size_t channel, const vector<double>& gains)
+void SpecificSignalProcessor::setOutputGraphicEqGains(size_t channelIndex, const vector<double>& gains)
 {
 }
 
@@ -43,7 +43,7 @@ void SpecificSignalProcessor::setOutputGraphicEqGains(size_t startChannelIndex, 
 {
 }
 
-void SpecificSignalProcessor::setOutputGain(size_t channel, double gain)
+void SpecificSignalProcessor::setOutputGain(size_t channelIndex, double gain)
 {
 }
 
@@ -51,7 +51,7 @@ void SpecificSignalProcessor::setOutputGains(const vector<double>& gains)
 {
 }
 
-void SpecificSignalProcessor::setOutputDelay(size_t channel, size_t delay)
+void SpecificSignalProcessor::setOutputDelay(size_t channelIndex, size_t delay)
 {
 }
 
