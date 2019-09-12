@@ -18,7 +18,7 @@ file(GLOB_RECURSE
 add_executable(CommunicationTests
     ${source_files})
 
-set_property(TARGET CommunicationTests PROPERTY CXX_STANDARD 14)
+set_property(TARGET CommunicationTests PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(CommunicationTests
     Communication

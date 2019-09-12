@@ -20,7 +20,7 @@ file(GLOB_RECURSE
 add_executable(MixerTests
     ${source_files})
 
-set_property(TARGET MixerTests PROPERTY CXX_STANDARD 14)
+set_property(TARGET MixerTests PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(MixerTests
     Utils

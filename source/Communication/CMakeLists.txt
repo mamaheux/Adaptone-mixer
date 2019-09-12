@@ -18,7 +18,7 @@ add_library(Communication
     STATIC
     ${source_files})
 
-set_property(TARGET Communication PROPERTY CXX_STANDARD 14)
+set_property(TARGET Communication PROPERTY CXX_STANDARD 17)
 
 target_link_libraries(Communication
     Utils
