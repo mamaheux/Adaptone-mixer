@@ -78,7 +78,7 @@ TEST(RealtimeSpectrumAnalyserTests, calculateDecimatedSpectrumAnalysis_shouldRet
     });
 
     analyser.finishWriting();
-    std::vector<std::vector<SpectrumPoint>> result = analyser.calculateDecimatedSpectrumAnalysis();
+    vector<vector<SpectrumPoint>> result = analyser.calculateDecimatedSpectrumAnalysis();
 
     ASSERT_EQ(result.size(), ChannelCount);
 
@@ -111,7 +111,7 @@ TEST(RealtimeSpectrumAnalyserTests, calculateDecimatedSpectrumAnalysis_performan
     for (size_t i = 0; i < IterationCount; i++)
     {
         analyser.finishWriting();
-        std::vector<std::vector<SpectrumPoint>> result = analyser.calculateDecimatedSpectrumAnalysis();
+        vector<vector<SpectrumPoint>> result = analyser.calculateDecimatedSpectrumAnalysis();
     }
 
     auto end = chrono::system_clock::now();

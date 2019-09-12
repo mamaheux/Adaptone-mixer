@@ -1,6 +1,7 @@
 #include <Mixer/MixerAnalysisDispatcher.h>
 
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
+#include <Communication/Messages/Output/SoundLevelMessage.h>
 
 #include <Utils/Exception/InvalidValueException.h>
 #include <Utils/Exception/NotSupportedException.h>
@@ -12,6 +13,12 @@ using namespace adaptone;
 using namespace std;
 using namespace std::chrono_literals;
 using ::testing::HasSubstr;
+
+constexpr size_t FrameSampleCount = 2;
+constexpr size_t SampleFrequency = 48000;
+constexpr size_t InputChannelCount = 2;
+constexpr size_t SpectrumAnalysisFftLength = 4;
+constexpr size_t SpectrumAnalysisPointCountPerDecade = 2;
 
 class LoggerMock : public Logger
 {
@@ -34,16 +41,23 @@ map<AnalysisDispatcher::SoundLevelType, vector<float>> getDummySoundLevels()
     return soundLevels;
 }
 
-constexpr size_t FrameSampleCount = 2;
-constexpr size_t SampleFrequency = 48000;
-constexpr size_t InputChannelCount = 2;
-constexpr size_t SpectrumAnalysisFftLength = 4;
-constexpr size_t SpectrumAnalysisPointCountPerDecade = 2;
+shared_ptr<ChannelIdMapping> getDummyChannelIdMapping()
+{
+    vector<size_t> inputChannelIds;
+    for (size_t i = 0; i < InputChannelCount; i++)
+    {
+        inputChannelIds.push_back(i);
+    }
+    shared_ptr<ChannelIdMapping> channelIdMapping = make_shared<ChannelIdMapping>(InputChannelCount, 1);
+    channelIdMapping->update(inputChannelIds, {}, 1);
+    return channelIdMapping;
+}
 
 TEST(MixerAnalysisDispatcherTests, startStop_shouldStartAndStopProperlyTheDispatcher)
 {
     shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
     MixerAnalysisDispatcher dispatcher(logger,
+        getDummyChannelIdMapping(),
         [](const ApplicationMessage& m) { },
         ProcessingDataType::Float,
         FrameSampleCount,
@@ -64,6 +78,7 @@ TEST(MixerAnalysisDispatcherTests, thread_shouldLogExceptions)
 
 
     MixerAnalysisDispatcher dispatcher(logger,
+        getDummyChannelIdMapping(),
         [](const ApplicationMessage& m)
         {
             THROW_INVALID_VALUE_EXCEPTION("", "");
@@ -89,6 +104,7 @@ TEST(MixerAnalysisDispatcherTests, thread_shouldSendMessages)
     map<AnalysisDispatcher::SoundLevelType, vector<float>> soundLevels = getDummySoundLevels();
 
     MixerAnalysisDispatcher dispatcher(logger,
+        getDummyChannelIdMapping(),
         [&](const ApplicationMessage& m)
         {
             const SoundLevelMessage* message = dynamic_cast<const SoundLevelMessage*>(&m);
@@ -109,15 +125,19 @@ TEST(MixerAnalysisDispatcherTests, thread_shouldSendMessages)
     this_thread::sleep_for(100ms);
     dispatcher.stop();
 
-    EXPECT_EQ(soundLevelMessage.inputAfterGain()[0], soundLevels[AnalysisDispatcher::SoundLevelType::InputGain][0]);
-    EXPECT_EQ(soundLevelMessage.inputAfterEq()[0], soundLevels[AnalysisDispatcher::SoundLevelType::InputEq][0]);
-    EXPECT_EQ(soundLevelMessage.outputAfterGain()[0], soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain][0]);
+    EXPECT_EQ(soundLevelMessage.inputAfterGain()[0].channelId(), 0);
+    EXPECT_EQ(soundLevelMessage.inputAfterGain()[0].level(), soundLevels[AnalysisDispatcher::SoundLevelType::InputGain][0]);
+    EXPECT_EQ(soundLevelMessage.inputAfterEq()[0].channelId(), 0);
+    EXPECT_EQ(soundLevelMessage.inputAfterEq()[0].level(), soundLevels[AnalysisDispatcher::SoundLevelType::InputEq][0]);
+    EXPECT_EQ(soundLevelMessage.outputAfterGain()[0].channelId(), 0);
+    EXPECT_EQ(soundLevelMessage.outputAfterGain()[0].level(), soundLevels[AnalysisDispatcher::SoundLevelType::OutputGain][0]);
 }
 
 TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_wrongProcessingType_shouldThrowNotSupportedException)
 {
     shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
     MixerAnalysisDispatcher floatDispatcher(logger,
+        getDummyChannelIdMapping(),
         [](const ApplicationMessage& m) { },
         ProcessingDataType::Float,
         FrameSampleCount,
@@ -127,6 +147,7 @@ TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_wrongProcessingType_
         SpectrumAnalysisPointCountPerDecade);
 
     MixerAnalysisDispatcher doubleDispatcher(logger,
+        getDummyChannelIdMapping(),
         [](const ApplicationMessage& m) { },
         ProcessingDataType::Double,
         FrameSampleCount,
@@ -153,6 +174,7 @@ TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_float_shouldSendInpu
     InputSpectrumMessage inputSpectrumMessage;
     shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
     MixerAnalysisDispatcher floatDispatcher(logger,
+        getDummyChannelIdMapping(),
         [&](const ApplicationMessage& m)
         {
             const InputSpectrumMessage* message = dynamic_cast<const InputSpectrumMessage*>(&m);
@@ -210,6 +232,7 @@ TEST(MixerAnalysisDispatcherTests, notifyInputEqOutputFrame_double_shouldSendInp
     InputSpectrumMessage inputSpectrumMessage;
     shared_ptr<LoggerMock> logger = make_shared<LoggerMock>();
     MixerAnalysisDispatcher floatDispatcher(logger,
+        getDummyChannelIdMapping(),
         [&](const ApplicationMessage& m)
         {
             const InputSpectrumMessage* message = dynamic_cast<const InputSpectrumMessage*>(&m);

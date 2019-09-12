@@ -6,15 +6,15 @@ using namespace std;
 constexpr size_t ChangeAuxiliaryOutputEqGainsMessage::SeqId;
 
 ChangeAuxiliaryOutputEqGainsMessage::ChangeAuxiliaryOutputEqGainsMessage() : ApplicationMessage(SeqId),
-    m_auxiliaryId(0),
+    m_channelId(0),
     m_gains()
 {
 }
 
-ChangeAuxiliaryOutputEqGainsMessage::ChangeAuxiliaryOutputEqGainsMessage(size_t auxiliaryId,
+ChangeAuxiliaryOutputEqGainsMessage::ChangeAuxiliaryOutputEqGainsMessage(size_t channelId,
     const vector<double>& gains) :
     ApplicationMessage(SeqId),
-    m_auxiliaryId(auxiliaryId),
+    m_channelId(channelId),
     m_gains(gains)
 {
 }

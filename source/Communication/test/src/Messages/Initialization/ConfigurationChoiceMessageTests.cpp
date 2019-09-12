@@ -11,25 +11,25 @@ TEST(ConfigurationChoiceMessageTests, constructor_shouldSetTheAttributes)
     constexpr size_t id = 10;
     const string name = "a name";
 
-    constexpr size_t monitorsNumber = 1;
+    const vector<size_t> inputChannelIds{ 1, 2, 3 };
     constexpr size_t speakersNumber = 2;
-    constexpr size_t probesNumber = 3;
+    const vector<size_t> auxiliaryChannelIds{ 4, 5 };
 
     constexpr double x = 10;
     constexpr double y = 12;
     constexpr ConfigurationPosition::Type type = ConfigurationPosition::Type::Speaker;
     const vector<ConfigurationPosition> positions{ ConfigurationPosition(x, y, type) };
 
-    ConfigurationChoiceMessage message(id, name, monitorsNumber, speakersNumber, probesNumber, positions);
+    ConfigurationChoiceMessage message(id, name, inputChannelIds, speakersNumber, auxiliaryChannelIds, positions);
 
     EXPECT_EQ(message.seqId(), 0);
 
     EXPECT_EQ(message.id(), id);
     EXPECT_EQ(message.name(), name);
 
-    EXPECT_EQ(message.monitorsNumber(), monitorsNumber);
+    EXPECT_EQ(message.inputChannelIds(), vector<size_t>({ 1, 2, 3 }));
     EXPECT_EQ(message.speakersNumber(), speakersNumber);
-    EXPECT_EQ(message.probesNumber(), probesNumber);
+    EXPECT_EQ(message.auxiliaryChannelIds(), vector<size_t>({ 4, 5 }));
 
     EXPECT_EQ(message.positions().size(), 1);
     EXPECT_EQ(message.positions()[0].x(), x);
@@ -42,16 +42,16 @@ TEST(ConfigurationChoiceMessageTests, serialization_shouldSerializaToJson)
     constexpr size_t id = 10;
     const string name = "a name";
 
-    constexpr size_t monitorsNumber = 1;
+    const vector<size_t> inputChannelIds{ 1, 2, 3 };
     constexpr size_t speakersNumber = 2;
-    constexpr size_t probesNumber = 3;
+    const vector<size_t> auxiliaryChannelIds{ 4, 5 };
 
     constexpr double x = 10;
     constexpr double y = 12;
     constexpr ConfigurationPosition::Type type = ConfigurationPosition::Type::Speaker;
     const vector<ConfigurationPosition> positions{ ConfigurationPosition(x, y, type) };
 
-    ConfigurationChoiceMessage message(id, name, monitorsNumber, speakersNumber, probesNumber, positions);
+    ConfigurationChoiceMessage message(id, name, inputChannelIds, speakersNumber, auxiliaryChannelIds, positions);
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 0);
@@ -59,9 +59,9 @@ TEST(ConfigurationChoiceMessageTests, serialization_shouldSerializaToJson)
     EXPECT_EQ(serializedMessage.at("data").at("id"), id);
     EXPECT_EQ(serializedMessage.at("data").at("name"), name);
 
-    EXPECT_EQ(serializedMessage.at("data").at("monitorsNumber"), monitorsNumber);
+    EXPECT_EQ(serializedMessage.at("data").at("inputChannelIds"), inputChannelIds);
     EXPECT_EQ(serializedMessage.at("data").at("speakersNumber"), speakersNumber);
-    EXPECT_EQ(serializedMessage.at("data").at("probesNumber"), probesNumber);
+    EXPECT_EQ(serializedMessage.at("data").at("auxiliaryChannelIds"), auxiliaryChannelIds);
 
     EXPECT_EQ(serializedMessage.at("data").at("positions").size(), 1);
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("x"), x);
@@ -78,9 +78,9 @@ TEST(ConfigurationChoiceMessageTests, deserialization_shouldDeserializeFromJson)
         "  \"data\": {"
         "    \"id\": 10,"
         "    \"name\": \"super nom\","
-        "    \"monitorsNumber\": 5,"
+        "    \"inputChannelIds\": [1, 2, 3],"
         "    \"speakersNumber\": 4,"
-        "    \"probesNumber\": 8,"
+        "    \"auxiliaryChannelIds\": [4, 5],"
         "    \"positions\": ["
         "      {"
         "        \"x\": 140,"
@@ -98,9 +98,9 @@ TEST(ConfigurationChoiceMessageTests, deserialization_shouldDeserializeFromJson)
     EXPECT_EQ(deserializedMessage.id(), 10);
     EXPECT_EQ(deserializedMessage.name(), "super nom");
 
-    EXPECT_EQ(deserializedMessage.monitorsNumber(), 5);
+    EXPECT_EQ(deserializedMessage.inputChannelIds(), vector<size_t>({ 1, 2, 3 }));
     EXPECT_EQ(deserializedMessage.speakersNumber(), 4);
-    EXPECT_EQ(deserializedMessage.probesNumber(), 8);
+    EXPECT_EQ(deserializedMessage.auxiliaryChannelIds(), vector<size_t>({ 4, 5 }));
 
     EXPECT_EQ(deserializedMessage.positions().size(), 1);
     EXPECT_EQ(deserializedMessage.positions()[0].x(), 140);

@@ -13,6 +13,7 @@ constexpr size_t MixerAnalysisDispatcher::SoundLevelBoundedBufferSize;
 constexpr size_t MixerAnalysisDispatcher::InputSampleBoundedBufferSize;
 
 MixerAnalysisDispatcher::MixerAnalysisDispatcher(shared_ptr<Logger> logger,
+    shared_ptr<ChannelIdMapping> channelIdMapping,
     function<void(const ApplicationMessage&)> send,
     ProcessingDataType processingDataType,
     size_t frameSampleCount,
@@ -21,6 +22,7 @@ MixerAnalysisDispatcher::MixerAnalysisDispatcher(shared_ptr<Logger> logger,
     size_t spectrumAnalysisFftLength,
     size_t spectrumAnalysisPointCountPerDecade) :
     m_logger(logger),
+    m_channelIdMapping(channelIdMapping),
     m_send(send),
     m_processingDataType(processingDataType),
     m_frameSampleCount(frameSampleCount),
@@ -70,21 +72,20 @@ void MixerAnalysisDispatcher::notifySoundLevel(const map<SoundLevelType, vector<
     const vector<float>& inputAfterEq = soundLevels.at(SoundLevelType::InputEq);
     const vector<float>& outputAfterGain = soundLevels.at(SoundLevelType::OutputGain);
 
-    m_soundLevelBoundedBuffer.write([&](SoundLevelMessage& m)
+    m_soundLevelBoundedBuffer.write([&](map<SoundLevelType, vector<double>>& buffer)
     {
-        m = SoundLevelMessage(vector<double>(inputAfterGain.cbegin(), inputAfterGain.cend()),
-            vector<double>(inputAfterEq.cbegin(), inputAfterEq.cend()),
-            vector<double>(outputAfterGain.cbegin(), outputAfterGain.cend()));
+        buffer.clear();
+        buffer[SoundLevelType::InputGain] = vector<double>(inputAfterGain.cbegin(), inputAfterGain.cend());
+        buffer[SoundLevelType::InputEq] = vector<double>(inputAfterEq.cbegin(), inputAfterEq.cend());
+        buffer[SoundLevelType::OutputGain] = vector<double>(outputAfterGain.cbegin(), outputAfterGain.cend());
     });
 }
 
 void MixerAnalysisDispatcher::notifySoundLevel(const map<SoundLevelType, vector<double>>& soundLevels)
 {
-    m_soundLevelBoundedBuffer.write([&](SoundLevelMessage& m)
+    m_soundLevelBoundedBuffer.write([&](map<SoundLevelType, vector<double>>& buffer)
     {
-        m = SoundLevelMessage(soundLevels.at(SoundLevelType::InputGain),
-            soundLevels.at(SoundLevelType::InputEq),
-            soundLevels.at(SoundLevelType::OutputGain));
+        buffer = soundLevels;
     });
 }
 
@@ -120,11 +121,13 @@ void MixerAnalysisDispatcher::soundLevelRun()
     {
         try
         {
-            m_soundLevelBoundedBuffer.read([&](const SoundLevelMessage& m)
+            m_soundLevelBoundedBuffer.read([&](const map<SoundLevelType, vector<double>>& soundLevels)
             {
                 if (!m_stopped.load())
                 {
-                    m_send(m);
+                    m_send(SoundLevelMessage(convertSoundLevels(soundLevels.at(SoundLevelType::InputGain)),
+                        convertSoundLevels(soundLevels.at(SoundLevelType::InputEq)),
+                        convertSoundLevels(soundLevels.at(SoundLevelType::OutputGain))));
                 }
             });
         }
@@ -253,7 +256,7 @@ void MixerAnalysisDispatcher::startInputEqOutputFrameSpectrumAnalysisThread()
 void MixerAnalysisDispatcher::stopSoundLevelThread()
 {
     // Write an empty message to unlock the sound level thread.
-    m_soundLevelBoundedBuffer.write([](SoundLevelMessage& m) { });
+    m_soundLevelBoundedBuffer.write([](map<SoundLevelType, vector<double>>& buffer) { });
     m_soundLevelThread->join();
     m_soundLevelThread.release();
 }
@@ -294,8 +297,30 @@ void MixerAnalysisDispatcher::sendInputSpectrumMessage(const vector<vector<Spect
 
     for (size_t i = 0; i < spectrums.size(); i++)
     {
-        channelSpectrums.emplace_back(i, spectrums[i]);
+        optional<size_t> channelId = m_channelIdMapping->getChannelIdFromInputIndexOrNull(i);
+        if (channelId != nullopt)
+        {
+            channelSpectrums.emplace_back(channelId.value(), spectrums[i]);
+        }
     }
 
     m_send(InputSpectrumMessage(channelSpectrums));
+}
+
+
+vector<ChannelSoundLevel> MixerAnalysisDispatcher::convertSoundLevels(const vector<double>& soundLevels)
+{
+    vector<ChannelSoundLevel> channelSoundLevels;
+    channelSoundLevels.reserve(soundLevels.size());
+
+    for (size_t i = 0; i < soundLevels.size(); i++)
+    {
+        optional<size_t> channelId = m_channelIdMapping->getChannelIdFromInputIndexOrNull(i);
+        if (channelId != nullopt)
+        {
+            channelSoundLevels.emplace_back(channelId.value(), soundLevels[i]);
+        }
+    }
+
+    return channelSoundLevels;
 }

@@ -12,16 +12,16 @@ namespace adaptone
 
     private:
         std::size_t m_channelId;
-        std::size_t m_auxiliaryId;
+        std::size_t m_auxiliaryChannelId;
         double m_gain;
 
     public:
         ChangeAuxiliaryMixInputVolumeMessage();
-        ChangeAuxiliaryMixInputVolumeMessage(std::size_t channelId, std::size_t auxiliaryId, double gain);
+        ChangeAuxiliaryMixInputVolumeMessage(std::size_t channelId, std::size_t auxiliaryChannelId, double gain);
         ~ChangeAuxiliaryMixInputVolumeMessage() override;
 
         std::size_t channelId() const;
-        std::size_t auxiliaryId() const;
+        std::size_t auxiliaryChannelId() const;
         double gain() const;
 
         std::string toJson() const override;
@@ -34,9 +34,9 @@ namespace adaptone
         return m_channelId;
     }
 
-    inline std::size_t ChangeAuxiliaryMixInputVolumeMessage::auxiliaryId() const
+    inline std::size_t ChangeAuxiliaryMixInputVolumeMessage::auxiliaryChannelId() const
     {
-        return m_auxiliaryId;
+        return m_auxiliaryChannelId;
     }
 
     inline double ChangeAuxiliaryMixInputVolumeMessage::gain() const
@@ -53,7 +53,7 @@ namespace adaptone
     inline void to_json(nlohmann::json& j, const ChangeAuxiliaryMixInputVolumeMessage& o)
     {
         nlohmann::json data({{ "channelId", o.m_channelId },
-            { "auxiliaryId", o.m_auxiliaryId },
+            { "auxiliaryChannelId", o.m_auxiliaryChannelId },
             { "gain", o.m_gain }
         });
         j = nlohmann::json{{ "seqId", o.seqId() }, { "data", data }};
@@ -62,7 +62,7 @@ namespace adaptone
     inline void from_json(const nlohmann::json& j, ChangeAuxiliaryMixInputVolumeMessage& o)
     {
         j.at("data").at("channelId").get_to(o.m_channelId);
-        j.at("data").at("auxiliaryId").get_to(o.m_auxiliaryId);
+        j.at("data").at("auxiliaryChannelId").get_to(o.m_auxiliaryChannelId);
         j.at("data").at("gain").get_to(o.m_gain);
     }
 }

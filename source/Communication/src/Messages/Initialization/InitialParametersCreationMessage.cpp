@@ -8,22 +8,22 @@ constexpr size_t InitialParametersCreationMessage::SeqId;
 InitialParametersCreationMessage::InitialParametersCreationMessage() : ApplicationMessage(SeqId),
     m_id(0),
     m_name(""),
-    m_monitorsNumber(0),
+    m_inputChannelIds(),
     m_speakersNumber(0),
-    m_probesNumber(0)
+    m_auxiliaryChannelIds()
 {
 }
 
 InitialParametersCreationMessage::InitialParametersCreationMessage(size_t id,
     const string& name,
-    size_t monitorsNumber,
+    const vector<size_t>& inputChannelIds,
     size_t speakersNumber,
-    size_t probesNumber) : ApplicationMessage(SeqId),
+    const vector<size_t>& auxiliaryChannelIds) : ApplicationMessage(SeqId),
     m_id(id),
     m_name(name),
-    m_monitorsNumber(monitorsNumber),
+    m_inputChannelIds(inputChannelIds),
     m_speakersNumber(speakersNumber),
-    m_probesNumber(probesNumber)
+    m_auxiliaryChannelIds(auxiliaryChannelIds)
 {
 }
 
