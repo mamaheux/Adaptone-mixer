@@ -21,5 +21,5 @@ void MixerConnectionHandler::handleConnection()
 
 void MixerConnectionHandler::handleDisconnection()
 {
-    m_signalProcessor->setOutputGains(vector<double>(m_outputChannelCount, -numeric_limits<double>::infinity()));
+    m_signalProcessor->setOutputGains(vector<double>(m_outputChannelCount, 0));
 }
