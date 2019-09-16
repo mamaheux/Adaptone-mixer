@@ -23,21 +23,24 @@ using namespace std;
 Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration), m_stopped(false)
 {
     shared_ptr<Logger> logger = createLogger();
+    shared_ptr<ChannelIdMapping> channelIdMapping = createChannelIdMapping();
 
     unique_ptr<AudioInput> audioInput = createAudioInput();
     unique_ptr<AudioOutput> audioOutput = createAudioOutput();
 
-    shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher(logger);
+    shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher(logger, channelIdMapping);
     shared_ptr<SignalProcessor> signalProcessor = createSignalProcessor(analysisDispatcher);
 
     shared_ptr<ConnectionHandler> connectionHandler = createConnectionHandler(signalProcessor);
-    shared_ptr<ApplicationMessageHandler> applicationMessageHandler = createApplicationMessageHandler(signalProcessor);
+    shared_ptr<ApplicationMessageHandler> applicationMessageHandler = createApplicationMessageHandler(channelIdMapping,
+        signalProcessor);
     unique_ptr<ApplicationWebSocket> applicationWebSocket = createApplicationWebSocket(logger,
         connectionHandler,
         applicationMessageHandler);
 
     //Create all members, then assign them to the attributes to prevent memory leaks
     m_logger = logger;
+    m_channelIdMapping = channelIdMapping;
 
     m_audioInput = move(audioInput);
     m_audioOutput = move(audioOutput);
@@ -96,6 +99,12 @@ shared_ptr<Logger> Mixer::createLogger()
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported logger type.");
 }
 
+shared_ptr<ChannelIdMapping> Mixer::createChannelIdMapping()
+{
+    return make_shared<ChannelIdMapping>(m_configuration.audio().inputChannelCount(),
+        m_configuration.audio().outputChannelCount());
+}
+
 unique_ptr<AudioInput> Mixer::createAudioInput()
 {
     switch (m_configuration.audioInput().type())
@@ -143,9 +152,11 @@ unique_ptr<AudioOutput> Mixer::createAudioOutput()
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported audio input type.");
 }
 
-shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(shared_ptr<Logger> logger)
+shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(shared_ptr<Logger> logger,
+    shared_ptr<ChannelIdMapping> channelIdMapping)
 {
     return make_shared<MixerAnalysisDispatcher>(logger,
+        channelIdMapping,
         [&](const ApplicationMessage& message)
         {
             m_applicationWebSocket->send(message);
@@ -180,10 +191,10 @@ shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalPr
 }
 
 shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
+    shared_ptr<ChannelIdMapping> channelIdMapping,
     shared_ptr<SignalProcessor> signalProcessor)
 {
-    return make_shared<MixerApplicationMessageHandler>(signalProcessor,
-        m_configuration.audio().outputChannelCount());
+    return make_shared<MixerApplicationMessageHandler>(channelIdMapping, signalProcessor);
 }
 
 unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger,

@@ -16,11 +16,10 @@ using namespace std;
         handle##type(dynamic_cast<const type&>(message), send);\
     }
 
-MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<SignalProcessor> signalProcessor,
-    size_t outputChannelCount) :
-    m_signalProcessor(signalProcessor),
-    m_masterOutputCount(2), //TODO Obtenir la valeur à partir de la configuration de l'application
-    m_outputChannelCount(outputChannelCount)
+MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<ChannelIdMapping> channelIdMapping,
+    shared_ptr<SignalProcessor> signalProcessor) :
+    m_channelIdMapping(channelIdMapping),
+    m_signalProcessor(signalProcessor)
 {
     ADD_HANDLE_FUNCTION(ConfigurationChoiceMessage);
     ADD_HANDLE_FUNCTION(InitialParametersCreationMessage);
@@ -60,12 +59,14 @@ void MixerApplicationMessageHandler::handleDeserialized(const ApplicationMessage
 void MixerApplicationMessageHandler::handleConfigurationChoiceMessage(const ConfigurationChoiceMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    m_channelIdMapping->update(message.inputChannelIds(), message.auxiliaryChannelIds(), message.speakersNumber());
 }
 
 void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(
     const InitialParametersCreationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    m_channelIdMapping->update(message.inputChannelIds(), message.auxiliaryChannelIds(), message.speakersNumber());
 }
 
 void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const LaunchInitializationMessage& message,
@@ -146,28 +147,35 @@ void MixerApplicationMessageHandler::handleConfigurationConfirmationMessage(
 void MixerApplicationMessageHandler::handleChangeInputGainMessage(const ChangeInputGainMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_signalProcessor->setInputGain(message.channelId(), message.gain());
+    size_t channelIndex = m_channelIdMapping->getInputIndexFromChannelId(message.channelId());
+    m_signalProcessor->setInputGain(channelIndex, message.gain());
 }
 
 void MixerApplicationMessageHandler::handleChangeInputGainsMessage(const ChangeInputGainsMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_signalProcessor->setInputGains(message.gains());
+    for (const ChannelGain& channelGain : message.gains())
+    {
+        size_t channelIndex = m_channelIdMapping->getInputIndexFromChannelId(channelGain.channelId());
+        m_signalProcessor->setInputGain(channelIndex, channelGain.gain());
+    }
 }
 
 void MixerApplicationMessageHandler::handleChangeInputEqGainsMessage(const ChangeInputEqGainsMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_signalProcessor->setInputGraphicEqGains(message.channelId(), message.gains());
+    size_t channelIndex = m_channelIdMapping->getInputIndexFromChannelId(message.channelId());
+    m_signalProcessor->setInputGraphicEqGains(channelIndex, message.gains());
 }
 
 void MixerApplicationMessageHandler::handleChangeMasterMixInputVolumeMessage(
     const ChangeMasterMixInputVolumeMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    for (size_t outputChannel = 0; outputChannel < m_masterOutputCount; outputChannel++)
+    size_t inputChannelIndex = m_channelIdMapping->getInputIndexFromChannelId(message.channelId());
+    for (size_t outputChannelIndex : m_channelIdMapping->getMasterOutputIndexes())
     {
-        m_signalProcessor->setMixingGain(message.channelId(), outputChannel, message.gain());
+        m_signalProcessor->setMixingGain(inputChannelIndex, outputChannelIndex, message.gain());
     }
 }
 
@@ -175,33 +183,36 @@ void MixerApplicationMessageHandler::handleChangeAuxiliaryMixInputVolumeMessage(
     const ChangeAuxiliaryMixInputVolumeMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_signalProcessor->setMixingGain(message.channelId(),
-        getOutputChannelFromAuxiliaryId(message.auxiliaryId()),
-        message.gain());
+    size_t inputChannelIndex = m_channelIdMapping->getInputIndexFromChannelId(message.channelId());
+    size_t outputChannelIndex = m_channelIdMapping->getAuxiliaryOutputIndexFromChannelId(message.auxiliaryChannelId());
+    m_signalProcessor->setMixingGain(inputChannelIndex, outputChannelIndex, message.gain());
 }
 
 void MixerApplicationMessageHandler::handleChangeMasterOutputEqGainsMessage(
     const ChangeMasterOutputEqGainsMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_signalProcessor->setOutputGraphicEqGains(0, m_masterOutputCount, message.gains());
+    for (size_t outputChannelIndex : m_channelIdMapping->getMasterOutputIndexes())
+    {
+        m_signalProcessor->setOutputGraphicEqGains(outputChannelIndex, message.gains());
+    }
 }
 
 void MixerApplicationMessageHandler::handleChangeAuxiliaryOutputEqGainsMessage(
     const ChangeAuxiliaryOutputEqGainsMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_signalProcessor->setOutputGraphicEqGains(getOutputChannelFromAuxiliaryId(message.auxiliaryId()),
-        message.gains());
+    size_t outputChannelIndex = m_channelIdMapping->getAuxiliaryOutputIndexFromChannelId(message.channelId());
+    m_signalProcessor->setOutputGraphicEqGains(outputChannelIndex, message.gains());
 }
 
 void MixerApplicationMessageHandler::handleChangeMasterOutputVolumeMessage(
     const ChangeMasterOutputVolumeMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    for (size_t outputChannel = 0; outputChannel < m_masterOutputCount; outputChannel++)
+    for (size_t outputChannelIndex : m_channelIdMapping->getMasterOutputIndexes())
     {
-        m_signalProcessor->setOutputGain(outputChannel, message.gain());
+        m_signalProcessor->setOutputGain(outputChannelIndex, message.gain());
     }
 }
 
@@ -209,10 +220,6 @@ void MixerApplicationMessageHandler::handleChangeAuxiliaryOutputVolumeMessage(
     const ChangeAuxiliaryOutputVolumeMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_signalProcessor->setOutputGain(getOutputChannelFromAuxiliaryId(message.auxiliaryId()), message.gain());
-}
-
-size_t MixerApplicationMessageHandler::getOutputChannelFromAuxiliaryId(size_t auxiliaryId)
-{
-    return m_outputChannelCount - auxiliaryId - 1;
+    size_t outputChannelIndex = m_channelIdMapping->getAuxiliaryOutputIndexFromChannelId(message.channelId());
+    m_signalProcessor->setOutputGain(outputChannelIndex, message.gain());
 }

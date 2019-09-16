@@ -16,25 +16,25 @@ namespace adaptone
         std::size_t m_id;
         std::string m_name;
 
-        std::size_t m_monitorsNumber;
+        std::vector<std::size_t> m_inputChannelIds;
         std::size_t m_speakersNumber;
-        std::size_t m_probesNumber;
+        std::vector<std::size_t> m_auxiliaryChannelIds;
 
     public:
         InitialParametersCreationMessage();
         InitialParametersCreationMessage(std::size_t id,
             const std::string& name,
-            std::size_t monitorsNumber,
+            const std::vector<std::size_t>& inputChannelIds,
             std::size_t speakersNumber,
-            std::size_t probesNumber);
+            const std::vector<std::size_t>& auxiliaryChannelIds);
         ~InitialParametersCreationMessage() override;
 
         std::size_t id() const;
         std::string name() const;
 
-        std::size_t monitorsNumber() const;
+        const std::vector<std::size_t>& inputChannelIds() const;
         std::size_t speakersNumber() const;
-        std::size_t probesNumber() const;
+        const std::vector<std::size_t>& auxiliaryChannelIds() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const InitialParametersCreationMessage& o);
@@ -51,9 +51,9 @@ namespace adaptone
         return m_name;
     }
 
-    inline std::size_t InitialParametersCreationMessage::monitorsNumber() const
+    inline const std::vector<std::size_t>& InitialParametersCreationMessage::inputChannelIds() const
     {
-        return m_monitorsNumber;
+        return m_inputChannelIds;
     }
 
     inline std::size_t InitialParametersCreationMessage::speakersNumber() const
@@ -61,9 +61,9 @@ namespace adaptone
         return m_speakersNumber;
     }
 
-    inline std::size_t InitialParametersCreationMessage::probesNumber() const
+    inline const std::vector<std::size_t>& InitialParametersCreationMessage::auxiliaryChannelIds() const
     {
-        return m_probesNumber;
+        return m_auxiliaryChannelIds;
     }
 
     inline std::string InitialParametersCreationMessage::toJson() const
@@ -76,9 +76,9 @@ namespace adaptone
     {
         nlohmann::json data({{ "id", o.m_id },
             { "name", o.m_name },
-            { "monitorsNumber", o.m_monitorsNumber },
+            { "inputChannelIds", o.m_inputChannelIds },
             { "speakersNumber", o.m_speakersNumber },
-            { "probesNumber", o.m_probesNumber }
+            { "auxiliaryChannelIds", o.m_auxiliaryChannelIds }
         });
         j = nlohmann::json{{ "seqId", o.seqId() }, { "data", data }};
     }
@@ -87,9 +87,9 @@ namespace adaptone
     {
         j.at("data").at("id").get_to(o.m_id);
         j.at("data").at("name").get_to(o.m_name);
-        j.at("data").at("monitorsNumber").get_to(o.m_monitorsNumber);
+        j.at("data").at("inputChannelIds").get_to(o.m_inputChannelIds);
         j.at("data").at("speakersNumber").get_to(o.m_speakersNumber);
-        j.at("data").at("probesNumber").get_to(o.m_probesNumber);
+        j.at("data").at("auxiliaryChannelIds").get_to(o.m_auxiliaryChannelIds);
     }
 }
 

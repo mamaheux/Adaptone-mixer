@@ -76,10 +76,10 @@ vector<arma::cx_fvec> RealtimeSpectrumAnalyser::calculateFftAnalysis()
     return channelFfts;
 }
 
-std::vector<std::vector<SpectrumPoint>> RealtimeSpectrumAnalyser::calculateDecimatedSpectrumAnalysis()
+vector<vector<SpectrumPoint>> RealtimeSpectrumAnalyser::calculateDecimatedSpectrumAnalysis()
 {
     complex<float>* fft = reinterpret_cast<complex<float>*>(analyse());
-    std::vector<std::vector<SpectrumPoint>> decimatedSpectrumAnalysisResult;
+    vector<vector<SpectrumPoint>> decimatedSpectrumAnalysisResult;
     decimatedSpectrumAnalysisResult.reserve(m_channelCount);
 
     for (size_t i = 0; i < m_channelCount; i++)

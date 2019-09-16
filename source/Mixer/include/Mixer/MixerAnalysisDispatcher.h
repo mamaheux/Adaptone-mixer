@@ -1,12 +1,13 @@
 #ifndef MIXER_MIXER_ANALYSIS_DISPATCHER_H
 #define MIXER_MIXER_ANALYSIS_DISPATCHER_H
 
+#include <Mixer/ChannelIdMapping.h>
+
 #include <SignalProcessing/AnalysisDispatcher.h>
 #include <SignalProcessing/ProcessingDataType.h>
+#include <SignalProcessing/Analysis/RealtimeSpectrumAnalyser.h>
 
 #include <Communication/Messages/Output/SoundLevelMessage.h>
-
-#include <SignalProcessing/Analysis/RealtimeSpectrumAnalyser.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
@@ -26,6 +27,7 @@ namespace adaptone
         static constexpr std::size_t InputSampleBoundedBufferSize = 5;
 
         std::shared_ptr<Logger> m_logger;
+        std::shared_ptr<ChannelIdMapping> m_channelIdMapping;
         std::function<void(const ApplicationMessage&)> m_send;
         ProcessingDataType m_processingDataType;
         std::size_t m_frameSampleCount;
@@ -35,7 +37,7 @@ namespace adaptone
         std::atomic<bool> m_stopped;
 
         std::unique_ptr<std::thread> m_soundLevelThread;
-        BoundedBuffer<SoundLevelMessage> m_soundLevelBoundedBuffer;
+        BoundedBuffer<std::map<SoundLevelType, std::vector<double>>> m_soundLevelBoundedBuffer;
 
         std::unique_ptr<std::thread> m_inputEqOutputFrameThread;
         BoundedBuffer<float*> m_floatInputEqOutputFrameBoundedBuffer;
@@ -46,6 +48,7 @@ namespace adaptone
 
     public:
         MixerAnalysisDispatcher(std::shared_ptr<Logger> logger,
+            std::shared_ptr<ChannelIdMapping> channelIdMapping,
             std::function<void(const ApplicationMessage&)> send,
             ProcessingDataType processingDataType,
             std::size_t frameSampleCount,
@@ -82,6 +85,7 @@ namespace adaptone
         void stopInputEqOutputFrameSpectrumAnalysisThread();
 
         void sendInputSpectrumMessage(const std::vector<std::vector<SpectrumPoint>>& spectrums);
+        std::vector<ChannelSoundLevel> convertSoundLevels(const std::vector<double>& soundLevel);
     };
 }
 

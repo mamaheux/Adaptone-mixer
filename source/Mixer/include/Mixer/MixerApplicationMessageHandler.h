@@ -1,6 +1,8 @@
 #ifndef MIXER_MIXER_APPLICATION_MESSAGE_HANDLER_H
 #define MIXER_MIXER_APPLICATION_MESSAGE_HANDLER_H
 
+#include <Mixer/ChannelIdMapping.h>
+
 #include <Communication/Handlers/ApplicationMessageHandler.h>
 
 #include <Communication/Messages/Initialization/ConfigurationChoiceMessage.h>
@@ -31,17 +33,15 @@ namespace adaptone
 {
     class MixerApplicationMessageHandler : public ApplicationMessageHandler
     {
+        std::shared_ptr<ChannelIdMapping> m_channelIdMapping;
         std::shared_ptr<SignalProcessor> m_signalProcessor;
-
-        std::size_t m_masterOutputCount;
-        std::size_t m_outputChannelCount;
 
         std::unordered_map<std::size_t,std::function<void(const ApplicationMessage&,
             const std::function<void(const ApplicationMessage&)>&)>> m_handleFunctions;
 
     public:
-        MixerApplicationMessageHandler(std::shared_ptr<SignalProcessor> signalProcessor,
-            std::size_t outputChannelCount);
+        MixerApplicationMessageHandler(std::shared_ptr<ChannelIdMapping> channelIdMapping,
+            std::shared_ptr<SignalProcessor> signalProcessor);
         ~MixerApplicationMessageHandler() override;
 
         DECLARE_NOT_COPYABLE(MixerApplicationMessageHandler);
@@ -85,9 +85,6 @@ namespace adaptone
             const std::function<void(const ApplicationMessage&)>& send);
         void handleChangeAuxiliaryOutputVolumeMessage(const ChangeAuxiliaryOutputVolumeMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
-
-    private:
-        std::size_t getOutputChannelFromAuxiliaryId(std::size_t auxiliaryId);
     };
 }
 

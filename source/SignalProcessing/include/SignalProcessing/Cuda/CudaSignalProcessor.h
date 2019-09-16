@@ -72,23 +72,23 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(CudaSignalProcessor);
         DECLARE_NOT_MOVABLE(CudaSignalProcessor);
 
-        void setInputGain(std::size_t channel, double gain) override;
+        void setInputGain(std::size_t channelIndex, double gain) override;
         void setInputGains(const std::vector<double>& gains) override;
 
-        void setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gains) override;
+        void setInputGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains) override;
 
-        void setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gain) override;
-        void setMixingGains(std::size_t outputChannel, const std::vector<double>& gains) override;
+        void setMixingGain(std::size_t inputChannelIndex, std::size_t outputChannelIndex, double gain) override;
+        void setMixingGains(std::size_t outputChannelIndex, const std::vector<double>& gains) override;
         void setMixingGains(const std::vector<double>& gains) override;
 
-        void setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gains) override;
+        void setOutputGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains) override;
         void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
             const std::vector<double>& gains) override;
 
-        void setOutputGain(std::size_t channel, double gain) override;
+        void setOutputGain(std::size_t channelIndex, double gain) override;
         void setOutputGains(const std::vector<double>& gains) override;
 
-        void setOutputDelay(std::size_t channel, std::size_t delay) override;
+        void setOutputDelay(std::size_t channelIndex, std::size_t delay) override;
         void setOutputDelays(const std::vector<std::size_t>& delays) override;
 
         void forceRefreshParameters();
@@ -97,9 +97,9 @@ namespace adaptone
 
     private:
         void pushInputGainUpdate();
-        void pushInputEqUpdate(std::size_t channel);
+        void pushInputEqUpdate(std::size_t channelIndex);
         void pushMixingGainUpdate();
-        void pushOutputEqUpdate(std::size_t channel);
+        void pushOutputEqUpdate(std::size_t channelIndex);
         void pushOutputGainUpdate();
         void pushOutputDelayUpdate();
 
@@ -171,9 +171,9 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setInputGain(std::size_t channel, double gain)
+    void CudaSignalProcessor<T>::setInputGain(std::size_t channelIndex, double gain)
     {
-        m_inputGainParameters.setGain(channel, static_cast<T>(gain));
+        m_inputGainParameters.setGain(channelIndex, static_cast<T>(gain));
         pushInputGainUpdate();
     }
 
@@ -185,23 +185,24 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setInputGraphicEqGains(std::size_t channel, const std::vector<double>& gains)
+    void CudaSignalProcessor<T>::setInputGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains)
     {
-        m_inputEqParameters.setGraphicEqGains(channel, gains);
-        pushInputEqUpdate(channel);
+        m_inputEqParameters.setGraphicEqGains(channelIndex, gains);
+        pushInputEqUpdate(channelIndex);
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setMixingGain(std::size_t inputChannel, std::size_t outputChannel, double gain)
+    void CudaSignalProcessor<T>::setMixingGain(std::size_t inputChannelIndex, std::size_t outputChannelIndex,
+        double gain)
     {
-        m_mixingGainParameters.setGain(inputChannel, outputChannel, static_cast<T>(gain));
+        m_mixingGainParameters.setGain(inputChannelIndex, outputChannelIndex, static_cast<T>(gain));
         pushMixingGainUpdate();
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setMixingGains(std::size_t outputChannel, const std::vector<double>& gains)
+    void CudaSignalProcessor<T>::setMixingGains(std::size_t outputChannelIndex, const std::vector<double>& gains)
     {
-        m_mixingGainParameters.setGains(outputChannel, std::vector<T>(gains.begin(), gains.end()));
+        m_mixingGainParameters.setGains(outputChannelIndex, std::vector<T>(gains.begin(), gains.end()));
         pushMixingGainUpdate();
     }
 
@@ -213,10 +214,10 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setOutputGraphicEqGains(std::size_t channel, const std::vector<double>& gains)
+    void CudaSignalProcessor<T>::setOutputGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains)
     {
-        m_outputEqParameters.setGraphicEqGains(channel, gains);
-        pushOutputEqUpdate(channel);
+        m_outputEqParameters.setGraphicEqGains(channelIndex, gains);
+        pushOutputEqUpdate(channelIndex);
     }
 
     template<class T>
@@ -232,9 +233,9 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setOutputGain(std::size_t channel, double gain)
+    void CudaSignalProcessor<T>::setOutputGain(std::size_t channelIndex, double gain)
     {
-        m_outputGainParameters.setGain(channel, static_cast<T>(gain));
+        m_outputGainParameters.setGain(channelIndex, static_cast<T>(gain));
         pushOutputGainUpdate();
     }
 
@@ -246,9 +247,9 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::setOutputDelay(std::size_t channel, std::size_t delay)
+    void CudaSignalProcessor<T>::setOutputDelay(std::size_t channelIndex, std::size_t delay)
     {
-        m_outputDelayParameters.setDelay(channel, delay);
+        m_outputDelayParameters.setDelay(channelIndex, delay);
         pushOutputDelayUpdate();
     }
 
@@ -363,15 +364,15 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::pushInputEqUpdate(std::size_t channel)
+    void CudaSignalProcessor<T>::pushInputEqUpdate(std::size_t channelIndex)
     {
-        m_updateFunctionQueue.push([&, channel]()
+        m_updateFunctionQueue.push([&, channelIndex]()
         {
-            return m_inputEqParameters.tryApplyingUpdate(channel, [&, channel]()
+            return m_inputEqParameters.tryApplyingUpdate(channelIndex, [&, channelIndex]()
             {
-                m_buffers.inputEqBuffers().update(channel,
-                    m_inputEqParameters.biquadCoefficients(channel).data(),
-                    m_inputEqParameters.d0(channel));
+                m_buffers.inputEqBuffers().update(channelIndex,
+                    m_inputEqParameters.biquadCoefficients(channelIndex).data(),
+                    m_inputEqParameters.d0(channelIndex));
             });
         });
     }
@@ -389,15 +390,15 @@ namespace adaptone
     }
 
     template<class T>
-    void CudaSignalProcessor<T>::pushOutputEqUpdate(std::size_t channel)
+    void CudaSignalProcessor<T>::pushOutputEqUpdate(std::size_t channelIndex)
     {
-        m_updateFunctionQueue.push([&, channel]()
+        m_updateFunctionQueue.push([&, channelIndex]()
         {
-            return m_outputEqParameters.tryApplyingUpdate(channel, [&, channel]()
+            return m_outputEqParameters.tryApplyingUpdate(channelIndex, [&, channelIndex]()
             {
-                m_buffers.outputEqBuffers().update(channel,
-                    m_outputEqParameters.biquadCoefficients(channel).data(),
-                    m_outputEqParameters.d0(channel));
+                m_buffers.outputEqBuffers().update(channelIndex,
+                    m_outputEqParameters.biquadCoefficients(channelIndex).data(),
+                    m_outputEqParameters.d0(channelIndex));
             });
         });
     }

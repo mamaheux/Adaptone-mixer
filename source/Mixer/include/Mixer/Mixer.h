@@ -4,6 +4,7 @@
 #include <Mixer/Configuration/Configuration.h>
 #include <Mixer/AudioInput/AudioInput.h>
 #include <Mixer/AudioOutput/AudioOutput.h>
+#include <Mixer/ChannelIdMapping.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
@@ -25,6 +26,7 @@ namespace adaptone
     {
         Configuration m_configuration;
         std::shared_ptr<Logger> m_logger;
+        std::shared_ptr<ChannelIdMapping> m_channelIdMapping;
 
         std::unique_ptr<AudioInput> m_audioInput;
         std::unique_ptr<AudioOutput> m_audioOutput;
@@ -51,15 +53,18 @@ namespace adaptone
 
     private:
         std::shared_ptr<Logger> createLogger();
+        std::shared_ptr<ChannelIdMapping> createChannelIdMapping();
 
         std::unique_ptr<AudioInput> createAudioInput();
         std::unique_ptr<AudioOutput> createAudioOutput();
 
-        std::shared_ptr<AnalysisDispatcher> createAnalysisDispatcher(std::shared_ptr<Logger> logger);
+        std::shared_ptr<AnalysisDispatcher> createAnalysisDispatcher(std::shared_ptr<Logger> logger,
+            std::shared_ptr<ChannelIdMapping> channelIdMapping);
         std::shared_ptr<SignalProcessor> createSignalProcessor(std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
 
         std::shared_ptr<ConnectionHandler> createConnectionHandler(std::shared_ptr<SignalProcessor> signalProcessor);
         std::shared_ptr<ApplicationMessageHandler> createApplicationMessageHandler(
+            std::shared_ptr<ChannelIdMapping> channelIdMapping,
             std::shared_ptr<SignalProcessor> signalProcessor);
         std::unique_ptr<ApplicationWebSocket> createApplicationWebSocket(std::shared_ptr<Logger> logger,
             std::shared_ptr<ConnectionHandler> connectionHandler,

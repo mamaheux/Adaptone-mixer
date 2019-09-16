@@ -61,7 +61,7 @@ namespace adaptone
         __device__ __host__ std::size_t frameCount();
         __device__ __host__ std::size_t frameSampleCount();
 
-        __host__ void update(std::size_t channel, const BiquadCoefficients<T>* data, double d0);
+        __host__ void update(std::size_t channelIndex, const BiquadCoefficients<T>* data, double d0);
     };
 
     template<class T>
@@ -159,14 +159,14 @@ namespace adaptone
     }
 
     template<class T>
-    inline __host__ void CudaEqBuffers<T>::update(std::size_t channel, const BiquadCoefficients<T>* data, double d0)
+    inline __host__ void CudaEqBuffers<T>::update(std::size_t channelIndex, const BiquadCoefficients<T>* data, double d0)
     {
-        cudaMemcpy(biquadCoefficients(channel),
+        cudaMemcpy(biquadCoefficients(channelIndex),
             data,
             filterCountPerChannel() * sizeof(BiquadCoefficients<T>),
             cudaMemcpyHostToDevice);
 
-        cudaMemcpy(m_d0 + channel, &d0, sizeof(T), cudaMemcpyHostToDevice);
+        cudaMemcpy(m_d0 + channelIndex, &d0, sizeof(T), cudaMemcpyHostToDevice);
     }
 }
 

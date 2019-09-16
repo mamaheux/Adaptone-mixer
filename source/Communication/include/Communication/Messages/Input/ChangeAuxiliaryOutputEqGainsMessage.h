@@ -11,15 +11,15 @@ namespace adaptone
         static constexpr std::size_t SeqId = 16;
 
     private:
-        std::size_t m_auxiliaryId;
+        std::size_t m_channelId;
         std::vector<double> m_gains;
 
     public:
         ChangeAuxiliaryOutputEqGainsMessage();
-        ChangeAuxiliaryOutputEqGainsMessage(std::size_t auxiliaryId, const std::vector<double>& gains);
+        ChangeAuxiliaryOutputEqGainsMessage(std::size_t channelId, const std::vector<double>& gains);
         ~ChangeAuxiliaryOutputEqGainsMessage() override;
 
-        std::size_t auxiliaryId() const;
+        std::size_t channelId() const;
         const std::vector<double>& gains() const;
 
         std::string toJson() const override;
@@ -27,9 +27,9 @@ namespace adaptone
         friend void from_json(const nlohmann::json& j, ChangeAuxiliaryOutputEqGainsMessage& o);
     };
 
-    inline std::size_t ChangeAuxiliaryOutputEqGainsMessage::auxiliaryId() const
+    inline std::size_t ChangeAuxiliaryOutputEqGainsMessage::channelId() const
     {
-        return m_auxiliaryId;
+        return m_channelId;
     }
 
     inline const std::vector<double>& ChangeAuxiliaryOutputEqGainsMessage::gains() const
@@ -45,7 +45,7 @@ namespace adaptone
 
     inline void to_json(nlohmann::json& j, const ChangeAuxiliaryOutputEqGainsMessage& o)
     {
-        nlohmann::json data({{ "auxiliaryId", o.m_auxiliaryId },
+        nlohmann::json data({{ "channelId", o.m_channelId },
             { "gains", o.m_gains }
         });
         j = nlohmann::json{{ "seqId", o.seqId() }, { "data", data }};
@@ -53,7 +53,7 @@ namespace adaptone
 
     inline void from_json(const nlohmann::json& j, ChangeAuxiliaryOutputEqGainsMessage& o)
     {
-        j.at("data").at("auxiliaryId").get_to(o.m_auxiliaryId);
+        j.at("data").at("channelId").get_to(o.m_channelId);
         j.at("data").at("gains").get_to(o.m_gains);
     }
 }

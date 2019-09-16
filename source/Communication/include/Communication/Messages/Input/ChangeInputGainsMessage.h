@@ -7,27 +7,70 @@
 
 namespace adaptone
 {
+    class ChannelGain
+    {
+        std::size_t m_channelId;
+        double m_gain;
+    public:
+        ChannelGain();
+        ChannelGain(std::size_t channelId, double gain);
+        virtual ~ChannelGain();
+
+        std::size_t channelId() const;
+        double gain() const;
+
+        friend void to_json(nlohmann::json& j, const ChannelGain& o);
+        friend void from_json(const nlohmann::json& j, ChannelGain& o);
+        friend bool operator==(const ChannelGain& l, const ChannelGain& r);
+    };
+
+    inline std::size_t ChannelGain::channelId() const
+    {
+        return m_channelId;
+    }
+
+    inline double ChannelGain::gain() const
+    {
+        return m_gain;
+    }
+
+    inline void to_json(nlohmann::json& j, const ChannelGain& o)
+    {
+        j = nlohmann::json{{ "channelId", o.m_channelId }, { "gain", o.m_gain }};
+    }
+
+    inline void from_json(const nlohmann::json& j, ChannelGain& o)
+    {
+        j.at("channelId").get_to(o.m_channelId);
+        j.at("gain").get_to(o.m_gain);
+    }
+
+    inline bool operator==(const ChannelGain& l, const ChannelGain& r)
+    {
+        return l.m_channelId == r.m_channelId && l.m_gain == r.m_gain;
+    }
+
     class ChangeInputGainsMessage : public ApplicationMessage
     {
     public:
         static constexpr std::size_t SeqId = 11;
 
     private:
-        std::vector<double> m_gains;
+        std::vector<ChannelGain> m_gains;
 
     public:
         ChangeInputGainsMessage();
-        ChangeInputGainsMessage(const std::vector<double>& gains);
+        ChangeInputGainsMessage(const std::vector<ChannelGain>& gains);
         ~ChangeInputGainsMessage() override;
 
-        const std::vector<double>& gains() const;
+        const std::vector<ChannelGain>& gains() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeInputGainsMessage& o);
         friend void from_json(const nlohmann::json& j, ChangeInputGainsMessage& o);
     };
 
-    inline const std::vector<double>& ChangeInputGainsMessage::gains() const
+    inline const std::vector<ChannelGain>& ChangeInputGainsMessage::gains() const
     {
         return m_gains;
     }

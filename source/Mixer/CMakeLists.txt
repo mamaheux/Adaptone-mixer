@@ -18,7 +18,7 @@ file(GLOB_RECURSE
 add_executable(Mixer
     ${source_files})
 
-set_property(TARGET Mixer PROPERTY CXX_STANDARD 14)
+set_property(TARGET Mixer PROPERTY CXX_STANDARD 17)
 
 add_custom_command(TARGET Mixer POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -28,7 +28,7 @@ add_library(Mixer_Private
     STATIC
     ${source_files})
 
-set_property(TARGET Mixer_Private PROPERTY CXX_STANDARD 14)
+set_property(TARGET Mixer_Private PROPERTY CXX_STANDARD 17)
 
 
 if (UNIX)

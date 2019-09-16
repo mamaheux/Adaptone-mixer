@@ -8,7 +8,7 @@ using namespace std;
 
 TEST(ChangeInputGainsMessageTests, constructor_shouldSetTheAttributes)
 {
-    const vector<double> gains{ 1, 10 };
+    const vector<ChannelGain> gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
     ChangeInputGainsMessage message(gains);
 
     EXPECT_EQ(message.seqId(), 11);
@@ -18,7 +18,7 @@ TEST(ChangeInputGainsMessageTests, constructor_shouldSetTheAttributes)
 
 TEST(ChangeInputGainsMessageTests, serialization_shouldSerializaToJson)
 {
-    const vector<double> gains{ 1, 10 };
+    const vector<ChannelGain> gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
     ChangeInputGainsMessage message(gains);
 
     json serializedMessage = message;
@@ -35,7 +35,16 @@ TEST(ChangeInputGainsMessageTests, deserialization_shouldDeserializeFromJson)
     string serializedMessage = "{"
         "  \"seqId\": 11,"
         "  \"data\": {"
-        "    \"gains\": [1.0, 10.0, 100.0]"
+        "    \"gains\": ["
+        "      {"
+        "         \"channelId\": 1,"
+        "         \"gain\" : 1"
+        "      },"
+        "      {"
+        "        \"channelId\": 2,"
+        "        \"gain\" : 10"
+        "      }"
+        "    ]"
         "  }"
         "}";
 
@@ -43,5 +52,5 @@ TEST(ChangeInputGainsMessageTests, deserialization_shouldDeserializeFromJson)
 
     EXPECT_EQ(deserializedMessage.seqId(), 11);
 
-    EXPECT_EQ(deserializedMessage.gains(), vector<double>({ 1, 10, 100 }));
+    EXPECT_EQ(deserializedMessage.gains(), vector<ChannelGain>({ ChannelGain(1, 1), ChannelGain(2, 10) }));
 }

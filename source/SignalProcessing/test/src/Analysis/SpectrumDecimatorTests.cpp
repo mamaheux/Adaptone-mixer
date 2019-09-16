@@ -81,7 +81,7 @@ TEST(SpectrumDecimatorTests, getDecimatedAmplitudes_shouldReturnTheDecimatedAmpl
     positiveFrequencyAmplitudes = arma::join_vert(positiveFrequencyAmplitudes, 1000 * arma::ones<arma::fvec>(485));
     positiveFrequencyAmplitudes = arma::join_vert(positiveFrequencyAmplitudes, 5000 * arma::ones<arma::fvec>(1259));
 
-    std::vector<SpectrumPoint> decimatedAmplitudes =
+    vector<SpectrumPoint> decimatedAmplitudes =
         spectrumDecimator.getDecimatedAmplitudes(positiveFrequencyAmplitudes);
 
     EXPECT_EQ(decimatedAmplitudes.size(), 8);
@@ -124,7 +124,7 @@ TEST(SpectrumDecimatorTests, getDecimatedAmplitudes_performance)
     arma::fvec positiveFrequencyAmplitudes = arma::ones<arma::fvec>(SpectrumSize);
     for (size_t i = 0; i < IterationCount; i++)
     {
-        std::vector<SpectrumPoint> decimatedAmplitudes =
+        vector<SpectrumPoint> decimatedAmplitudes =
             spectrumDecimator.getDecimatedAmplitudes(positiveFrequencyAmplitudes);
     }
 
