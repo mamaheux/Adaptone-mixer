@@ -8,6 +8,7 @@ include_directories(../3rdParty/fftw/build/include)
 include_directories(../Utils/include)
 include_directories(../SignalProcessing/include)
 include_directories(../Communication/include)
+include_directories(../Uniformization/include)
 include_directories(include)
 
 file(GLOB_RECURSE
@@ -36,6 +37,7 @@ if (UNIX)
         Utils
         SignalProcessing
         Communication
+        Uniformization
         asound
         pthread
         armadillo
@@ -46,6 +48,7 @@ if (UNIX)
         Utils
         SignalProcessing
         Communication
+        Uniformization
         asound
         pthread
         armadillo
@@ -56,6 +59,7 @@ else (UNIX)
         Utils
         SignalProcessing
         Communication
+        Uniformization
         armadillo
         ${openblas_LIBRARY}
         gfortran)
@@ -64,6 +68,7 @@ else (UNIX)
         Utils
         SignalProcessing
         Communication
+        Uniformization
         armadillo
         ${openblas_LIBRARY}
         gfortran)
