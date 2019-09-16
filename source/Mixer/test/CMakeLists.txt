@@ -9,6 +9,8 @@ include_directories(../../3rdParty/googletest/googlemock/include)
 include_directories(../../3rdParty/fftw/build/include)
 include_directories(../../Utils/include)
 include_directories(../../SignalProcessing/include)
+include_directories(../../Communication/include)
+include_directories(../../Uniformization/include)
 include_directories(../include)
 include_directories(include)
 

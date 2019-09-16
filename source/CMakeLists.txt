@@ -48,6 +48,7 @@ add_subdirectory(Mixer)
 add_subdirectory(Utils)
 add_subdirectory(SignalProcessing)
 add_subdirectory(Communication)
+add_subdirectory(Uniformization)
 
 set_target_properties(gmock PROPERTIES FOLDER 3rdParty)
 set_target_properties(gmock_main PROPERTIES FOLDER 3rdParty)
