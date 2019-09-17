@@ -5,6 +5,7 @@
 #include <Mixer/Configuration/AudioConfiguration.h>
 #include <Mixer/Configuration/AudioInputConfiguration.h>
 #include <Mixer/Configuration/AudioOutputConfiguration.h>
+#include <Mixer/Configuration/UniformizationConfiguration.h>
 #include <Mixer/Configuration/WebSocketConfiguration.h>
 
 #include <Utils/Configuration/Properties.h>
@@ -18,6 +19,7 @@ namespace adaptone
         AudioConfiguration m_audioConfiguration;
         AudioInputConfiguration m_audioInputConfiguration;
         AudioOutputConfiguration m_audioOutputConfiguration;
+        UniformizationConfiguration m_uniformizationConfiguration;
         WebSocketConfiguration m_webSocketConfiguration;
 
     public:
@@ -28,6 +30,7 @@ namespace adaptone
         const AudioConfiguration& audio() const;
         const AudioInputConfiguration& audioInput() const;
         const AudioOutputConfiguration& audioOutput() const;
+        const UniformizationConfiguration& uniformization() const;
         const WebSocketConfiguration webSocket() const;
     };
 
@@ -49,6 +52,11 @@ namespace adaptone
     inline const AudioOutputConfiguration& Configuration::audioOutput() const
     {
         return m_audioOutputConfiguration;
+    }
+
+    inline const UniformizationConfiguration& Configuration::uniformization() const
+    {
+        return m_uniformizationConfiguration;
     }
 
     inline const WebSocketConfiguration Configuration::webSocket() const
