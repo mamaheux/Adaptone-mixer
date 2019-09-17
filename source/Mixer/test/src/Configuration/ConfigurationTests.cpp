@@ -32,6 +32,8 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.output.format", "signed_8" },
         { "audio.output.filename", "output.raw" },
 
+        //TODO add uniformization properties
+
         { "web_socket.endpoint", "^/echo/?$" },
         { "web_socket.port", "8080" }
     }));
@@ -58,6 +60,8 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audioOutput().type(), AudioOutputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.audioOutput().filename(), "output.raw");
+
+    //TODO add uniformization expect calls
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
     EXPECT_EQ(configuration.webSocket().port(), 8080);

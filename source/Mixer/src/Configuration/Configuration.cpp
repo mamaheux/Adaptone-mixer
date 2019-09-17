@@ -7,6 +7,7 @@ Configuration::Configuration(const Properties& properties) :
     m_audioConfiguration(properties),
     m_audioInputConfiguration(properties),
     m_audioOutputConfiguration(properties),
+    m_uniformizationConfiguration(properties),
     m_webSocketConfiguration(properties)
 {
 }
