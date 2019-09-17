@@ -105,7 +105,7 @@ bool AlsaPcmDevice::read(PcmAudioFrame& frame)
     }
 
     snd_pcm_uframes_t periodSize = static_cast<snd_pcm_uframes_t>(m_frameSampleCount);
-    int err = snd_pcm_readi(m_pcmHandle.get(), &frame[0], periodSize);
+    int err = snd_pcm_readi(m_pcmHandle.get(), frame.data(), periodSize);
     if (err == -EPIPE)
     {
         // EPIPE means overrun

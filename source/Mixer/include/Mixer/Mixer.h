@@ -12,6 +12,8 @@
 #include <SignalProcessing/SignalProcessor.h>
 #include <SignalProcessing/AnalysisDispatcher.h>
 
+#include <Uniformization/SignalOverride/GenericSignalOverride.h>
+
 #include <Communication/ApplicationWebSocket.h>
 #include <Communication/Handlers/ConnectionHandler.h>
 #include <Communication/Handlers/ApplicationMessageHandler.h>
@@ -33,6 +35,7 @@ namespace adaptone
 
         std::shared_ptr<AnalysisDispatcher> m_analysisDispatcher;
         std::shared_ptr<SignalProcessor> m_signalProcessor;
+        std::shared_ptr<GenericSignalOverride> m_outputSignalOverride;
 
         std::shared_ptr<ConnectionHandler> m_connectionHandler;
         std::shared_ptr<ApplicationMessageHandler> m_applicationMessageHandler;
@@ -61,6 +64,7 @@ namespace adaptone
         std::shared_ptr<AnalysisDispatcher> createAnalysisDispatcher(std::shared_ptr<Logger> logger,
             std::shared_ptr<ChannelIdMapping> channelIdMapping);
         std::shared_ptr<SignalProcessor> createSignalProcessor(std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
+        std::shared_ptr<GenericSignalOverride> createOutputSignalOverride();
 
         std::shared_ptr<ConnectionHandler> createConnectionHandler(std::shared_ptr<SignalProcessor> signalProcessor);
         std::shared_ptr<ApplicationMessageHandler> createApplicationMessageHandler(

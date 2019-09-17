@@ -22,7 +22,7 @@ public:
     MOCK_METHOD1(logMessage, void(const string&));
 };
 
-TEST(LoggerTests, log_shouldCallTheOverridedMethod)
+TEST(LoggerTests, log_shouldCallTheOverridenMethod)
 {
     LoggerMock logger;
 
