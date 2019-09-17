@@ -53,6 +53,7 @@ namespace adaptone
         std::size_t channelCount() const;
         std::size_t sampleCount() const;
 
+        uint8_t* data();
         const uint8_t* data() const;
         std::size_t size() const;
 
@@ -60,6 +61,10 @@ namespace adaptone
         PcmAudioFrame& operator=(PcmAudioFrame&& other);
 
         uint8_t& operator[](std::size_t i);
+        uint8_t operator[](std::size_t i) const;
+
+        void clear();
+        void writeChannel(std::size_t thisChannelIndex, const PcmAudioFrame& other, std::size_t otherChannelIndex);
 
         friend std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame);
         friend std::ostream& operator<<(std::ostream& stream, const PcmAudioFrame& frame);
@@ -90,6 +95,11 @@ namespace adaptone
         return m_sampleCount;
     }
 
+    inline uint8_t* PcmAudioFrame::data()
+    {
+        return m_data;
+    }
+
     inline const uint8_t* PcmAudioFrame::data() const
     {
         return m_data;
@@ -103,6 +113,16 @@ namespace adaptone
     inline uint8_t& PcmAudioFrame::operator[](std::size_t i)
     {
         return m_data[i];
+    }
+
+    inline uint8_t PcmAudioFrame::operator[](std::size_t i) const
+    {
+        return m_data[i];
+    }
+
+    inline void PcmAudioFrame::clear()
+    {
+        std::memset(m_data, 0, size());
     }
 
     inline std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame)

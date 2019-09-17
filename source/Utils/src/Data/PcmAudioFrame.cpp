@@ -69,16 +69,19 @@ PcmAudioFrame::~PcmAudioFrame()
 
 PcmAudioFrame& PcmAudioFrame::operator=(const PcmAudioFrame& other)
 {
-    if (m_data != nullptr)
+    if (m_format != other.m_format || m_channelCount != other.m_channelCount || m_sampleCount != other.m_sampleCount)
     {
-        delete[] m_data;
+        if (m_data != nullptr)
+        {
+            delete[] m_data;
+        }
+
+        m_format = other.m_format;
+        m_channelCount = other.m_channelCount;
+        m_sampleCount = other.m_sampleCount;
+
+        m_data = new uint8_t[size()];
     }
-
-    m_format = other.m_format;
-    m_channelCount = other.m_channelCount;
-    m_sampleCount = other.m_sampleCount;
-
-    m_data = new uint8_t[size()];
     memcpy(m_data, other.m_data, size());
 
     return *this;
@@ -101,4 +104,24 @@ PcmAudioFrame& PcmAudioFrame::operator=(PcmAudioFrame&& other)
     other.m_data = nullptr;
 
     return *this;
+}
+
+void PcmAudioFrame::writeChannel(size_t thisChannelIndex, const PcmAudioFrame& other, size_t otherChannelIndex)
+{
+    if (other.m_format != m_format || other.m_sampleCount != m_sampleCount)
+    {
+        THROW_INVALID_VALUE_EXCEPTION("format, sampleCount", "");
+    }
+
+    size_t sampleSize = formatSize(m_format);
+    for (size_t i = 0; i < other.m_sampleCount; i++)
+    {
+        size_t thisDataIndex = (i * m_channelCount + thisChannelIndex) * sampleSize;
+        size_t otherDataIndex = (i * other.m_channelCount + otherChannelIndex) * sampleSize;
+
+        for (size_t j = 0; j < sampleSize; j++)
+        {
+            m_data[thisDataIndex + j] = other.m_data[otherDataIndex + j];
+        }
+    }
 }

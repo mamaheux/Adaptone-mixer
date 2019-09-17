@@ -1,4 +1,0 @@
-#ifndef UNIFORMIZATION_DUMMY_H
-#define UNIFORMIZATION_DUMMY_H
-
-#endif

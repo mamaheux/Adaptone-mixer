@@ -602,7 +602,7 @@ namespace adaptone
     template<class T>
     inline __host__ void CudaSignalProcessorBuffers<T>::copyOutputFrame(PcmAudioFrame& frame)
     {
-        cudaMemcpy(&frame[0], currentOutputPcmFrame(), frame.size(), cudaMemcpyDeviceToHost);
+        cudaMemcpy(frame.data(), currentOutputPcmFrame(), frame.size(), cudaMemcpyDeviceToHost);
     }
 
     template<class T>

@@ -13,6 +13,8 @@
 
 #endif
 
+#include <Uniformization/SignalOverride/PassthroughSignalOverride.h>
+
 #include <Utils/Exception/NotSupportedException.h>
 #include <Utils/Logger/ConsoleLogger.h>
 #include <Utils/Logger/FileLogger.h>
@@ -30,6 +32,7 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
 
     shared_ptr<AnalysisDispatcher> analysisDispatcher = createAnalysisDispatcher(logger, channelIdMapping);
     shared_ptr<SignalProcessor> signalProcessor = createSignalProcessor(analysisDispatcher);
+    shared_ptr<GenericSignalOverride> outputSignalOverride = createOutputSignalOverride();
 
     shared_ptr<ConnectionHandler> connectionHandler = createConnectionHandler(signalProcessor);
     shared_ptr<ApplicationMessageHandler> applicationMessageHandler = createApplicationMessageHandler(channelIdMapping,
@@ -45,8 +48,9 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     m_audioInput = move(audioInput);
     m_audioOutput = move(audioOutput);
 
-    m_signalProcessor = signalProcessor;
     m_analysisDispatcher = analysisDispatcher;
+    m_signalProcessor = signalProcessor;
+    m_outputSignalOverride = outputSignalOverride;
 
     m_connectionHandler = connectionHandler;
     m_applicationMessageHandler = applicationMessageHandler;
@@ -184,6 +188,14 @@ shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDisp
         analysisDispatcher);
 }
 
+shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
+{
+    vector<unique_ptr<SpecificSignalOverride>> signalOverrides;
+    signalOverrides.emplace_back(make_unique<PassthroughSignalOverride>());
+
+    return make_shared<GenericSignalOverride>(move(signalOverrides));
+}
+
 shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalProcessor> signalProcessor)
 {
     return make_shared<MixerConnectionHandler>(signalProcessor,
@@ -216,7 +228,8 @@ void Mixer::processingRun()
         {
             const PcmAudioFrame& inputFrame = m_audioInput->read();
             const PcmAudioFrame& outputFrame = m_signalProcessor->process(inputFrame);
-            m_audioOutput->write(outputFrame);
+            const PcmAudioFrame& overridenOutputFrame = m_outputSignalOverride->override(outputFrame);
+            m_audioOutput->write(overridenOutputFrame);
         }
     }
     catch (exception& ex)
