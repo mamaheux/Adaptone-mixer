@@ -8,12 +8,14 @@
 #include <Utils/Data/PcmAudioFrame.h>
 #include <Utils/TypeTraits.h>
 
+#include <math.h>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
 
 namespace adaptone
 {
+
     template<class T>
     inline T round(T value)
     {
@@ -23,13 +25,13 @@ namespace adaptone
     template<>
     inline float round(float value)
     {
-        return round(value);
+        return floor(value + 0.5);
     }
 
     template<>
     inline double round(double value)
     {
-        return round(value);
+        return floor(value + 0.5);
     }
 
     template<class T>
@@ -47,6 +49,18 @@ namespace adaptone
         return value;
     }
 
+    template<>
+    inline float saturateOutput(float value, float min, float max)
+    {
+
+        float x = (value - min) / (max - min);
+        if (x < 0)
+            x = 0;
+        if (x > 1)
+            x = 1;
+
+        return x * (max - min) + min;
+    }
 
     template<class T, class PcmT>
     void arrayToSignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
