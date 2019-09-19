@@ -2,10 +2,13 @@ cmake_minimum_required(VERSION 2.6.4)
 
 project(Uniformization)
 
+find_package(Boost COMPONENTS system REQUIRED)
+
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../3rdParty/armadillo-code/include)
 include_directories(../Utils/include)
+include_directories(${Boost_INCLUDE_DIR})
 include_directories(include)
 
 file(GLOB_RECURSE
@@ -23,7 +26,8 @@ target_link_libraries(Uniformization
     Utils
     armadillo
     ${openblas_LIBRARY}
-    gfortran)
+    gfortran
+    ${Boost_LIBRARIES})
 
 assign_source_group(${source_files})
 
