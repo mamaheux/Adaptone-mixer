@@ -114,3 +114,6 @@ build/
 fftw3.pc
 tools/fftw-wisdom
 tools/fftw-wisdom.1
+doc/fftw3.info
+doc/fftw3.info-1
+doc/fftw3.info-2
