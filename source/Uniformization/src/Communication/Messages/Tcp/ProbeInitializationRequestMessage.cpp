@@ -21,6 +21,17 @@ ProbeInitializationRequestMessage::~ProbeInitializationRequestMessage()
 {
 }
 
+ProbeInitializationRequestMessage ProbeInitializationRequestMessage::fromBuffer(NetworkBufferView buffer,
+    size_t messageSize)
+{
+    verifyId(buffer, Id);
+    verifyMessageSize(messageSize, 16);
+
+    uint32_t* data = reinterpret_cast<uint32_t*>(buffer.data() + 8);
+    return ProbeInitializationRequestMessage(boost::endian::big_to_native(data[0]),
+        parseFormat(boost::endian::big_to_native(data[1])));
+}
+
 void ProbeInitializationRequestMessage::serializePayload(NetworkBufferView buffer)
 {
     uint32_t* data = reinterpret_cast<uint32_t*>(buffer.data());

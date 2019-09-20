@@ -28,6 +28,8 @@ namespace adaptone
         const std::complex<float>* fftValues() const;
         std::size_t fftValueCount() const;
 
+        static FftResponseMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+
     protected:
         void serializePayload(NetworkBufferView buffer) override;
     };

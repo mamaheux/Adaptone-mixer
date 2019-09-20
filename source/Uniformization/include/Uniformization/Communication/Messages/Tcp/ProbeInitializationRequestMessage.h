@@ -23,6 +23,8 @@ namespace adaptone
         uint32_t sampleFrequency() const;
         PcmAudioFrame::Format format() const;
 
+        static ProbeInitializationRequestMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+
     protected:
         void serializePayload(NetworkBufferView buffer) override;
 

@@ -13,6 +13,8 @@ namespace adaptone
         ProbeDiscoveryRequestMessage();
         ~ProbeDiscoveryRequestMessage() override;
 
+        static ProbeDiscoveryRequestMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+
     protected:
         void serialize(NetworkBufferView buffer) override;
     };

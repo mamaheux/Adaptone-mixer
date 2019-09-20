@@ -48,3 +48,57 @@ TEST(FftRequestMessageTests, toBuffer_shouldSerializeTheMessage)
     EXPECT_EQ(buffer.data()[13], 0);
     EXPECT_EQ(buffer.data()[14], 5);
 }
+
+TEST(FftRequestMessageTests, fromBuffer_wrongId_shouldThrowInvalidValueException)
+{
+    constexpr size_t MessageSize = 15;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 1,
+        0, 0, 0, 7,
+        1, 2, 3, 0,
+        4, 0, 5
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    EXPECT_THROW(FftRequestMessage::fromBuffer(buffer, MessageSize), InvalidValueException);
+}
+
+TEST(FftRequestMessageTests, fromBuffer_wrongMessageLength_shouldThrowInvalidValueException)
+{
+    constexpr size_t MessageSize = 15;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 7,
+        0, 0, 0, 7,
+        1, 2, 3, 0,
+        4, 0, 5
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    EXPECT_THROW(FftRequestMessage::fromBuffer(buffer, MessageSize + 1), InvalidValueException);
+}
+
+TEST(FftRequestMessageTests, fromBuffer_shouldDeserialize)
+{
+    constexpr size_t MessageSize = 15;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 7,
+        0, 0, 0, 7,
+        1, 2, 3, 0,
+        4, 0, 5
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    FftRequestMessage message = FftRequestMessage::fromBuffer(buffer, MessageSize);
+
+    EXPECT_EQ(message.id(), 7);
+    EXPECT_EQ(message.fullSize(), MessageSize);
+
+    EXPECT_EQ(message.hours(), 1);
+    EXPECT_EQ(message.minutes(), 2);
+    EXPECT_EQ(message.seconds(), 3);
+    EXPECT_EQ(message.milliseconds(), 4);
+    EXPECT_EQ(message.fftId(), 5);
+}

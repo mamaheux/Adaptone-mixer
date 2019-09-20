@@ -21,6 +21,8 @@ namespace adaptone
         bool isCompatible() const;
         bool isMaster() const;
 
+        static ProbeInitializationResponseMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+
     protected:
         void serializePayload(NetworkBufferView buffer) override;
     };

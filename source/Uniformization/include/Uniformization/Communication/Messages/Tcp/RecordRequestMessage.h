@@ -30,6 +30,8 @@ namespace adaptone
         uint16_t duration() const;
         uint8_t recordId() const;
 
+        static RecordRequestMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+
     protected:
         void serializePayload(NetworkBufferView buffer) override;
     };

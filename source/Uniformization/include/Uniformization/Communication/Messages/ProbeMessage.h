@@ -27,6 +27,10 @@ namespace adaptone
 
     protected:
         virtual void serialize(NetworkBufferView buffer) = 0;
+
+        static void verifyId(NetworkBufferView buffer, uint32_t id);
+        static void verifyMessageSize(std::size_t messageSize, std::size_t validMessageSize);
+        static void verifyMessageSizeAtLeast(std::size_t messageSize, std::size_t validMessageSize);
     };
 
     inline uint32_t ProbeMessage::id()
@@ -49,6 +53,30 @@ namespace adaptone
         *reinterpret_cast<uint32_t*>(buffer.data()) = boost::endian::native_to_big(m_id);
 
         serialize(buffer.view(sizeof(m_id)));
+    }
+
+    inline void ProbeMessage::verifyId(NetworkBufferView buffer, uint32_t id)
+    {
+        if (boost::endian::big_to_native(*reinterpret_cast<uint32_t*>(buffer.data())) != id)
+        {
+            THROW_INVALID_VALUE_EXCEPTION("Message id", "");
+        }
+    }
+
+    inline void ProbeMessage::verifyMessageSize(std::size_t messageSize, std::size_t validMessageSize)
+    {
+        if (messageSize != validMessageSize)
+        {
+            THROW_INVALID_VALUE_EXCEPTION("Message size", "");
+        }
+    }
+
+    inline void ProbeMessage::verifyMessageSizeAtLeast(std::size_t messageSize, std::size_t minimumMessageSize)
+    {
+        if (messageSize < minimumMessageSize)
+        {
+            THROW_INVALID_VALUE_EXCEPTION("Message size", "");
+        }
     }
 }
 

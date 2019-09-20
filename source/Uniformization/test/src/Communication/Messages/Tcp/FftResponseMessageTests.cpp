@@ -39,3 +39,55 @@ TEST(FftResponseMessageTests, toBuffer_shouldSerializeTheMessage)
     EXPECT_EQ(*reinterpret_cast<complex<float>*>(buffer.data() + 18), FftValues[1]);
     EXPECT_EQ(*reinterpret_cast<complex<float>*>(buffer.data() + 26), FftValues[2]);
 }
+
+TEST(FftResponseMessageTests, fromBuffer_wrongId_shouldThrowInvalidValueException)
+{
+    constexpr size_t MessageSize = 16;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 1,
+        0, 0, 0, 8,
+        1, 2, 3, 0,
+        4, 0, 5, 6
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    EXPECT_THROW(FftResponseMessage::fromBuffer(buffer, MessageSize), InvalidValueException);
+}
+
+TEST(FftResponseMessageTests, fromBuffer_wrongMessageLength_shouldThrowInvalidValueException)
+{
+    constexpr size_t MessageSize = 10;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 8,
+        0, 0, 0, 2,
+        0, 1
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    EXPECT_THROW(FftResponseMessage::fromBuffer(buffer, MessageSize - 1), InvalidValueException);
+}
+
+TEST(FftResponseMessageTests, fromBuffer_shouldDeserialize)
+{
+    constexpr size_t MessageSize = 18;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 8,
+        0, 0, 0, 10,
+        0, 1, 0, 0,
+        0, 0, 0, 0,
+        0, 0
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    FftResponseMessage message = FftResponseMessage::fromBuffer(buffer, MessageSize);
+
+    EXPECT_EQ(message.id(), 8);
+    EXPECT_EQ(message.fullSize(), MessageSize);
+
+    EXPECT_EQ(message.fftId(), 1);
+    EXPECT_EQ(message.fftValues(), reinterpret_cast<complex<float>*>(messageData + 10));
+    EXPECT_EQ(message.fftValueCount(), 1);
+}

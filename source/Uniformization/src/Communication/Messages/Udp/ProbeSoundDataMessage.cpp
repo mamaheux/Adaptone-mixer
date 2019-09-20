@@ -23,6 +23,22 @@ ProbeSoundDataMessage::~ProbeSoundDataMessage()
 {
 }
 
+ProbeSoundDataMessage ProbeSoundDataMessage::fromBuffer(NetworkBufferView buffer, size_t messageSize)
+{
+    constexpr size_t MinimumSize = 17;
+    verifyId(buffer, Id);
+    verifyMessageSizeAtLeast(messageSize, MinimumSize);
+
+    return ProbeSoundDataMessage(boost::endian::big_to_native(*reinterpret_cast<uint16_t*>(buffer.data() + 8)),
+        buffer.data()[10],
+        buffer.data()[11],
+        buffer.data()[12],
+        boost::endian::big_to_native(*reinterpret_cast<uint16_t*>(buffer.data() + 13)),
+        boost::endian::big_to_native(*reinterpret_cast<uint16_t*>(buffer.data() + 15)),
+        buffer.data() + MinimumSize,
+        messageSize - MinimumSize);
+}
+
 void ProbeSoundDataMessage::serializePayload(NetworkBufferView buffer)
 {
     *reinterpret_cast<uint16_t*>(buffer.data()) = boost::endian::native_to_big(m_soundDataId);

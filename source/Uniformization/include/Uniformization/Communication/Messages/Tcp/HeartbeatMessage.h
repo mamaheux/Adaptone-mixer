@@ -13,6 +13,8 @@ namespace adaptone
         HeartbeatMessage();
         ~HeartbeatMessage() override;
 
+        static HeartbeatMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+
     protected:
         void serialize(NetworkBufferView buffer) override;
     };

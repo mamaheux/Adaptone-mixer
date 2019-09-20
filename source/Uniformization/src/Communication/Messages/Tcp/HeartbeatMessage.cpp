@@ -12,6 +12,14 @@ HeartbeatMessage::~HeartbeatMessage()
 {
 }
 
+HeartbeatMessage HeartbeatMessage::fromBuffer(NetworkBufferView buffer, size_t messageSize)
+{
+    verifyId(buffer, Id);
+    verifyMessageSize(messageSize, 4);
+
+    return HeartbeatMessage();
+}
+
 void HeartbeatMessage::serialize(NetworkBufferView buffer)
 {
 }

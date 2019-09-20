@@ -293,3 +293,54 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_double_shouldSerializeTheM
     EXPECT_EQ(buffer.data()[14], 0);
     EXPECT_EQ(buffer.data()[15], 11);
 }
+
+TEST(ProbeInitializationRequestMessageTests, fromBuffer_wrongId_shouldThrowInvalidValueException)
+{
+    constexpr size_t MessageSize = 16;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 1,
+        0, 0, 0, 8,
+        0, 0, 0xAC, 0x44,
+        0, 0, 0, 11
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    EXPECT_THROW(ProbeInitializationRequestMessage::fromBuffer(buffer, MessageSize), InvalidValueException);
+}
+
+TEST(ProbeInitializationRequestMessageTests, fromBuffer_wrongMessageLength_shouldThrowInvalidValueException)
+{
+    constexpr size_t MessageSize = 16;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 2,
+        0, 0, 0, 8,
+        0, 0, 0xAC, 0x44,
+        0, 0, 0, 11
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    EXPECT_THROW(ProbeInitializationRequestMessage::fromBuffer(buffer, MessageSize - 1), InvalidValueException);
+}
+
+TEST(ProbeInitializationRequestMessageTests, fromBuffer_shouldDeserialize)
+{
+    constexpr size_t MessageSize = 16;
+    uint8_t messageData[MessageSize] =
+    {
+        0, 0, 0, 2,
+        0, 0, 0, 8,
+        0, 0, 0xAC, 0x44,
+        0, 0, 0, 11
+    };
+    NetworkBufferView buffer(messageData, MessageSize);
+
+    ProbeInitializationRequestMessage message = ProbeInitializationRequestMessage::fromBuffer(buffer, MessageSize);
+
+    EXPECT_EQ(message.id(), 2);
+    EXPECT_EQ(message.fullSize(), MessageSize);
+
+    EXPECT_EQ(message.sampleFrequency(), 44100);
+    EXPECT_EQ(message.format(), PcmAudioFrame::Format::Double);
+}

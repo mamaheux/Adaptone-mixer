@@ -27,6 +27,8 @@ namespace adaptone
         uint16_t milliseconds() const;
         uint16_t fftId() const;
 
+        static FftRequestMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+
     protected:
         void serializePayload(NetworkBufferView buffer) override;
     };

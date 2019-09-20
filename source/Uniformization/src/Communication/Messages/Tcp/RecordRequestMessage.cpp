@@ -20,6 +20,19 @@ RecordRequestMessage::~RecordRequestMessage()
 {
 }
 
+RecordRequestMessage RecordRequestMessage::fromBuffer(NetworkBufferView buffer, size_t messageSize)
+{
+    verifyId(buffer, Id);
+    verifyMessageSize(messageSize, 16);
+
+    return RecordRequestMessage(buffer.data()[8],
+        buffer.data()[9],
+        buffer.data()[10],
+        boost::endian::big_to_native(*reinterpret_cast<uint16_t*>(buffer.data() + 11)),
+        boost::endian::big_to_native(*reinterpret_cast<uint16_t*>(buffer.data() + 13)),
+        buffer.data()[15]);
+}
+
 void RecordRequestMessage::serializePayload(NetworkBufferView buffer)
 {
     buffer.data()[0] = m_hours;

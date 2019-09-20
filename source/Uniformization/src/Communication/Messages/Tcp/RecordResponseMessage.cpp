@@ -17,6 +17,17 @@ RecordResponseMessage::~RecordResponseMessage()
 {
 }
 
+RecordResponseMessage RecordResponseMessage::fromBuffer(NetworkBufferView buffer, size_t messageSize)
+{
+    constexpr size_t MinimumSize = 9;
+    verifyId(buffer, Id);
+    verifyMessageSizeAtLeast(messageSize, MinimumSize);
+
+    return RecordResponseMessage(buffer.data()[8],
+        buffer.data() + MinimumSize,
+        messageSize - MinimumSize);
+}
+
 void RecordResponseMessage::serializePayload(NetworkBufferView buffer)
 {
     buffer.data()[0] = m_recordId;

@@ -12,6 +12,14 @@ ProbeDiscoveryResponseMessage::~ProbeDiscoveryResponseMessage()
 {
 }
 
+ProbeDiscoveryResponseMessage ProbeDiscoveryResponseMessage::fromBuffer(NetworkBufferView buffer, size_t messageSize)
+{
+    verifyId(buffer, Id);
+    verifyMessageSize(messageSize, 4);
+
+    return ProbeDiscoveryResponseMessage();
+}
+
 void ProbeDiscoveryResponseMessage::serialize(NetworkBufferView buffer)
 {
 }
