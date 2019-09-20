@@ -3,7 +3,7 @@
 using namespace adaptone;
 using namespace std;
 
-NetworkBufferView::NetworkBufferView(uint8_t* data, std::size_t size) : m_data(data), m_size(size)
+NetworkBufferView::NetworkBufferView(uint8_t* data, size_t size) : m_data(data), m_size(size)
 {
 
 }

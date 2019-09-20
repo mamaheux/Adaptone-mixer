@@ -3,7 +3,7 @@
 using namespace adaptone;
 using namespace std;
 
-PayloadMessage::PayloadMessage(uint32_t id, std::size_t payloadSize) :
+PayloadMessage::PayloadMessage(uint32_t id, size_t payloadSize) :
     ProbeMessage(id, payloadSize + sizeof(m_payloadSize)), m_payloadSize(payloadSize)
 {
 }
