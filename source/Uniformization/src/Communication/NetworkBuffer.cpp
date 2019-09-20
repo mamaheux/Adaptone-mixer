@@ -5,7 +5,10 @@ using namespace std;
 
 NetworkBufferView::NetworkBufferView(uint8_t* data, size_t size) : m_data(data), m_size(size)
 {
+}
 
+NetworkBufferView::NetworkBufferView(NetworkBuffer& buffer) : m_data(buffer.data()), m_size(buffer.size())
+{
 }
 
 NetworkBufferView::~NetworkBufferView()

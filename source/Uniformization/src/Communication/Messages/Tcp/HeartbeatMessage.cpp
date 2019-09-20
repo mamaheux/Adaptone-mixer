@@ -12,6 +12,6 @@ HeartbeatMessage::~HeartbeatMessage()
 {
 }
 
-void HeartbeatMessage::serialize(NetworkBufferView& buffer)
+void HeartbeatMessage::serialize(NetworkBufferView buffer)
 {
 }

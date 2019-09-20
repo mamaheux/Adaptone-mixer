@@ -23,10 +23,10 @@ namespace adaptone
         uint32_t id();
         std::size_t fullSize();
 
-        void toBuffer(NetworkBuffer& buffer);
+        void toBuffer(NetworkBufferView buffer);
 
     protected:
-        virtual void serialize(NetworkBufferView& buffer) = 0;
+        virtual void serialize(NetworkBufferView buffer) = 0;
     };
 
     inline uint32_t ProbeMessage::id()
@@ -39,7 +39,7 @@ namespace adaptone
         return m_fullSize;
     }
 
-    inline void ProbeMessage::toBuffer(NetworkBuffer& buffer)
+    inline void ProbeMessage::toBuffer(NetworkBufferView buffer)
     {
         if (buffer.size() < m_fullSize)
         {
@@ -48,8 +48,7 @@ namespace adaptone
 
         *reinterpret_cast<uint32_t*>(buffer.data()) = boost::endian::native_to_big(m_id);
 
-        NetworkBufferView view = buffer.view(sizeof(m_id));
-        serialize(view);
+        serialize(buffer.view(sizeof(m_id)));
     }
 }
 

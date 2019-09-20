@@ -12,6 +12,6 @@ ProbeDiscoveryRequestMessage::~ProbeDiscoveryRequestMessage()
 {
 }
 
-void ProbeDiscoveryRequestMessage::serialize(NetworkBufferView& buffer)
+void ProbeDiscoveryRequestMessage::serialize(NetworkBufferView buffer)
 {
 }

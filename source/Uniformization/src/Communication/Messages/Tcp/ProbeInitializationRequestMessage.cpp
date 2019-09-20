@@ -21,7 +21,7 @@ ProbeInitializationRequestMessage::~ProbeInitializationRequestMessage()
 {
 }
 
-void ProbeInitializationRequestMessage::serializePayload(NetworkBufferView& buffer)
+void ProbeInitializationRequestMessage::serializePayload(NetworkBufferView buffer)
 {
     uint32_t* data = reinterpret_cast<uint32_t*>(buffer.data());
     data[0] = boost::endian::native_to_big(m_sampleFrequency);

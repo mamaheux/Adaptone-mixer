@@ -15,7 +15,7 @@ ProbeInitializationResponseMessage::~ProbeInitializationResponseMessage()
 {
 }
 
-void ProbeInitializationResponseMessage::serializePayload(NetworkBufferView& buffer)
+void ProbeInitializationResponseMessage::serializePayload(NetworkBufferView buffer)
 {
     buffer.data()[0] = static_cast<uint8_t>(m_isCompatible);
     buffer.data()[1] = static_cast<uint8_t>(m_isMaster);

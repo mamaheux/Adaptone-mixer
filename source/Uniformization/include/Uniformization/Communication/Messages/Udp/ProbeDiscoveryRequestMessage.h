@@ -14,7 +14,7 @@ namespace adaptone
         ~ProbeDiscoveryRequestMessage() override;
 
     protected:
-        void serialize(NetworkBufferView& buffer) override;
+        void serialize(NetworkBufferView buffer) override;
     };
 }
 

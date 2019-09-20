@@ -31,7 +31,7 @@ namespace adaptone
         uint8_t recordId() const;
 
     protected:
-        void serializePayload(NetworkBufferView& buffer) override;
+        void serializePayload(NetworkBufferView buffer) override;
     };
 
     inline uint8_t RecordRequestMessage::hours() const

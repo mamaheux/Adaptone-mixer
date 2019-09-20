@@ -17,7 +17,7 @@ RecordResponseMessage::~RecordResponseMessage()
 {
 }
 
-void RecordResponseMessage::serializePayload(NetworkBufferView& buffer)
+void RecordResponseMessage::serializePayload(NetworkBufferView buffer)
 {
     buffer.data()[0] = m_recordId;
     memcpy(buffer.data() + 1, m_data, m_dataSize);

@@ -12,10 +12,9 @@ PayloadMessage::~PayloadMessage()
 {
 }
 
-void PayloadMessage::serialize(NetworkBufferView& buffer)
+void PayloadMessage::serialize(NetworkBufferView buffer)
 {
     *reinterpret_cast<uint32_t*>(buffer.data()) = boost::endian::native_to_big(m_payloadSize);
 
-    NetworkBufferView view = buffer.view(sizeof(m_payloadSize));
-    serializePayload(view);
+    serializePayload(buffer.view(sizeof(m_payloadSize)));
 }

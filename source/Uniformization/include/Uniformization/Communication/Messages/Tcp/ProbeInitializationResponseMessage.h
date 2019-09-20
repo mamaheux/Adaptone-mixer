@@ -22,7 +22,7 @@ namespace adaptone
         bool isMaster() const;
 
     protected:
-        void serializePayload(NetworkBufferView& buffer) override;
+        void serializePayload(NetworkBufferView buffer) override;
     };
 
     inline bool ProbeInitializationResponseMessage::isCompatible() const

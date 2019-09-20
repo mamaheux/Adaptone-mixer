@@ -8,6 +8,8 @@
 
 namespace adaptone
 {
+    class NetworkBuffer;
+
     class NetworkBufferView
     {
         uint8_t* m_data;
@@ -15,6 +17,7 @@ namespace adaptone
 
     public:
         NetworkBufferView(uint8_t* data, std::size_t size);
+        NetworkBufferView(NetworkBuffer& buffer);
         virtual ~NetworkBufferView();
 
         uint8_t* data();

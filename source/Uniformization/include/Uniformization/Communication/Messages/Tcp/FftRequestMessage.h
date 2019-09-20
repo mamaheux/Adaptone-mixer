@@ -28,7 +28,7 @@ namespace adaptone
         uint16_t fftId() const;
 
     protected:
-        void serializePayload(NetworkBufferView& buffer) override;
+        void serializePayload(NetworkBufferView buffer) override;
     };
 
     inline uint8_t FftRequestMessage::hours() const

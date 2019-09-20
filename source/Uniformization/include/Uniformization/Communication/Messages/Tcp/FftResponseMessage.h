@@ -29,7 +29,7 @@ namespace adaptone
         std::size_t fftValueCount() const;
 
     protected:
-        void serializePayload(NetworkBufferView& buffer) override;
+        void serializePayload(NetworkBufferView buffer) override;
     };
 
     inline uint8_t FftResponseMessage::fftId() const

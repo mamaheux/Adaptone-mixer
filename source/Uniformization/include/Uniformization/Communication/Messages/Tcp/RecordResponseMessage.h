@@ -27,7 +27,7 @@ namespace adaptone
         std::size_t dataSize() const;
 
     protected:
-        void serializePayload(NetworkBufferView& buffer) override;
+        void serializePayload(NetworkBufferView buffer) override;
     };
 
     inline uint8_t RecordResponseMessage::recordId() const

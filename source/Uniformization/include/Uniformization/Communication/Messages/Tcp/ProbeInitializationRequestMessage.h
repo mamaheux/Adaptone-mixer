@@ -24,7 +24,7 @@ namespace adaptone
         PcmAudioFrame::Format format() const;
 
     protected:
-        void serializePayload(NetworkBufferView& buffer) override;
+        void serializePayload(NetworkBufferView buffer) override;
 
         static uint32_t serializeFormat(PcmAudioFrame::Format format);
         static PcmAudioFrame::Format parseFormat(uint32_t format);

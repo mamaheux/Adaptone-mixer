@@ -16,8 +16,8 @@ namespace adaptone
         uint32_t payloadSize();
 
     protected:
-        void serialize(NetworkBufferView& buffer) override;
-        virtual void serializePayload(NetworkBufferView& buffer) = 0;
+        void serialize(NetworkBufferView buffer) override;
+        virtual void serializePayload(NetworkBufferView buffer) = 0;
     };
 
     inline uint32_t PayloadMessage::payloadSize()

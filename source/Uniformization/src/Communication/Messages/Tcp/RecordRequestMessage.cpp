@@ -20,7 +20,7 @@ RecordRequestMessage::~RecordRequestMessage()
 {
 }
 
-void RecordRequestMessage::serializePayload(NetworkBufferView& buffer)
+void RecordRequestMessage::serializePayload(NetworkBufferView buffer)
 {
     buffer.data()[0] = m_hours;
     buffer.data()[1] = m_minutes;

@@ -14,7 +14,7 @@ namespace adaptone
         ~HeartbeatMessage() override;
 
     protected:
-        void serialize(NetworkBufferView& buffer) override;
+        void serialize(NetworkBufferView buffer) override;
     };
 }
 

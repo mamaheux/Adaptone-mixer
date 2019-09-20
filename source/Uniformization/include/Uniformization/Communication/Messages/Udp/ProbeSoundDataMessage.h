@@ -38,7 +38,7 @@ namespace adaptone
         std::size_t dataSize() const;
 
     protected:
-        void serializePayload(NetworkBufferView& buffer) override;
+        void serializePayload(NetworkBufferView buffer) override;
     };
 
     inline uint16_t ProbeSoundDataMessage::soundDataId() const

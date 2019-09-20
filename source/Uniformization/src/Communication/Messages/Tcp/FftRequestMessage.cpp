@@ -19,7 +19,7 @@ FftRequestMessage::~FftRequestMessage()
 {
 }
 
-void FftRequestMessage::serializePayload(NetworkBufferView& buffer)
+void FftRequestMessage::serializePayload(NetworkBufferView buffer)
 {
     buffer.data()[0] = m_hours;
     buffer.data()[1] = m_minutes;
