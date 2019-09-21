@@ -34,6 +34,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
 
         { "uniformization.network.discovery_endpoint", "192.168.1.255:5000" },
         { "uniformization.network.discovery_timeout_ms", "1000" },
+        { "uniformization.network.discovery_trial_count", "5" },
         { "uniformization.network.tcp_connection_port", "5001"},
         { "uniformization.network.udp_receiving_port", "5002"},
         { "uniformization.network.probe_timeout_ms", "2000"},
@@ -68,6 +69,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.uniformization().discoveryEndpoint().ipAddress(), "192.168.1.255");
     EXPECT_EQ(configuration.uniformization().discoveryEndpoint().port(), 5000);
     EXPECT_EQ(configuration.uniformization().discoveryTimeoutMs(), 1000);
+    EXPECT_EQ(configuration.uniformization().discoveryTrialCount(), 5);
     EXPECT_EQ(configuration.uniformization().tcpConnectionPort(), 5001);
     EXPECT_EQ(configuration.uniformization().udpReceivingPort(), 5002);
     EXPECT_EQ(configuration.uniformization().probeTimeoutMs(), 2000);

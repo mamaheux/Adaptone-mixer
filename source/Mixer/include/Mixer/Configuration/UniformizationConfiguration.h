@@ -10,6 +10,7 @@ namespace adaptone
     {
         Endpoint m_discoveryEndpoint;
         int m_discoveryTimeoutMs;
+        std::size_t m_discoveryTrialCount;
 
         uint16_t m_tcpConnectionPort;
         uint16_t m_udpReceivingPort;
@@ -21,6 +22,7 @@ namespace adaptone
 
         const Endpoint& discoveryEndpoint() const;
         int discoveryTimeoutMs() const;
+        std::size_t discoveryTrialCount() const;
 
         uint16_t tcpConnectionPort() const;
         uint16_t udpReceivingPort() const;
@@ -35,6 +37,11 @@ namespace adaptone
     inline int UniformizationConfiguration::discoveryTimeoutMs() const
     {
         return m_discoveryTimeoutMs;
+    }
+
+    inline std::size_t UniformizationConfiguration::discoveryTrialCount() const
+    {
+        return m_discoveryTrialCount;
     }
 
     inline uint16_t UniformizationConfiguration::tcpConnectionPort() const
