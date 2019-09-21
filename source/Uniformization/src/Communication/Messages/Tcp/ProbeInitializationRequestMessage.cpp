@@ -32,7 +32,7 @@ ProbeInitializationRequestMessage ProbeInitializationRequestMessage::fromBuffer(
         parseFormat(boost::endian::big_to_native(data[1])));
 }
 
-void ProbeInitializationRequestMessage::serializePayload(NetworkBufferView buffer)
+void ProbeInitializationRequestMessage::serializePayload(NetworkBufferView buffer) const
 {
     uint32_t* data = reinterpret_cast<uint32_t*>(buffer.data());
     data[0] = boost::endian::native_to_big(m_sampleFrequency);
@@ -41,7 +41,7 @@ void ProbeInitializationRequestMessage::serializePayload(NetworkBufferView buffe
 
 uint32_t ProbeInitializationRequestMessage::serializeFormat(PcmAudioFrame::Format format)
 {
-    const unordered_map<PcmAudioFrame::Format, uint32_t> Mapping(
+    static const unordered_map<PcmAudioFrame::Format, uint32_t> Mapping(
         {
             { PcmAudioFrame::Format::Signed8, 0 },
             { PcmAudioFrame::Format::Signed16, 1 },
@@ -70,7 +70,7 @@ uint32_t ProbeInitializationRequestMessage::serializeFormat(PcmAudioFrame::Forma
 
 PcmAudioFrame::Format ProbeInitializationRequestMessage::parseFormat(uint32_t format)
 {
-    const unordered_map<uint32_t, PcmAudioFrame::Format> Mapping(
+    static const unordered_map<uint32_t, PcmAudioFrame::Format> Mapping(
         {
             { 0, PcmAudioFrame::Format::Signed8 },
             { 1, PcmAudioFrame::Format::Signed16 },

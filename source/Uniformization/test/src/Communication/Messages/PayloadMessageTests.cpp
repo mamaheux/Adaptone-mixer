@@ -18,7 +18,7 @@ public:
     }
 
 protected:
-    void serializePayload(NetworkBufferView buffer) override
+    void serializePayload(NetworkBufferView buffer) const override
     {
         buffer.data()[0] = 10;
         buffer.data()[1] = 11;

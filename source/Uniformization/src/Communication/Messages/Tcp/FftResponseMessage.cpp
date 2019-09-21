@@ -28,7 +28,7 @@ FftResponseMessage FftResponseMessage::fromBuffer(NetworkBufferView buffer, size
         (messageSize - MinimumSize) / sizeof(complex<float>));
 }
 
-void FftResponseMessage::serializePayload(NetworkBufferView buffer)
+void FftResponseMessage::serializePayload(NetworkBufferView buffer) const
 {
     *reinterpret_cast<uint16_t*>(buffer.data()) = boost::endian::native_to_big(m_fftId);
     memcpy(buffer.data() + sizeof(m_fftId), m_fftValues, sizeof(complex<float>) * m_fftValueCount);

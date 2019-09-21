@@ -1,5 +1,7 @@
 #include <Uniformization/Communication/Messages/ProbeMessage.h>
 
+#include <Utils/Exception/InvalidValueException.h>
+
 #include <gtest/gtest.h>
 
 using namespace adaptone;
@@ -18,7 +20,7 @@ public:
     }
 
 protected:
-    void serialize(NetworkBufferView buffer) override
+    void serialize(NetworkBufferView buffer) const override
     {
         buffer.data()[0] = 10;
     }
@@ -47,4 +49,23 @@ TEST(ProbeMessageTests, toBuffer_shouldSerializeTheMessage)
     EXPECT_EQ(buffer.data()[2], 0);
     EXPECT_EQ(buffer.data()[3], 1);
     EXPECT_EQ(buffer.data()[4], 10);
+}
+
+TEST(ProbeMessageTests, hasPayload_shouldReturnTrueIfTheMessageHasAPayload)
+{
+    EXPECT_FALSE(ProbeMessage::hasPayload(0));
+    EXPECT_FALSE(ProbeMessage::hasPayload(1));
+    EXPECT_TRUE(ProbeMessage::hasPayload(2));
+    EXPECT_TRUE(ProbeMessage::hasPayload(3));
+    EXPECT_FALSE(ProbeMessage::hasPayload(4));
+    EXPECT_TRUE(ProbeMessage::hasPayload(5));
+    EXPECT_TRUE(ProbeMessage::hasPayload(6));
+    EXPECT_TRUE(ProbeMessage::hasPayload(7));
+    EXPECT_TRUE(ProbeMessage::hasPayload(8));
+    EXPECT_TRUE(ProbeMessage::hasPayload(9));
+}
+
+TEST(ProbeMessageTests, hasPayload_invalidId_shouldReturnTrueIfTheMessageHasAPayload)
+{
+    EXPECT_THROW(ProbeMessage::hasPayload(10), InvalidValueException);
 }

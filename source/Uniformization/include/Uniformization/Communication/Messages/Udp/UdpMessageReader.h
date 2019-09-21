@@ -1,7 +1,8 @@
-#ifndef UNIFORMIZATION_COMMUNICATION_MESSAGES_UDP_UDP_MESSAGE_UTILS_H
-#define UNIFORMIZATION_COMMUNICATION_MESSAGES_UDP_UDP_MESSAGE_UTILS_H
+#ifndef UNIFORMIZATION_COMMUNICATION_MESSAGES_UDP_UDP_MESSAGE_READER_H
+#define UNIFORMIZATION_COMMUNICATION_MESSAGES_UDP_UDP_MESSAGE_READER_H
 
 #include <Uniformization/Communication/BoostAsioUtils.h>
+#include <Uniformization/Communication/Messages/ProbeMessage.h>
 
 #include <Utils/Exception/NetworkException.h>
 #include <Utils/Network/NetworkBuffer.h>
@@ -9,9 +10,26 @@
 #include <boost/asio.hpp>
 
 #include <optional>
+#include <functional>
+#include <unordered_map>
 
 namespace adaptone
 {
+    class UdpMessageReader
+    {
+        NetworkBuffer m_buffer;
+        std::unordered_map<uint32_t, std::function<void(std::size_t,
+            const boost::asio::ip::address&,
+            std::function<void(const ProbeMessage&, const boost::asio::ip::address&)>&)>> m_handlersById;
+
+    public:
+        UdpMessageReader();
+        virtual ~UdpMessageReader();
+
+        void read(boost::asio::ip::udp::socket& socket,
+            std::function<void(const ProbeMessage&, const boost::asio::ip::address&)> readCallback);
+    };
+
     template<class T>
     T readUdpMessage(boost::asio::ip::udp::socket& socket, boost::asio::ip::udp::endpoint& endpoint,
         NetworkBufferView buffer)

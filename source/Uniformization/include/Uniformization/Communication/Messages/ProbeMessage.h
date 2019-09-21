@@ -19,30 +19,32 @@ namespace adaptone
         ProbeMessage(uint32_t id, std::size_t payloadSize);
         virtual ~ProbeMessage();
 
-        uint32_t id();
-        std::size_t fullSize();
+        uint32_t id() const;
+        std::size_t fullSize() const;
 
-        void toBuffer(NetworkBufferView buffer);
+        void toBuffer(NetworkBufferView buffer) const;
+
+        static bool hasPayload(uint32_t id);
 
     protected:
-        virtual void serialize(NetworkBufferView buffer) = 0;
+        virtual void serialize(NetworkBufferView buffer) const = 0;
 
         static void verifyId(NetworkBufferView buffer, uint32_t id);
         static void verifyMessageSize(std::size_t messageSize, std::size_t validMessageSize);
         static void verifyMessageSizeAtLeast(std::size_t messageSize, std::size_t validMessageSize);
     };
 
-    inline uint32_t ProbeMessage::id()
+    inline uint32_t ProbeMessage::id() const
     {
         return m_id;
     }
 
-    inline std::size_t ProbeMessage::fullSize()
+    inline std::size_t ProbeMessage::fullSize() const
     {
         return m_fullSize;
     }
 
-    inline void ProbeMessage::toBuffer(NetworkBufferView buffer)
+    inline void ProbeMessage::toBuffer(NetworkBufferView buffer) const
     {
         if (buffer.size() < m_fullSize)
         {

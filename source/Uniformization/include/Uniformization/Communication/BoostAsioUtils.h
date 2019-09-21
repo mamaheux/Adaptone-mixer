@@ -7,7 +7,7 @@
 
 namespace adaptone
 {
-    constexpr std::size_t MaxNetworkBufferSize = 65535;
+    constexpr std::size_t MaxUdpBufferSize = 65535;
 
 #if defined(_WIN32) || defined(_WIN64)
     typedef __socklen_t socklen_t;
@@ -33,6 +33,24 @@ namespace adaptone
 
 #endif
 
+    inline std::size_t tcpSocketReceiveTimeout(boost::asio::ip::tcp::socket& socket,
+        const boost::asio::mutable_buffer& buffer,
+        boost::asio::socket_base::message_flags flags,
+        boost::system::error_code& ec)
+    {
+        int bytesReceived = ::recv(socket.native_handle(),
+            boost::asio::detail::buffer_cast_helper(buffer),
+            boost::asio::detail::buffer_size_helper(buffer),
+            flags);
+
+        if (bytesReceived < 0)
+        {
+            ec = boost::asio::error::fault;
+        }
+
+        return bytesReceived;
+    }
+
     inline std::size_t udpSocketReceiveTimeout(boost::asio::ip::udp::socket& socket,
         const boost::asio::mutable_buffer& buffer,
         boost::asio::ip::udp::endpoint& senderEndpoint,
@@ -43,8 +61,10 @@ namespace adaptone
 
         int bytesReceived = ::recvfrom(socket.native_handle(),
             boost::asio::detail::buffer_cast_helper(buffer),
-            boost::asio::detail::buffer_size_helper(buffer), flags,
-            senderEndpoint.data(), &addr_len);
+            boost::asio::detail::buffer_size_helper(buffer),
+            flags,
+            senderEndpoint.data(),
+            &addr_len);
 
         if (bytesReceived < 0)
         {

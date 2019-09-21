@@ -26,7 +26,7 @@ namespace adaptone
         static ProbeInitializationRequestMessage fromBuffer(NetworkBufferView buffer, std::size_t messageSize);
 
     protected:
-        void serializePayload(NetworkBufferView buffer) override;
+        void serializePayload(NetworkBufferView buffer) const override;
 
         static uint32_t serializeFormat(PcmAudioFrame::Format format);
         static PcmAudioFrame::Format parseFormat(uint32_t format);

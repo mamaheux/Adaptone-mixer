@@ -33,7 +33,7 @@ RecordRequestMessage RecordRequestMessage::fromBuffer(NetworkBufferView buffer, 
         buffer.data()[15]);
 }
 
-void RecordRequestMessage::serializePayload(NetworkBufferView buffer)
+void RecordRequestMessage::serializePayload(NetworkBufferView buffer) const
 {
     buffer.data()[0] = m_hours;
     buffer.data()[1] = m_minutes;

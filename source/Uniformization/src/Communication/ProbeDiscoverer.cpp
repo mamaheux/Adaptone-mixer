@@ -3,7 +3,7 @@
 #include <Uniformization/Communication/BoostAsioUtils.h>
 #include <Uniformization/Communication/Messages/Udp/ProbeDiscoveryRequestMessage.h>
 #include <Uniformization/Communication/Messages/Udp/ProbeDiscoveryResponseMessage.h>
-#include <Uniformization/Communication/Messages/Udp/UdpMessageUtils.h>
+#include <Uniformization/Communication/Messages/Udp/UdpMessageReader.h>
 
 #include <Utils/Exception/NetworkException.h>
 
@@ -20,8 +20,8 @@ DiscoveredProbe::~DiscoveredProbe()
 
 ProbeDiscoverer::ProbeDiscoverer(const Endpoint& endpoint, int timeoutMs, size_t discoveryTrialCount) :
     m_discoveryTrialCount(discoveryTrialCount),
-    m_sendingBuffer(MaxNetworkBufferSize),
-    m_receivingBuffer(MaxNetworkBufferSize)
+    m_sendingBuffer(MaxUdpBufferSize),
+    m_receivingBuffer(MaxUdpBufferSize)
 {
     boost::system::error_code error;
 
@@ -65,6 +65,7 @@ ProbeDiscoverer::ProbeDiscoverer(const Endpoint& endpoint, int timeoutMs, size_t
 
 ProbeDiscoverer::~ProbeDiscoverer()
 {
+    m_socket->close();
 }
 
 vector<DiscoveredProbe> ProbeDiscoverer::discover()

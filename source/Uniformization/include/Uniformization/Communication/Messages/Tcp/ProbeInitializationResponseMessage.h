@@ -24,7 +24,7 @@ namespace adaptone
         static ProbeInitializationResponseMessage fromBuffer(NetworkBufferView buffer, std::size_t messageSize);
 
     protected:
-        void serializePayload(NetworkBufferView buffer) override;
+        void serializePayload(NetworkBufferView buffer) const override;
     };
 
     inline bool ProbeInitializationResponseMessage::isCompatible() const

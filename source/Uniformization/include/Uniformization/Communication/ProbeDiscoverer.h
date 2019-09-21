@@ -1,6 +1,7 @@
 #ifndef UNIFORMIZATION_COMMUNICATION_PROBE_DISCOVERER_H
 #define UNIFORMIZATION_COMMUNICATION_PROBE_DISCOVERER_H
 
+#include <Utils/ClassMacro.h>
 #include <Utils/Network/Endpoint.h>
 #include <Utils/Network/NetworkBuffer.h>
 
@@ -40,6 +41,9 @@ namespace adaptone
     public:
         ProbeDiscoverer(const Endpoint& endpoint, int timeoutMs, std::size_t discoveryTrialCount);
         virtual ~ProbeDiscoverer();
+
+        DECLARE_NOT_COPYABLE(ProbeDiscoverer);
+        DECLARE_NOT_MOVABLE(ProbeDiscoverer);
 
         std::vector<DiscoveredProbe> discover();
     };

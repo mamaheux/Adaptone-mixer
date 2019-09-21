@@ -20,6 +20,6 @@ ProbeDiscoveryRequestMessage ProbeDiscoveryRequestMessage::fromBuffer(NetworkBuf
     return ProbeDiscoveryRequestMessage();
 }
 
-void ProbeDiscoveryRequestMessage::serialize(NetworkBufferView buffer)
+void ProbeDiscoveryRequestMessage::serialize(NetworkBufferView buffer) const
 {
 }

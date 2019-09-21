@@ -20,6 +20,6 @@ HeartbeatMessage HeartbeatMessage::fromBuffer(NetworkBufferView buffer, size_t m
     return HeartbeatMessage();
 }
 
-void HeartbeatMessage::serialize(NetworkBufferView buffer)
+void HeartbeatMessage::serialize(NetworkBufferView buffer) const
 {
 }

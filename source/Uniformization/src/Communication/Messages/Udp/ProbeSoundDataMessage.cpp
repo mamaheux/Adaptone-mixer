@@ -39,7 +39,7 @@ ProbeSoundDataMessage ProbeSoundDataMessage::fromBuffer(NetworkBufferView buffer
         messageSize - MinimumSize);
 }
 
-void ProbeSoundDataMessage::serializePayload(NetworkBufferView buffer)
+void ProbeSoundDataMessage::serializePayload(NetworkBufferView buffer) const
 {
     *reinterpret_cast<uint16_t*>(buffer.data()) = boost::endian::native_to_big(m_soundDataId);
     buffer.data()[2] = m_hours;

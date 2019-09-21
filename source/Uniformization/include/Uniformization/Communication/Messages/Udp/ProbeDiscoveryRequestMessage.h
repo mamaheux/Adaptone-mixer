@@ -16,7 +16,7 @@ namespace adaptone
         static ProbeDiscoveryRequestMessage fromBuffer(NetworkBufferView buffer, std::size_t messageSize);
 
     protected:
-        void serialize(NetworkBufferView buffer) override;
+        void serialize(NetworkBufferView buffer) const override;
     };
 }
 

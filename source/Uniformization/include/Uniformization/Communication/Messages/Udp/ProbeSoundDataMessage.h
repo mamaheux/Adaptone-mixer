@@ -40,7 +40,7 @@ namespace adaptone
         static ProbeSoundDataMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
 
     protected:
-        void serializePayload(NetworkBufferView buffer) override;
+        void serializePayload(NetworkBufferView buffer) const override;
     };
 
     inline uint16_t ProbeSoundDataMessage::soundDataId() const

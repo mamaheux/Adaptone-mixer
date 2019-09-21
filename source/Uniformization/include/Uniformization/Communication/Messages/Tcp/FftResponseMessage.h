@@ -31,7 +31,7 @@ namespace adaptone
         static FftResponseMessage fromBuffer(NetworkBufferView buffer, std::size_t messageSize);
 
     protected:
-        void serializePayload(NetworkBufferView buffer) override;
+        void serializePayload(NetworkBufferView buffer) const override;
     };
 
     inline uint8_t FftResponseMessage::fftId() const

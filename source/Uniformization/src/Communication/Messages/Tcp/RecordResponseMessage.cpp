@@ -28,7 +28,7 @@ RecordResponseMessage RecordResponseMessage::fromBuffer(NetworkBufferView buffer
         messageSize - MinimumSize);
 }
 
-void RecordResponseMessage::serializePayload(NetworkBufferView buffer)
+void RecordResponseMessage::serializePayload(NetworkBufferView buffer) const
 {
     buffer.data()[0] = m_recordId;
     memcpy(buffer.data() + 1, m_data, m_dataSize);

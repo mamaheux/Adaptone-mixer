@@ -31,7 +31,7 @@ FftRequestMessage FftRequestMessage::fromBuffer(NetworkBufferView buffer, size_t
         boost::endian::big_to_native(*reinterpret_cast<uint16_t*>(buffer.data() + 13)));
 }
 
-void FftRequestMessage::serializePayload(NetworkBufferView buffer)
+void FftRequestMessage::serializePayload(NetworkBufferView buffer) const
 {
     buffer.data()[0] = m_hours;
     buffer.data()[1] = m_minutes;
