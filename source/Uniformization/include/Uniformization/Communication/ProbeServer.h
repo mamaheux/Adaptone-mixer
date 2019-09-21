@@ -12,7 +12,9 @@
 #include <boost/asio.hpp>
 
 #include <atomic>
+#include <chrono>
 #include <memory>
+#include <mutex>
 #include <thread>
 
 namespace adaptone
@@ -20,6 +22,7 @@ namespace adaptone
     class ProbeServer
     {
         std::shared_ptr<Logger> m_logger;
+        int m_timeoutMs;
         bool m_isMaster;
         std::atomic<bool> m_isConnected;
         std::size_t m_id;
@@ -32,6 +35,7 @@ namespace adaptone
 
         std::atomic<bool> m_stopped;
         std::unique_ptr<std::thread> m_serverThread;
+        std::mutex m_mutex;
 
     public:
         ProbeServer(std::shared_ptr<Logger> logger,
@@ -53,8 +57,13 @@ namespace adaptone
         bool isMaster();
         bool isConnected();
 
+        void send(const ProbeMessage& message);
+
     private:
         void run();
+
+        void updateHeartbeat(std::chrono::system_clock::time_point& lastHeartbeatSendingTime,
+            std::chrono::system_clock::time_point& lastHeartbeatReceivingTime);
     };
 
     inline bool ProbeServer::isMaster()

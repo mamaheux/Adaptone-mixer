@@ -57,6 +57,16 @@ void ProbeServers::stop()
     }
 }
 
+void ProbeServers::sendToProbes(const ProbeMessage& message)
+{
+    shared_lock lock(m_mutex);
+
+    for (auto& pair : m_probeServersById)
+    {
+        pair.second->send(message);
+    }
+}
+
 void ProbeServers::run()
 {
     try
@@ -109,6 +119,7 @@ void ProbeServers::createUdpSocket()
 
 void ProbeServers::createProbeServer(const DiscoveredProbe& discoveredProbe)
 {
+    unique_lock lock(m_mutex);
     try
     {
         size_t id = m_probeServersById.size();

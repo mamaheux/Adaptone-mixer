@@ -4,11 +4,15 @@
 #include <Uniformization/Communication/Messages/Tcp/TcpMessageReader.h>
 #include <Uniformization/Communication/Messages/Tcp/ProbeInitializationRequestMessage.h>
 #include <Uniformization/Communication/Messages/Tcp/ProbeInitializationResponseMessage.h>
+#include <Uniformization/Communication/Messages/Tcp/HeartbeatMessage.h>
 
 #include <Utils/Exception/NetworkException.h>
 
+#include <chrono>
+
 using namespace adaptone;
 using namespace std;
+using namespace std::chrono_literals;
 
 ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     uint16_t tcpConnectionPort,
@@ -19,6 +23,7 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     PcmAudioFrame::Format format,
     shared_ptr<ProbeMessageHandler> messageHandler) :
     m_logger(logger),
+    m_timeoutMs(timeoutMs),
     m_isMaster(false),
     m_isConnected(false),
     m_id(id),
@@ -58,6 +63,7 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     m_isMaster = response.isMaster();
     m_ioService = move(ioService);
     m_socket = move(socket);
+    m_isConnected.store(true);
 }
 
 ProbeServer::~ProbeServer()
@@ -81,20 +87,70 @@ void ProbeServer::stop()
     }
 }
 
+void ProbeServer::send(const ProbeMessage& message)
+{
+    lock_guard lock(m_mutex);
+    if (m_isConnected.load())
+    {
+        boost::system::error_code error;
+
+        message.toBuffer(m_sendingBuffer);
+        m_socket->send(toAsioBuffer(m_sendingBuffer, message.fullSize()), 0, error);
+        if (error)
+        {
+            THROW_NETWORK_EXCEPTION("Unable to send request");
+        }
+    }
+    else
+    {
+        THROW_NETWORK_EXCEPTION("Probe not connected");
+    }
+}
+
 void ProbeServer::run()
 {
+    auto lastHeartbeatSendingTime = chrono::system_clock::now();
+    auto lastHeartbeatReceivingTime = chrono::system_clock::now();
+
     while (!m_stopped.load())
     {
         try
         {
+            updateHeartbeat(lastHeartbeatSendingTime, lastHeartbeatReceivingTime);
+
             m_tcpMessageReader.read(*m_socket, [&](const ProbeMessage& message)
             {
-                m_messageHandler->handle(message, m_id);
+                if (typeid(message) == typeid(HeartbeatMessage))
+                {
+                    lastHeartbeatReceivingTime = chrono::system_clock::now();
+                }
+                else
+                {
+                    m_messageHandler->handle(message, m_id);
+                }
             });
         }
         catch (exception& ex)
         {
             m_logger->log(Logger::Level::Error, ex);
         }
+    }
+}
+
+void ProbeServer::updateHeartbeat(std::chrono::system_clock::time_point& lastHeartbeatSendingTime,
+    std::chrono::system_clock::time_point& lastHeartbeatReceivingTime)
+{
+    const chrono::system_clock::duration HeartbeatInterval = chrono::microseconds(10 * m_timeoutMs);
+    const chrono::system_clock::duration HeartbeatTimeout = chrono::microseconds(20 * m_timeoutMs);
+
+    auto now = chrono::system_clock::now();
+    if (lastHeartbeatSendingTime - now > HeartbeatInterval)
+    {
+        send(HeartbeatMessage());
+        lastHeartbeatSendingTime = now;
+    }
+    if (lastHeartbeatReceivingTime - now > HeartbeatTimeout)
+    {
+        m_isConnected.store(false);
     }
 }

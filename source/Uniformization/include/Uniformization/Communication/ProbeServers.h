@@ -13,6 +13,8 @@
 #include <memory>
 #include <thread>
 #include <unordered_map>
+#include <mutex>
+#include <shared_mutex>
 
 namespace adaptone
 {
@@ -39,6 +41,7 @@ namespace adaptone
 
         std::atomic<bool> m_stopped;
         std::unique_ptr<std::thread> m_serverThread;
+        std::shared_mutex m_mutex;
 
     public:
         ProbeServers(std::shared_ptr<Logger> logger,
@@ -58,6 +61,8 @@ namespace adaptone
 
         void start();
         void stop();
+
+        void sendToProbes(const ProbeMessage& message);
 
     private:
         void run();
