@@ -137,8 +137,8 @@ void ProbeServer::run()
     }
 }
 
-void ProbeServer::updateHeartbeat(std::chrono::system_clock::time_point& lastHeartbeatSendingTime,
-    std::chrono::system_clock::time_point& lastHeartbeatReceivingTime)
+void ProbeServer::updateHeartbeat(chrono::system_clock::time_point& lastHeartbeatSendingTime,
+    chrono::system_clock::time_point& lastHeartbeatReceivingTime)
 {
     const chrono::system_clock::duration HeartbeatInterval = chrono::microseconds(10 * m_timeoutMs);
     const chrono::system_clock::duration HeartbeatTimeout = chrono::microseconds(20 * m_timeoutMs);
