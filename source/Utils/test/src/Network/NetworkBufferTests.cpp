@@ -1,4 +1,4 @@
-#include <Uniformization/Communication/NetworkBuffer.h>
+#include <Utils/Network/NetworkBuffer.h>
 
 #include <gtest/gtest.h>
 

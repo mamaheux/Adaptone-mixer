@@ -1,9 +1,8 @@
 #ifndef UNIFORMIZATION_COMMUNICATION_MESSAGES_PROBE_MESSAGE_H
 #define UNIFORMIZATION_COMMUNICATION_MESSAGES_PROBE_MESSAGE_H
 
-#include <Uniformization/Communication/NetworkBuffer.h>
-
 #include <Utils/Exception/InvalidValueException.h>
+#include <Utils/Network/NetworkBuffer.h>
 
 #include <boost/endian/arithmetic.hpp>
 

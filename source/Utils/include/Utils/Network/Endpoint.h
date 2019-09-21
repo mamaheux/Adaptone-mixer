@@ -1,5 +1,5 @@
-#ifndef UTILS_DATA_ENDPOINT_H
-#define UTILS_DATA_ENDPOINT_H
+#ifndef UTILS_NETWORK_ENDPOINT_H
+#define UTILS_NETWORK_ENDPOINT_H
 
 #include <Utils/Configuration/Properties.h>
 
