@@ -36,7 +36,7 @@ void TcpMessageReader::read(boost::asio::ip::tcp::socket& socket, function<void(
 {
     size_t messageSize = readTcpMessageData(socket, m_buffer);
 
-    uint32_t id = boost::endian::native_to_big(*reinterpret_cast<uint32_t*>(m_buffer.data()));
+    uint32_t id = boost::endian::big_to_native(*reinterpret_cast<uint32_t*>(m_buffer.data()));
     auto it = m_handlersById.find(id);
     if (it == m_handlersById.end())
     {
@@ -54,7 +54,7 @@ size_t adaptone::readTcpMessageData(boost::asio::ip::tcp::socket& socket, Networ
         THROW_NETWORK_EXCEPTION("Invalid id");
     }
 
-    uint32_t messageId = boost::endian::native_to_big(*reinterpret_cast<uint32_t*>(buffer.data()));
+    uint32_t messageId = boost::endian::big_to_native(*reinterpret_cast<uint32_t*>(buffer.data()));
     size_t messageSize = sizeof(uint32_t);
 
     if (ProbeMessage::hasPayload(messageId))
@@ -65,7 +65,7 @@ size_t adaptone::readTcpMessageData(boost::asio::ip::tcp::socket& socket, Networ
             THROW_NETWORK_EXCEPTION("Invalid payload size");
         }
 
-        size_t payloadSize = boost::endian::native_to_big(*reinterpret_cast<uint32_t*>(buffer.data()));
+        size_t payloadSize = boost::endian::big_to_native(*reinterpret_cast<uint32_t*>(buffer.data()));
         messageSize += sizeof(uint32_t);
 
         if (payloadSize > buffer.size() - 2 * sizeof(uint32_t))

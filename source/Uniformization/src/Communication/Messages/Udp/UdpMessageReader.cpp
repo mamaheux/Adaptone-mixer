@@ -44,7 +44,7 @@ void UdpMessageReader::read(boost::asio::ip::udp::socket& socket,
         THROW_NETWORK_EXCEPTION("Invalid id");
     }
 
-    uint32_t id = boost::endian::native_to_big(*reinterpret_cast<uint32_t*>(m_buffer.data()));
+    uint32_t id = boost::endian::big_to_native(*reinterpret_cast<uint32_t*>(m_buffer.data()));
     auto it = m_handlersById.find(id);
     if (it == m_handlersById.end())
     {
