@@ -76,8 +76,7 @@ size_t adaptone::readTcpMessageData(boost::asio::ip::tcp::socket& socket, Networ
         size_t receivedPayloadSize = 0;
         while (receivedPayloadSize < payloadSize)
         {
-            size_t receivedSize =
-                readTcpData(socket, buffer.view(messageSize), payloadSize - receivedPayloadSize);
+            size_t receivedSize = readTcpData(socket, buffer.view(messageSize), payloadSize - receivedPayloadSize);
             messageSize += receivedSize;
             receivedPayloadSize += receivedSize;
         }
