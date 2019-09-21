@@ -26,7 +26,7 @@ namespace adaptone
         const uint8_t* data() const;
         std::size_t dataSize() const;
 
-        static RecordResponseMessage fromBuffer(NetworkBufferView buffer, size_t messageSize);
+        static RecordResponseMessage fromBuffer(NetworkBufferView buffer, std::size_t messageSize);
 
     protected:
         void serializePayload(NetworkBufferView buffer) override;

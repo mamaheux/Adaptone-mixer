@@ -51,6 +51,7 @@ namespace adaptone
     {
         uint8_t* m_data;
         std::size_t m_size;
+
     public:
         NetworkBuffer(std::size_t size);
         virtual ~NetworkBuffer();
