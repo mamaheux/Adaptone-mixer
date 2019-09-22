@@ -154,7 +154,7 @@ void ProbeServers::readUdpSocket()
                 [&](const ProbeMessage& message, const boost::asio::ip::address& address)
                 {
                     size_t probeId = m_probeIdsByAddress[address];
-                    m_messageHandler->handle(message, probeId);
+                    m_messageHandler->handle(message, probeId, probeId == m_masterProbeId);
                 });
         }
         catch (exception& ex)

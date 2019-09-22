@@ -26,12 +26,18 @@ namespace adaptone
         bool m_isMaster;
         std::atomic<bool> m_isConnected;
         std::size_t m_id;
+        std::size_t m_sampleFrequency;
+        PcmAudioFrame::Format m_format;
         std::shared_ptr<ProbeMessageHandler> m_messageHandler;
 
+        boost::asio::ip::tcp::endpoint m_endpoint;
         std::unique_ptr<boost::asio::io_service> m_ioService;
         std::unique_ptr<boost::asio::ip::tcp::socket> m_socket;
         NetworkBuffer m_sendingBuffer;
         TcpMessageReader m_tcpMessageReader;
+
+        std::chrono::system_clock::time_point m_lastHeartbeatSendingTime;
+        std::chrono::system_clock::time_point m_lastHeartbeatReceivingTime;
 
         std::atomic<bool> m_stopped;
         std::unique_ptr<std::thread> m_serverThread;
@@ -62,8 +68,10 @@ namespace adaptone
     private:
         void run();
 
-        void updateHeartbeat(std::chrono::system_clock::time_point& lastHeartbeatSendingTime,
-            std::chrono::system_clock::time_point& lastHeartbeatReceivingTime);
+        void connect(boost::asio::ip::tcp::socket& socket);
+        void reconnect();
+        void readMessage();
+        void updateHeartbeat();
     };
 
     inline bool ProbeServer::isMaster()

@@ -27,10 +27,12 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     m_isMaster(false),
     m_isConnected(false),
     m_id(id),
+    m_sampleFrequency(sampleFrequency),
+    m_format(format),
     m_messageHandler(messageHandler),
     m_sendingBuffer(MaxTcpMessageSize)
 {
-    boost::asio::ip::tcp::endpoint endpoint(discoveredProbe.address(), tcpConnectionPort);
+    m_endpoint = boost::asio::ip::tcp::endpoint(discoveredProbe.address(), tcpConnectionPort);
 
     unique_ptr<boost::asio::io_service> ioService = make_unique<boost::asio::io_service>();
     unique_ptr<boost::asio::ip::tcp::socket> socket = make_unique<boost::asio::ip::tcp::socket>(*ioService);
@@ -47,23 +49,10 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
         THROW_NETWORK_EXCEPTION("Unable to set the receive timeout");
     }
 
-    m_socket->connect(endpoint, error);
-    if (error)
-    {
-        THROW_NETWORK_EXCEPTION("Socket connection error");
-    }
+    connect(*socket);
 
-    ProbeInitializationRequestMessage request(sampleFrequency, format);
-    auto response = sendRequest<ProbeInitializationResponseMessage>(*m_socket, m_sendingBuffer, request);
-    if (!response.isCompatible())
-    {
-        THROW_NETWORK_EXCEPTION("Not compatible probe");
-    }
-
-    m_isMaster = response.isMaster();
     m_ioService = move(ioService);
     m_socket = move(socket);
-    m_isConnected.store(true);
 }
 
 ProbeServer::~ProbeServer()
@@ -82,6 +71,11 @@ void ProbeServer::stop()
     m_stopped.store(true);
     if (!wasStopped)
     {
+        if (m_socket->is_open())
+        {
+            m_socket->close();
+        }
+        m_isConnected.store(false);
         m_serverThread->join();
         m_serverThread.release();
     }
@@ -109,26 +103,19 @@ void ProbeServer::send(const ProbeMessage& message)
 
 void ProbeServer::run()
 {
-    auto lastHeartbeatSendingTime = chrono::system_clock::now();
-    auto lastHeartbeatReceivingTime = chrono::system_clock::now();
-
     while (!m_stopped.load())
     {
         try
         {
-            updateHeartbeat(lastHeartbeatSendingTime, lastHeartbeatReceivingTime);
-
-            m_tcpMessageReader.read(*m_socket, [&](const ProbeMessage& message)
+            if (m_isConnected.load())
             {
-                if (typeid(message) == typeid(HeartbeatMessage))
-                {
-                    lastHeartbeatReceivingTime = chrono::system_clock::now();
-                }
-                else
-                {
-                    m_messageHandler->handle(message, m_id);
-                }
-            });
+                readMessage();
+                updateHeartbeat();
+            }
+            else
+            {
+                reconnect();
+            }
         }
         catch (exception& ex)
         {
@@ -137,19 +124,67 @@ void ProbeServer::run()
     }
 }
 
-void ProbeServer::updateHeartbeat(chrono::system_clock::time_point& lastHeartbeatSendingTime,
-    chrono::system_clock::time_point& lastHeartbeatReceivingTime)
+void ProbeServer::connect(boost::asio::ip::tcp::socket& socket)
+{
+    boost::system::error_code error;
+    socket.connect(m_endpoint, error);
+    if (error)
+    {
+        THROW_NETWORK_EXCEPTION("Socket connection error");
+    }
+
+    ProbeInitializationRequestMessage request(m_sampleFrequency, m_format);
+    auto response = sendRequest<ProbeInitializationResponseMessage>(socket, m_sendingBuffer, request);
+    if (!response.isCompatible())
+    {
+        THROW_NETWORK_EXCEPTION("Not compatible probe");
+    }
+    m_isMaster = response.isMaster();
+    m_isConnected.store(true);
+
+    m_lastHeartbeatSendingTime = chrono::system_clock::now();
+    m_lastHeartbeatReceivingTime = chrono::system_clock::now();
+}
+
+void ProbeServer::reconnect()
+{
+    const chrono::system_clock::duration ConnectionInterval = 1s;
+    this_thread::sleep_for(ConnectionInterval);
+
+    if (m_socket->is_open())
+    {
+        m_socket->close();
+    }
+    connect(*m_socket);
+}
+
+void ProbeServer::readMessage()
+{
+    m_tcpMessageReader.read(*m_socket, [&](const ProbeMessage& message)
+    {
+        if (typeid(message) == typeid(HeartbeatMessage))
+        {
+            m_lastHeartbeatReceivingTime = chrono::system_clock::now();
+        }
+        else
+        {
+            m_messageHandler->handle(message, m_id, m_isMaster);
+        }
+    });
+}
+
+void ProbeServer::updateHeartbeat()
 {
     const chrono::system_clock::duration HeartbeatInterval = chrono::microseconds(10 * m_timeoutMs);
     const chrono::system_clock::duration HeartbeatTimeout = chrono::microseconds(20 * m_timeoutMs);
 
     auto now = chrono::system_clock::now();
-    if (lastHeartbeatSendingTime - now > HeartbeatInterval)
+    if (m_lastHeartbeatSendingTime - now > HeartbeatInterval)
     {
         send(HeartbeatMessage());
-        lastHeartbeatSendingTime = now;
+        m_lastHeartbeatSendingTime = now;
     }
-    if (lastHeartbeatReceivingTime - now > HeartbeatTimeout)
+    if (m_lastHeartbeatReceivingTime - now > HeartbeatTimeout)
     {
         m_isConnected.store(false);
     }
