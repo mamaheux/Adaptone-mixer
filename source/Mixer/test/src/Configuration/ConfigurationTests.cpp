@@ -32,7 +32,12 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.output.format", "signed_8" },
         { "audio.output.filename", "output.raw" },
 
-        //TODO add uniformization properties
+        { "uniformization.network.discovery_endpoint", "192.168.1.255:5000" },
+        { "uniformization.network.discovery_timeout_ms", "1000" },
+        { "uniformization.network.discovery_trial_count", "5" },
+        { "uniformization.network.tcp_connection_port", "5001"},
+        { "uniformization.network.udp_receiving_port", "5002"},
+        { "uniformization.network.probe_timeout_ms", "2000"},
 
         { "web_socket.endpoint", "^/echo/?$" },
         { "web_socket.port", "8080" }
@@ -61,7 +66,13 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrame::Format::Signed8);
     EXPECT_EQ(configuration.audioOutput().filename(), "output.raw");
 
-    //TODO add uniformization expect calls
+    EXPECT_EQ(configuration.uniformization().discoveryEndpoint().ipAddress(), "192.168.1.255");
+    EXPECT_EQ(configuration.uniformization().discoveryEndpoint().port(), 5000);
+    EXPECT_EQ(configuration.uniformization().discoveryTimeoutMs(), 1000);
+    EXPECT_EQ(configuration.uniformization().discoveryTrialCount(), 5);
+    EXPECT_EQ(configuration.uniformization().tcpConnectionPort(), 5001);
+    EXPECT_EQ(configuration.uniformization().udpReceivingPort(), 5002);
+    EXPECT_EQ(configuration.uniformization().probeTimeoutMs(), 2000);
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
     EXPECT_EQ(configuration.webSocket().port(), 8080);
