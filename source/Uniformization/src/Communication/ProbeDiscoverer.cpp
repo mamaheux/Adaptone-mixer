@@ -28,7 +28,7 @@ ProbeDiscoverer::ProbeDiscoverer(const Endpoint& endpoint, int timeoutMs, size_t
     boost::asio::ip::address ipAddress = boost::asio::ip::address::from_string(endpoint.ipAddress(), error);
     if (error || !ipAddress.is_v4())
     {
-        THROW_NETWORK_EXCEPTION("Invalid ip v4 address");
+        THROW_NETWORK_EXCEPTION("Invalid IPv4 address");
     }
 
     m_endpoint = boost::asio::ip::udp::endpoint(ipAddress, endpoint.port());
