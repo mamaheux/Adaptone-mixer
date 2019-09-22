@@ -94,5 +94,5 @@ PcmAudioFrame::Format ProbeInitializationRequestMessage::parseFormat(uint32_t fo
         return it->second;
     }
 
-    THROW_INVALID_VALUE_EXCEPTION("Not supported format", "");
+    THROW_INVALID_VALUE_EXCEPTION("Format not supported", "");
 }
