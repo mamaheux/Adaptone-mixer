@@ -35,5 +35,5 @@ bool ProbeMessage::hasPayload(uint32_t id)
         return it->second;
     }
 
-    THROW_INVALID_VALUE_EXCEPTION("Not supported format", "");
+    THROW_INVALID_VALUE_EXCEPTION("Format not supported", "");
 }
