@@ -60,8 +60,10 @@ void ProbeSoundDataMessage::serializePayload(NetworkBufferView buffer) const
     buffer.data()[HoursSerializePayloadOffset] = m_hours;
     buffer.data()[MinutesSerializePayloadOffset] = m_minutes;
     buffer.data()[SecondsSerializePayloadOffset] = m_seconds;
-    *reinterpret_cast<uint16_t*>(buffer.data() + MillisecondsSerializePayloadOffset) = boost::endian::native_to_big(m_milliseconds);
-    *reinterpret_cast<uint16_t*>(buffer.data() + MicrosecondsSerializePayloadOffset) = boost::endian::native_to_big(m_microseconds);
+    *reinterpret_cast<uint16_t*>(buffer.data() + MillisecondsSerializePayloadOffset) =
+        boost::endian::native_to_big(m_milliseconds);
+    *reinterpret_cast<uint16_t*>(buffer.data() + MicrosecondsSerializePayloadOffset) =
+        boost::endian::native_to_big(m_microseconds);
 
     memcpy(buffer.data() + DataSerializePayloadOffset, m_data, m_dataSize);
 }
