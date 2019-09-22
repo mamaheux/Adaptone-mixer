@@ -3,6 +3,7 @@
 using namespace adaptone;
 
 constexpr uint32_t ProbeDiscoveryRequestMessage::Id;
+constexpr size_t ProbeDiscoveryRequestMessage::MessageSize;
 
 ProbeDiscoveryRequestMessage::ProbeDiscoveryRequestMessage() : ProbeMessage(Id, 0)
 {
@@ -15,7 +16,7 @@ ProbeDiscoveryRequestMessage::~ProbeDiscoveryRequestMessage()
 ProbeDiscoveryRequestMessage ProbeDiscoveryRequestMessage::fromBuffer(NetworkBufferView buffer, size_t messageSize)
 {
     verifyId(buffer, Id);
-    verifyMessageSize(messageSize, 4);
+    verifyMessageSize(messageSize, MessageSize);
 
     return ProbeDiscoveryRequestMessage();
 }

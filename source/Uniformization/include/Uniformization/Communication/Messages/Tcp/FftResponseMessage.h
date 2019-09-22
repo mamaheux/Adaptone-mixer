@@ -14,6 +14,7 @@ namespace adaptone
     {
     public:
         static constexpr uint32_t Id = 8;
+        static constexpr std::size_t MinimumMessageSize = 10;
 
     private:
         uint16_t m_fftId;

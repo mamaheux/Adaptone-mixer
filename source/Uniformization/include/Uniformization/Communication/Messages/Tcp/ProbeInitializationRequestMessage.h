@@ -11,6 +11,7 @@ namespace adaptone
     {
     public:
         static constexpr uint32_t Id = 2;
+        static constexpr std::size_t MessageSize = 16;
 
     private:
         uint32_t m_sampleFrequency;

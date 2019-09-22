@@ -9,6 +9,7 @@ namespace adaptone
     {
     public:
         static constexpr uint32_t Id = 7;
+        static constexpr std::size_t MessageSize = 15;
 
     private:
         uint8_t m_hours;

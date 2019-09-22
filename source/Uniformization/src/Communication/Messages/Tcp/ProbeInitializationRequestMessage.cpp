@@ -8,6 +8,7 @@ using namespace adaptone;
 using namespace std;
 
 constexpr uint32_t ProbeInitializationRequestMessage::Id;
+constexpr size_t ProbeInitializationRequestMessage::MessageSize;
 
 ProbeInitializationRequestMessage::ProbeInitializationRequestMessage(uint32_t sampleFrequency,
     PcmAudioFrame::Format format) :
@@ -25,7 +26,7 @@ ProbeInitializationRequestMessage ProbeInitializationRequestMessage::fromBuffer(
     size_t messageSize)
 {
     verifyId(buffer, Id);
-    verifyMessageSize(messageSize, 16);
+    verifyMessageSize(messageSize, MessageSize);
 
     uint32_t* data = reinterpret_cast<uint32_t*>(buffer.data() + 8);
     return ProbeInitializationRequestMessage(boost::endian::big_to_native(data[0]),

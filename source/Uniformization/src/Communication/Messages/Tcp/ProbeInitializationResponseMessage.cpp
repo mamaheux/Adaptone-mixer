@@ -3,6 +3,7 @@
 using namespace adaptone;
 
 constexpr uint32_t ProbeInitializationResponseMessage::Id;
+constexpr size_t ProbeInitializationResponseMessage::MessageSize;
 
 ProbeInitializationResponseMessage::ProbeInitializationResponseMessage(bool isCompatible, bool isMaster) :
     PayloadMessage(Id, 2),
@@ -19,7 +20,7 @@ ProbeInitializationResponseMessage ProbeInitializationResponseMessage::fromBuffe
     size_t messageSize)
 {
     verifyId(buffer, Id);
-    verifyMessageSize(messageSize, 10);
+    verifyMessageSize(messageSize, MessageSize);
 
     return ProbeInitializationResponseMessage(static_cast<bool>(buffer.data()[8]), static_cast<bool>(buffer.data()[9]));
 }

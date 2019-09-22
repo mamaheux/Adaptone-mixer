@@ -9,6 +9,7 @@ namespace adaptone
     {
     public:
         static constexpr uint32_t Id = 0;
+        static constexpr std::size_t MessageSize = 4;
 
         ProbeDiscoveryRequestMessage();
         ~ProbeDiscoveryRequestMessage() override;

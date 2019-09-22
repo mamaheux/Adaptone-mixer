@@ -12,6 +12,7 @@ namespace adaptone
     {
     public:
         static constexpr uint32_t Id = 9;
+        static constexpr std::size_t MinimumMessageSize = 17;
 
     private:
         uint16_t m_soundDataId;
