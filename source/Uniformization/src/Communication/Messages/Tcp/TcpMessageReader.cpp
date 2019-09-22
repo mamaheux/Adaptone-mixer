@@ -65,7 +65,7 @@ size_t adaptone::readTcpMessageData(boost::asio::ip::tcp::socket& socket, Networ
             THROW_NETWORK_EXCEPTION("Invalid payload size");
         }
 
-        size_t payloadSize = boost::endian::big_to_native(*reinterpret_cast<uint32_t*>(buffer.data()));
+        size_t payloadSize = boost::endian::big_to_native(*reinterpret_cast<uint32_t*>(buffer.data() + messageSize));
         messageSize += sizeof(uint32_t);
 
         if (payloadSize > buffer.size() - 2 * sizeof(uint32_t))
