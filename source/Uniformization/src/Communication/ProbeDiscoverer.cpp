@@ -68,9 +68,9 @@ ProbeDiscoverer::~ProbeDiscoverer()
     m_socket->close();
 }
 
-vector<DiscoveredProbe> ProbeDiscoverer::discover()
+set<DiscoveredProbe> ProbeDiscoverer::discover()
 {
-    vector<DiscoveredProbe> discoveredProbes;
+    set<DiscoveredProbe> discoveredProbes;
     ProbeDiscoveryRequestMessage discoveryRequestMessage;
     discoveryRequestMessage.toBuffer(m_sendingBuffer);
 
@@ -94,7 +94,7 @@ vector<DiscoveredProbe> ProbeDiscoverer::discover()
 
             if (response != nullopt)
             {
-                discoveredProbes.emplace_back(probeEndpoint.address());
+                discoveredProbes.emplace(probeEndpoint.address());
             }
         } while (response != nullopt);
     }

@@ -8,7 +8,7 @@
 #include <boost/asio.hpp>
 
 #include <memory>
-#include <vector>
+#include <set>
 
 namespace adaptone
 {
@@ -20,11 +20,24 @@ namespace adaptone
         virtual ~DiscoveredProbe();
 
         const boost::asio::ip::address& address() const;
+
+        friend bool operator<(const DiscoveredProbe& l, const DiscoveredProbe& r);
+        friend bool operator==(const DiscoveredProbe& l, const DiscoveredProbe& r);
     };
 
     inline const boost::asio::ip::address& DiscoveredProbe::address() const
     {
         return m_address;
+    }
+
+    inline bool operator<(const DiscoveredProbe& l, const DiscoveredProbe& r)
+    {
+        return l.m_address < r.m_address;
+    }
+
+    inline bool operator==(const DiscoveredProbe& l, const DiscoveredProbe& r)
+    {
+        return l.m_address == r.m_address;
     }
 
     class ProbeDiscoverer
@@ -45,7 +58,7 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(ProbeDiscoverer);
         DECLARE_NOT_MOVABLE(ProbeDiscoverer);
 
-        std::vector<DiscoveredProbe> discover();
+        std::set<DiscoveredProbe> discover();
     };
 }
 
