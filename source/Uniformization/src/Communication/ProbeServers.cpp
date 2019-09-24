@@ -73,8 +73,8 @@ void ProbeServers::run()
     {
         createUdpSocket();
 
-        vector<DiscoveredProbe> discoveredProbes = m_probeDiscoverer.discover();
-        for (DiscoveredProbe& discoveredProbe : discoveredProbes)
+        set<DiscoveredProbe> discoveredProbes = m_probeDiscoverer.discover();
+        for (const DiscoveredProbe& discoveredProbe : discoveredProbes)
         {
             createProbeServer(discoveredProbe);
         }
