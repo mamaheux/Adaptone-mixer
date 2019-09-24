@@ -21,7 +21,6 @@ namespace adaptone
         float routineIRSweepT() const;
     };
 
-
     inline float UniformizationConfiguration::routineIRSweepF1() const
     {
         return m_routineIRSweepF1;
@@ -37,9 +36,5 @@ namespace adaptone
         return m_routineIRSweepT;
     }
 }
-
-
-
-
 
 #endif

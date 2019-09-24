@@ -15,7 +15,7 @@ file(GLOB_RECURSE
 
 add_library(Uniformization
     STATIC
-    ${source_files} include/Uniformization/Math.h include/Uniformization/Conversion/ArrayToPcmConversion.h)
+    ${source_files})
 
 set_property(TARGET Uniformization PROPERTY CXX_STANDARD 17)
 

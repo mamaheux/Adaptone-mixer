@@ -1,14 +1,10 @@
-//
-// Created by pascal on 9/17/19.
-//
-
-#ifndef UNIFORMIZATION_ARRAYTOPCMCONVERSION_H
-#define UNIFORMIZATION_ARRAYTOPCMCONVERSION_H
+#ifndef UTILS_DATA_ARRAY_TO_PCM_CONVERSION_H
+#define UTILS_DATA_ARRAY_TO_PCM_CONVERSION_H
 
 #include <Utils/Data/PcmAudioFrame.h>
 #include <Utils/TypeTraits.h>
 
-#include <math.h>
+#include <cmath>
 #include <cstddef>
 #include <cstdint>
 #include <limits>
@@ -18,18 +14,6 @@ namespace adaptone
 
     template<class T>
     inline T round(T value)
-    {
-        static_assert(AlwaysFalse<T>::value, "Not supported");
-    }
-
-    template<>
-    inline float round(float value)
-    {
-        return floor(value + 0.5);
-    }
-
-    template<>
-    inline double round(double value)
     {
         return floor(value + 0.5);
     }
@@ -49,24 +33,10 @@ namespace adaptone
         return value;
     }
 
-    template<>
-    inline float saturateOutput(float value, float min, float max)
-    {
-
-        float x = (value - min) / (max - min);
-        if (x < 0)
-            x = 0;
-        if (x > 1)
-            x = 1;
-
-        return x * (max - min) + min;
-    }
-
     template<class T, class PcmT>
     void arrayToSignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-                                     std::size_t channelCount)
+        std::size_t channelCount)
     {
-
         std::size_t n = frameSampleCount * channelCount;
 
         PcmT* output = reinterpret_cast<PcmT*>(outputBytes);
@@ -86,7 +56,7 @@ namespace adaptone
 
     template<class T>
     void arrayToSigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
-                                       std::size_t channelCount)
+        std::size_t channelCount)
     {
         constexpr T AbsMin = 1 << 23;
 
@@ -113,7 +83,7 @@ namespace adaptone
 
     template<class T>
     void arrayToSignedPadded24Pcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-                                             std::size_t channelCount)
+        std::size_t channelCount)
     {
         constexpr T AbsMin = 1 << 23;
 
@@ -134,7 +104,7 @@ namespace adaptone
 
     template<class T, class PcmT>
     void arrayToUnsignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-                                       std::size_t channelCount)
+        std::size_t channelCount)
     {
         std::size_t n = frameSampleCount * channelCount;
 
@@ -156,7 +126,7 @@ namespace adaptone
 
     template<class T>
     void arrayToUnsigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
-                                         std::size_t channelCount)
+        std::size_t channelCount)
     {
         constexpr T Max = (1 << 24) - 1;
 
@@ -183,7 +153,7 @@ namespace adaptone
 
     template<class T>
     void arrayToUnsignedPadded24Pcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-                                               std::size_t channelCount)
+        std::size_t channelCount)
     {
         constexpr T Max = (1 << 24) - 1;
 
@@ -204,7 +174,7 @@ namespace adaptone
 
     template<class T, class PcmT>
     void arrayToFloatingPointPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-                                            std::size_t channelCount)
+        std::size_t channelCount)
     {
         std::size_t n = frameSampleCount * channelCount;
 
@@ -223,7 +193,7 @@ namespace adaptone
 
     template<class T>
     void convertArrayToPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-                                      std::size_t channelCount, PcmAudioFrame::Format format)
+        std::size_t channelCount, PcmAudioFrame::Format format)
     {
         switch (format)
         {
@@ -269,5 +239,4 @@ namespace adaptone
     }
 }
 
-
-#endif //UNIFORMIZATION_ARRAYTOPCMCONVERSION_H
+#endif

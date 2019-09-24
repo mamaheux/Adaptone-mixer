@@ -16,7 +16,7 @@ file(GLOB_RECURSE
     include/*)
 
 add_executable(UniformizationTests
-    ${source_files} ../include/Uniformization/Math.h src/MathTests.cpp src/Conversion/ArrayToPcmConversionTests.cpp)
+    ${source_files})
 
 set_property(TARGET UniformizationTests PROPERTY CXX_STANDARD 14)
 
