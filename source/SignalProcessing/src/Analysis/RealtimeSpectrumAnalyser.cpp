@@ -1,6 +1,6 @@
 #include <SignalProcessing/Analysis/RealtimeSpectrumAnalyser.h>
 
-#include <SignalProcessing/Analysis/Math.h>
+#include <SignalProcessing/Utils/Math.h>
 
 using namespace adaptone;
 using namespace std;

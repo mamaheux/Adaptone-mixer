@@ -1,5 +1,5 @@
 #include <SignalProcessing/Filters/Design/GraphicEqDesigner.h>
-#include <SignalProcessing/Filters/Design/Math.h>
+#include <SignalProcessing/Utils/Math.h>
 
 #include <Utils/Exception/InvalidValueException.h>
 
@@ -37,7 +37,7 @@ class ArmaGraphicEqDesignerPrivate : public GraphicEqDesignerPrivate
     arma::vec m_minPhaseW;
     arma::vec m_minPhaseGains;
     arma::vec m_minPhaseGains1Period;
-    arma::vec m_minPhaseGains2Period;
+    arma::cx_vec m_minPhaseGains2Period;
     arma::cx_vec m_analyticSignal;
     arma::vec m_phaseUpsampled;
     arma::vec m_phase;
@@ -278,9 +278,9 @@ void ArmaGraphicEqDesignerPrivate::updateHt()
         m_minPhaseGains(arma::span(0, N - 1));
     m_minPhaseGains1Period = arma::log(m_minPhaseGains1Period);
 
-    m_minPhaseGains2Period(arma::span(0, m_minPhaseGains1Period.n_elem - 1)) = m_minPhaseGains1Period;
+    m_minPhaseGains2Period(arma::span(0, m_minPhaseGains1Period.n_elem - 1)) = arma::conv_to<arma::cx_vec>::from(m_minPhaseGains1Period);
     m_minPhaseGains2Period(arma::span(m_minPhaseGains1Period.n_elem, m_minPhaseGains2Period.n_elem - 1)) =
-        m_minPhaseGains1Period;
+        arma::conv_to<arma::cx_vec>::from(m_minPhaseGains1Period);
 
     // Calculate the min phase target
     hilbert(m_minPhaseGains2Period, m_analyticSignal);
