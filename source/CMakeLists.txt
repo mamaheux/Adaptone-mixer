@@ -40,7 +40,7 @@ endfunction(assign_source_group)
 
 
 set(openblas_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/OpenBLAS/libopenblas.a")
-set(fftw_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/fftw/build/lib/libfftw3f.a")
+set(fftw_LIBRARY "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/fftw/build/lib/libfftw3f.a" "${CMAKE_CURRENT_SOURCE_DIR}/3rdParty/fftw/build/lib/libfftw3.a")
 
 
 add_subdirectory(3rdParty)
