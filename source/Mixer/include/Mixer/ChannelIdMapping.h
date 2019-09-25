@@ -46,6 +46,7 @@ namespace adaptone
         std::optional<std::size_t> getAuxiliaryOutputIndexFromChannelIdOrNull(std::size_t channelId);
 
         std::vector<std::size_t> getMasterOutputIndexes();
+        std::size_t getMasterChannelId();
     };
 
     inline std::size_t ChannelIdMapping::getChannelIdFromInputIndex(std::size_t index)
@@ -120,6 +121,11 @@ namespace adaptone
     {
         std::shared_lock lock(m_mutex);
         return m_masterOutputIndexes;
+    }
+
+    inline std::size_t ChannelIdMapping::getMasterChannelId()
+    {
+        return 0;
     }
 }
 
