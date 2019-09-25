@@ -72,23 +72,6 @@ namespace adaptone
         return value;
     }
 
-    template<>
-    inline float ArrayToPcmConverter::saturateOutput(float value, float min, float max)
-    {
-        value = (value - min) / (max - min);
-
-        if (value > 1)
-        {
-            value = 1;
-        }
-        if (value < 0)
-        {
-            value = 0;
-        }
-
-        return value * (max - min) + min;
-    }
-
     template<class T, class PcmT>
     void ArrayToPcmConverter::arrayToSignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
         std::size_t channelCount)
