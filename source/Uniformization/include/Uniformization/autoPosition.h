@@ -6,47 +6,104 @@
 
 namespace adaptone
 {
-    bool autoPosition(arma::mat distMat, int iterNb, int thermalIterNb, float alpha)
+    double autoPosition(arma::mat distMat, arma::mat setAPosMat, arma::mat setBPosMat, int iterNb, int tryNb,
+        int thermalIterNb, float alpha, float epsilonTotalDistError, float epsilonDeltaTotalDistError,
+        int countThreshold)
     {
         double deltaTotalDistError = INFINITY;
         double prevTotalDistError = 0;
+        double totalDistError;
         int count = 0;
+        int status;
 
         int rowNb = distMat.n_rows;
         int colNb = distMat.n_cols;
 
-        double spaceFactor = arma::mean(arma::mean(distMat)) / (rowNb * colNb);
-
-        // inirialize speaker and mic position as random inside a space bound by a guessed box from distances
-        arma::mat setAPosMat = spaceFactor * arma::randu<arma::mat>(rowNb, 3);
-        arma::mat setBPosMat = spaceFactor * arma::randu<arma::mat>(colNb, 3);
-        arma::mat distNewMat = arma::zeros(rowNb, colNb);
-        for(int n = 0; n < iterNb; n++)
+        double avgDist = arma::mean(arma::mean(distMat));
+        // initialize speaker and mic position as random inside a space bound by a guessed box from distances
+        if (setAPosMat.is_empty())
         {
-            double totalDistError = 0;
-            for(int i = 0; i < rowNb; i++)
+            setAPosMat = avgDist * arma::randu<arma::mat>(rowNb, 3);
+        }
+
+        if (setBPosMat.is_empty())
+        {
+            setBPosMat = avgDist * arma::randu<arma::mat>(colNb, 3);
+        }
+
+        arma::mat distNewMat = arma::zeros(rowNb, colNb);
+
+        for (int k = 0; k < tryNb; k++)
+        {
+            if (status == 1)
             {
-                int status = 0;
-                for(int j = 0; j < colNb; j++)
+                break;
+            }
+
+            for (int n = 0; n < iterNb; n++)
+            {
+                totalDistError = 0;
+                for (int i = 0; i < rowNb; i++)
                 {
-                    arma::vec uVec = setAPosMat.row(i) - setBPosMat.row(j);
-                    double uNorm = arma::norm(uVec);
-                    arma::vec uNormVec = uVec / uNorm;
+                    status = 0;
+                    for (int j = 0; j < colNb; j++)
+                    {
+                        arma::mat uVec = setAPosMat.row(i) - setBPosMat.row(j);
+                        double uNorm = arma::norm(uVec);
+                        arma::mat uNormVec = uVec / uNorm;
 
-                    distNewMat(i,j) = uNorm;
+                        distNewMat(i, j) = uNorm;
 
-                    double distError = distNewMat(i,j) - distMat(i,j);
-                    totalDistError += distError;
+                        double distError = distNewMat(i, j) - distMat(i, j);
+                        totalDistError += std::abs(distError);
 
-                    arma::vec distErrorVec = distError * uNormVec;
-                    arma::vec setAOffset = -1 / rowNb * alpha * 0.5 * distErrorVec;
-                    arma::vec setBOffset = 1 / rowNb * alpha * 0.5 * distErrorVec;
+                        arma::mat distErrorVec = distError * uNormVec;
+                        arma::mat setAOffset = -alpha * 0.5 * distErrorVec;
+                        arma::mat setBOffset = alpha * 0.5 * distErrorVec;
 
-                    double thermalNoiseFactor = std::fmax(0.0, 0.2 * (thermalIterNb - n) / thermalIterNb);
+                        //double thermalNoiseFactor = std::fmax(0.0, 0.2 * (thermalIterNb - n) / thermalIterNb);
+                        double thermalNoiseFactor = 0.5 * avgDist * std::exp(-5 * n / thermalIterNb);
+                        arma::mat setAThermalOffset = thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1,3));
+                        arma::mat setBThermalOffset = thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1,3));
 
+                        setAPosMat.row(i) += setAOffset + setAThermalOffset;
+                        setBPosMat.row(j) += setBOffset + setBThermalOffset;
+                    }
+                }
+
+                deltaTotalDistError = std::abs(prevTotalDistError - totalDistError);
+                prevTotalDistError = totalDistError;
+
+                if (deltaTotalDistError < epsilonDeltaTotalDistError)
+                {
+                    count++;
+                    if (count > countThreshold)
+                    {
+                        if (totalDistError < epsilonTotalDistError)
+                        {
+                            status = 1;
+                            break;
+                        }
+                        else
+                        {
+                            status = -1;
+                            break;
+                        }
+                    }
+                }
+
+                if (n == iterNb && totalDistError < epsilonTotalDistError)
+                {
+                    status = 1;
+                }
+
+                if (status == 1 || status == -1)
+                {
+                    break;
                 }
             }
         }
+        return totalDistError;
     }
 }
 
