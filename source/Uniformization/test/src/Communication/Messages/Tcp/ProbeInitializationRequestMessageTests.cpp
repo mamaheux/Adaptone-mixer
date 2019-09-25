@@ -8,7 +8,7 @@ using namespace std;
 TEST(ProbeInitializationRequestMessageTests, constructor_shouldSetTheAttributes)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Float;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Float;
     ProbeInitializationRequestMessage message(44100, Format);
 
     EXPECT_EQ(message.id(), 2);
@@ -21,7 +21,7 @@ TEST(ProbeInitializationRequestMessageTests, constructor_shouldSetTheAttributes)
 TEST(ProbeInitializationRequestMessageTests, toBuffer_signed8_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Signed8;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Signed8;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -44,7 +44,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_signed8_shouldSerializeThe
 TEST(ProbeInitializationRequestMessageTests, toBuffer_signed16_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Signed16;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Signed16;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -67,7 +67,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_signed16_shouldSerializeTh
 TEST(ProbeInitializationRequestMessageTests, toBuffer_signed24_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Signed24;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Signed24;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -90,7 +90,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_signed24_shouldSerializeTh
 TEST(ProbeInitializationRequestMessageTests, toBuffer_signedPadded24_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::SignedPadded24;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::SignedPadded24;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -113,7 +113,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_signedPadded24_shouldSeria
 TEST(ProbeInitializationRequestMessageTests, toBuffer_signed32_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Signed32;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Signed32;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -136,7 +136,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_signed32_shouldSerializeTh
 TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned8_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Unsigned8;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Unsigned8;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -159,7 +159,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned8_shouldSerializeT
 TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned16_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Unsigned16;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Unsigned16;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -182,7 +182,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned16_shouldSerialize
 TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned24_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Unsigned24;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Unsigned24;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -205,7 +205,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned24_shouldSerialize
 TEST(ProbeInitializationRequestMessageTests, toBuffer_unsignedPadded24_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::UnsignedPadded24;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::UnsignedPadded24;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -228,7 +228,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_unsignedPadded24_shouldSer
 TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned32_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Unsigned32;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Unsigned32;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -251,7 +251,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_unsigned32_shouldSerialize
 TEST(ProbeInitializationRequestMessageTests, toBuffer_float_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Float;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Float;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -274,7 +274,7 @@ TEST(ProbeInitializationRequestMessageTests, toBuffer_float_shouldSerializeTheMe
 TEST(ProbeInitializationRequestMessageTests, toBuffer_double_shouldSerializeTheMessage)
 {
     constexpr uint32_t SampleFrequency = 44100;
-    constexpr PcmAudioFrame::Format Format = PcmAudioFrame::Format::Double;
+    constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Double;
     ProbeInitializationRequestMessage message(44100, Format);
     NetworkBuffer buffer(100);
 
@@ -342,5 +342,5 @@ TEST(ProbeInitializationRequestMessageTests, fromBuffer_shouldDeserialize)
     EXPECT_EQ(message.fullSize(), MessageSize);
 
     EXPECT_EQ(message.sampleFrequency(), 44100);
-    EXPECT_EQ(message.format(), PcmAudioFrame::Format::Double);
+    EXPECT_EQ(message.format(), PcmAudioFrameFormat::Double);
 }
