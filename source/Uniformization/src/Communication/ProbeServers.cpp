@@ -15,7 +15,7 @@ ProbeServers::ProbeServers(shared_ptr<Logger> logger,
     uint16_t udpReceivingPort,
     int probeTimeoutMs,
     size_t sampleFrequency,
-    PcmAudioFrame::Format format,
+    PcmAudioFrameFormat format,
     shared_ptr<ProbeMessageHandler> messageHandler) :
     m_logger(logger),
     m_tcpConnectionPort(tcpConnectionPort),

@@ -11,7 +11,7 @@ using namespace std;
 
 JETSON_TEST(AlsaTests, captureThenPlay_device_shouldReplayASound)
 {
-    PcmAudioFrame::Format format = PcmAudioFrame::Format::Signed32;
+    PcmAudioFrameFormat format = PcmAudioFrameFormat::Signed32;
     size_t channelCount = 10;
     size_t frameSampleCount = 32;
     size_t sampleFrequency = 44100;
@@ -44,7 +44,7 @@ JETSON_TEST(AlsaTests, captureThenPlay_device_shouldReplayASound)
 
 JETSON_TEST(AlsaTests, captureThenPlay_shouldReplayASound)
 {
-    PcmAudioFrame::Format format = PcmAudioFrame::Format::Signed32;
+    PcmAudioFrameFormat format = PcmAudioFrameFormat::Signed32;
     size_t channelCount = 10;
     size_t frameSampleCount = 32;
     size_t sampleFrequency = 44100;

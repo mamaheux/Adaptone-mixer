@@ -7,7 +7,7 @@
 #include <SignalProcessing/Cuda/Conversion/ArrayToPcmConversion.h>
 
 #include <Utils/ClassMacro.h>
-#include <Utils/Data/PcmAudioFrame.h>
+#include <Utils/Data/PcmAudioFrameFormat.h>
 
 #include <cuda_runtime.h>
 
@@ -98,8 +98,8 @@ namespace adaptone
         std::size_t m_delayedOutputFrameCount;
         std::size_t m_maxOutputDelay;
 
-        PcmAudioFrame::Format m_inputFormat;
-        PcmAudioFrame::Format m_outputFormat;
+        PcmAudioFrameFormat m_inputFormat;
+        PcmAudioFrameFormat m_outputFormat;
 
         bool m_hasOwnership;
 
@@ -108,8 +108,8 @@ namespace adaptone
             std::size_t frameSampleCount,
             std::size_t inputChannelCount,
             std::size_t outputChannelCount,
-            PcmAudioFrame::Format inputFormat,
-            PcmAudioFrame::Format outputFormat,
+            PcmAudioFrameFormat inputFormat,
+            PcmAudioFrameFormat outputFormat,
             std::size_t eqFilterCountPerChannel,
             std::size_t maxOutputDelay);
         __host__ CudaSignalProcessorBuffers(const CudaSignalProcessorBuffers& other);
@@ -172,8 +172,8 @@ namespace adaptone
         __device__ __host__ std::size_t mixingGainsSize();
         __device__ __host__ std::size_t delayedOutputFrameCount();
 
-        __device__ __host__ PcmAudioFrame::Format inputFormat();
-        __device__ __host__ PcmAudioFrame::Format outputFormat();
+        __device__ __host__ PcmAudioFrameFormat inputFormat();
+        __device__ __host__ PcmAudioFrameFormat outputFormat();
 
         __host__ void updateInputGains(const T* data);
         __host__ void updateMixingGains(const T* data);
@@ -190,14 +190,14 @@ namespace adaptone
         std::size_t frameSampleCount,
         std::size_t inputChannelCount,
         std::size_t outputChannelCount,
-        PcmAudioFrame::Format inputFormat,
-        PcmAudioFrame::Format outputFormat,
+        PcmAudioFrameFormat inputFormat,
+        PcmAudioFrameFormat outputFormat,
         std::size_t eqFilterCountPerChannel,
         std::size_t maxOutputDelay) :
         m_currentFrameIndex(0),
         m_currentDelayedOutputFrameIndex(0),
-        m_inputPcmFrameSize(PcmAudioFrame::size(inputFormat, inputChannelCount, frameSampleCount)),
-        m_outputPcmFrameSize(PcmAudioFrame::size(outputFormat, outputChannelCount, frameSampleCount)),
+        m_inputPcmFrameSize(size(inputFormat, inputChannelCount, frameSampleCount)),
+        m_outputPcmFrameSize(size(outputFormat, outputChannelCount, frameSampleCount)),
 
         m_frameCount(frameCount),
         m_frameSampleCount(frameSampleCount),
@@ -558,13 +558,13 @@ namespace adaptone
     }
 
     template<class T>
-    inline __device__ __host__ PcmAudioFrame::Format CudaSignalProcessorBuffers<T>::inputFormat()
+    inline __device__ __host__ PcmAudioFrameFormat CudaSignalProcessorBuffers<T>::inputFormat()
     {
         return m_inputFormat;
     }
 
     template<class T>
-    inline __device__ __host__ PcmAudioFrame::Format CudaSignalProcessorBuffers<T>::outputFormat()
+    inline __device__ __host__ PcmAudioFrameFormat CudaSignalProcessorBuffers<T>::outputFormat()
     {
         return m_outputFormat;
     }

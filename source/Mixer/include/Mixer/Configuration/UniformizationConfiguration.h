@@ -16,6 +16,10 @@ namespace adaptone
         uint16_t m_udpReceivingPort;
         int m_probeTimeoutMs;
 
+        float m_routineIRSweepF1;
+        float m_routineIRSweepF2;
+        float m_routineIRSweepT;
+
     public:
         explicit UniformizationConfiguration(const Properties& properties);
         virtual ~UniformizationConfiguration();
@@ -27,6 +31,10 @@ namespace adaptone
         uint16_t tcpConnectionPort() const;
         uint16_t udpReceivingPort() const;
         int probeTimeoutMs() const;
+
+        float routineIRSweepF1() const;
+        float routineIRSweepF2() const;
+        float routineIRSweepT() const;
     };
 
     inline const Endpoint& UniformizationConfiguration::discoveryEndpoint() const
@@ -58,6 +66,21 @@ namespace adaptone
     {
         return m_probeTimeoutMs;
     }
+
+    inline float UniformizationConfiguration::routineIRSweepF1() const
+    {
+        return m_routineIRSweepF1;
+    }
+
+    inline float UniformizationConfiguration::routineIRSweepF2() const
+    {
+        return m_routineIRSweepF2;
+    }
+
+    inline float UniformizationConfiguration::routineIRSweepT() const
+    {
+        return m_routineIRSweepT;
+    };
 }
 
 #endif

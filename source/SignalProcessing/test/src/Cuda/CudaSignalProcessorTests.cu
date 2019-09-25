@@ -15,8 +15,8 @@ TEST(CudaSignalProcessorTests, performance)
     constexpr size_t SampleFrequency = 48000;
     constexpr size_t InputChannelCount = 16;
     constexpr size_t OutputChannelCount = 16;
-    constexpr PcmAudioFrame::Format InputFormat = PcmAudioFrame::Format::SignedPadded24;
-    constexpr PcmAudioFrame::Format OutputFormat = PcmAudioFrame::Format::SignedPadded24;
+    constexpr PcmAudioFrameFormat InputFormat = PcmAudioFrameFormat::SignedPadded24;
+    constexpr PcmAudioFrameFormat OutputFormat = PcmAudioFrameFormat::SignedPadded24;
     vector<double> frequencies{ 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000,
         1250, 1600, 2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000 };
     constexpr std::size_t MaxOutputDelay = 441088;
@@ -74,8 +74,8 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     constexpr size_t SampleFrequency = 48000;
     constexpr size_t InputChannelCount = 2;
     constexpr size_t OutputChannelCount = 2;
-    constexpr PcmAudioFrame::Format InputFormat = PcmAudioFrame::Format::Double;
-    constexpr PcmAudioFrame::Format OutputFormat = PcmAudioFrame::Format::Double;
+    constexpr PcmAudioFrameFormat InputFormat = PcmAudioFrameFormat::Double;
+    constexpr PcmAudioFrameFormat OutputFormat = PcmAudioFrameFormat::Double;
     vector<double> frequencies{ 20, 10000, 20000 };
     constexpr std::size_t MaxOutputDelay = 4 * FrameSampleCount;
     constexpr size_t SoundLevelLength = 4096;

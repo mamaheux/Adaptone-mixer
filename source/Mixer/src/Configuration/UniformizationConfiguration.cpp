@@ -12,6 +12,9 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     constexpr const char* UdpReceivingPortPropertyKey = "uniformization.network.udp_receiving_port";
     constexpr const char* ProbeTimeoutMsPropertyKey = "uniformization.network.probe_timeout_ms";
 
+    constexpr const char* RoutineIRSweepF1PropertyKey = "uniformization.routine_ir_sweep_f1";
+    constexpr const char* RoutineIRSweepF2PropertyKey = "uniformization.routine_ir_sweep_f2";
+    constexpr const char* RoutineIRSweepTPropertyKey = "uniformization.routine_ir_sweep_t";
 
     m_discoveryEndpoint = properties.get<Endpoint>(DiscoveryEndpointPropertyKey);
     m_discoveryTimeoutMs = properties.get<int>(DiscoveryTimeoutMsPropertyKey);
@@ -20,6 +23,10 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     m_tcpConnectionPort = properties.get<uint16_t>(TcpConnectionPortPropertyKey);
     m_udpReceivingPort = properties.get<uint16_t>(UdpReceivingPortPropertyKey);
     m_probeTimeoutMs = properties.get<int>(ProbeTimeoutMsPropertyKey);
+
+    m_routineIRSweepF1 = properties.get<float>(RoutineIRSweepF1PropertyKey);
+    m_routineIRSweepF2 = properties.get<float>(RoutineIRSweepF2PropertyKey);
+    m_routineIRSweepT = properties.get<float>(RoutineIRSweepTPropertyKey);
 }
 
 UniformizationConfiguration::~UniformizationConfiguration()

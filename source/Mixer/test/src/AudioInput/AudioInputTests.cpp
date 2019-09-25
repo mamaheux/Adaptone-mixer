@@ -10,7 +10,7 @@ using namespace std;
 class DummyAudioInput : public AudioInput
 {
 public:
-    DummyAudioInput() : AudioInput(PcmAudioFrame::Format::Signed8, 1, 2)
+    DummyAudioInput() : AudioInput(PcmAudioFrameFormat::Signed8, 1, 2)
     {
     }
 
@@ -32,7 +32,7 @@ public:
 TEST(AudioInputTests, constructor_shouldInitializeTheFrame)
 {
     DummyAudioInput input;
-    EXPECT_EQ(input.read().format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(input.read().format(), PcmAudioFrameFormat::Signed8);
     EXPECT_EQ(input.read().channelCount(), 1);
     EXPECT_EQ(input.read().sampleCount(), 2);
 }

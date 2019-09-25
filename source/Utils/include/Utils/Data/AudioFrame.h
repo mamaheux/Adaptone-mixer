@@ -26,9 +26,11 @@ namespace adaptone
         std::size_t sampleCount() const;
 
         T* data();
+        const T* data() const;
         std::size_t size() const;
         std::size_t byteSize() const;
         T& operator[](std::size_t i);
+        const T& operator[](std::size_t i) const;
 
         AudioFrame& operator=(const AudioFrame& other);
         AudioFrame& operator=(AudioFrame&& other);
@@ -88,6 +90,12 @@ namespace adaptone
     }
 
     template<class T>
+    inline const T* AudioFrame<T>::data() const
+    {
+        return m_data;
+    }
+
+    template<class T>
     inline std::size_t AudioFrame<T>::size() const
     {
         return m_channelCount * m_sampleCount;
@@ -101,6 +109,12 @@ namespace adaptone
 
     template<class T>
     inline T& AudioFrame<T>::operator[](std::size_t i)
+    {
+        return m_data[i];
+    }
+
+    template<class T>
+    inline const T& AudioFrame<T>::operator[](std::size_t i) const
     {
         return m_data[i];
     }

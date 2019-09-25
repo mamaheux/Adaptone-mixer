@@ -32,7 +32,7 @@ namespace adaptone
             }
         };
 
-        PcmAudioFrame::Format m_format;
+        PcmAudioFrameFormat m_format;
         std::size_t m_channelCount;
         std::size_t m_frameSampleCount;
         std::unique_ptr<snd_pcm_t, PcmDeleter> m_pcmHandle;
@@ -40,7 +40,7 @@ namespace adaptone
     public:
         AlsaPcmDevice(const std::string& device,
             Stream stream,
-            PcmAudioFrame::Format format,
+            PcmAudioFrameFormat format,
             std::size_t channelCount,
             std::size_t frameSampleCount,
             std::size_t sampleFrequency);
@@ -53,7 +53,7 @@ namespace adaptone
         void write(const PcmAudioFrame& frame);
 
     private:
-        static snd_pcm_format_t convert(PcmAudioFrame::Format format);
+        static snd_pcm_format_t convert(PcmAudioFrameFormat format);
     };
 }
 

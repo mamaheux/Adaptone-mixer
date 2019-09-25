@@ -17,7 +17,7 @@ namespace adaptone
         std::size_t m_fileSize;
 
     public:
-        RawFileAudioInput(PcmAudioFrame::Format format,
+        RawFileAudioInput(PcmAudioFrameFormat format,
             std::size_t channelCount,
             std::size_t frameSampleCount,
             const std::string& filename,

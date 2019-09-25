@@ -20,7 +20,7 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     const DiscoveredProbe& discoveredProbe,
     size_t id,
     size_t sampleFrequency,
-    PcmAudioFrame::Format format,
+    PcmAudioFrameFormat format,
     shared_ptr<ProbeMessageHandler> messageHandler) :
     m_logger(logger),
     m_timeoutMs(timeoutMs),

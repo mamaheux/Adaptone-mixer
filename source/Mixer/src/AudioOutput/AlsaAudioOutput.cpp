@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-AlsaAudioOutput::AlsaAudioOutput(PcmAudioFrame::Format format,
+AlsaAudioOutput::AlsaAudioOutput(PcmAudioFrameFormat format,
     size_t channelCount,
     size_t frameSampleCount,
     size_t sampleFrequency,

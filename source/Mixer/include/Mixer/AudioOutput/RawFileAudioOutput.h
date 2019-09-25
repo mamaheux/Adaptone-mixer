@@ -15,7 +15,7 @@ namespace adaptone
         std::ofstream m_fileStream;
 
     public:
-        RawFileAudioOutput(PcmAudioFrame::Format format,
+        RawFileAudioOutput(PcmAudioFrameFormat format,
             std::size_t channelCount,
             std::size_t frameSampleCount,
             const std::string& filename);

@@ -15,7 +15,7 @@ namespace adaptone
         AlsaPcmDevice m_device;
 
     public:
-        AlsaAudioOutput(PcmAudioFrame::Format format,
+        AlsaAudioOutput(PcmAudioFrameFormat format,
             std::size_t channelCount,
             std::size_t frameSampleCount,
             size_t sampleFrequency,

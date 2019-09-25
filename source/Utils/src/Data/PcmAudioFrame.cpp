@@ -2,41 +2,10 @@
 
 #include <Utils/Exception/InvalidValueException.h>
 
-#include <unordered_map>
-
 using namespace adaptone;
 using namespace std;
 
-PcmAudioFrame::Format PcmAudioFrame::parseFormat(const string& format)
-{
-    const unordered_map<string, PcmAudioFrame::Format> Mapping(
-        {
-            { "signed_8", PcmAudioFrame::Format::Signed8 },
-            { "signed_16", PcmAudioFrame::Format::Signed16 },
-            { "signed_24", PcmAudioFrame::Format::Signed24 },
-            { "signed_padded_24", PcmAudioFrame::Format::SignedPadded24 },
-            { "signed_32", PcmAudioFrame::Format::Signed32 },
-
-            { "unsigned_8", PcmAudioFrame::Format::Unsigned8 },
-            { "unsigned_16", PcmAudioFrame::Format::Unsigned16 },
-            { "unsigned_24", PcmAudioFrame::Format::Unsigned24 },
-            { "unsigned_padded_24", PcmAudioFrame::Format::UnsignedPadded24 },
-            { "unsigned_32", PcmAudioFrame::Format::Unsigned32 },
-
-            { "float", PcmAudioFrame::Format::Float },
-            { "double", PcmAudioFrame::Format::Double }
-        });
-
-    auto it = Mapping.find(format);
-    if (it != Mapping.end())
-    {
-        return it->second;
-    }
-
-    THROW_INVALID_VALUE_EXCEPTION("PcmAudioFrame::Format", format);
-}
-
-PcmAudioFrame::PcmAudioFrame(Format format, size_t channelCount, size_t sampleCount) :
+PcmAudioFrame::PcmAudioFrame(PcmAudioFrameFormat format, size_t channelCount, size_t sampleCount) :
     m_format(format), m_channelCount(channelCount), m_sampleCount(sampleCount)
 {
     m_data = new uint8_t[size()];
