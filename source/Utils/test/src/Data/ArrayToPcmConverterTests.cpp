@@ -1,11 +1,11 @@
-#include <Utils/Data/ArrayToPcmConversion.h>
+#include <Utils/Data/ArrayToPcmConverter.h>
 
 #include <gtest/gtest.h>
 
 using namespace adaptone;
 using namespace std;
 
-TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertSigned8_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 4;
     constexpr size_t ChannelCount = 2;
@@ -22,8 +22,8 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
     input[6] = 0.25;
     input[7] = 1.1;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Signed8);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Signed8);
 
     EXPECT_EQ(output[0], -128);
     EXPECT_EQ(output[1], 0);
@@ -35,7 +35,7 @@ TEST(ArrayToPcmConversionTests, convertSigned8_shouldConvertTheDataFromFloatingP
     EXPECT_EQ(output[7], 127);
 }
 
-TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertSigned16_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 4;
     constexpr size_t ChannelCount = 2;
@@ -52,8 +52,8 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
     input[6] = 0.25;
     input[7] = 1.1;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Signed16);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Signed16);
 
     EXPECT_EQ(output[0], -32768);
     EXPECT_EQ(output[1], 0);
@@ -65,7 +65,7 @@ TEST(ArrayToPcmConversionTests, convertSigned16_shouldConvertTheDataFromFloating
     EXPECT_EQ(output[7], 32767);
 }
 
-TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertSigned24_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -80,7 +80,8 @@ TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloating
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, output, FrameSampleCount, ChannelCount, PcmAudioFrame::Format::Signed24);
+    ArrayToPcmConverter::convertArrayToPcm(input, output, FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Signed24);
 
     EXPECT_EQ(output[0], 0x00);
     EXPECT_EQ(output[1], 0x00);
@@ -107,7 +108,7 @@ TEST(ArrayToPcmConversionTests, convertSigned24_shouldConvertTheDataFromFloating
     EXPECT_EQ(output[17], 0x20);
 }
 
-TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertSignedPadded24_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -122,8 +123,8 @@ TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFl
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::SignedPadded24);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::SignedPadded24);
 
     EXPECT_EQ(output[0], -8388608);
     EXPECT_EQ(output[1], 0);
@@ -133,7 +134,7 @@ TEST(ArrayToPcmConversionTests, convertSignedPadded24_shouldConvertTheDataFromFl
     EXPECT_EQ(output[5], 2097152);
 }
 
-TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertSigned32_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -148,8 +149,8 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Signed32);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Signed32);
 
     EXPECT_EQ(output[0], -2147483648);
     EXPECT_EQ(output[1], 0);
@@ -159,7 +160,7 @@ TEST(ArrayToPcmConversionTests, convertSigned32_shouldConvertTheDataFromFloating
     EXPECT_EQ(output[5], 536870912);
 }
 
-TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertUnsigned8_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -174,8 +175,8 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, output, FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Unsigned8);
+    ArrayToPcmConverter::convertArrayToPcm(input, output, FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Unsigned8);
 
     EXPECT_EQ(output[0], 0);
     EXPECT_EQ(output[1], 128);
@@ -185,7 +186,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned8_shouldConvertTheDataFromFloatin
     EXPECT_EQ(output[5], 159);
 }
 
-TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertUnsigned16_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -200,8 +201,8 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Unsigned16);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Unsigned16);
 
     EXPECT_EQ(output[0], 0);
     EXPECT_EQ(output[1], 32768);
@@ -211,7 +212,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned16_shouldConvertTheDataFromFloati
     EXPECT_EQ(output[5], 40959);
 }
 
-TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertUnsigned24_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -226,8 +227,8 @@ TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, output, FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Unsigned24);
+    ArrayToPcmConverter::convertArrayToPcm(input, output, FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Unsigned24);
 
     EXPECT_EQ(output[0], 0x00);
     EXPECT_EQ(output[1], 0x00);
@@ -254,7 +255,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned24_shouldConvertTheDataFromFloati
     EXPECT_EQ(output[17], 0x9f);
 }
 
-TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertUnsignedPadded24_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -269,8 +270,8 @@ TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFrom
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::UnsignedPadded24);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::UnsignedPadded24);
 
     EXPECT_EQ(output[0], 0);
     EXPECT_EQ(output[1], 8388608);
@@ -280,7 +281,7 @@ TEST(ArrayToPcmConversionTests, convertUnsignedPadded24_shouldConvertTheDataFrom
     EXPECT_EQ(output[5], 10485759);
 }
 
-TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertUnsigned32_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -295,8 +296,8 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Unsigned32);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Unsigned32);
 
     EXPECT_EQ(output[0], 0);
     EXPECT_EQ(output[1], 2147483648);
@@ -306,7 +307,7 @@ TEST(ArrayToPcmConversionTests, convertUnsigned32_shouldConvertTheDataFromFloati
     EXPECT_EQ(output[5], 2684354560);
 }
 
-TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertFloat_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -321,8 +322,8 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Float);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Float);
 
     EXPECT_EQ(output[0], -1);
     EXPECT_EQ(output[1], 0);
@@ -332,7 +333,7 @@ TEST(ArrayToPcmConversionTests, convertFloat_shouldConvertTheDataFromFloatingPoi
     EXPECT_EQ(output[5], 0.25);
 }
 
-TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPointArray)
+TEST(ArrayToPcmConverterTests, convertDouble_shouldConvertTheDataFromFloatingPointArray)
 {
     constexpr size_t FrameSampleCount = 3;
     constexpr size_t ChannelCount = 2;
@@ -347,8 +348,8 @@ TEST(ArrayToPcmConversionTests, convertDouble_shouldConvertTheDataFromFloatingPo
     input[4] = 0.5;
     input[5] = 0.25;
 
-    convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
-        PcmAudioFrame::Format::Double);
+    ArrayToPcmConverter::convertArrayToPcm(input, reinterpret_cast<uint8_t*>(output), FrameSampleCount, ChannelCount,
+        PcmAudioFrameFormat::Double);
 
     EXPECT_EQ(output[0], -1);
     EXPECT_EQ(output[1], 0);

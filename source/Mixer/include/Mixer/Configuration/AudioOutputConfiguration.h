@@ -19,7 +19,7 @@ namespace adaptone
 
     private:
         Type m_type;
-        PcmAudioFrame::Format m_format;
+        PcmAudioFrameFormat m_format;
 
         //Raw file
         std::string m_filename;
@@ -34,7 +34,7 @@ namespace adaptone
         virtual ~AudioOutputConfiguration();
 
         Type type() const;
-        PcmAudioFrame::Format format() const;
+        PcmAudioFrameFormat format() const;
 
         const std::string& filename() const;
 
@@ -48,7 +48,7 @@ namespace adaptone
         return m_type;
     }
 
-    inline PcmAudioFrame::Format AudioOutputConfiguration::format() const
+    inline PcmAudioFrameFormat AudioOutputConfiguration::format() const
     {
         return m_format;
     }

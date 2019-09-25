@@ -11,7 +11,7 @@ constexpr uint32_t ProbeInitializationRequestMessage::Id;
 constexpr size_t ProbeInitializationRequestMessage::MessageSize;
 
 ProbeInitializationRequestMessage::ProbeInitializationRequestMessage(uint32_t sampleFrequency,
-    PcmAudioFrame::Format format) :
+    PcmAudioFrameFormat format) :
     PayloadMessage(Id, 2 * sizeof(uint32_t)),
     m_sampleFrequency(sampleFrequency),
     m_format(format)
@@ -40,24 +40,24 @@ void ProbeInitializationRequestMessage::serializePayload(NetworkBufferView buffe
     data[1] = boost::endian::native_to_big(serializeFormat(m_format));
 }
 
-uint32_t ProbeInitializationRequestMessage::serializeFormat(PcmAudioFrame::Format format)
+uint32_t ProbeInitializationRequestMessage::serializeFormat(PcmAudioFrameFormat format)
 {
-    static const unordered_map<PcmAudioFrame::Format, uint32_t> Mapping(
+    static const unordered_map<PcmAudioFrameFormat, uint32_t> Mapping(
         {
-            { PcmAudioFrame::Format::Signed8, 0 },
-            { PcmAudioFrame::Format::Signed16, 1 },
-            { PcmAudioFrame::Format::Signed24, 2 },
-            { PcmAudioFrame::Format::SignedPadded24, 3 },
-            { PcmAudioFrame::Format::Signed32, 4 },
+            { PcmAudioFrameFormat::Signed8, 0 },
+            { PcmAudioFrameFormat::Signed16, 1 },
+            { PcmAudioFrameFormat::Signed24, 2 },
+            { PcmAudioFrameFormat::SignedPadded24, 3 },
+            { PcmAudioFrameFormat::Signed32, 4 },
 
-            { PcmAudioFrame::Format::Unsigned8, 5 },
-            { PcmAudioFrame::Format::Unsigned16, 6 },
-            { PcmAudioFrame::Format::Unsigned24, 7 },
-            { PcmAudioFrame::Format::UnsignedPadded24, 8 },
-            { PcmAudioFrame::Format::Unsigned32, 9 },
+            { PcmAudioFrameFormat::Unsigned8, 5 },
+            { PcmAudioFrameFormat::Unsigned16, 6 },
+            { PcmAudioFrameFormat::Unsigned24, 7 },
+            { PcmAudioFrameFormat::UnsignedPadded24, 8 },
+            { PcmAudioFrameFormat::Unsigned32, 9 },
 
-            { PcmAudioFrame::Format::Float, 10 },
-            { PcmAudioFrame::Format::Double, 11 }
+            { PcmAudioFrameFormat::Float, 10 },
+            { PcmAudioFrameFormat::Double, 11 }
         });
 
     auto it = Mapping.find(format);
@@ -69,24 +69,24 @@ uint32_t ProbeInitializationRequestMessage::serializeFormat(PcmAudioFrame::Forma
     THROW_INVALID_VALUE_EXCEPTION("Format not supported", "");
 }
 
-PcmAudioFrame::Format ProbeInitializationRequestMessage::parseFormat(uint32_t format)
+PcmAudioFrameFormat ProbeInitializationRequestMessage::parseFormat(uint32_t format)
 {
-    static const unordered_map<uint32_t, PcmAudioFrame::Format> Mapping(
+    static const unordered_map<uint32_t, PcmAudioFrameFormat> Mapping(
         {
-            { 0, PcmAudioFrame::Format::Signed8 },
-            { 1, PcmAudioFrame::Format::Signed16 },
-            { 2, PcmAudioFrame::Format::Signed24 },
-            { 3, PcmAudioFrame::Format::SignedPadded24 },
-            { 4, PcmAudioFrame::Format::Signed32 },
+            { 0, PcmAudioFrameFormat::Signed8 },
+            { 1, PcmAudioFrameFormat::Signed16 },
+            { 2, PcmAudioFrameFormat::Signed24 },
+            { 3, PcmAudioFrameFormat::SignedPadded24 },
+            { 4, PcmAudioFrameFormat::Signed32 },
 
-            { 5, PcmAudioFrame::Format::Unsigned8 },
-            { 6, PcmAudioFrame::Format::Unsigned16 },
-            { 7, PcmAudioFrame::Format::Unsigned24 },
-            { 8, PcmAudioFrame::Format::UnsignedPadded24 },
-            { 9, PcmAudioFrame::Format::Unsigned32 },
+            { 5, PcmAudioFrameFormat::Unsigned8 },
+            { 6, PcmAudioFrameFormat::Unsigned16 },
+            { 7, PcmAudioFrameFormat::Unsigned24 },
+            { 8, PcmAudioFrameFormat::UnsignedPadded24 },
+            { 9, PcmAudioFrameFormat::Unsigned32 },
 
-            { 10, PcmAudioFrame::Format::Float },
-            { 11, PcmAudioFrame::Format::Double }
+            { 10, PcmAudioFrameFormat::Float },
+            { 11, PcmAudioFrameFormat::Double }
         });
 
     auto it = Mapping.find(format);

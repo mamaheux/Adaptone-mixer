@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-RawFileAudioInput::RawFileAudioInput(PcmAudioFrame::Format format,
+RawFileAudioInput::RawFileAudioInput(PcmAudioFrameFormat format,
     size_t channelCount,
     size_t frameSampleCount,
     const string& filename,

@@ -6,7 +6,7 @@
 #include <Uniformization/Communication/Messages/Tcp/TcpMessageReader.h>
 
 #include <Utils/ClassMacro.h>
-#include <Utils/Data/PcmAudioFrame.h>
+#include <Utils/Data/PcmAudioFrameFormat.h>
 #include <Utils/Logger/Logger.h>
 
 #include <boost/asio.hpp>
@@ -27,7 +27,7 @@ namespace adaptone
         std::atomic<bool> m_isConnected;
         std::size_t m_id;
         std::size_t m_sampleFrequency;
-        PcmAudioFrame::Format m_format;
+        PcmAudioFrameFormat m_format;
         std::shared_ptr<ProbeMessageHandler> m_messageHandler;
 
         boost::asio::ip::tcp::endpoint m_endpoint;
@@ -50,7 +50,7 @@ namespace adaptone
             const DiscoveredProbe& discoveredProbe,
             std::size_t id,
             std::size_t sampleFrequency,
-            PcmAudioFrame::Format format,
+            PcmAudioFrameFormat format,
             std::shared_ptr<ProbeMessageHandler> messageHandler);
         virtual ~ProbeServer();
 

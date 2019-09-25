@@ -10,7 +10,7 @@ using namespace std;
 class DummyAudioOutput : public AudioOutput
 {
 public:
-    DummyAudioOutput() : AudioOutput(PcmAudioFrame::Format::Signed8, 1, 2)
+    DummyAudioOutput() : AudioOutput(PcmAudioFrameFormat::Signed8, 1, 2)
     {
     }
 
@@ -22,7 +22,7 @@ public:
     {
     }
 
-    PcmAudioFrame::Format format() const
+    PcmAudioFrameFormat format() const
     {
         return m_format;
     }
@@ -41,7 +41,7 @@ public:
 TEST(AudioOutputTests, constructor_shouldInitializeTheParameters)
 {
     DummyAudioOutput output;
-    EXPECT_EQ(output.format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(output.format(), PcmAudioFrameFormat::Signed8);
     EXPECT_EQ(output.channelCount(), 1);
     EXPECT_EQ(output.frameSampleCount(), 2);
 }

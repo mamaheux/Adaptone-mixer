@@ -36,8 +36,8 @@ namespace adaptone
         std::size_t m_inputChannelCount;
         std::size_t m_outputChannelCount;
 
-        PcmAudioFrame::Format m_inputFormat;
-        PcmAudioFrame::Format m_outputFormat;
+        PcmAudioFrameFormat m_inputFormat;
+        PcmAudioFrameFormat m_outputFormat;
 
         PcmAudioFrame m_outputFrame;
         CudaSignalProcessorBuffers<T> m_buffers;
@@ -61,8 +61,8 @@ namespace adaptone
             std::size_t sampleFrequency,
             std::size_t inputChannelCount,
             std::size_t outputChannelCount,
-            PcmAudioFrame::Format inputFormat,
-            PcmAudioFrame::Format outputFormat,
+            PcmAudioFrameFormat inputFormat,
+            PcmAudioFrameFormat outputFormat,
             const std::vector<double>& eqCenterFrequencies,
             std::size_t maxOutputDelay,
             std::size_t soundLevelLength,
@@ -112,8 +112,8 @@ namespace adaptone
         size_t sampleFrequency,
         size_t inputChannelCount,
         size_t outputChannelCount,
-        PcmAudioFrame::Format inputFormat,
-        PcmAudioFrame::Format outputFormat,
+        PcmAudioFrameFormat inputFormat,
+        PcmAudioFrameFormat outputFormat,
         const std::vector<double>& eqCenterFrequencies,
         std::size_t maxOutputDelay,
         std::size_t soundLevelLength,

@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-AudioInput::AudioInput(PcmAudioFrame::Format format, size_t channelCount, size_t frameSampleCount) :
+AudioInput::AudioInput(PcmAudioFrameFormat format, size_t channelCount, size_t frameSampleCount) :
     m_frame(format, channelCount, frameSampleCount)
 {
 }

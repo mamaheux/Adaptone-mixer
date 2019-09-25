@@ -31,6 +31,6 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(configuration.probeTimeoutMs(), 2000);
 
     EXPECT_EQ(configuration.routineIRSweepF1(), 1);
-    EXPECT_EQ(configuration.routineIRSweepF1(), 2);
+    EXPECT_EQ(configuration.routineIRSweepF2(), 2);
     EXPECT_EQ(configuration.routineIRSweepT(), 3);
 }

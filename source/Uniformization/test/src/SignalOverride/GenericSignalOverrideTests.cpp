@@ -13,7 +13,7 @@ class DummySignalOverride : public SpecificSignalOverride
     PcmAudioFrame m_overridenFrame;
     uint8_t m_firstByte;
 public:
-    DummySignalOverride() : m_overridenFrame(PcmAudioFrame::Format::Unsigned8, 2, 3), m_firstByte(0)
+    DummySignalOverride() : m_overridenFrame(PcmAudioFrameFormat::Unsigned8, 2, 3), m_firstByte(0)
     {
     }
 
@@ -75,7 +75,7 @@ TEST(GenericSignalOverrideTests, override_shouldCallTheCurrentSignalOverride)
 
     GenericSignalOverride genericSignalOverride(move(signalOverrides));
 
-    PcmAudioFrame frame(PcmAudioFrame::Format::Unsigned8, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, 2, 3);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;

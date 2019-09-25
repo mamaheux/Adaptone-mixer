@@ -26,7 +26,7 @@ namespace adaptone
         uint16_t m_udpReceivingPort;
         int m_probeTimeoutMs;
         std::size_t m_sampleFrequency;
-        PcmAudioFrame::Format m_format;
+        PcmAudioFrameFormat m_format;
 
         std::shared_ptr<ProbeMessageHandler> m_messageHandler;
 
@@ -52,7 +52,7 @@ namespace adaptone
             uint16_t udpReceivingPort,
             int probeTimeoutMs,
             std::size_t sampleFrequency,
-            PcmAudioFrame::Format format,
+            PcmAudioFrameFormat format,
             std::shared_ptr<ProbeMessageHandler> messageHandler);
         virtual ~ProbeServers();
 

@@ -1,7 +1,7 @@
-#ifndef UTILS_DATA_ARRAY_TO_PCM_CONVERSION_H
-#define UTILS_DATA_ARRAY_TO_PCM_CONVERSION_H
+#ifndef UTILS_DATA_ARRAY_TO_PCM_CONVERTER_H
+#define UTILS_DATA_ARRAY_TO_PCM_CONVERTER_H
 
-#include <Utils/Data/PcmAudioFrame.h>
+#include <Utils/Data/PcmAudioFrameFormat.h>
 #include <Utils/TypeTraits.h>
 
 #include <cmath>
@@ -11,15 +11,54 @@
 
 namespace adaptone
 {
+    class ArrayToPcmConverter
+    {
+        template<class T>
+        static T round(T value);
 
+        template<class T>
+        static T saturateOutput(T value, T min, T max);
+
+        template<class T, class PcmT>
+        static void arrayToSignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+            std::size_t channelCount);
+
+        template<class T>
+        static void arrayToSigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
+            std::size_t channelCount);
+
+        template<class T>
+        static void arrayToSignedPadded24Pcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+            std::size_t channelCount);
+
+        template<class T, class PcmT>
+        static void arrayToUnsignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+            std::size_t channelCount);
+
+        template<class T>
+        static void arrayToUnsigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
+            std::size_t channelCount);
+
+        template<class T>
+        static void arrayToUnsignedPadded24Pcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+            std::size_t channelCount);
+
+        template<class T, class PcmT>
+        static void arrayToFloatingPointPcm(const T* input, uint8_t* outputBytes,
+            std::size_t frameSampleCount, std::size_t channelCount);
+    public:
+        template<class T>
+        static void convertArrayToPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+            std::size_t channelCount, PcmAudioFrameFormat format);
+    };
     template<class T>
-    inline T round(T value)
+    inline T ArrayToPcmConverter::round(T value)
     {
         return floor(value + 0.5);
     }
 
     template<class T>
-    inline T saturateOutput(T value, T min, T max)
+    inline T ArrayToPcmConverter::saturateOutput(T value, T min, T max)
     {
         if (value > max)
         {
@@ -33,8 +72,25 @@ namespace adaptone
         return value;
     }
 
+    template<>
+    inline float ArrayToPcmConverter::saturateOutput(float value, float min, float max)
+    {
+        value = (value - min) / (max - min);
+
+        if (value > 1)
+        {
+            value = 1;
+        }
+        if (value < 0)
+        {
+            value = 0;
+        }
+
+        return value * (max - min) + min;
+    }
+
     template<class T, class PcmT>
-    void arrayToSignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+    void ArrayToPcmConverter::arrayToSignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
         std::size_t n = frameSampleCount * channelCount;
@@ -52,10 +108,32 @@ namespace adaptone
                                       static_cast<T>(std::numeric_limits<PcmT>::max()));
             output[i] = static_cast<PcmT>(round(sample));
         }
-    };
+    }
+
+    template<>
+    inline void ArrayToPcmConverter::arrayToSignedPcm<float, int32_t>(const float* input, uint8_t* outputBytes,
+        std::size_t frameSampleCount, std::size_t channelCount)
+    {
+        std::size_t n = frameSampleCount * channelCount;
+
+        int32_t* output = reinterpret_cast<int32_t*>(outputBytes);
+
+        for (std::size_t i = 0; i < n; i++)
+        {
+            std::size_t channelIndex = i % channelCount;
+            std::size_t sampleIndex = i / channelCount;
+
+            double scaledSample = -input[channelIndex * frameSampleCount + sampleIndex] *
+                std::numeric_limits<int32_t>::min();
+            double sample = saturateOutput(scaledSample,
+                static_cast<double>(std::numeric_limits<int32_t>::min()),
+                static_cast<double>(std::numeric_limits<int32_t>::max()));
+            output[i] = static_cast<int32_t>(round(sample));
+        }
+    }
 
     template<class T>
-    void arrayToSigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
+    void ArrayToPcmConverter::arrayToSigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
         constexpr T AbsMin = 1 << 23;
@@ -82,8 +160,8 @@ namespace adaptone
     }
 
     template<class T>
-    void arrayToSignedPadded24Pcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-        std::size_t channelCount)
+    void ArrayToPcmConverter::arrayToSignedPadded24Pcm(const T* input, uint8_t* outputBytes,
+        std::size_t frameSampleCount, std::size_t channelCount)
     {
         constexpr T AbsMin = 1 << 23;
 
@@ -100,10 +178,10 @@ namespace adaptone
             T sample = saturateOutput(scaledSample, -AbsMin, AbsMin - 1);
             output[i] = static_cast<int32_t>(round(sample));
         }
-    };
+    }
 
     template<class T, class PcmT>
-    void arrayToUnsignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+    void ArrayToPcmConverter::arrayToUnsignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
         std::size_t n = frameSampleCount * channelCount;
@@ -122,10 +200,32 @@ namespace adaptone
                                       static_cast<T>(std::numeric_limits<PcmT>::max()));
             output[i] = static_cast<PcmT>(round(sample));
         }
-    };
+    }
+
+    template<>
+    inline void ArrayToPcmConverter::arrayToUnsignedPcm<float, uint32_t>(const float* input, uint8_t* outputBytes,
+        std::size_t frameSampleCount, std::size_t channelCount)
+    {
+        std::size_t n = frameSampleCount * channelCount;
+
+        uint32_t* output = reinterpret_cast<uint32_t*>(outputBytes);
+
+        for (std::size_t i = 0; i < n; i++)
+        {
+            std::size_t channelIndex = i % channelCount;
+            std::size_t sampleIndex = i / channelCount;
+
+            double scaledSample = (input[channelIndex * frameSampleCount + sampleIndex] + 1) / 2 *
+                             std::numeric_limits<uint32_t>::max();
+            double sample = saturateOutput(scaledSample,
+                                      static_cast<double>(std::numeric_limits<uint32_t>::min()),
+                                      static_cast<double>(std::numeric_limits<uint32_t>::max()));
+            output[i] = static_cast<uint32_t>(round(sample));
+        }
+    }
 
     template<class T>
-    void arrayToUnsigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
+    void ArrayToPcmConverter::arrayToUnsigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
         constexpr T Max = (1 << 24) - 1;
@@ -152,8 +252,8 @@ namespace adaptone
     }
 
     template<class T>
-    void arrayToUnsignedPadded24Pcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-        std::size_t channelCount)
+    void ArrayToPcmConverter::arrayToUnsignedPadded24Pcm(const T* input, uint8_t* outputBytes,
+        std::size_t frameSampleCount, std::size_t channelCount)
     {
         constexpr T Max = (1 << 24) - 1;
 
@@ -173,8 +273,8 @@ namespace adaptone
     }
 
     template<class T, class PcmT>
-    void arrayToFloatingPointPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-        std::size_t channelCount)
+    void ArrayToPcmConverter::arrayToFloatingPointPcm(const T* input, uint8_t* outputBytes,
+        std::size_t frameSampleCount, std::size_t channelCount)
     {
         std::size_t n = frameSampleCount * channelCount;
 
@@ -189,50 +289,50 @@ namespace adaptone
                                       static_cast<T>(1));
             output[i] = static_cast<PcmT>(sample);
         }
-    };
+    }
 
     template<class T>
-    void convertArrayToPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-        std::size_t channelCount, PcmAudioFrame::Format format)
+    void ArrayToPcmConverter::convertArrayToPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
+        std::size_t channelCount, PcmAudioFrameFormat format)
     {
         switch (format)
         {
-            case PcmAudioFrame::Format::Signed8:
+            case PcmAudioFrameFormat::Signed8:
                 arrayToSignedPcm<T, int8_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Signed16:
+            case PcmAudioFrameFormat::Signed16:
                 arrayToSignedPcm<T, int16_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Signed24:
+            case PcmAudioFrameFormat::Signed24:
                 arrayToSigned24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::SignedPadded24:
+            case PcmAudioFrameFormat::SignedPadded24:
                 arrayToSignedPadded24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Signed32:
+            case PcmAudioFrameFormat::Signed32:
                 arrayToSignedPcm<T, int32_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
 
-            case PcmAudioFrame::Format::Unsigned8:
+            case PcmAudioFrameFormat::Unsigned8:
                 arrayToUnsignedPcm<T, uint8_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Unsigned16:
+            case PcmAudioFrameFormat::Unsigned16:
                 arrayToUnsignedPcm<T, uint16_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Unsigned24:
+            case PcmAudioFrameFormat::Unsigned24:
                 arrayToUnsigned24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::UnsignedPadded24:
+            case PcmAudioFrameFormat::UnsignedPadded24:
                 arrayToUnsignedPadded24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Unsigned32:
+            case PcmAudioFrameFormat::Unsigned32:
                 arrayToUnsignedPcm<T, uint32_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
 
-            case PcmAudioFrame::Format::Float:
+            case PcmAudioFrameFormat::Float:
                 arrayToFloatingPointPcm<T, float>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Double:
+            case PcmAudioFrameFormat::Double:
                 arrayToFloatingPointPcm<T, double>(input, outputBytes, frameSampleCount, channelCount);
                 break;
         }

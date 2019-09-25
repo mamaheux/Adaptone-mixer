@@ -3,7 +3,7 @@
 
 #include <Uniformization/Communication/Messages/PayloadMessage.h>
 
-#include <Utils/Data/PcmAudioFrame.h>
+#include <Utils/Data/PcmAudioFrameFormat.h>
 
 namespace adaptone
 {
@@ -15,22 +15,22 @@ namespace adaptone
 
     private:
         uint32_t m_sampleFrequency;
-        PcmAudioFrame::Format m_format;
+        PcmAudioFrameFormat m_format;
 
     public:
-        ProbeInitializationRequestMessage(uint32_t sampleFrequency, PcmAudioFrame::Format format);
+        ProbeInitializationRequestMessage(uint32_t sampleFrequency, PcmAudioFrameFormat format);
         ~ProbeInitializationRequestMessage() override;
 
         uint32_t sampleFrequency() const;
-        PcmAudioFrame::Format format() const;
+        PcmAudioFrameFormat format() const;
 
         static ProbeInitializationRequestMessage fromBuffer(NetworkBufferView buffer, std::size_t messageSize);
 
     protected:
         void serializePayload(NetworkBufferView buffer) const override;
 
-        static uint32_t serializeFormat(PcmAudioFrame::Format format);
-        static PcmAudioFrame::Format parseFormat(uint32_t format);
+        static uint32_t serializeFormat(PcmAudioFrameFormat format);
+        static PcmAudioFrameFormat parseFormat(uint32_t format);
     };
 
     inline uint32_t ProbeInitializationRequestMessage::sampleFrequency() const
@@ -38,7 +38,7 @@ namespace adaptone
         return m_sampleFrequency;
     }
 
-    inline PcmAudioFrame::Format ProbeInitializationRequestMessage::format() const
+    inline PcmAudioFrameFormat ProbeInitializationRequestMessage::format() const
     {
         return m_format;
     }

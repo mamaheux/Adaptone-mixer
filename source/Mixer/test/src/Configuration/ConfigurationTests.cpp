@@ -61,12 +61,12 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().spectrumAnalysisPointCountPerDecade(), 10);
 
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
-    EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrameFormat::Signed8);
     EXPECT_EQ(configuration.audioInput().filename(), "input.raw");
     EXPECT_EQ(configuration.audioInput().looping(), false);
 
     EXPECT_EQ(configuration.audioOutput().type(), AudioOutputConfiguration::Type::RawFile);
-    EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrameFormat::Signed8);
     EXPECT_EQ(configuration.audioOutput().filename(), "output.raw");
 
     EXPECT_EQ(configuration.uniformization().discoveryEndpoint().ipAddress(), "192.168.1.255");
@@ -76,9 +76,8 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.uniformization().tcpConnectionPort(), 5001);
     EXPECT_EQ(configuration.uniformization().udpReceivingPort(), 5002);
     EXPECT_EQ(configuration.uniformization().probeTimeoutMs(), 2000);
-
     EXPECT_EQ(configuration.uniformization().routineIRSweepF1(), 1);
-    EXPECT_EQ(configuration.uniformization().routineIRSweepF1(), 2);
+    EXPECT_EQ(configuration.uniformization().routineIRSweepF2(), 2);
     EXPECT_EQ(configuration.uniformization().routineIRSweepT(), 3);
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
