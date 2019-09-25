@@ -10,8 +10,9 @@ namespace adaptone
     {
     protected:
         PcmAudioFrame m_frame;
+
     public:
-        AudioInput(PcmAudioFrame::Format format, std::size_t channelCount, std::size_t frameSampleCount);
+        AudioInput(PcmAudioFrameFormat format, std::size_t channelCount, std::size_t frameSampleCount);
         virtual ~AudioInput();
 
         DECLARE_NOT_COPYABLE(AudioInput);

@@ -17,7 +17,7 @@ TEST(AudioOutputConfigurationTests, constructor_rawFileType_shouldSetTheTypeRela
     }));
 
     EXPECT_EQ(configuration.type(), AudioOutputConfiguration::Type::RawFile);
-    EXPECT_EQ(configuration.format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.format(), PcmAudioFrameFormat::Signed8);
     EXPECT_EQ(configuration.filename(), "output.raw");
 }
 
@@ -33,7 +33,7 @@ TEST(AudioOutputConfigurationTests, constructor_alsaType_shouldSetTheTypeRelated
     }));
 
     EXPECT_EQ(configuration.type(), AudioOutputConfiguration::Type::Alsa);
-    EXPECT_EQ(configuration.format(), PcmAudioFrame::Format::Signed8);
+    EXPECT_EQ(configuration.format(), PcmAudioFrameFormat::Signed8);
     EXPECT_EQ(configuration.device(), "hw:0,0");
 }
 

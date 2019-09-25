@@ -1,6 +1,10 @@
 #ifndef UTILS_DATA_PCM_AUDIO_FRAME_H
 #define UTILS_DATA_PCM_AUDIO_FRAME_H
 
+#include <Utils/Data/PcmAudioFrameFormat.h>
+#include <Utils/Data/AudioFrame.h>
+#include <Utils/Data/ArrayToPcmConverter.h>
+
 #include <cstddef>
 #include <cstdint>
 #include <cstring>
@@ -14,42 +18,22 @@ namespace adaptone
      */
     class PcmAudioFrame
     {
-    public:
-        enum class Format : std::size_t
-        {
-            Signed8 = 1,
-            Signed16 = 2,
-            Signed24 = 3,
-            SignedPadded24 = 4 + 64,
-            Signed32 = 4,
-
-            Unsigned8 = 1 + 16,
-            Unsigned16 = 2 + 16,
-            Unsigned24 = 3 + 16,
-            UnsignedPadded24 = 4 + 16 + 64,
-            Unsigned32 = 4 + 16,
-
-            Float = 4 + 32,
-            Double = 8 + 32
-        };
-
-        static std::size_t formatSize(Format format);
-        static std::size_t size(Format format, std::size_t channelCount, std::size_t sampleCount);
-        static PcmAudioFrame::Format parseFormat(const std::string& format);
-
-    private:
-        Format m_format;
+        PcmAudioFrameFormat m_format;
         std::size_t m_channelCount;
         std::size_t m_sampleCount;
         uint8_t* m_data;
 
     public:
-        PcmAudioFrame(Format format, std::size_t channelCount, std::size_t sampleCount);
+        PcmAudioFrame(PcmAudioFrameFormat format, std::size_t channelCount, std::size_t sampleCount);
+
+        template<class T>
+        PcmAudioFrame(const AudioFrame<T>& other, PcmAudioFrameFormat format);
+
         PcmAudioFrame(const PcmAudioFrame& other);
         PcmAudioFrame(PcmAudioFrame&& other);
         ~PcmAudioFrame();
 
-        Format format() const;
+        PcmAudioFrameFormat format() const;
         std::size_t channelCount() const;
         std::size_t sampleCount() const;
 
@@ -70,17 +54,14 @@ namespace adaptone
         friend std::ostream& operator<<(std::ostream& stream, const PcmAudioFrame& frame);
     };
 
-    inline std::size_t PcmAudioFrame::formatSize(Format format)
+    template<class T>
+    PcmAudioFrame::PcmAudioFrame(const AudioFrame<T>& other, PcmAudioFrameFormat format) :
+        PcmAudioFrame(format, other.channelCount(), other.sampleCount())
     {
-        return static_cast<std::size_t>(format) & 0b1111;
+        ArrayToPcmConverter::convertArrayToPcm(other.data(), m_data, m_sampleCount, m_channelCount, m_format);
     }
 
-    inline std::size_t PcmAudioFrame::size(Format format, std::size_t channelCount, std::size_t sampleCount)
-    {
-        return channelCount * sampleCount * formatSize(format);
-    }
-
-    inline PcmAudioFrame::Format PcmAudioFrame::format() const
+    inline PcmAudioFrameFormat PcmAudioFrame::format() const
     {
         return m_format;
     }
@@ -107,7 +88,7 @@ namespace adaptone
 
     inline std::size_t PcmAudioFrame::size() const
     {
-        return size(m_format, m_channelCount, m_sampleCount);
+        return adaptone::size(m_format, m_channelCount, m_sampleCount);
     }
 
     inline uint8_t& PcmAudioFrame::operator[](std::size_t i)

@@ -9,12 +9,12 @@ namespace adaptone
     class AudioOutput
     {
     protected:
-        PcmAudioFrame::Format m_format;
+        PcmAudioFrameFormat m_format;
         std::size_t m_channelCount;
         std::size_t m_frameSampleCount;
 
     public:
-        AudioOutput(PcmAudioFrame::Format format, std::size_t channelCount, std::size_t frameSampleCount);
+        AudioOutput(PcmAudioFrameFormat format, std::size_t channelCount, std::size_t frameSampleCount);
         virtual ~AudioOutput();
 
         DECLARE_NOT_COPYABLE(AudioOutput);

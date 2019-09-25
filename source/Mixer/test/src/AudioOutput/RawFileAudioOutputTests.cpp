@@ -26,24 +26,24 @@ protected:
 
 TEST_F(RawFileAudioOutputTests, write_wrongFormat_shouldThrowInvalidValueException)
 {
-    PcmAudioFrame frame(PcmAudioFrame::Format::Signed8, 1, 2);
-    RawFileAudioOutput output(PcmAudioFrame::Format::Signed16, 1, 2, AudioOutputFilename);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed8, 1, 2);
+    RawFileAudioOutput output(PcmAudioFrameFormat::Signed16, 1, 2, AudioOutputFilename);
 
     EXPECT_THROW(output.write(frame), InvalidValueException);
 }
 
 TEST_F(RawFileAudioOutputTests, write_wrongChannelCount_shouldThrowInvalidValueException)
 {
-    PcmAudioFrame frame(PcmAudioFrame::Format::Signed8, 1, 2);
-    RawFileAudioOutput output(PcmAudioFrame::Format::Signed8, 2, 2, AudioOutputFilename);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed8, 1, 2);
+    RawFileAudioOutput output(PcmAudioFrameFormat::Signed8, 2, 2, AudioOutputFilename);
 
     EXPECT_THROW(output.write(frame), InvalidValueException);
 }
 
 TEST_F(RawFileAudioOutputTests, write_wrongFrameSampleCount_shouldThrowInvalidValueException)
 {
-    PcmAudioFrame frame(PcmAudioFrame::Format::Signed8, 1, 2);
-    RawFileAudioOutput output(PcmAudioFrame::Format::Signed8, 1, 1, AudioOutputFilename);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed8, 1, 2);
+    RawFileAudioOutput output(PcmAudioFrameFormat::Signed8, 1, 1, AudioOutputFilename);
 
     EXPECT_THROW(output.write(frame), InvalidValueException);
 }
@@ -51,11 +51,11 @@ TEST_F(RawFileAudioOutputTests, write_wrongFrameSampleCount_shouldThrowInvalidVa
 TEST_F(RawFileAudioOutputTests, write_validFrame_shouldWriteTheData)
 {
     {
-        PcmAudioFrame frame(PcmAudioFrame::Format::Signed8, 1, 2);
+        PcmAudioFrame frame(PcmAudioFrameFormat::Signed8, 1, 2);
         frame[0] = 'a';
         frame[1] = 'b';
 
-        RawFileAudioOutput output(PcmAudioFrame::Format::Signed8, 1, 2, AudioOutputFilename);
+        RawFileAudioOutput output(PcmAudioFrameFormat::Signed8, 1, 2, AudioOutputFilename);
         output.write(frame);
     }
 

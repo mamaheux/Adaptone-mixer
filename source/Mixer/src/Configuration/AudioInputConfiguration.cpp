@@ -17,7 +17,7 @@ AudioInputConfiguration::AudioInputConfiguration(const Properties& properties)
 
     string type = properties.get<string>(TypePropertyKey);
 
-    m_format = PcmAudioFrame::parseFormat(properties.get<string>(FormatPropertyKey));
+    m_format = parseFormat(properties.get<string>(FormatPropertyKey));
 
     if (type == "raw_file")
     {

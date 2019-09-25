@@ -23,7 +23,7 @@ public:
 
 AlsaPcmDevice::AlsaPcmDevice(const string& device,
     AlsaPcmDevice::Stream stream,
-    PcmAudioFrame::Format format,
+    PcmAudioFrameFormat format,
     size_t channelCount,
     size_t frameSampleCount,
     size_t sampleFrequency) : m_format(format), m_channelCount(channelCount), m_frameSampleCount(frameSampleCount)
@@ -147,22 +147,22 @@ void AlsaPcmDevice::write(const PcmAudioFrame& frame)
     }
 }
 
-snd_pcm_format_t AlsaPcmDevice::convert(PcmAudioFrame::Format format)
+snd_pcm_format_t AlsaPcmDevice::convert(PcmAudioFrameFormat format)
 {
-    const map<PcmAudioFrame::Format, snd_pcm_format_t> Mapping(
+    const map<PcmAudioFrameFormat, snd_pcm_format_t> Mapping(
         {
-            { PcmAudioFrame::Format::Signed8, SND_PCM_FORMAT_S8 },
-            { PcmAudioFrame::Format::Signed16, SND_PCM_FORMAT_S16_LE },
-            { PcmAudioFrame::Format::Signed24, SND_PCM_FORMAT_S24_LE },
-            { PcmAudioFrame::Format::Signed32, SND_PCM_FORMAT_S32_LE },
+            { PcmAudioFrameFormat::Signed8, SND_PCM_FORMAT_S8 },
+            { PcmAudioFrameFormat::Signed16, SND_PCM_FORMAT_S16_LE },
+            { PcmAudioFrameFormat::Signed24, SND_PCM_FORMAT_S24_LE },
+            { PcmAudioFrameFormat::Signed32, SND_PCM_FORMAT_S32_LE },
 
-            { PcmAudioFrame::Format::Unsigned8, SND_PCM_FORMAT_U8 },
-            { PcmAudioFrame::Format::Unsigned16, SND_PCM_FORMAT_U16_LE },
-            { PcmAudioFrame::Format::Unsigned24, SND_PCM_FORMAT_U24_LE },
-            { PcmAudioFrame::Format::Unsigned32, SND_PCM_FORMAT_U32_LE },
+            { PcmAudioFrameFormat::Unsigned8, SND_PCM_FORMAT_U8 },
+            { PcmAudioFrameFormat::Unsigned16, SND_PCM_FORMAT_U16_LE },
+            { PcmAudioFrameFormat::Unsigned24, SND_PCM_FORMAT_U24_LE },
+            { PcmAudioFrameFormat::Unsigned32, SND_PCM_FORMAT_U32_LE },
 
-            { PcmAudioFrame::Format::Float, SND_PCM_FORMAT_FLOAT_LE },
-            { PcmAudioFrame::Format::Double, SND_PCM_FORMAT_FLOAT64_LE }
+            { PcmAudioFrameFormat::Float, SND_PCM_FORMAT_FLOAT_LE },
+            { PcmAudioFrameFormat::Double, SND_PCM_FORMAT_FLOAT64_LE }
         });
 
     auto it = Mapping.find(format);

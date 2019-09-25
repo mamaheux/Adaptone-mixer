@@ -9,7 +9,7 @@ using namespace std;
 
 TEST(RawFileAudioInputTests, invalidFile_shouldThrowNotSupportedException)
 {
-    EXPECT_THROW(RawFileAudioInput(PcmAudioFrame::Format::Signed8,
+    EXPECT_THROW(RawFileAudioInput(PcmAudioFrameFormat::Signed8,
         2,
         1,
         "resources/RawFileAudioInputTests/invalid.raw",
@@ -19,7 +19,7 @@ TEST(RawFileAudioInputTests, invalidFile_shouldThrowNotSupportedException)
 
 TEST(RawFileAudioInputTests, invalidFile_noLooping_shouldReadTheFile)
 {
-    RawFileAudioInput input(PcmAudioFrame::Format::Signed8,
+    RawFileAudioInput input(PcmAudioFrameFormat::Signed8,
         2,
         1,
         "resources/RawFileAudioInputTests/valid.raw",
@@ -40,7 +40,7 @@ TEST(RawFileAudioInputTests, invalidFile_noLooping_shouldReadTheFile)
 
 TEST(RawFileAudioInputTests, invalidFile_looping_shouldReadTheFileInLoop)
 {
-    RawFileAudioInput input(PcmAudioFrame::Format::Signed8,
+    RawFileAudioInput input(PcmAudioFrameFormat::Signed8,
         2,
         1,
         "resources/RawFileAudioInputTests/valid.raw",

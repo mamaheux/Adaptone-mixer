@@ -1,7 +1,7 @@
 #ifndef SIGNAL_PROCESSING_CUDA_PROCESSING_SOUND_LEVEL_PROCESSING_H
 #define SIGNAL_PROCESSING_CUDA_PROCESSING_SOUND_LEVEL_PROCESSING_H
 
-#include <SignalProcessing/Cuda/CudaSoundLevelBuffers.h>
+#include <SignalProcessing/Cuda/Buffers/CudaSoundLevelBuffers.h>
 
 #include <Utils/Exception/NotSupportedException.h>
 

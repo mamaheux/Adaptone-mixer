@@ -1,7 +1,7 @@
 #ifndef SIGNAL_PROCESSING_CUDA_CONVERSION_ARRAY_TO_PCM_CONVERSION_H
 #define SIGNAL_PROCESSING_CUDA_CONVERSION_ARRAY_TO_PCM_CONVERSION_H
 
-#include <Utils/Data/PcmAudioFrame.h>
+#include <Utils/Data/PcmAudioFrameFormat.h>
 #include <Utils/TypeTraits.h>
 
 #include <cstddef>
@@ -70,7 +70,7 @@ namespace adaptone
                 static_cast<T>(std::numeric_limits<PcmT>::max()));
             output[i] = static_cast<PcmT>(round(sample));
         }
-    };
+    }
 
     template<class T>
     __device__ void arrayToSigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
@@ -122,7 +122,7 @@ namespace adaptone
             T sample = saturateOutput(scaledSample, -AbsMin, AbsMin - 1);
             output[i] = static_cast<int32_t>(round(sample));
         }
-    };
+    }
 
     template<class T, class PcmT>
     __device__ void arrayToUnsignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
@@ -146,7 +146,7 @@ namespace adaptone
                 static_cast<T>(std::numeric_limits<PcmT>::max()));
             output[i] = static_cast<PcmT>(round(sample));
         }
-    };
+    }
 
     template<class T>
     __device__ void arrayToUnsigned24Pcm(const T* input, uint8_t* output, std::size_t frameSampleCount,
@@ -219,50 +219,50 @@ namespace adaptone
                 static_cast<T>(1));
             output[i] = static_cast<PcmT>(sample);
         }
-    };
+    }
 
     template<class T>
     __device__ void convertArrayToPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
-        std::size_t channelCount, PcmAudioFrame::Format format)
+        std::size_t channelCount, PcmAudioFrameFormat format)
     {
         switch (format)
         {
-            case PcmAudioFrame::Format::Signed8:
+            case PcmAudioFrameFormat::Signed8:
                 arrayToSignedPcm<T, int8_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Signed16:
+            case PcmAudioFrameFormat::Signed16:
                 arrayToSignedPcm<T, int16_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Signed24:
+            case PcmAudioFrameFormat::Signed24:
                 arrayToSigned24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::SignedPadded24:
+            case PcmAudioFrameFormat::SignedPadded24:
                 arrayToSignedPadded24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Signed32:
+            case PcmAudioFrameFormat::Signed32:
                 arrayToSignedPcm<T, int32_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
 
-            case PcmAudioFrame::Format::Unsigned8:
+            case PcmAudioFrameFormat::Unsigned8:
                 arrayToUnsignedPcm<T, uint8_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Unsigned16:
+            case PcmAudioFrameFormat::Unsigned16:
                 arrayToUnsignedPcm<T, uint16_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Unsigned24:
+            case PcmAudioFrameFormat::Unsigned24:
                 arrayToUnsigned24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::UnsignedPadded24:
+            case PcmAudioFrameFormat::UnsignedPadded24:
                 arrayToUnsignedPadded24Pcm<T>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Unsigned32:
+            case PcmAudioFrameFormat::Unsigned32:
                 arrayToUnsignedPcm<T, uint32_t>(input, outputBytes, frameSampleCount, channelCount);
                 break;
 
-            case PcmAudioFrame::Format::Float:
+            case PcmAudioFrameFormat::Float:
                 arrayToFloatingPointPcm<T, float>(input, outputBytes, frameSampleCount, channelCount);
                 break;
-            case PcmAudioFrame::Format::Double:
+            case PcmAudioFrameFormat::Double:
                 arrayToFloatingPointPcm<T, double>(input, outputBytes, frameSampleCount, channelCount);
                 break;
         }
