@@ -81,4 +81,6 @@ size_t adaptone::readTcpMessageData(boost::asio::ip::tcp::socket& socket, Networ
             receivedPayloadSize += receivedSize;
         }
     }
+
+    return messageSize;
 }
