@@ -10,8 +10,8 @@ using namespace std::chrono_literals;
 
 TEST(ProbeDiscovererTests, discover_shouldTryTheSpecifiedTrialCount)
 {
-    constexpr double MaxAbsElapsedMsTimeError = 100;
-    constexpr int TimeoutMs = 200;
+    constexpr double MaxAbsElapsedMsTimeError = 1000;
+    constexpr int TimeoutMs = 100;
     constexpr size_t DiscoveryTrialCount = 10;
 
     ProbeDiscoverer probeDiscoverer(Endpoint("192.168.0.255", 5000), TimeoutMs, DiscoveryTrialCount);
