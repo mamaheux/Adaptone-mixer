@@ -125,9 +125,9 @@ void MixerAnalysisDispatcher::soundLevelRun()
             {
                 if (!m_stopped.load())
                 {
-                    m_send(SoundLevelMessage(convertSoundLevels(soundLevels.at(SoundLevelType::InputGain)),
-                        convertSoundLevels(soundLevels.at(SoundLevelType::InputEq)),
-                        convertSoundLevels(soundLevels.at(SoundLevelType::OutputGain))));
+                    m_send(SoundLevelMessage(convertInputSoundLevels(soundLevels.at(SoundLevelType::InputGain)),
+                        convertInputSoundLevels(soundLevels.at(SoundLevelType::InputEq)),
+                        convertOutputSoundLevels(soundLevels.at(SoundLevelType::OutputGain))));
                 }
             });
         }
@@ -307,8 +307,7 @@ void MixerAnalysisDispatcher::sendInputSpectrumMessage(const vector<vector<Spect
     m_send(InputSpectrumMessage(channelSpectrums));
 }
 
-
-vector<ChannelSoundLevel> MixerAnalysisDispatcher::convertSoundLevels(const vector<double>& soundLevels)
+vector<ChannelSoundLevel> MixerAnalysisDispatcher::convertInputSoundLevels(const vector<double>& soundLevels)
 {
     vector<ChannelSoundLevel> channelSoundLevels;
     channelSoundLevels.reserve(soundLevels.size());
@@ -319,6 +318,31 @@ vector<ChannelSoundLevel> MixerAnalysisDispatcher::convertSoundLevels(const vect
         if (channelId != nullopt)
         {
             channelSoundLevels.emplace_back(channelId.value(), soundLevels[i]);
+        }
+    }
+
+    return channelSoundLevels;
+}
+
+vector<ChannelSoundLevel> MixerAnalysisDispatcher::convertOutputSoundLevels(const vector<double>& soundLevels)
+{
+    vector<ChannelSoundLevel> channelSoundLevels;
+    channelSoundLevels.reserve(soundLevels.size());
+
+    for (size_t i = 0; i < soundLevels.size(); i++)
+    {
+        if (!m_channelIdMapping->getMasterOutputIndexes().empty() &&
+            i == m_channelIdMapping->getMasterOutputIndexes()[0])
+        {
+            channelSoundLevels.emplace_back(m_channelIdMapping->getMasterChannelId(), soundLevels[i]);
+        }
+        else
+        {
+            optional<size_t> channelId = m_channelIdMapping->getChannelIdFromAuxiliaryOutputIndexOrNull(i);
+            if (channelId != nullopt)
+            {
+                channelSoundLevels.emplace_back(channelId.value(), soundLevels[i]);
+            }
         }
     }
 
