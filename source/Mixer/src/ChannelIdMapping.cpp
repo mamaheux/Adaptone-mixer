@@ -67,7 +67,7 @@ void ChannelIdMapping::update(vector<size_t> inputChannelId, vector<size_t> auxi
     }
 }
 
-bool ChannelIdMapping::isHeadphoneChannelIndex(std::size_t channelIndex)
+bool ChannelIdMapping::isHeadphoneChannelIndex(size_t channelIndex)
 {
     auto it = find(m_headphoneChannelIndexes.begin(), m_headphoneChannelIndexes.end(), channelIndex);
     return it != m_headphoneChannelIndexes.end();

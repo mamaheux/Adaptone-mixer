@@ -191,8 +191,8 @@ shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDisp
 
 shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
 {
-    vector<unique_ptr<SpecificSignalOverride>> signalOverrides;
-    signalOverrides.emplace_back(make_unique<PassthroughSignalOverride>());
+    vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
+    signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
 
     return make_shared<GenericSignalOverride>(move(signalOverrides));
 }

@@ -22,6 +22,28 @@ TEST(PcmAudioFrameTests, constructor_shouldSetParameterAndAllocateMemory)
     EXPECT_EQ(frame.channelCount(), 2);
     EXPECT_EQ(frame.sampleCount(), 3);
     EXPECT_EQ(frame.size(), 18);
+    EXPECT_TRUE(frame.hasOwnership());
+
+    for (size_t i = 0; i < frame.size(); i++)
+    {
+        EXPECT_EQ(frame.data()[i], i + 1);
+    }
+}
+
+TEST(PcmAudioFrameTests, constructor_noCopy_shouldSetParameter)
+{
+    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Signed24) * 2 * 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3, dataVector.data());
+    for (size_t i = 0; i < frame.size(); i++)
+    {
+        frame[i] = i + 1;
+    }
+
+    EXPECT_EQ(frame.format(), PcmAudioFrameFormat::Signed24);
+    EXPECT_EQ(frame.channelCount(), 2);
+    EXPECT_EQ(frame.sampleCount(), 3);
+    EXPECT_EQ(frame.size(), 18);
+    EXPECT_FALSE(frame.hasOwnership());
 
     for (size_t i = 0; i < frame.size(); i++)
     {
@@ -44,6 +66,7 @@ TEST(PcmAudioFrameTests, constructor_audioFrame_shouldConvertTheFrame)
     PcmAudioFrame convertedFrame(frame, PcmAudioFrameFormat::Unsigned8);
 
     ASSERT_EQ(convertedFrame.size(), 6);
+    EXPECT_TRUE(convertedFrame.hasOwnership());
 
     EXPECT_EQ(convertedFrame[0], 0);
     EXPECT_EQ(convertedFrame[1], 128);
@@ -67,6 +90,7 @@ TEST(PcmAudioFrameTests, copyConstructor_shouldCopy)
     EXPECT_EQ(copy.channelCount(), 2);
     EXPECT_EQ(copy.sampleCount(), 3);
     EXPECT_EQ(copy.size(), 18);
+    EXPECT_TRUE(copy.hasOwnership());
     EXPECT_NE(frame.data(), copy.data());
 
     for (size_t i = 0; i < copy.size(); i++)
@@ -90,6 +114,38 @@ TEST(PcmAudioFrameTests, moveConstructor_shouldMove)
     EXPECT_EQ(movedFrame.channelCount(), 2);
     EXPECT_EQ(movedFrame.sampleCount(), 3);
     EXPECT_EQ(movedFrame.size(), 18);
+    EXPECT_TRUE(movedFrame.hasOwnership());
+    EXPECT_EQ(movedFrame.data(), data);
+
+    for (size_t i = 0; i < movedFrame.size(); i++)
+    {
+        EXPECT_EQ(movedFrame.data()[i], i + 1);
+        EXPECT_EQ(movedFrame[i], i + 1);
+    }
+
+    EXPECT_EQ(frame.data(), nullptr);
+    EXPECT_EQ(frame.channelCount(), 0);
+    EXPECT_EQ(frame.sampleCount(), 0);
+    EXPECT_EQ(frame.size(), 0);
+}
+
+TEST(PcmAudioFrameTests, moveConstructor_ownershipFalse_shouldMove)
+{
+    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Signed24) * 2 * 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3, dataVector.data());
+    for (size_t i = 0; i < frame.size(); i++)
+    {
+        frame[i] = i + 1;
+    }
+
+    const uint8_t* data = frame.data();
+    const PcmAudioFrame movedFrame(move(frame));
+
+    EXPECT_EQ(movedFrame.format(), PcmAudioFrameFormat::Signed24);
+    EXPECT_EQ(movedFrame.channelCount(), 2);
+    EXPECT_EQ(movedFrame.sampleCount(), 3);
+    EXPECT_EQ(movedFrame.size(), 18);
+    EXPECT_FALSE(movedFrame.hasOwnership());
     EXPECT_EQ(movedFrame.data(), data);
 
     for (size_t i = 0; i < movedFrame.size(); i++)
@@ -121,6 +177,7 @@ TEST(PcmAudioFrameTests, assignationOperator_shouldCopy)
     EXPECT_EQ(copy.channelCount(), 2);
     EXPECT_EQ(copy.sampleCount(), 3);
     EXPECT_EQ(copy.size(), 18);
+    EXPECT_TRUE(copy.hasOwnership());
     EXPECT_NE(frame.data(), copy.data());
 
     for (size_t i = 0; i < copy.size(); i++)
@@ -146,6 +203,7 @@ TEST(PcmAudioFrameTests, assignationOperator_sameType_shouldCopyWithoutMemoryAll
     EXPECT_EQ(copy.channelCount(), 2);
     EXPECT_EQ(copy.sampleCount(), 3);
     EXPECT_EQ(copy.size(), 12);
+    EXPECT_TRUE(copy.hasOwnership());
     EXPECT_NE(frame.data(), copy.data());
 
     for (size_t i = 0; i < copy.size(); i++)
@@ -154,7 +212,7 @@ TEST(PcmAudioFrameTests, assignationOperator_sameType_shouldCopyWithoutMemoryAll
     }
 }
 
-TEST(PcmAudioFrameTests, moveAssignationOperator_shouldCopy)
+TEST(PcmAudioFrameTests, moveAssignationOperator_shouldMove)
 {
     PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned24, 2, 3);
     for (size_t i = 0; i < frame.size(); i++)
@@ -170,6 +228,38 @@ TEST(PcmAudioFrameTests, moveAssignationOperator_shouldCopy)
     EXPECT_EQ(movedFrame.channelCount(), 2);
     EXPECT_EQ(movedFrame.sampleCount(), 3);
     EXPECT_EQ(movedFrame.size(), 18);
+    EXPECT_TRUE(movedFrame.hasOwnership());
+    EXPECT_EQ(movedFrame.data(), data);
+
+    for (size_t i = 0; i < movedFrame.size(); i++)
+    {
+        EXPECT_EQ(movedFrame.data()[i], i + 1);
+    }
+
+    EXPECT_EQ(frame.data(), nullptr);
+    EXPECT_EQ(frame.channelCount(), 0);
+    EXPECT_EQ(frame.sampleCount(), 0);
+    EXPECT_EQ(frame.size(), 0);
+}
+
+TEST(PcmAudioFrameTests, moveAssignationOperator_ownershipFalse_shouldMove)
+{
+    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Unsigned24) * 2 * 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned24, 2, 3, dataVector.data());
+    for (size_t i = 0; i < frame.size(); i++)
+    {
+        frame[i] = i + 1;
+    }
+
+    const uint8_t* data = frame.data();
+    PcmAudioFrame movedFrame(PcmAudioFrameFormat::Signed16, 1, 1);
+    movedFrame = move(frame);
+
+    EXPECT_EQ(movedFrame.format(), PcmAudioFrameFormat::Unsigned24);
+    EXPECT_EQ(movedFrame.channelCount(), 2);
+    EXPECT_EQ(movedFrame.sampleCount(), 3);
+    EXPECT_EQ(movedFrame.size(), 18);
+    EXPECT_FALSE(movedFrame.hasOwnership());
     EXPECT_EQ(movedFrame.data(), data);
 
     for (size_t i = 0; i < movedFrame.size(); i++)
