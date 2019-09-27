@@ -10,9 +10,10 @@ using namespace std;
 TEST(ChannelIdMappingTests, update_invalidParameters_shouldThrowInvalidValueException)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     EXPECT_THROW(mapping.update({ 0, 1, 2, 3, 4 }, {}, 1), InvalidValueException);
     EXPECT_THROW(mapping.update({ 0, 1 }, { 2, 3 }, 1), InvalidValueException);
@@ -22,9 +23,10 @@ TEST(ChannelIdMappingTests, update_invalidParameters_shouldThrowInvalidValueExce
 TEST(ChannelIdMappingTests, getChannelIdFromInputIndex_invalidIndex_shouldThrowInvalidValueException)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, {}, 1);
 
@@ -34,9 +36,10 @@ TEST(ChannelIdMappingTests, getChannelIdFromInputIndex_invalidIndex_shouldThrowI
 TEST(ChannelIdMappingTests, getChannelIdFromAuxiliaryOutputIndex_invalidIndex_shouldThrowInvalidValueException)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, { 4 }, 1);
 
@@ -46,9 +49,10 @@ TEST(ChannelIdMappingTests, getChannelIdFromAuxiliaryOutputIndex_invalidIndex_sh
 TEST(ChannelIdMappingTests, getInputIndexFromChannelId_invalidChannelId_shouldThrowInvalidValueException)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, { 4 }, 1);
 
@@ -58,9 +62,10 @@ TEST(ChannelIdMappingTests, getInputIndexFromChannelId_invalidChannelId_shouldTh
 TEST(ChannelIdMappingTests, getAuxiliaryOutputIndexFromChannelId_invalidChannelId_shouldThrowInvalidValueException)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, { 4 }, 1);
 
@@ -70,9 +75,10 @@ TEST(ChannelIdMappingTests, getAuxiliaryOutputIndexFromChannelId_invalidChannelI
 TEST(ChannelIdMappingTests, getChannelIdFromInputIndexOrNull_invalidIndex_shouldReturnNull)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, {}, 1);
 
@@ -82,9 +88,10 @@ TEST(ChannelIdMappingTests, getChannelIdFromInputIndexOrNull_invalidIndex_should
 TEST(ChannelIdMappingTests, getChannelIdFromAuxiliaryOutputIndexOrNull_invalidIndex_shouldReturnNull)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, { 4 }, 1);
 
@@ -94,9 +101,10 @@ TEST(ChannelIdMappingTests, getChannelIdFromAuxiliaryOutputIndexOrNull_invalidIn
 TEST(ChannelIdMappingTests, getInputIndexFromChannelIdOrNull_invalidChannelId_shouldReturnNull)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, { 4 }, 1);
 
@@ -106,9 +114,10 @@ TEST(ChannelIdMappingTests, getInputIndexFromChannelIdOrNull_invalidChannelId_sh
 TEST(ChannelIdMappingTests, getAuxiliaryOutputIndexFromChannelIdOrNull_invalidChannelId_shouldReturnNull)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, { 4 }, 1);
 
@@ -118,9 +127,10 @@ TEST(ChannelIdMappingTests, getAuxiliaryOutputIndexFromChannelIdOrNull_invalidCh
 TEST(ChannelIdMappingTests, getChannelIdFromInputIndex_shouldReturnChannelId)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 1, 2, 3, 4 }, {}, 1);
 
@@ -132,23 +142,25 @@ TEST(ChannelIdMappingTests, getChannelIdFromInputIndex_shouldReturnChannelId)
 
 TEST(ChannelIdMappingTests, getChannelIdFromAuxiliaryOutputIndex_shouldReturnChannelId)
 {
-    constexpr size_t InputChannelCount = 4;
+    constexpr size_t InputChannelCount = 3;
     constexpr size_t OutputChannelCount = 4;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
-    mapping.update({ 0, 1, 2, 3 }, { 4, 5 }, 1);
+    mapping.update({ 0, 1, 2 }, { 3, 4 }, 1);
 
-    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndex(OutputChannelCount - 1), 4);
-    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndex(OutputChannelCount - 2), 5);
+    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndex(3), 3);
+    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndex(1), 4);
 }
 
 TEST(ChannelIdMappingTests, getInputIndexFromChannelId_shouldReturnInputIndex)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 1, 2, 3, 4 }, { 4 }, 1);
 
@@ -160,23 +172,25 @@ TEST(ChannelIdMappingTests, getInputIndexFromChannelId_shouldReturnInputIndex)
 
 TEST(ChannelIdMappingTests, getAuxiliaryOutputIndexFromChannelId_shouldReturnAuxiliaryOutputIndex)
 {
-    constexpr size_t InputChannelCount = 4;
+    constexpr size_t InputChannelCount = 3;
     constexpr size_t OutputChannelCount = 4;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
-    mapping.update({ 0, 1, 2, 3 }, { 4, 5 }, 1);
+    mapping.update({ 0, 1, 2 }, { 3, 4 }, 1);
 
-    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelId(4), OutputChannelCount - 1);
-    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelId(5), OutputChannelCount - 2);
+    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelId(3), 3);
+    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelId(4), 1);
 }
 
 TEST(ChannelIdMappingTests, getChannelIdFromInputIndexOrNull_shouldReturnChannelId)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 1, 2, 3, 4 }, {}, 1);
 
@@ -188,23 +202,25 @@ TEST(ChannelIdMappingTests, getChannelIdFromInputIndexOrNull_shouldReturnChannel
 
 TEST(ChannelIdMappingTests, getChannelIdFromAuxiliaryOutputIndexOrNull_shouldReturnChannelId)
 {
-    constexpr size_t InputChannelCount = 4;
+    constexpr size_t InputChannelCount = 3;
     constexpr size_t OutputChannelCount = 4;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
-    mapping.update({ 0, 1, 2, 3 }, { 4, 5 }, 1);
+    mapping.update({ 0, 1, 2 }, { 3, 4 }, 1);
 
-    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndexOrNull(OutputChannelCount - 1), 4);
-    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndexOrNull(OutputChannelCount - 2), 5);
+    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndexOrNull(3), 3);
+    EXPECT_EQ(mapping.getChannelIdFromAuxiliaryOutputIndexOrNull(1), 4);
 }
 
 TEST(ChannelIdMappingTests, getInputIndexFromChannelIdOrNull_shouldReturnInputIndex)
 {
     constexpr size_t InputChannelCount = 4;
-    constexpr size_t OutputChannelCount = 2;
+    constexpr size_t OutputChannelCount = 3;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 1, 2, 3, 4 }, { 4 }, 1);
 
@@ -216,25 +232,27 @@ TEST(ChannelIdMappingTests, getInputIndexFromChannelIdOrNull_shouldReturnInputIn
 
 TEST(ChannelIdMappingTests, getAuxiliaryOutputIndexFromChannelIdOrNull_shouldReturnAuxiliaryOutputIndex)
 {
-    constexpr size_t InputChannelCount = 4;
+    constexpr size_t InputChannelCount = 3;
     constexpr size_t OutputChannelCount = 4;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
-    mapping.update({ 0, 1, 2, 3 }, { 4, 5 }, 1);
+    mapping.update({ 0, 1, 2 }, { 3, 4 }, 1);
 
-    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelIdOrNull(4), OutputChannelCount - 1);
-    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelIdOrNull(5), OutputChannelCount - 2);
+    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelIdOrNull(3), 3);
+    EXPECT_EQ(mapping.getAuxiliaryOutputIndexFromChannelIdOrNull(4), 1);
 }
 
 TEST(ChannelIdMappingTests, getMasterOutputIndexes_shouldMasterOutputIndexes)
 {
     constexpr size_t InputChannelCount = 4;
     constexpr size_t OutputChannelCount = 6;
+    const vector<size_t> HeadphoneChannelIndexes{ 2 };
 
-    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount);
+    ChannelIdMapping mapping(InputChannelCount, OutputChannelCount, HeadphoneChannelIndexes);
 
     mapping.update({ 0, 1, 2, 3 }, { 4, 5 }, 3);
 
-    EXPECT_EQ(mapping.getMasterOutputIndexes(), vector<size_t>({0, 1, 2}));
+    EXPECT_EQ(mapping.getMasterOutputIndexes(), vector<size_t>({0, 1, 3}));
 }

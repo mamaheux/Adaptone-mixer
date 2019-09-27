@@ -106,7 +106,8 @@ shared_ptr<Logger> Mixer::createLogger()
 shared_ptr<ChannelIdMapping> Mixer::createChannelIdMapping()
 {
     return make_shared<ChannelIdMapping>(m_configuration.audio().inputChannelCount(),
-        m_configuration.audio().outputChannelCount());
+        m_configuration.audio().outputChannelCount(),
+        m_configuration.audio().headphoneChannelIndexes());
 }
 
 unique_ptr<AudioInput> Mixer::createAudioInput()
