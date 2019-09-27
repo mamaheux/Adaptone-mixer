@@ -20,6 +20,7 @@
 #include <Utils/Functional/FunctionQueue.h>
 
 #include <cuda_runtime.h>
+#include <cooperative_groups.h>
 
 #include <memory>
 
@@ -272,25 +273,26 @@ namespace adaptone
     template<class T>
     __global__ void processKernel(CudaSignalProcessorBuffers<T> buffers)
     {
+        cooperative_groups::grid_group grid = cooperative_groups::this_grid();
         convertPcmToArray<T>(buffers.currentInputPcmFrame(),
             buffers.currentInputFrame(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount(),
             buffers.inputFormat());
-        __syncthreads();
+        grid.sync();
 
         processGain(buffers.currentInputFrame(),
             buffers.currentInputGainOutputFrame(),
             buffers.inputGains(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount());
-        __syncthreads();
+        grid.sync();
 
         processEq(buffers.inputEqBuffers(),
             buffers.inputGainOutputFrames(),
             buffers.currentInputEqOutputFrame(),
             buffers.currentFrameIndex());
-        __syncthreads();
+        grid.sync();
 
         processMix(buffers.currentInputEqOutputFrame(),
             buffers.currentMixingOutputFrame(),
@@ -298,20 +300,20 @@ namespace adaptone
             buffers.frameSampleCount(),
             buffers.inputChannelCount(),
             buffers.outputChannelCount());
-        __syncthreads();
+        grid.sync();
 
         processEq(buffers.outputEqBuffers(),
             buffers.mixingOutputFrames(),
             buffers.currentOutputEqOutputFrame(),
             buffers.currentFrameIndex());
-        __syncthreads();
+        grid.sync();
 
         processGain(buffers.currentOutputEqOutputFrame(),
             buffers.currentOutputFrame(),
             buffers.outputGains(),
             buffers.frameSampleCount(),
             buffers.outputChannelCount());
-        __syncthreads();
+        grid.sync();
 
         processDelay(buffers.currentOutputFrame(),
             buffers.delayedOutputFrames(),
@@ -320,18 +322,27 @@ namespace adaptone
             buffers.outputChannelCount(),
             buffers.currentDelayedOutputFrameIndex(),
             buffers.delayedOutputFrameCount());
-        __syncthreads();
+        grid.sync();
 
         convertArrayToPcm<T>(buffers.currentDelayedOutputFrame(),
             buffers.currentOutputPcmFrame(),
             buffers.frameSampleCount(),
             buffers.inputChannelCount(),
             buffers.outputFormat());
-        __syncthreads();
+        grid.sync();
 
         processSoundLevel(buffers.inputGainSoundLevelBuffers(), buffers.currentInputGainOutputFrame());
         processSoundLevel(buffers.inputEqSoundLevelBuffers(), buffers.currentInputEqOutputFrame());
         processSoundLevel(buffers.outputGainSoundLevelBuffers(), buffers.currentOutputFrame());
+    }
+
+    template<class T>
+    void launchProcessKernel(CudaSignalProcessorBuffers<T>& buffers)
+    {
+        void* args[] = { &buffers };
+        dim3 gridDim(2);
+        dim3 blockDim(256);
+        cudaLaunchCooperativeKernel(reinterpret_cast<void*>(processKernel<T>), gridDim, blockDim, args);
     }
 
     template<class T>
@@ -340,7 +351,7 @@ namespace adaptone
         m_updateFunctionQueue.tryExecute();
 
         m_buffers.copyInputFrame(inputFrame);
-        processKernel<<<1, 256>>>(m_buffers);
+        launchProcessKernel(m_buffers);
         m_buffers.copyOutputFrame(m_outputFrame);
 
         notifySoundLevelIfNeeded();
