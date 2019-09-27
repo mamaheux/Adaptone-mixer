@@ -94,7 +94,7 @@ TEST(GenericSignalOverrideTests, override_shouldCallTheCurrentSignalOverride)
         EXPECT_EQ(overridenFrame1[i], 0);
     }
 
-    genericSignalOverride.getSignalOverride<DummySignalOverride>().setFirstByte(1);
+    genericSignalOverride.getSignalOverride<DummySignalOverride>()->setFirstByte(1);
     const PcmAudioFrame& overridenFrame2 = genericSignalOverride.override(frame);
     EXPECT_EQ(overridenFrame2[0], 1);
     for (size_t i = 1; i < frame.size(); i++)

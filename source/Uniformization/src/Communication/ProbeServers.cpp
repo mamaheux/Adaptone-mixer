@@ -8,29 +8,21 @@ using namespace adaptone;
 using namespace std;
 
 ProbeServers::ProbeServers(shared_ptr<Logger> logger,
-    const Endpoint& discoveryEndpoint,
-    int discoveryTimeoutMs,
-    size_t discoveryTrialCount,
-    uint16_t tcpConnectionPort,
-    uint16_t udpReceivingPort,
-    int probeTimeoutMs,
-    size_t sampleFrequency,
-    PcmAudioFrameFormat format,
-    shared_ptr<ProbeMessageHandler> messageHandler) :
+    shared_ptr<ProbeMessageHandler> messageHandler,
+    const ProbeServerParameters& probeServerParameters) :
     m_logger(logger),
-    m_tcpConnectionPort(tcpConnectionPort),
-    m_udpReceivingPort(udpReceivingPort),
-    m_probeTimeoutMs(probeTimeoutMs),
-    m_sampleFrequency(sampleFrequency),
-    m_format(format),
     m_messageHandler(messageHandler),
-    m_probeDiscoverer(discoveryEndpoint, discoveryTimeoutMs, discoveryTrialCount),
+    m_probeServerParameters(probeServerParameters),
+    m_probeDiscoverer(probeServerParameters.discoveryEndpoint(),
+        probeServerParameters.discoveryTimeoutMs(),
+        probeServerParameters.discoveryTrialCount()),
     m_masterProbeId(-1)
 {
 }
 
 ProbeServers::~ProbeServers()
 {
+    stop();
 }
 
 void ProbeServers::start()
@@ -48,6 +40,7 @@ void ProbeServers::stop()
         m_serverThread->join();
         m_serverThread.release();
 
+        shared_lock lock(m_mutex);
         for (auto& pair : m_probeServersById)
         {
             pair.second->stop();
@@ -105,12 +98,13 @@ void ProbeServers::createUdpSocket()
         THROW_NETWORK_EXCEPTION("Socket opening error");
     }
 
-    if (!setReceivingTimeout(*m_udpSocket, m_probeTimeoutMs))
+    if (!setReceivingTimeout(*m_udpSocket, m_probeServerParameters.probeTimeoutMs()))
     {
         THROW_NETWORK_EXCEPTION("Unable to set the receive timeout");
     }
 
-    m_udpSocket->bind(boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(), m_udpReceivingPort), error);
+    m_udpSocket->bind(boost::asio::ip::udp::endpoint(boost::asio::ip::udp::v4(),
+        m_probeServerParameters.udpReceivingPort()), error);
     if (error)
     {
         THROW_NETWORK_EXCEPTION("Unable to bind the port");
@@ -124,13 +118,10 @@ void ProbeServers::createProbeServer(const DiscoveredProbe& discoveredProbe)
     {
         size_t id = m_probeServersById.size();
         m_probeServersById.emplace(id, make_unique<ProbeServer>(m_logger,
-            m_tcpConnectionPort,
-            m_probeTimeoutMs,
+            m_messageHandler,
             discoveredProbe,
             id,
-            m_sampleFrequency,
-            m_format,
-            m_messageHandler));
+            m_probeServerParameters));
         m_probeIdsByAddress.emplace(discoveredProbe.address(), id);
         m_probeServersById[id]->start();
         if (m_probeServersById[id]->isMaster())

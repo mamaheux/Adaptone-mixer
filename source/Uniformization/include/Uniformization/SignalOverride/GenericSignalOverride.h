@@ -28,7 +28,7 @@ namespace adaptone
         void setCurrentSignalOverrideType();
 
         template<class T>
-        T& getSignalOverride();
+        std::shared_ptr<T> getSignalOverride();
 
         const PcmAudioFrame& override(const PcmAudioFrame& frame);
     };
@@ -46,7 +46,7 @@ namespace adaptone
     }
 
     template<class T>
-    T& GenericSignalOverride::getSignalOverride()
+    std::shared_ptr<T> GenericSignalOverride::getSignalOverride()
     {
         auto it = m_indexByType.find(typeid(T));
         if (it == m_indexByType.end())
@@ -54,7 +54,7 @@ namespace adaptone
             THROW_INVALID_VALUE_EXCEPTION("currentOverrideType", "");
         }
 
-        return dynamic_cast<T&>(*m_signalSignalOverrides[it->second]);
+        return std::dynamic_pointer_cast<T>(m_signalSignalOverrides[it->second]);
     }
 
     inline const PcmAudioFrame& GenericSignalOverride::override(const PcmAudioFrame& frame)

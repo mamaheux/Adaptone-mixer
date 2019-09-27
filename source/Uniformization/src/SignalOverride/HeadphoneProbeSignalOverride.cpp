@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-constexpr std::size_t HeadphoneProbeSignalOverride::DataFrameCount;
+constexpr size_t HeadphoneProbeSignalOverride::DataFrameCount;
 
 HeadphoneProbeSignalOverride::HeadphoneProbeSignalOverride(PcmAudioFrameFormat format,
     size_t channelCount,
@@ -16,7 +16,8 @@ HeadphoneProbeSignalOverride::HeadphoneProbeSignalOverride(PcmAudioFrameFormat f
     m_frame(format, channelCount, frameSampleCount),
     m_data(formatSize(format) * frameSampleCount * DataFrameCount),
     m_currentOverrideDataIndex(0),
-    m_currentWriteDataIndex(0)
+    m_currentWriteDataIndex(0),
+    m_currentProbeId(-1)
 {
 }
 
@@ -45,9 +46,14 @@ const PcmAudioFrame& HeadphoneProbeSignalOverride::override(const PcmAudioFrame&
     return m_frame;
 }
 
-void HeadphoneProbeSignalOverride::writeData(const ProbeSoundDataMessage& message)
+void HeadphoneProbeSignalOverride::writeData(const ProbeSoundDataMessage& message, size_t probeId)
 {
-    lock_guard lock(m_currentWriteDataIndexMutex);
+    if (probeId != m_currentProbeId)
+    {
+        return;
+    }
+
+    lock_guard lock(m_writeDataMutex);
 
     const uint8_t* data = message.data();
     size_t dataSize = message.dataSize();
