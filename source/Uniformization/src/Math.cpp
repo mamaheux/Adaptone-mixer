@@ -1,14 +1,10 @@
-#ifndef UNIFORMIZATION_AUTOPOSITION_H
-#define UNIFORMIZATION_AUTOPOSITION_H
-
-#include <armadillo>
-#include <cmath>
+#include "Uniformization/Math.h"
 
 namespace adaptone
 {
-    double autoPosition(arma::mat distMat, arma::mat setAPosMat, arma::mat setBPosMat, int iterNb, int tryNb,
+    double relativePositionsFromDistances(arma::mat distMat, arma::mat setAPosMat, arma::mat setBPosMat, int iterNb, int tryNb,
         int thermalIterNb, float alpha, float epsilonTotalDistError, float epsilonDeltaTotalDistError,
-        int countThreshold)
+        int countThreshold, int dimension)
     {
         double deltaTotalDistError = INFINITY;
         double prevTotalDistError = 0;
@@ -23,12 +19,12 @@ namespace adaptone
         // initialize speaker and mic position as random inside a space bound by a guessed box from distances
         if (setAPosMat.is_empty())
         {
-            setAPosMat = avgDist * arma::randu<arma::mat>(rowNb, 3);
+            setAPosMat = avgDist * arma::randu<arma::mat>(rowNb, dimension);
         }
 
         if (setBPosMat.is_empty())
         {
-            setBPosMat = avgDist * arma::randu<arma::mat>(colNb, 3);
+            setBPosMat = avgDist * arma::randu<arma::mat>(colNb, dimension);
         }
 
         arma::mat distNewMat = arma::zeros(rowNb, colNb);
@@ -63,8 +59,10 @@ namespace adaptone
 
                         //double thermalNoiseFactor = std::fmax(0.0, 0.2 * (thermalIterNb - n) / thermalIterNb);
                         double thermalNoiseFactor = 0.5 * avgDist * std::exp(-5 * n / thermalIterNb);
-                        arma::mat setAThermalOffset = thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1,3));
-                        arma::mat setBThermalOffset = thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1,3));
+                        arma::mat setAThermalOffset =
+                            thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1, dimension));
+                        arma::mat setBThermalOffset =
+                            thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1, dimension));
 
                         setAPosMat.row(i) += setAOffset + setAThermalOffset;
                         setBPosMat.row(j) += setBOffset + setBThermalOffset;
@@ -106,5 +104,3 @@ namespace adaptone
         return totalDistError;
     }
 }
-
-#endif

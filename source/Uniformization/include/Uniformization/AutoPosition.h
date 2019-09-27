@@ -1,6 +1,8 @@
 #ifndef UNIFORMIZATION_AUTOPOSITION_H
 #define UNIFORMIZATION_AUTOPOSITION_H
 
+#include "Uniformization/Math.h"
+
 namespace adaptone
 {
     class AutoPosition

@@ -16,6 +16,11 @@ namespace adaptone
         double logf2f1 = log(f2/f1);
         return arma::sin(2 * M_PI * f1 * period / logf2f1 * (arma::exp(logf2f1 * t / period) - 1));
     }
+
+    double relativePositionsFromDistances(arma::mat distMat, arma::mat setAPosMat, arma::mat setBPosMat, int iterNb,
+        int tryNb, int thermalIterNb, float alpha, float epsilonTotalDistError, float epsilonDeltaTotalDistError,
+        int countThreshold, int dimension);
+
 }
 
 #endif
