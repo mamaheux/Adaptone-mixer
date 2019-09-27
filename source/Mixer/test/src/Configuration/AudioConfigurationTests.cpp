@@ -20,7 +20,8 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
         { "audio.max_output_delay", "8192" },
         { "audio.analysis.sound_level_length", "4096" },
         { "audio.analysis.spectrum.fft_length", "2048" },
-        { "audio.analysis.spectrum.point_count_per_decade", "10" }
+        { "audio.analysis.spectrum.point_count_per_decade", "10" },
+        { "audio.headphone_channel_indexes", "[12, 13]"}
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -33,6 +34,7 @@ TEST(AudioConfigurationTests, constructor_floatProcessingDataType_shouldSetTheAt
     EXPECT_EQ(configuration.soundLevelLength(), 4096);
     EXPECT_EQ(configuration.spectrumAnalysisFftLength(), 2048);
     EXPECT_EQ(configuration.spectrumAnalysisPointCountPerDecade(), 10);
+    EXPECT_EQ(configuration.headphoneChannelIndexes(), vector<size_t>({ 12, 13 }));
 }
 
 TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheAttributes)
@@ -48,7 +50,8 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
         { "audio.max_output_delay", "8192" },
         { "audio.analysis.sound_level_length", "4096" },
         { "audio.analysis.spectrum.fft_length", "2048" },
-        { "audio.analysis.spectrum.point_count_per_decade", "10" }
+        { "audio.analysis.spectrum.point_count_per_decade", "10" },
+        { "audio.headphone_channel_indexes", "[12]"}
     }));
 
     EXPECT_EQ(configuration.frameSampleCount(), 32);
@@ -61,6 +64,7 @@ TEST(AudioConfigurationTests, constructor_doubleProcessingDataType_shouldSetTheA
     EXPECT_EQ(configuration.soundLevelLength(), 4096);
     EXPECT_EQ(configuration.spectrumAnalysisFftLength(), 2048);
     EXPECT_EQ(configuration.spectrumAnalysisPointCountPerDecade(), 10);
+    EXPECT_EQ(configuration.headphoneChannelIndexes(), vector<size_t>({ 12 }));
 }
 
 TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetTheAttributes)
@@ -76,7 +80,8 @@ TEST(AudioConfigurationTests, constructor_invalidProcessingDataType_shouldSetThe
             { "audio.max_output_delay", "8192" },
             { "audio.analysis.sound_level_length", "4096" },
             { "audio.analysis.spectrum.fft_length", "2048" },
-            { "audio.analysis.spectrum.point_count_per_decade", "10" }
+            { "audio.analysis.spectrum.point_count_per_decade", "10" },
+            { "audio.headphone_channel_indexes", "[12, 13]"}
         })),
         InvalidValueException);
 }
@@ -94,7 +99,8 @@ TEST(AudioConfigurationTests, constructor_invalidSpectrumAnalysisFftLength_shoul
             { "audio.max_output_delay", "8192" },
             { "audio.analysis.sound_level_length", "4096" },
             { "audio.analysis.spectrum.fft_length", "2047" },
-            { "audio.analysis.spectrum.point_count_per_decade", "10" }
+            { "audio.analysis.spectrum.point_count_per_decade", "10" },
+            { "audio.headphone_channel_indexes", "[12, 13]"}
         })),
         InvalidValueException);
 }
@@ -112,7 +118,65 @@ TEST(AudioConfigurationTests, constructor_invalidMaxOutputDelay_shouldSetTheAttr
             { "audio.max_output_delay", "8191" },
             { "audio.analysis.sound_level_length", "4096" },
             { "audio.analysis.spectrum.fft_length", "2047" },
-            { "audio.analysis.spectrum.point_count_per_decade", "10" }
+            { "audio.analysis.spectrum.point_count_per_decade", "10" },
+            { "audio.headphone_channel_indexes", "[12, 13]"}
+        })),
+        InvalidValueException);
+}
+
+TEST(AudioConfigurationTests, constructor_tooFewHeadphoneChannelIndexCount_shouldSetTheAttributes)
+{
+    EXPECT_THROW(AudioConfiguration configuration(Properties(
+        {
+            { "audio.frame_sample_count", "32" },
+            { "audio.sample_frequency", "48000" },
+            { "audio.input_channel_count", "16" },
+            { "audio.output_channel_count", "14" },
+            { "audio.processing_data_type", "float" },
+            { "audio.eq.center_frequencies", "[10, 20]" },
+            { "audio.max_output_delay", "8191" },
+            { "audio.analysis.sound_level_length", "4096" },
+            { "audio.analysis.spectrum.fft_length", "2047" },
+            { "audio.analysis.spectrum.point_count_per_decade", "10" },
+            { "audio.headphone_channel_indexes", "[]"}
+        })),
+        InvalidValueException);
+}
+
+TEST(AudioConfigurationTests, constructor_tooManyHeadphoneChannelIndexCount_shouldSetTheAttributes)
+{
+    EXPECT_THROW(AudioConfiguration configuration(Properties(
+        {
+            { "audio.frame_sample_count", "32" },
+            { "audio.sample_frequency", "48000" },
+            { "audio.input_channel_count", "16" },
+            { "audio.output_channel_count", "14" },
+            { "audio.processing_data_type", "float" },
+            { "audio.eq.center_frequencies", "[10, 20]" },
+            { "audio.max_output_delay", "8191" },
+            { "audio.analysis.sound_level_length", "4096" },
+            { "audio.analysis.spectrum.fft_length", "2047" },
+            { "audio.analysis.spectrum.point_count_per_decade", "10" },
+            { "audio.headphone_channel_indexes", "[10, 11, 12]"}
+        })),
+        InvalidValueException);
+}
+
+TEST(AudioConfigurationTests, constructor_invalidHeadphoneChannelIndex_shouldSetTheAttributes)
+{
+    EXPECT_THROW(AudioConfiguration configuration(Properties(
+        {
+            { "audio.frame_sample_count", "32" },
+            { "audio.sample_frequency", "48000" },
+            { "audio.input_channel_count", "16" },
+            { "audio.output_channel_count", "14" },
+            { "audio.processing_data_type", "float" },
+            { "audio.eq.center_frequencies", "[10, 20]" },
+            { "audio.max_output_delay", "8191" },
+            { "audio.analysis.sound_level_length", "4096" },
+            { "audio.analysis.spectrum.fft_length", "2047" },
+            { "audio.analysis.spectrum.point_count_per_decade", "10" },
+            { "audio.headphone_channel_indexes", "[16]"}
         })),
         InvalidValueException);
 }
