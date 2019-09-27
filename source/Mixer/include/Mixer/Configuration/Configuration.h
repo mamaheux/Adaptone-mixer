@@ -8,6 +8,8 @@
 #include <Mixer/Configuration/UniformizationConfiguration.h>
 #include <Mixer/Configuration/WebSocketConfiguration.h>
 
+#include <SignalProcessing/SignalProcessorParameters.h>
+
 #include <Utils/Configuration/Properties.h>
 
 namespace adaptone
@@ -32,6 +34,8 @@ namespace adaptone
         const AudioOutputConfiguration& audioOutput() const;
         const UniformizationConfiguration& uniformization() const;
         const WebSocketConfiguration webSocket() const;
+
+        SignalProcessorParameters toSignalProcessorParameters() const;
     };
 
     inline const LoggerConfiguration& Configuration::logger() const
@@ -62,6 +66,20 @@ namespace adaptone
     inline const WebSocketConfiguration Configuration::webSocket() const
     {
         return m_webSocketConfiguration;
+    }
+
+    inline SignalProcessorParameters Configuration::toSignalProcessorParameters() const
+    {
+        return SignalProcessorParameters(m_audioConfiguration.processingDataType(),
+            m_audioConfiguration.frameSampleCount(),
+            m_audioConfiguration.sampleFrequency(),
+            m_audioConfiguration.inputChannelCount(),
+            m_audioConfiguration.outputChannelCount(),
+            m_audioInputConfiguration.format(),
+            m_audioOutputConfiguration.format(),
+            m_audioConfiguration.eqCenterFrequencies(),
+            m_audioConfiguration.maxOutputDelay(),
+            m_audioConfiguration.soundLevelLength());
     }
 }
 

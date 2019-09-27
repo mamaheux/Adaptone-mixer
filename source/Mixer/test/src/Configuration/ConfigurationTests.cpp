@@ -29,7 +29,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.input.looping", "false" },
 
         { "audio.output.type", "raw_file" },
-        { "audio.output.format", "signed_8" },
+        { "audio.output.format", "signed_16" },
         { "audio.output.filename", "output.raw" },
 
         { "uniformization.network.discovery_endpoint", "192.168.1.255:5000" },
@@ -66,7 +66,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audioInput().looping(), false);
 
     EXPECT_EQ(configuration.audioOutput().type(), AudioOutputConfiguration::Type::RawFile);
-    EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrameFormat::Signed8);
+    EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrameFormat::Signed16);
     EXPECT_EQ(configuration.audioOutput().filename(), "output.raw");
 
     EXPECT_EQ(configuration.uniformization().discoveryEndpoint().ipAddress(), "192.168.1.255");
@@ -82,4 +82,16 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
     EXPECT_EQ(configuration.webSocket().port(), 8080);
+
+    SignalProcessorParameters signalProcessorParameters = configuration.toSignalProcessorParameters();
+    EXPECT_EQ(signalProcessorParameters.processingDataType(), ProcessingDataType::Double);
+    EXPECT_EQ(signalProcessorParameters.frameSampleCount(), 32);
+    EXPECT_EQ(signalProcessorParameters.sampleFrequency(), 48000);
+    EXPECT_EQ(signalProcessorParameters.inputChannelCount(), 16);
+    EXPECT_EQ(signalProcessorParameters.outputChannelCount(), 14);
+    EXPECT_EQ(signalProcessorParameters.inputFormat(), PcmAudioFrameFormat::Signed8);
+    EXPECT_EQ(signalProcessorParameters.outputFormat(), PcmAudioFrameFormat::Signed16);
+    EXPECT_EQ(signalProcessorParameters.eqCenterFrequencies(), vector<double>({ 10, 20 }));
+    EXPECT_EQ(signalProcessorParameters.maxOutputDelay(), 8192);
+    EXPECT_EQ(signalProcessorParameters.soundLevelLength(), 4096);
 }

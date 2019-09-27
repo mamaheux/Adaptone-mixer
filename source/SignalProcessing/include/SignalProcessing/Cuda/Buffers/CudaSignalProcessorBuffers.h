@@ -5,6 +5,7 @@
 #include <SignalProcessing/Cuda/Buffers/CudaSoundLevelBuffers.h>
 #include <SignalProcessing/Cuda/Conversion/PcmToArrayConversion.h>
 #include <SignalProcessing/Cuda/Conversion/ArrayToPcmConversion.h>
+#include <SignalProcessing/SignalProcessorParameters.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Data/PcmAudioFrameFormat.h>
@@ -104,14 +105,9 @@ namespace adaptone
         bool m_hasOwnership;
 
     public:
-        __host__ CudaSignalProcessorBuffers(std::size_t frameCount,
-            std::size_t frameSampleCount,
-            std::size_t inputChannelCount,
-            std::size_t outputChannelCount,
-            PcmAudioFrameFormat inputFormat,
-            PcmAudioFrameFormat outputFormat,
-            std::size_t eqFilterCountPerChannel,
-            std::size_t maxOutputDelay);
+        __host__ CudaSignalProcessorBuffers(const SignalProcessorParameters& parameters,
+            std::size_t frameCount,
+            std::size_t eqFilterCountPerChannel);
         __host__ CudaSignalProcessorBuffers(const CudaSignalProcessorBuffers& other);
         __host__ virtual ~CudaSignalProcessorBuffers();
 
@@ -186,38 +182,38 @@ namespace adaptone
     };
 
     template<class T>
-    inline __host__ CudaSignalProcessorBuffers<T>::CudaSignalProcessorBuffers(std::size_t frameCount,
-        std::size_t frameSampleCount,
-        std::size_t inputChannelCount,
-        std::size_t outputChannelCount,
-        PcmAudioFrameFormat inputFormat,
-        PcmAudioFrameFormat outputFormat,
-        std::size_t eqFilterCountPerChannel,
-        std::size_t maxOutputDelay) :
+    inline __host__ CudaSignalProcessorBuffers<T>::CudaSignalProcessorBuffers(
+        const SignalProcessorParameters& parameters,
+        std::size_t frameCount,
+        std::size_t eqFilterCountPerChannel) :
         m_currentFrameIndex(0),
         m_currentDelayedOutputFrameIndex(0),
-        m_inputPcmFrameSize(size(inputFormat, inputChannelCount, frameSampleCount)),
-        m_outputPcmFrameSize(size(outputFormat, outputChannelCount, frameSampleCount)),
+        m_inputPcmFrameSize(size(parameters.inputFormat(), parameters.inputChannelCount(),
+            parameters.frameSampleCount())),
+        m_outputPcmFrameSize(size(parameters.outputFormat(), parameters.outputChannelCount(),
+            parameters.frameSampleCount())),
 
         m_frameCount(frameCount),
-        m_frameSampleCount(frameSampleCount),
-        m_inputChannelCount(inputChannelCount),
-        m_outputChannelCount(outputChannelCount),
+        m_frameSampleCount(parameters.frameSampleCount()),
+        m_inputChannelCount(parameters.inputChannelCount()),
+        m_outputChannelCount(parameters.outputChannelCount()),
         m_inputFrameSize(m_frameSampleCount * m_inputChannelCount),
         m_outputFrameSize(m_frameSampleCount * m_outputChannelCount),
         m_mixingGainsSize(m_inputChannelCount * m_outputChannelCount),
-        m_delayedOutputFrameCount(maxOutputDelay / m_frameSampleCount + 2),
-        m_maxOutputDelay(maxOutputDelay),
+        m_delayedOutputFrameCount(parameters.maxOutputDelay() / m_frameSampleCount + 2),
+        m_maxOutputDelay(parameters.maxOutputDelay()),
 
-        m_inputEqBuffers(inputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
-        m_outputEqBuffers(outputChannelCount, eqFilterCountPerChannel, frameCount, frameSampleCount),
+        m_inputEqBuffers(parameters.inputChannelCount(), eqFilterCountPerChannel, frameCount,
+            parameters.frameSampleCount()),
+        m_outputEqBuffers(parameters.outputChannelCount(), eqFilterCountPerChannel, frameCount,
+            parameters.frameSampleCount()),
 
-        m_inputGainSoundLevelBuffers(inputChannelCount, frameSampleCount),
-        m_inputEqSoundLevelBuffers(inputChannelCount, frameSampleCount),
-        m_outputGainSoundLevelBuffers(outputChannelCount, frameSampleCount),
+        m_inputGainSoundLevelBuffers(parameters.inputChannelCount(), parameters.frameSampleCount()),
+        m_inputEqSoundLevelBuffers(parameters.inputChannelCount(), parameters.frameSampleCount()),
+        m_outputGainSoundLevelBuffers(parameters.outputChannelCount(), parameters.frameSampleCount()),
 
-        m_inputFormat(inputFormat),
-        m_outputFormat(outputFormat),
+        m_inputFormat(parameters.inputFormat()),
+        m_outputFormat(parameters.outputFormat()),
 
         m_hasOwnership(true)
     {
