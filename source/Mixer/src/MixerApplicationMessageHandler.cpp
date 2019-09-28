@@ -6,6 +6,7 @@
 #include <Utils/Exception/NotSupportedException.h>
 
 #include <thread>
+#include <optional>
 
 using namespace adaptone;
 using namespace std;
@@ -41,6 +42,7 @@ MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<Channe
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeAllProcessingParametersMessage);
 }
 
 MixerApplicationMessageHandler::~MixerApplicationMessageHandler()
@@ -250,4 +252,91 @@ void MixerApplicationMessageHandler::handleChangeAuxiliaryOutputVolumeMessage(
 {
     size_t outputChannelIndex = m_channelIdMapping->getAuxiliaryOutputIndexFromChannelId(message.channelId());
     m_signalProcessor->setOutputGain(outputChannelIndex, message.gain());
+}
+
+void MixerApplicationMessageHandler::handleChangeAllProcessingParametersMessage(
+    const ChangeAllProcessingParametersMessage& message,
+    const function<void(const ApplicationMessage&)>& send)
+{
+    applyInputProcessingParameters(message.inputs());
+    applyMasterProcessingParameters(message.master());
+
+    for (const AuxiliaryProcessingParameters& auxiliary : message.auxiliaries())
+    {
+        applyAuxiliaryProcessingParameters(auxiliary);
+    }
+}
+
+void MixerApplicationMessageHandler::applyInputProcessingParameters(const vector<InputProcessingParameters>& inputs)
+{
+    optional<size_t> soloChannelId;
+    for (const InputProcessingParameters& input : inputs)
+    {
+        if (input.isSolo())
+        {
+            soloChannelId = input.channelId();
+        }
+    }
+
+    for (const InputProcessingParameters& input : inputs)
+    {
+        size_t channelIndex = m_channelIdMapping->getInputIndexFromChannelId(input.channelId());
+
+        if (input.isMuted() || (soloChannelId != nullopt && soloChannelId != input.channelId()))
+        {
+            m_signalProcessor->setInputGain(channelIndex, input.gain());
+        }
+        else
+        {
+            m_signalProcessor->setInputGain(channelIndex, input.gain());
+        }
+
+        m_signalProcessor->setInputGraphicEqGains(channelIndex, input.eqGains());
+    }
+}
+
+void MixerApplicationMessageHandler::applyMasterProcessingParameters(const MasterProcessingParameters& master)
+{
+    for (size_t outputChannelIndex : m_channelIdMapping->getMasterOutputIndexes())
+    {
+        if (master.isMuted())
+        {
+            m_signalProcessor->setOutputGain(outputChannelIndex, 0);
+        }
+        else
+        {
+            m_signalProcessor->setOutputGain(outputChannelIndex, master.gain());
+        }
+
+        for (const ChannelGain& channelGain : master.inputs())
+        {
+            size_t inputChannelIndex = m_channelIdMapping->getInputIndexFromChannelId(channelGain.channelId());
+            m_signalProcessor->setMixingGain(inputChannelIndex, outputChannelIndex, channelGain.gain());
+        }
+
+        m_signalProcessor->setOutputGraphicEqGains(outputChannelIndex, master.eqGains());
+    }
+}
+
+void MixerApplicationMessageHandler::applyAuxiliaryProcessingParameters(const AuxiliaryProcessingParameters& auxiliary)
+{
+    size_t outputChannelIndex =
+        m_channelIdMapping->getAuxiliaryOutputIndexFromChannelId(auxiliary.auxiliaryChannelId());
+
+    if (auxiliary.isMuted())
+    {
+        m_signalProcessor->setOutputGain(outputChannelIndex, 0);
+    }
+    else
+    {
+        m_signalProcessor->setOutputGain(outputChannelIndex, auxiliary.gain());
+    }
+
+    for (const ChannelGain& channelGain : auxiliary.inputs())
+    {
+        size_t inputChannelIndex = m_channelIdMapping->getInputIndexFromChannelId(channelGain.channelId());
+        m_signalProcessor->setMixingGain(inputChannelIndex, outputChannelIndex, channelGain.gain());
+    }
+
+    m_signalProcessor->setOutputGraphicEqGains(outputChannelIndex, auxiliary.eqGains());
 }

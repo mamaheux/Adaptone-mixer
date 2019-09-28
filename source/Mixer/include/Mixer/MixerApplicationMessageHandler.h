@@ -26,6 +26,7 @@
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 
 #include <SignalProcessing/SignalProcessor.h>
 
@@ -91,6 +92,12 @@ namespace adaptone
             const std::function<void(const ApplicationMessage&)>& send);
         void handleChangeAuxiliaryOutputVolumeMessage(const ChangeAuxiliaryOutputVolumeMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
+        void handleChangeAllProcessingParametersMessage(const ChangeAllProcessingParametersMessage& message,
+            const std::function<void(const ApplicationMessage&)>& send);
+
+        void applyInputProcessingParameters(const std::vector<InputProcessingParameters>& inputs);
+        void applyMasterProcessingParameters(const MasterProcessingParameters& master);
+        void applyAuxiliaryProcessingParameters(const AuxiliaryProcessingParameters& auxiliary);
     };
 }
 
