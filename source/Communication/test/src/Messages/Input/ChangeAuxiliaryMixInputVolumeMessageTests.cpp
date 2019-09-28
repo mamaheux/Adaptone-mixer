@@ -13,7 +13,7 @@ TEST(ChangeAuxiliaryMixInputVolumeMessageTests, constructor_shouldSetTheAttribut
     constexpr double gain = 10;
     ChangeAuxiliaryMixInputVolumeMessage message(channelId, auxiliaryChannelId, gain);
 
-    EXPECT_EQ(message.seqId(), 14);
+    EXPECT_EQ(message.seqId(), 15);
 
     EXPECT_EQ(message.channelId(), channelId);
     EXPECT_EQ(message.auxiliaryChannelId(), auxiliaryChannelId);
@@ -29,7 +29,7 @@ TEST(ChangeAuxiliaryMixInputVolumeMessageTests, serialization_shouldSerializaToJ
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 14);
+    EXPECT_EQ(serializedMessage.at("seqId"), 15);
 
     EXPECT_EQ(serializedMessage.at("data").at("channelId"), channelId);
     EXPECT_EQ(serializedMessage.at("data").at("auxiliaryChannelId"), auxiliaryChannelId);
@@ -41,7 +41,7 @@ TEST(ChangeAuxiliaryMixInputVolumeMessageTests, serialization_shouldSerializaToJ
 TEST(ChangeAuxiliaryMixInputVolumeMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 14,"
+        "  \"seqId\": 15,"
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"auxiliaryChannelId\": 1,"
@@ -51,7 +51,7 @@ TEST(ChangeAuxiliaryMixInputVolumeMessageTests, deserialization_shouldDeserializ
 
     auto deserializedMessage = json::parse(serializedMessage).get<ChangeAuxiliaryMixInputVolumeMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 14);
+    EXPECT_EQ(deserializedMessage.seqId(), 15);
 
     EXPECT_EQ(deserializedMessage.channelId(), 0);
     EXPECT_EQ(deserializedMessage.auxiliaryChannelId(), 1);

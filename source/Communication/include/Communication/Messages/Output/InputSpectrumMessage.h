@@ -66,7 +66,7 @@ namespace adaptone
     class InputSpectrumMessage : public ApplicationMessage
     {
     public:
-        static constexpr std::size_t SeqId = 20;
+        static constexpr std::size_t SeqId = 22;
 
     private:
         std::vector<ChannelSpectrum> m_channelSpectrums;

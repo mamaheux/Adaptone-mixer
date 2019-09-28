@@ -11,7 +11,7 @@ TEST(ChangeMasterOutputEqGainsMessageTests, constructor_shouldSetTheAttributes)
     const vector<double> gains{ 1, 10 };
     ChangeMasterOutputEqGainsMessage message(gains);
 
-    EXPECT_EQ(message.seqId(), 15);
+    EXPECT_EQ(message.seqId(), 17);
 
     EXPECT_EQ(message.gains(), gains);
 }
@@ -23,7 +23,7 @@ TEST(ChangeMasterOutputEqGainsMessageTests, serialization_shouldSerializaToJson)
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 15);
+    EXPECT_EQ(serializedMessage.at("seqId"), 17);
 
     EXPECT_EQ(serializedMessage.at("data").at("gains"), gains);
 
@@ -33,7 +33,7 @@ TEST(ChangeMasterOutputEqGainsMessageTests, serialization_shouldSerializaToJson)
 TEST(ChangeMasterOutputEqGainsMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 15,"
+        "  \"seqId\": 17,"
         "  \"data\": {"
         "    \"gains\": [1.0, 10.0, 100.0]"
         "  }"
@@ -41,7 +41,7 @@ TEST(ChangeMasterOutputEqGainsMessageTests, deserialization_shouldDeserializeFro
 
     auto deserializedMessage = json::parse(serializedMessage).get<ChangeMasterOutputEqGainsMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 15);
+    EXPECT_EQ(deserializedMessage.seqId(), 17);
 
     EXPECT_EQ(deserializedMessage.gains(), vector<double>({ 1, 10, 100 }));
 }

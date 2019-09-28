@@ -37,7 +37,7 @@ TEST(ChangeInputEqGainsMessageTests, serialization_shouldSerializaToJson)
 TEST(ChangeInputEqGainsMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 11,"
+        "  \"seqId\": 12,"
         "  \"data\": {"
         "    \"channelId\": 1,"
         "    \"gains\": [1.0, 10.0, 100.0]"

@@ -334,7 +334,7 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryMixInputVolumeMessage
     EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeAuxiliaryMixInputVolumeMessage(), _));
 
     string serializedMessage = "{"
-        "  \"seqId\": 14,"
+        "  \"seqId\": 15,"
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"auxiliaryChannelId\": 0,"
@@ -352,7 +352,7 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeMasterOutputEqGainsMessage_sho
     EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeMasterOutputEqGainsMessage(), _));
 
     string serializedMessage = "{"
-        "  \"seqId\": 15,"
+        "  \"seqId\": 17,"
         "  \"data\": {"
         "    \"gains\": [1.0, 1.2, 1.23]"
         "  }"
@@ -368,7 +368,7 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputEqGainsMessage_
     EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeAuxiliaryOutputEqGainsMessage(), _));
 
     string serializedMessage = "{"
-        "  \"seqId\": 16,"
+        "  \"seqId\": 18,"
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"gains\": [1.0, 1.2, 1.23]"
@@ -385,7 +385,7 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeMasterOutputVolumeMessage_shou
     EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeMasterOutputVolumeMessage(), _));
 
     string serializedMessage = "{"
-        "  \"seqId\": 17,"
+        "  \"seqId\": 19,"
         "  \"data\": {"
         "    \"gain\": 1.0"
         "  }"
@@ -401,7 +401,7 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputVolumeMessage_s
     EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeAuxiliaryOutputVolumeMessage(), _));
 
     string serializedMessage = "{"
-        "  \"seqId\": 18,"
+        "  \"seqId\": 20,"
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"gain\": 1.0"
@@ -418,7 +418,7 @@ TEST(ApplicationMessageHandlerTests, handle_InputSpectrumMessage_shouldCallHandl
     EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsInputSpectrumMessage(), _));
 
     string serializedMessage = "{"
-        "  \"seqId\": 20,"
+        "  \"seqId\": 22,"
         "  \"data\": {"
         "    \"spectrums\": ["
         "      {"
@@ -444,7 +444,7 @@ TEST(ApplicationMessageHandlerTests, handle_SoundLevelMessage_shouldCallHandleWi
     EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsSoundLevelMessage(), _));
 
     string serializedMessage = "{"
-        "  \"seqId\": 21,"
+        "  \"seqId\": 23,"
         "  \"data\": {"
         "    \"inputAfterGain\": ["
         "      {"

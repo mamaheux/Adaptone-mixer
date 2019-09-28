@@ -10,7 +10,7 @@ namespace adaptone
     class ChangeMasterOutputEqGainsMessage : public ApplicationMessage
     {
     public:
-        static constexpr std::size_t SeqId = 15;
+        static constexpr std::size_t SeqId = 17;
 
     private:
         std::vector<double> m_gains;

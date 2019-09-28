@@ -12,7 +12,7 @@ TEST(ChangeAuxiliaryOutputEqGainsMessageTests, constructor_shouldSetTheAttribute
     const vector<double> gains{ 1, 10 };
     ChangeAuxiliaryOutputEqGainsMessage message(channelId, gains);
 
-    EXPECT_EQ(message.seqId(), 16);
+    EXPECT_EQ(message.seqId(), 18);
 
     EXPECT_EQ(message.channelId(), channelId);
     EXPECT_EQ(message.gains(), gains);
@@ -26,7 +26,7 @@ TEST(ChangeAuxiliaryOutputEqGainsMessageTests, serialization_shouldSerializaToJs
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 16);
+    EXPECT_EQ(serializedMessage.at("seqId"), 18);
 
     EXPECT_EQ(serializedMessage.at("data").at("channelId"), channelId);
     EXPECT_EQ(serializedMessage.at("data").at("gains"), gains);
@@ -37,7 +37,7 @@ TEST(ChangeAuxiliaryOutputEqGainsMessageTests, serialization_shouldSerializaToJs
 TEST(ChangeAuxiliaryOutputEqGainsMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 16,"
+        "  \"seqId\": 18,"
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"gains\": [1.0, 10.0, 100.0]"
@@ -46,7 +46,7 @@ TEST(ChangeAuxiliaryOutputEqGainsMessageTests, deserialization_shouldDeserialize
 
     auto deserializedMessage = json::parse(serializedMessage).get<ChangeAuxiliaryOutputEqGainsMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 16);
+    EXPECT_EQ(deserializedMessage.seqId(), 18);
 
     EXPECT_EQ(deserializedMessage.channelId(), 0);
     EXPECT_EQ(deserializedMessage.gains(), vector<double>({ 1, 10, 100 }));

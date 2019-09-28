@@ -13,7 +13,7 @@ TEST(SoundLevelMessageTests, constructor_shouldSetTheAttributes)
     const vector<ChannelSoundLevel> outputAfterGain{ ChannelSoundLevel(0, 5), ChannelSoundLevel(1, 6) };
     SoundLevelMessage message(inputAfterGain, inputAfterEq, outputAfterGain);
 
-    EXPECT_EQ(message.seqId(), 21);
+    EXPECT_EQ(message.seqId(), 23);
 
     EXPECT_EQ(message.inputAfterGain(), inputAfterGain);
     EXPECT_EQ(message.inputAfterEq(), inputAfterEq);
@@ -29,7 +29,7 @@ TEST(SoundLevelMessageTests, serialization_shouldSerializaToJson)
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 21);
+    EXPECT_EQ(serializedMessage.at("seqId"), 23);
 
     EXPECT_EQ(serializedMessage.at("data").at("inputAfterGain"), inputAfterGain);
     EXPECT_EQ(serializedMessage.at("data").at("inputAfterEq"), inputAfterEq);
@@ -41,7 +41,7 @@ TEST(SoundLevelMessageTests, serialization_shouldSerializaToJson)
 TEST(SoundLevelMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 21,"
+        "  \"seqId\": 23,"
         "  \"data\": {"
         "    \"inputAfterGain\": ["
         "      {"
@@ -78,7 +78,7 @@ TEST(SoundLevelMessageTests, deserialization_shouldDeserializeFromJson)
 
     auto deserializedMessage = json::parse(serializedMessage).get<SoundLevelMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 21);
+    EXPECT_EQ(deserializedMessage.seqId(), 23);
 
     EXPECT_EQ(deserializedMessage.inputAfterGain(),
         vector<ChannelSoundLevel>({ ChannelSoundLevel(0, 1), ChannelSoundLevel(1, 2) }));

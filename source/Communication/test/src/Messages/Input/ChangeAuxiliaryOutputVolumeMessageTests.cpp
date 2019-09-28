@@ -12,7 +12,7 @@ TEST(ChangeAuxiliaryOutputVolumeMessageTests, constructor_shouldSetTheAttributes
     constexpr double gain = 10;
     ChangeAuxiliaryOutputVolumeMessage message(channelId, gain);
 
-    EXPECT_EQ(message.seqId(), 18);
+    EXPECT_EQ(message.seqId(), 20);
 
     EXPECT_EQ(message.channelId(), channelId);
     EXPECT_EQ(message.gain(), gain);
@@ -26,7 +26,7 @@ TEST(ChangeAuxiliaryOutputVolumeMessageTests, serialization_shouldSerializaToJso
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 18);
+    EXPECT_EQ(serializedMessage.at("seqId"), 20);
 
     EXPECT_EQ(serializedMessage.at("data").at("channelId"), channelId);
     EXPECT_EQ(serializedMessage.at("data").at("gain"), gain);
@@ -37,7 +37,7 @@ TEST(ChangeAuxiliaryOutputVolumeMessageTests, serialization_shouldSerializaToJso
 TEST(ChangeAuxiliaryOutputVolumeMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 18,"
+        "  \"seqId\": 20,"
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"gain\": 100.0"
@@ -46,7 +46,7 @@ TEST(ChangeAuxiliaryOutputVolumeMessageTests, deserialization_shouldDeserializeF
 
     auto deserializedMessage = json::parse(serializedMessage).get<ChangeAuxiliaryOutputVolumeMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 18);
+    EXPECT_EQ(deserializedMessage.seqId(), 20);
 
     EXPECT_EQ(deserializedMessage.channelId(), 0);
     EXPECT_EQ(deserializedMessage.gain(), 100);
