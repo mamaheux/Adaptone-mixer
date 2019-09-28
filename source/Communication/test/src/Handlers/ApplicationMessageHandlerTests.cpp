@@ -22,6 +22,7 @@
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 
 #include <Communication/Messages/Output/SoundErrorMessage.h>
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
@@ -62,6 +63,7 @@ DEFINE_TYPE_MATCHER(ChangeMasterOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeMasterOutputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputVolumeMessage);
+DEFINE_TYPE_MATCHER(ChangeAllProcessingParametersMessage);
 
 DEFINE_TYPE_MATCHER(SoundErrorMessage);
 DEFINE_TYPE_MATCHER(InputSpectrumMessage);
@@ -462,6 +464,57 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputVolumeMessage_s
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeAllProcessingParametersMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeAllProcessingParametersMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 24,"
+        "  \"data\": {"
+        "    \"channels\":{"
+        "      \"inputs\":["
+        "        {"
+        "          \"channelId\":1,"
+        "          \"gain\":2,"
+        "          \"isMuted\":false,"
+        "          \"isSolo\":true,"
+        "          \"eqGains\": [1]"
+        "        }"
+        "      ],"
+        "      \"master\":{"
+        "        \"gain\":3,"
+        "        \"isMuted\":false,"
+        "        \"inputs\":["
+        "          {"
+        "            \"channelId\":1,"
+        "            \"gain\":2"
+        "          }"
+        "        ],"
+        "        \"eqGains\": [3]"
+        "      },"
+        "      \"auxiliaries\":["
+        "        {"
+        "          \"auxiliaryChannelId\":10,"
+        "          \"gain\":5,"
+        "          \"isMuted\":false,"
+        "          \"inputs\":["
+        "            {"
+        "              \"channelId\":1,"
+        "              \"gain\":0"
+        "            }"
+        "          ],"
+        "          \"eqGains\": [4]"
+        "        }"
+        "      ]"
+        "    }"
         "  }"
         "}";
 

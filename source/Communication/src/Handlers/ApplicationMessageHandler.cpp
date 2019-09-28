@@ -22,6 +22,7 @@
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 
 #include <Communication/Messages/Output/SoundErrorMessage.h>
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
@@ -62,6 +63,7 @@ ApplicationMessageHandler::ApplicationMessageHandler()
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeAllProcessingParametersMessage);
 
     ADD_HANDLE_FUNCTION(SoundErrorMessage);
     ADD_HANDLE_FUNCTION(InputSpectrumMessage);
