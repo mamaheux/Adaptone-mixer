@@ -6,20 +6,32 @@ using namespace adaptone;
 using namespace std;
 
 PcmAudioFrame::PcmAudioFrame(PcmAudioFrameFormat format, size_t channelCount, size_t sampleCount) :
-    m_format(format), m_channelCount(channelCount), m_sampleCount(sampleCount)
+    m_format(format), m_channelCount(channelCount), m_sampleCount(sampleCount), m_hasOwnership(true)
 {
     m_data = new uint8_t[size()];
 }
 
+PcmAudioFrame::PcmAudioFrame(PcmAudioFrameFormat format, size_t channelCount, size_t sampleCount, uint8_t* data) :
+    m_format(format), m_channelCount(channelCount), m_sampleCount(sampleCount), m_data(data), m_hasOwnership(false)
+{
+
+}
+
 PcmAudioFrame::PcmAudioFrame(const PcmAudioFrame& other) :
-    m_format(other.m_format), m_channelCount(other.m_channelCount), m_sampleCount(other.m_sampleCount)
+    m_format(other.m_format),
+    m_channelCount(other.m_channelCount),
+    m_sampleCount(other.m_sampleCount),
+    m_hasOwnership(true)
 {
     m_data = new uint8_t[size()];
     memcpy(m_data, other.m_data, size());
 }
 
 PcmAudioFrame::PcmAudioFrame(PcmAudioFrame&& other) :
-    m_format(other.m_format), m_channelCount(other.m_channelCount), m_sampleCount(other.m_sampleCount)
+    m_format(other.m_format),
+    m_channelCount(other.m_channelCount),
+    m_sampleCount(other.m_sampleCount),
+    m_hasOwnership(other.m_hasOwnership)
 {
     m_data = other.m_data;
 
@@ -30,7 +42,7 @@ PcmAudioFrame::PcmAudioFrame(PcmAudioFrame&& other) :
 
 PcmAudioFrame::~PcmAudioFrame()
 {
-    if (m_data != nullptr)
+    if (m_data != nullptr && m_hasOwnership)
     {
         delete[] m_data;
     }
@@ -48,6 +60,7 @@ PcmAudioFrame& PcmAudioFrame::operator=(const PcmAudioFrame& other)
         m_format = other.m_format;
         m_channelCount = other.m_channelCount;
         m_sampleCount = other.m_sampleCount;
+        m_hasOwnership = true;
 
         m_data = new uint8_t[size()];
     }
@@ -67,6 +80,7 @@ PcmAudioFrame& PcmAudioFrame::operator=(PcmAudioFrame&& other)
     m_channelCount = other.m_channelCount;
     m_sampleCount = other.m_sampleCount;
     m_data = other.m_data;
+    m_hasOwnership = other.m_hasOwnership;
 
     other.m_channelCount = 0;
     other.m_sampleCount = 0;

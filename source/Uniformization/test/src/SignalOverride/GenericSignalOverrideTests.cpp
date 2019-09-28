@@ -38,42 +38,42 @@ TEST(GenericSignalOverrideTests, constructor_emptyVector_shouldThrowInvalidValue
 
 TEST(GenericSignalOverrideTests, constructor_sameTypes_shouldThrowInvalidValueException)
 {
-    vector<unique_ptr<SpecificSignalOverride>> signalOverrides;
-    signalOverrides.emplace_back(make_unique<DummySignalOverride>());
-    signalOverrides.emplace_back(make_unique<DummySignalOverride>());
+    vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
+    signalOverrides.emplace_back(make_shared<DummySignalOverride>());
+    signalOverrides.emplace_back(make_shared<DummySignalOverride>());
 
-    EXPECT_THROW(GenericSignalOverride(move(signalOverrides)), InvalidValueException);
+    EXPECT_THROW(GenericSignalOverride genericSignalOverride(signalOverrides), InvalidValueException);
 }
 
 TEST(GenericSignalOverrideTests, setCurrentSignalOverrideType_invalidType_shouldThrowInvalidValueException)
 {
-    vector<unique_ptr<SpecificSignalOverride>> signalOverrides;
-    signalOverrides.emplace_back(make_unique<PassthroughSignalOverride>());
-    signalOverrides.emplace_back(make_unique<DummySignalOverride>());
+    vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
+    signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
+    signalOverrides.emplace_back(make_shared<DummySignalOverride>());
 
-    GenericSignalOverride genericSignalOverride(move(signalOverrides));
+    GenericSignalOverride genericSignalOverride(signalOverrides);
 
     EXPECT_THROW(genericSignalOverride.setCurrentSignalOverrideType<vector<int>>(), InvalidValueException);
 }
 
 TEST(GenericSignalOverrideTests, getSignalOverride_invalidType_shouldThrowInvalidValueException)
 {
-    vector<unique_ptr<SpecificSignalOverride>> signalOverrides;
-    signalOverrides.emplace_back(make_unique<PassthroughSignalOverride>());
-    signalOverrides.emplace_back(make_unique<DummySignalOverride>());
+    vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
+    signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
+    signalOverrides.emplace_back(make_shared<DummySignalOverride>());
 
-    GenericSignalOverride genericSignalOverride(move(signalOverrides));
+    GenericSignalOverride genericSignalOverride(signalOverrides);
 
     EXPECT_THROW(genericSignalOverride.getSignalOverride<vector<int>>(), InvalidValueException);
 }
 
 TEST(GenericSignalOverrideTests, override_shouldCallTheCurrentSignalOverride)
 {
-    vector<unique_ptr<SpecificSignalOverride>> signalOverrides;
-    signalOverrides.emplace_back(make_unique<PassthroughSignalOverride>());
-    signalOverrides.emplace_back(make_unique<DummySignalOverride>());
+    vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
+    signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
+    signalOverrides.emplace_back(make_shared<DummySignalOverride>());
 
-    GenericSignalOverride genericSignalOverride(move(signalOverrides));
+    GenericSignalOverride genericSignalOverride(signalOverrides);
 
     PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, 2, 3);
     for (size_t i = 0; i < frame.size(); i++)
@@ -94,7 +94,7 @@ TEST(GenericSignalOverrideTests, override_shouldCallTheCurrentSignalOverride)
         EXPECT_EQ(overridenFrame1[i], 0);
     }
 
-    genericSignalOverride.getSignalOverride<DummySignalOverride>().setFirstByte(1);
+    genericSignalOverride.getSignalOverride<DummySignalOverride>()->setFirstByte(1);
     const PcmAudioFrame& overridenFrame2 = genericSignalOverride.override(frame);
     EXPECT_EQ(overridenFrame2[0], 1);
     for (size_t i = 1; i < frame.size(); i++)

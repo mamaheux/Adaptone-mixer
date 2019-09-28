@@ -10,8 +10,8 @@ namespace adaptone
     __device__ void processMix(T* inputFrame, T* outputFrame, T* gains, std::size_t frameSampleCount,
         std::size_t inputChannelCount, std::size_t outputChannelCount)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * outputChannelCount;
 
         for (std::size_t outputIndex = startIndex; outputIndex < n; outputIndex += stride)

@@ -15,24 +15,19 @@ using namespace std;
 using namespace std::chrono_literals;
 
 ProbeServer::ProbeServer(shared_ptr<Logger> logger,
-    uint16_t tcpConnectionPort,
-    int timeoutMs,
+    shared_ptr<ProbeMessageHandler> messageHandler,
     const DiscoveredProbe& discoveredProbe,
     size_t id,
-    size_t sampleFrequency,
-    PcmAudioFrameFormat format,
-    shared_ptr<ProbeMessageHandler> messageHandler) :
+    const ProbeServerParameters& probeServerParameters) :
     m_logger(logger),
-    m_timeoutMs(timeoutMs),
+    m_messageHandler(messageHandler),
     m_isMaster(false),
     m_isConnected(false),
     m_id(id),
-    m_sampleFrequency(sampleFrequency),
-    m_format(format),
-    m_messageHandler(messageHandler),
+    m_probeServerParameters(probeServerParameters),
     m_sendingBuffer(MaxTcpMessageSize)
 {
-    m_endpoint = boost::asio::ip::tcp::endpoint(discoveredProbe.address(), tcpConnectionPort);
+    m_endpoint = boost::asio::ip::tcp::endpoint(discoveredProbe.address(), m_probeServerParameters.tcpConnectionPort());
 
     unique_ptr<boost::asio::io_service> ioService = make_unique<boost::asio::io_service>();
     unique_ptr<boost::asio::ip::tcp::socket> socket = make_unique<boost::asio::ip::tcp::socket>(*ioService);
@@ -44,7 +39,7 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
         THROW_NETWORK_EXCEPTION("Unable to set the broadcast flag");
     }
 
-    if (!setReceivingTimeout(*socket, timeoutMs))
+    if (!setReceivingTimeout(*socket, m_probeServerParameters.probeTimeoutMs()))
     {
         THROW_NETWORK_EXCEPTION("Unable to set the receive timeout");
     }
@@ -57,6 +52,7 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
 
 ProbeServer::~ProbeServer()
 {
+    stop();
 }
 
 void ProbeServer::start()
@@ -133,7 +129,8 @@ void ProbeServer::connect(boost::asio::ip::tcp::socket& socket)
         THROW_NETWORK_EXCEPTION("Socket connection error");
     }
 
-    ProbeInitializationRequestMessage request(m_sampleFrequency, m_format);
+    ProbeInitializationRequestMessage request(m_probeServerParameters.sampleFrequency(),
+        m_probeServerParameters.format());
     auto response = sendRequest<ProbeInitializationResponseMessage>(socket, m_sendingBuffer, request);
     if (!response.isCompatible())
     {
@@ -175,8 +172,10 @@ void ProbeServer::readMessage()
 
 void ProbeServer::updateHeartbeat()
 {
-    const chrono::system_clock::duration HeartbeatInterval = chrono::microseconds(10 * m_timeoutMs);
-    const chrono::system_clock::duration HeartbeatTimeout = chrono::microseconds(20 * m_timeoutMs);
+    const chrono::system_clock::duration HeartbeatInterval =
+        chrono::microseconds(10 * m_probeServerParameters.probeTimeoutMs());
+    const chrono::system_clock::duration HeartbeatTimeout =
+        chrono::microseconds(20 * m_probeServerParameters.probeTimeoutMs());
 
     auto now = chrono::system_clock::now();
     if (m_lastHeartbeatSendingTime - now > HeartbeatInterval)

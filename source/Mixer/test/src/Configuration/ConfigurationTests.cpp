@@ -22,6 +22,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.analysis.sound_level_length", "4096" },
         { "audio.analysis.spectrum.fft_length", "2048" },
         { "audio.analysis.spectrum.point_count_per_decade", "10" },
+        { "audio.headphone_channel_indexes", "[12, 13]"},
 
         { "audio.input.type", "raw_file" },
         { "audio.input.format", "signed_8" },
@@ -59,6 +60,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().soundLevelLength(), 4096);
     EXPECT_EQ(configuration.audio().spectrumAnalysisFftLength(), 2048);
     EXPECT_EQ(configuration.audio().spectrumAnalysisPointCountPerDecade(), 10);
+    EXPECT_EQ(configuration.audio().headphoneChannelIndexes(), vector<size_t>({ 12, 13 }));
 
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrameFormat::Signed8);
@@ -94,4 +96,15 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(signalProcessorParameters.eqCenterFrequencies(), vector<double>({ 10, 20 }));
     EXPECT_EQ(signalProcessorParameters.maxOutputDelay(), 8192);
     EXPECT_EQ(signalProcessorParameters.soundLevelLength(), 4096);
+
+    UniformizationServiceParameters uniformizationServiceParameters = configuration.toUniformizationServiceParameters();
+    EXPECT_EQ(uniformizationServiceParameters.discoveryEndpoint().ipAddress(), "192.168.1.255");
+    EXPECT_EQ(uniformizationServiceParameters.discoveryEndpoint().port(), 5000);
+    EXPECT_EQ(uniformizationServiceParameters.discoveryTimeoutMs(), 1000);
+    EXPECT_EQ(uniformizationServiceParameters.discoveryTrialCount(), 5);
+    EXPECT_EQ(uniformizationServiceParameters.tcpConnectionPort(), 5001);
+    EXPECT_EQ(uniformizationServiceParameters.udpReceivingPort(), 5002);
+    EXPECT_EQ(uniformizationServiceParameters.probeTimeoutMs(), 2000);
+    EXPECT_EQ(uniformizationServiceParameters.sampleFrequency(), 48000);
+    EXPECT_EQ(uniformizationServiceParameters.format(), PcmAudioFrameFormat::Signed16);
 }

@@ -35,7 +35,8 @@ if (CUDA_FOUND)
         gfortran
         gtest
         gmock
-        ${CUDA_LIBRARIES})
+        ${CUDA_LIBRARIES}
+        ${CUDA_cudadevrt_LIBRARY})
 
     add_definitions(-DUSE_CUDA)
 
