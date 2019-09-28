@@ -10,12 +10,12 @@ TEST(PositionConfirmationMessageTests, constructor_shouldSetTheAttributes)
 {
     constexpr double x1 = 10;
     constexpr double y1 = 12;
-    constexpr ConfigurationPosition::Type type1 = ConfigurationPosition::Type::Speaker;
+    constexpr PositionType type1 = PositionType::Speaker;
     const vector<ConfigurationPosition> firstSymmetryPositions{ ConfigurationPosition(x1, y1, type1) };
 
     constexpr double x2 = 9;
     constexpr double y2 = 5;
-    constexpr ConfigurationPosition::Type type2 = ConfigurationPosition::Type::Probe;
+    constexpr PositionType type2 = PositionType::Probe;
     const vector<ConfigurationPosition> secondSymmetryPositions{ ConfigurationPosition(x2, y2, type2) };
 
     PositionConfirmationMessage message(firstSymmetryPositions, secondSymmetryPositions);
@@ -37,12 +37,12 @@ TEST(PositionConfirmationMessageTests, serialization_shouldSerializaToJson)
 {
     constexpr double x1 = 10;
     constexpr double y1 = 12;
-    constexpr ConfigurationPosition::Type type1 = ConfigurationPosition::Type::Speaker;
+    constexpr PositionType type1 = PositionType::Speaker;
     const vector<ConfigurationPosition> firstSymmetryPositions{ ConfigurationPosition(x1, y1, type1) };
 
     constexpr double x2 = 9;
     constexpr double y2 = 5;
-    constexpr ConfigurationPosition::Type type2 = ConfigurationPosition::Type::Probe;
+    constexpr PositionType type2 = PositionType::Probe;
     const vector<ConfigurationPosition> secondSymmetryPositions{ ConfigurationPosition(x2, y2, type2) };
 
     PositionConfirmationMessage message(firstSymmetryPositions, secondSymmetryPositions);
@@ -79,7 +79,7 @@ TEST(PositionConfirmationMessageTests, deserialization_shouldDeserializeFromJson
         "      {"
         "        \"x\": 340,"
         "        \"y\": 140,"
-        "        \"type\": \"p\""
+        "        \"type\": \"m\""
         "      }"
         "    ]"
         "  }"
@@ -92,10 +92,10 @@ TEST(PositionConfirmationMessageTests, deserialization_shouldDeserializeFromJson
     EXPECT_EQ(deserializedMessage.firstSymmetryPositions().size(), 1);
     EXPECT_EQ(deserializedMessage.firstSymmetryPositions()[0].x(), 140);
     EXPECT_EQ(deserializedMessage.firstSymmetryPositions()[0].y(), 340);
-    EXPECT_EQ(deserializedMessage.firstSymmetryPositions()[0].type(), ConfigurationPosition::Type::Speaker);
+    EXPECT_EQ(deserializedMessage.firstSymmetryPositions()[0].type(), PositionType::Speaker);
 
     EXPECT_EQ(deserializedMessage.secondSymmetryPositions().size(), 1);
     EXPECT_EQ(deserializedMessage.secondSymmetryPositions()[0].x(), 340);
     EXPECT_EQ(deserializedMessage.secondSymmetryPositions()[0].y(), 140);
-    EXPECT_EQ(deserializedMessage.secondSymmetryPositions()[0].type(), ConfigurationPosition::Type::Probe);
+    EXPECT_EQ(deserializedMessage.secondSymmetryPositions()[0].type(), PositionType::Probe);
 }

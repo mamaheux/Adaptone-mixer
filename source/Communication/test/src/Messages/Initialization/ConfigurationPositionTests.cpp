@@ -12,7 +12,7 @@ TEST(ConfigurationPositionTests, constructor_shouldSetTheAttributes)
 {
     constexpr double x = 10;
     constexpr double y = 12;
-    constexpr ConfigurationPosition::Type type = ConfigurationPosition::Type::Speaker;
+    constexpr PositionType type = PositionType::Speaker;
     ConfigurationPosition position(x, y, type);
 
     EXPECT_EQ(position.x(), x);
@@ -24,8 +24,8 @@ TEST(ConfigurationPositionTests, serialization_shouldSerializaToJson)
 {
     constexpr double x = 10;
     constexpr double y = 12;
-    constexpr ConfigurationPosition::Type type1 = ConfigurationPosition::Type::Speaker;
-    constexpr ConfigurationPosition::Type type2 = ConfigurationPosition::Type::Probe;
+    constexpr PositionType type1 = PositionType::Speaker;
+    constexpr PositionType type2 = PositionType::Probe;
     ConfigurationPosition position1(10, 12, type1);
     ConfigurationPosition position2(x, y, type2);
 
@@ -44,16 +44,16 @@ TEST(ConfigurationPositionTests, serialization_shouldSerializaToJson)
 TEST(ConfigurationPositionTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedPosition1 = "{ \"x\": 10, \"y\": 12, \"type\": \"s\" }";
-    string serializedPosition2 = "{ \"x\": 10, \"y\": 12, \"type\": \"p\" }";
+    string serializedPosition2 = "{ \"x\": 10, \"y\": 12, \"type\": \"m\" }";
 
     auto deserializedPosition1 = json::parse(serializedPosition1).get<ConfigurationPosition>();
     auto deserializedPosition2 = json::parse(serializedPosition2).get<ConfigurationPosition>();
 
     EXPECT_EQ(deserializedPosition1.x(), 10);
     EXPECT_EQ(deserializedPosition1.y(), 12);
-    EXPECT_EQ(deserializedPosition1.type(), ConfigurationPosition::Type::Speaker);
+    EXPECT_EQ(deserializedPosition1.type(), PositionType::Speaker);
 
     EXPECT_EQ(deserializedPosition2.x(), 10);
     EXPECT_EQ(deserializedPosition2.y(), 12);
-    EXPECT_EQ(deserializedPosition2.type(), ConfigurationPosition::Type::Probe);
+    EXPECT_EQ(deserializedPosition2.type(), PositionType::Probe);
 }

@@ -10,7 +10,7 @@ TEST(OptimizedPositionMessageTests, constructor_shouldSetTheAttributes)
 {
     constexpr double x = 10;
     constexpr double y = 12;
-    constexpr ConfigurationPosition::Type type = ConfigurationPosition::Type::Speaker;
+    constexpr PositionType type = PositionType::Speaker;
     const vector<ConfigurationPosition> positions{ ConfigurationPosition(x, y, type) };
 
     OptimizedPositionMessage message(positions);
@@ -27,7 +27,7 @@ TEST(OptimizedPositionMessageTests, serialization_shouldSerializaToJson)
 {
     constexpr double x = 10;
     constexpr double y = 12;
-    constexpr ConfigurationPosition::Type type = ConfigurationPosition::Type::Speaker;
+    constexpr PositionType type = PositionType::Speaker;
     const vector<ConfigurationPosition> positions{ ConfigurationPosition(x, y, type) };
 
     OptimizedPositionMessage message(positions);
@@ -65,5 +65,5 @@ TEST(OptimizedPositionMessageTests, deserialization_shouldDeserializeFromJson)
     EXPECT_EQ(deserializedMessage.positions().size(), 1);
     EXPECT_EQ(deserializedMessage.positions()[0].x(), 140);
     EXPECT_EQ(deserializedMessage.positions()[0].y(), 340);
-    EXPECT_EQ(deserializedMessage.positions()[0].type(), ConfigurationPosition::Type::Speaker);
+    EXPECT_EQ(deserializedMessage.positions()[0].type(), PositionType::Speaker);
 }
