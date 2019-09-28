@@ -76,6 +76,15 @@ __global__ void processEqKernel(CudaEqBuffers<double> buffers, double* inputFram
     processEq(buffers, inputFrames, currentOutputFrame, currentFrameIndex);
 }
 
+void launchProcessEqKernel(CudaEqBuffers<double>& buffers, double* inputFrames, double* currentOutputFrame,
+    size_t currentFrameIndex)
+{
+    void* args[] = { &buffers, &inputFrames, &currentOutputFrame, &currentFrameIndex };
+    dim3 gridDim(2);
+    dim3 blockDim(256);
+    cudaLaunchCooperativeKernel(reinterpret_cast<void*>(processEqKernel), gridDim, blockDim, args);
+}
+
 TEST(EqProcessingTests, processEq_dirac_shouldGenerateTheRightOutput)
 {
     constexpr double MaxAbsErrorFactor = 0.000001;
@@ -121,7 +130,7 @@ TEST(EqProcessingTests, processEq_dirac_shouldGenerateTheRightOutput)
     size_t currentFrameIndex = 0;
     for (size_t i = 0; i < frameToProcessCount; i++)
     {
-        processEqKernel<<<1, 128>>>(eqBuffers, inputFrames, outputFrame, currentFrameIndex);
+        launchProcessEqKernel(eqBuffers, inputFrames, outputFrame, currentFrameIndex);
         cudaDeviceSynchronize();
 
         for (size_t channelIndex = 0; channelIndex < ChannelCount; channelIndex++)
@@ -183,7 +192,7 @@ TEST(EqProcessingTests, processEq_song_shouldGenerateTheRightOutput)
         memcpy(currentInputFrame + FrameSampleCount, x.data() + i * FrameSampleCount,
             FrameSampleCount * sizeof(double));
 
-        processEqKernel<<<1, 64>>>(eqBuffers, inputFrames, outputFrame, currentFrameIndex);
+        launchProcessEqKernel(eqBuffers, inputFrames, outputFrame, currentFrameIndex);
         cudaDeviceSynchronize();
 
         for (size_t channelIndex = 0; channelIndex < ChannelCount; channelIndex++)

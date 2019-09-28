@@ -15,8 +15,8 @@ namespace adaptone
         std::size_t currentDelayedOutputFrameIndex,
         std::size_t delayedOutputFrameCount)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         for (std::size_t i = startIndex; i < n; i += stride)
