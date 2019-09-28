@@ -17,6 +17,7 @@
 #include <Communication/Messages/Input/ChangeMasterMixInputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeMasterMixInputVolumesMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumesMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
@@ -55,6 +56,7 @@ ApplicationMessageHandler::ApplicationMessageHandler()
     ADD_HANDLE_FUNCTION(ChangeMasterMixInputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterMixInputVolumesMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryMixInputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeAuxiliaryMixInputVolumesMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterOutputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);

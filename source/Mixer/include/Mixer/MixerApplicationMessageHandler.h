@@ -21,6 +21,7 @@
 #include <Communication/Messages/Input/ChangeMasterMixInputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeMasterMixInputVolumesMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumesMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
@@ -79,6 +80,8 @@ namespace adaptone
         void handleChangeMasterMixInputVolumesMessage(const ChangeMasterMixInputVolumesMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
         void handleChangeAuxiliaryMixInputVolumeMessage(const ChangeAuxiliaryMixInputVolumeMessage& message,
+            const std::function<void(const ApplicationMessage&)>& send);
+        void handleChangeAuxiliaryMixInputVolumesMessage(const ChangeAuxiliaryMixInputVolumesMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
         void handleChangeMasterOutputEqGainsMessage(const ChangeMasterOutputEqGainsMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);

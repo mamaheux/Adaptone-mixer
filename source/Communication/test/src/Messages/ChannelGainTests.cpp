@@ -8,7 +8,7 @@ using namespace std;
 
 TEST(ChannelGainTests, constructor_shouldSetTheAttributes)
 {
-    constexpr std::size_t ChannelId = 0;
+    constexpr size_t ChannelId = 0;
     constexpr double Gain = 1;
     ChannelGain channelGain(ChannelId, Gain);
 
@@ -18,7 +18,7 @@ TEST(ChannelGainTests, constructor_shouldSetTheAttributes)
 
 TEST(ChannelGainTests, serialization_shouldSerializaToJson)
 {
-    constexpr std::size_t ChannelId = 0;
+    constexpr size_t ChannelId = 0;
     constexpr double Gain = 1;
     ChannelGain channelGain(ChannelId, Gain);
 
