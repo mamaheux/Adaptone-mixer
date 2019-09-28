@@ -23,8 +23,9 @@
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
 
-#include <Communication/Messages/Output/SoundLevelMessage.h>
+#include <Communication/Messages/Output/SoundErrorMessage.h>
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
+#include <Communication/Messages/Output/SoundLevelMessage.h>
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
@@ -62,6 +63,7 @@ DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeMasterOutputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputVolumeMessage);
 
+DEFINE_TYPE_MATCHER(SoundErrorMessage);
 DEFINE_TYPE_MATCHER(InputSpectrumMessage);
 DEFINE_TYPE_MATCHER(SoundLevelMessage);
 
@@ -460,6 +462,29 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAuxiliaryOutputVolumeMessage_s
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_SoundErrorMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsSoundErrorMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 21,"
+        "  \"data\": {"
+        "    \"positions\": ["
+        "      {"
+        "        \"x\": 140,"
+        "        \"y\": 340,"
+        "        \"type\": \"s\","
+        "        \"errorRate\": 1"
+        "      }"
+        "    ]"
         "  }"
         "}";
 
