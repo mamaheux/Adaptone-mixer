@@ -22,6 +22,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.analysis.sound_level_length", "4096" },
         { "audio.analysis.spectrum.fft_length", "2048" },
         { "audio.analysis.spectrum.point_count_per_decade", "10" },
+        { "audio.headphone_channel_indexes", "[12, 13]"},
 
         { "audio.input.type", "raw_file" },
         { "audio.input.format", "signed_8" },
@@ -59,6 +60,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audio().soundLevelLength(), 4096);
     EXPECT_EQ(configuration.audio().spectrumAnalysisFftLength(), 2048);
     EXPECT_EQ(configuration.audio().spectrumAnalysisPointCountPerDecade(), 10);
+    EXPECT_EQ(configuration.audio().headphoneChannelIndexes(), vector<size_t>({ 12, 13 }));
 
     EXPECT_EQ(configuration.audioInput().type(), AudioInputConfiguration::Type::RawFile);
     EXPECT_EQ(configuration.audioInput().format(), PcmAudioFrameFormat::Signed8);
@@ -82,4 +84,15 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
     EXPECT_EQ(configuration.webSocket().port(), 8080);
+
+    UniformizationServiceParameters uniformizationServiceparameters = configuration.toUniformizationServiceParameters();
+    EXPECT_EQ(uniformizationServiceparameters.discoveryEndpoint().ipAddress(), "192.168.1.255");
+    EXPECT_EQ(uniformizationServiceparameters.discoveryEndpoint().port(), 5000);
+    EXPECT_EQ(uniformizationServiceparameters.discoveryTimeoutMs(), 1000);
+    EXPECT_EQ(uniformizationServiceparameters.discoveryTrialCount(), 5);
+    EXPECT_EQ(uniformizationServiceparameters.tcpConnectionPort(), 5001);
+    EXPECT_EQ(uniformizationServiceparameters.udpReceivingPort(), 5002);
+    EXPECT_EQ(uniformizationServiceparameters.probeTimeoutMs(), 2000);
+    EXPECT_EQ(uniformizationServiceparameters.sampleFrequency(), 48000);
+    EXPECT_EQ(uniformizationServiceparameters.format(), PcmAudioFrameFormat::Signed8);
 }

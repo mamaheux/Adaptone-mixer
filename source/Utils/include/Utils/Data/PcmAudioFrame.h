@@ -22,9 +22,11 @@ namespace adaptone
         std::size_t m_channelCount;
         std::size_t m_sampleCount;
         uint8_t* m_data;
+        bool m_hasOwnership;
 
     public:
         PcmAudioFrame(PcmAudioFrameFormat format, std::size_t channelCount, std::size_t sampleCount);
+        PcmAudioFrame(PcmAudioFrameFormat format, std::size_t channelCount, std::size_t sampleCount, uint8_t* data);
 
         template<class T>
         PcmAudioFrame(const AudioFrame<T>& other, PcmAudioFrameFormat format);
@@ -40,6 +42,8 @@ namespace adaptone
         uint8_t* data();
         const uint8_t* data() const;
         std::size_t size() const;
+
+        bool hasOwnership() const;
 
         PcmAudioFrame& operator=(const PcmAudioFrame& other);
         PcmAudioFrame& operator=(PcmAudioFrame&& other);
@@ -89,6 +93,11 @@ namespace adaptone
     inline std::size_t PcmAudioFrame::size() const
     {
         return adaptone::size(m_format, m_channelCount, m_sampleCount);
+    }
+
+    inline bool PcmAudioFrame::hasOwnership() const
+    {
+        return m_hasOwnership;
     }
 
     inline uint8_t& PcmAudioFrame::operator[](std::size_t i)

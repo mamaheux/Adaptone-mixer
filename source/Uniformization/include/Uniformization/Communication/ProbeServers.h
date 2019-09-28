@@ -1,6 +1,7 @@
 #ifndef UNIFORMIZATION_COMMUNICATION_PROBE_SERVERS_H
 #define UNIFORMIZATION_COMMUNICATION_PROBE_SERVERS_H
 
+#include <Uniformization/Communication/ProbeServerParameters.h>
 #include <Uniformization/Communication/ProbeDiscoverer.h>
 #include <Uniformization/Communication/ProbeMessageHandler.h>
 #include <Uniformization/Communication/ProbeServer.h>
@@ -22,11 +23,7 @@ namespace adaptone
     {
         std::shared_ptr<Logger> m_logger;
 
-        uint16_t m_tcpConnectionPort;
-        uint16_t m_udpReceivingPort;
-        int m_probeTimeoutMs;
-        std::size_t m_sampleFrequency;
-        PcmAudioFrameFormat m_format;
+        ProbeServerParameters m_probeServerParameters;
 
         std::shared_ptr<ProbeMessageHandler> m_messageHandler;
 
@@ -45,15 +42,8 @@ namespace adaptone
 
     public:
         ProbeServers(std::shared_ptr<Logger> logger,
-            const Endpoint& discoveryEndpoint,
-            int discoveryTimeoutMs,
-            std::size_t discoveryTrialCount,
-            uint16_t tcpConnectionPort,
-            uint16_t udpReceivingPort,
-            int probeTimeoutMs,
-            std::size_t sampleFrequency,
-            PcmAudioFrameFormat format,
-            std::shared_ptr<ProbeMessageHandler> messageHandler);
+            std::shared_ptr<ProbeMessageHandler> messageHandler,
+            const ProbeServerParameters& probeServerParameters);
         virtual ~ProbeServers();
 
         DECLARE_NOT_COPYABLE(ProbeServers);

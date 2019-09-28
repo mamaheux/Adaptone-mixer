@@ -24,6 +24,8 @@ namespace adaptone
         std::size_t m_spectrumAnalysisFftLength;
         std::size_t m_spectrumAnalysisPointCountPerDecade;
 
+        std::vector<std::size_t> m_headphoneChannelIndexes;
+
     public:
         explicit AudioConfiguration(const Properties& properties);
         virtual ~AudioConfiguration();
@@ -41,6 +43,14 @@ namespace adaptone
         std::size_t soundLevelLength() const;
         std::size_t spectrumAnalysisFftLength() const;
         std::size_t spectrumAnalysisPointCountPerDecade() const;
+
+        std::vector<std::size_t> headphoneChannelIndexes() const;
+
+    private:
+        void setProcessingDataType(const Properties& properties);
+        void setMaxOutputDelay(const Properties& properties);
+        void setSpectrumAnalysisFftLength(const Properties& properties);
+        void setHeadphoneChannelIndexes(const Properties& properties);
     };
 
     inline std::size_t AudioConfiguration::frameSampleCount() const
@@ -91,6 +101,11 @@ namespace adaptone
     inline std::size_t AudioConfiguration::spectrumAnalysisPointCountPerDecade() const
     {
         return m_spectrumAnalysisPointCountPerDecade;
+    }
+
+    inline std::vector<std::size_t> AudioConfiguration::headphoneChannelIndexes() const
+    {
+        return m_headphoneChannelIndexes;
     }
 }
 

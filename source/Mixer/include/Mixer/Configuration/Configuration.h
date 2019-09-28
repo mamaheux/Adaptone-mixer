@@ -8,6 +8,8 @@
 #include <Mixer/Configuration/UniformizationConfiguration.h>
 #include <Mixer/Configuration/WebSocketConfiguration.h>
 
+#include <Uniformization/UniformizationServiceParameters.h>
+
 #include <Utils/Configuration/Properties.h>
 
 namespace adaptone
@@ -32,6 +34,8 @@ namespace adaptone
         const AudioOutputConfiguration& audioOutput() const;
         const UniformizationConfiguration& uniformization() const;
         const WebSocketConfiguration webSocket() const;
+
+        UniformizationServiceParameters toUniformizationServiceParameters() const;
     };
 
     inline const LoggerConfiguration& Configuration::logger() const
@@ -62,6 +66,18 @@ namespace adaptone
     inline const WebSocketConfiguration Configuration::webSocket() const
     {
         return m_webSocketConfiguration;
+    }
+
+    inline UniformizationServiceParameters Configuration::toUniformizationServiceParameters() const
+    {
+        return UniformizationServiceParameters(m_uniformizationConfiguration.discoveryEndpoint(),
+            m_uniformizationConfiguration.discoveryTimeoutMs(),
+            m_uniformizationConfiguration.discoveryTrialCount(),
+            m_uniformizationConfiguration.tcpConnectionPort(),
+            m_uniformizationConfiguration.udpReceivingPort(),
+            m_uniformizationConfiguration.probeTimeoutMs(),
+            m_audioConfiguration.sampleFrequency(),
+            m_audioOutputConfiguration.format());
     }
 }
 
