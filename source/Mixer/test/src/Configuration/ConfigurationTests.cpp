@@ -30,7 +30,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "audio.input.looping", "false" },
 
         { "audio.output.type", "raw_file" },
-        { "audio.output.format", "signed_8" },
+        { "audio.output.format", "signed_16" },
         { "audio.output.filename", "output.raw" },
 
         { "uniformization.network.discovery_endpoint", "192.168.1.255:5000" },
@@ -68,7 +68,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.audioInput().looping(), false);
 
     EXPECT_EQ(configuration.audioOutput().type(), AudioOutputConfiguration::Type::RawFile);
-    EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrameFormat::Signed8);
+    EXPECT_EQ(configuration.audioOutput().format(), PcmAudioFrameFormat::Signed16);
     EXPECT_EQ(configuration.audioOutput().filename(), "output.raw");
 
     EXPECT_EQ(configuration.uniformization().discoveryEndpoint().ipAddress(), "192.168.1.255");
@@ -85,14 +85,26 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
     EXPECT_EQ(configuration.webSocket().port(), 8080);
 
-    UniformizationServiceParameters uniformizationServiceparameters = configuration.toUniformizationServiceParameters();
-    EXPECT_EQ(uniformizationServiceparameters.discoveryEndpoint().ipAddress(), "192.168.1.255");
-    EXPECT_EQ(uniformizationServiceparameters.discoveryEndpoint().port(), 5000);
-    EXPECT_EQ(uniformizationServiceparameters.discoveryTimeoutMs(), 1000);
-    EXPECT_EQ(uniformizationServiceparameters.discoveryTrialCount(), 5);
-    EXPECT_EQ(uniformizationServiceparameters.tcpConnectionPort(), 5001);
-    EXPECT_EQ(uniformizationServiceparameters.udpReceivingPort(), 5002);
-    EXPECT_EQ(uniformizationServiceparameters.probeTimeoutMs(), 2000);
-    EXPECT_EQ(uniformizationServiceparameters.sampleFrequency(), 48000);
-    EXPECT_EQ(uniformizationServiceparameters.format(), PcmAudioFrameFormat::Signed8);
+    SignalProcessorParameters signalProcessorParameters = configuration.toSignalProcessorParameters();
+    EXPECT_EQ(signalProcessorParameters.processingDataType(), ProcessingDataType::Double);
+    EXPECT_EQ(signalProcessorParameters.frameSampleCount(), 32);
+    EXPECT_EQ(signalProcessorParameters.sampleFrequency(), 48000);
+    EXPECT_EQ(signalProcessorParameters.inputChannelCount(), 16);
+    EXPECT_EQ(signalProcessorParameters.outputChannelCount(), 14);
+    EXPECT_EQ(signalProcessorParameters.inputFormat(), PcmAudioFrameFormat::Signed8);
+    EXPECT_EQ(signalProcessorParameters.outputFormat(), PcmAudioFrameFormat::Signed16);
+    EXPECT_EQ(signalProcessorParameters.eqCenterFrequencies(), vector<double>({ 10, 20 }));
+    EXPECT_EQ(signalProcessorParameters.maxOutputDelay(), 8192);
+    EXPECT_EQ(signalProcessorParameters.soundLevelLength(), 4096);
+
+    UniformizationServiceParameters uniformizationServiceParameters = configuration.toUniformizationServiceParameters();
+    EXPECT_EQ(uniformizationServiceParameters.discoveryEndpoint().ipAddress(), "192.168.1.255");
+    EXPECT_EQ(uniformizationServiceParameters.discoveryEndpoint().port(), 5000);
+    EXPECT_EQ(uniformizationServiceParameters.discoveryTimeoutMs(), 1000);
+    EXPECT_EQ(uniformizationServiceParameters.discoveryTrialCount(), 5);
+    EXPECT_EQ(uniformizationServiceParameters.tcpConnectionPort(), 5001);
+    EXPECT_EQ(uniformizationServiceParameters.udpReceivingPort(), 5002);
+    EXPECT_EQ(uniformizationServiceParameters.probeTimeoutMs(), 2000);
+    EXPECT_EQ(uniformizationServiceParameters.sampleFrequency(), 48000);
+    EXPECT_EQ(uniformizationServiceParameters.format(), PcmAudioFrameFormat::Signed16);
 }

@@ -183,17 +183,7 @@ shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(shared_ptr<Logger
 
 shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatcher)
 {
-    return make_unique<SignalProcessor>(m_configuration.audio().processingDataType(),
-        m_configuration.audio().frameSampleCount(),
-        m_configuration.audio().sampleFrequency(),
-        m_configuration.audio().inputChannelCount(),
-        m_configuration.audio().outputChannelCount(),
-        m_configuration.audioInput().format(),
-        m_configuration.audioOutput().format(),
-        m_configuration.audio().eqCenterFrequencies(),
-        m_configuration.audio().maxOutputDelay(),
-        m_configuration.audio().soundLevelLength(),
-        analysisDispatcher);
+    return make_unique<SignalProcessor>(analysisDispatcher, m_configuration.toSignalProcessorParameters());
 }
 
 shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()

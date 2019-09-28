@@ -23,7 +23,8 @@ TEST(CudaSignalProcessorTests, performance)
     constexpr size_t SoundLevelLength = 4096;
     shared_ptr<AnalysisDispatcher> analysisDispatcher;
 
-    CudaSignalProcessor<float> processor(FrameSampleCount,
+    CudaSignalProcessor<float> processor(analysisDispatcher, SignalProcessorParameters(ProcessingDataType::Float,
+        FrameSampleCount,
         SampleFrequency,
         InputChannelCount,
         OutputChannelCount,
@@ -31,8 +32,7 @@ TEST(CudaSignalProcessorTests, performance)
         OutputFormat,
         frequencies,
         MaxOutputDelay,
-        SoundLevelLength,
-        analysisDispatcher);
+        SoundLevelLength));
 
     PcmAudioFrame inputFrame(OutputFormat, OutputChannelCount, FrameSampleCount);
 
@@ -81,7 +81,8 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     constexpr size_t SoundLevelLength = 4096;
     shared_ptr<AnalysisDispatcher> analysisDispatcher;
 
-    CudaSignalProcessor<double> processor(FrameSampleCount,
+    CudaSignalProcessor<double> processor(analysisDispatcher, SignalProcessorParameters(ProcessingDataType::Double,
+        FrameSampleCount,
         SampleFrequency,
         InputChannelCount,
         OutputChannelCount,
@@ -89,8 +90,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
         OutputFormat,
         frequencies,
         MaxOutputDelay,
-        SoundLevelLength,
-        analysisDispatcher);
+        SoundLevelLength));
 
     processor.setInputGains({ 1, 1 });
     processor.setMixingGains({ 1, 0, 0, 1 });
