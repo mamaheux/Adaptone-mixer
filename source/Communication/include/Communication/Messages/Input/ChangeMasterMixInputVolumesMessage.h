@@ -18,7 +18,7 @@ namespace adaptone
 
     public:
         ChangeMasterMixInputVolumesMessage();
-        ChangeMasterMixInputVolumesMessage(const std::vector<ChannelGain>& gains);
+        explicit ChangeMasterMixInputVolumesMessage(const std::vector<ChannelGain>& gains);
         ~ChangeMasterMixInputVolumesMessage() override;
 
         const std::vector<ChannelGain>& gains() const;

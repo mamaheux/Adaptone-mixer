@@ -8,45 +8,45 @@ using namespace std;
 
 TEST(InitialParametersCreationMessageTests, constructor_shouldSetTheAttributes)
 {
-    constexpr size_t id = 10;
-    const string name = "a name";
+    constexpr size_t Id = 10;
+    const string Name = "a name";
 
-    const vector<size_t> inputChannelIds{ 1, 2, 3 };
-    constexpr size_t speakersNumber = 2;
-    const vector<size_t> auxiliaryChannelIds{ 4, 5 };
+    const vector<size_t> InputChannelIds{ 1, 2, 3 };
+    constexpr size_t SpeakersNumber = 2;
+    const vector<size_t> AuxiliaryChannelIds{ 4, 5 };
 
-    InitialParametersCreationMessage message(id, name, inputChannelIds, speakersNumber, auxiliaryChannelIds);
+    InitialParametersCreationMessage message(Id, Name, InputChannelIds, SpeakersNumber, AuxiliaryChannelIds);
 
     EXPECT_EQ(message.seqId(), 1);
 
-    EXPECT_EQ(message.id(), id);
-    EXPECT_EQ(message.name(), name);
+    EXPECT_EQ(message.id(), Id);
+    EXPECT_EQ(message.name(), Name);
 
     EXPECT_EQ(message.inputChannelIds(), vector<size_t>({ 1, 2, 3 }));
-    EXPECT_EQ(message.speakersNumber(), speakersNumber);
+    EXPECT_EQ(message.speakersNumber(), SpeakersNumber);
     EXPECT_EQ(message.auxiliaryChannelIds(), vector<size_t>({ 4, 5 }));
 }
 
 TEST(InitialParametersCreationMessageTests, serialization_shouldSerializaToJson)
 {
-    constexpr size_t id = 10;
-    const string name = "a name";
+    constexpr size_t Id = 10;
+    const string Name = "a name";
 
-    const vector<size_t> inputChannelIds{ 1, 2, 3 };
-    constexpr size_t speakersNumber = 2;
-    const vector<size_t> auxiliaryChannelIds{ 4, 5 };
+    const vector<size_t> InputChannelIds{ 1, 2, 3 };
+    constexpr size_t SpeakersNumber = 2;
+    const vector<size_t> AuxiliaryChannelIds{ 4, 5 };
 
-    InitialParametersCreationMessage message(id, name, inputChannelIds, speakersNumber, auxiliaryChannelIds);
+    InitialParametersCreationMessage message(Id, Name, InputChannelIds, SpeakersNumber, AuxiliaryChannelIds);
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 1);
 
-    EXPECT_EQ(serializedMessage.at("data").at("id"), id);
-    EXPECT_EQ(serializedMessage.at("data").at("name"), name);
+    EXPECT_EQ(serializedMessage.at("data").at("id"), Id);
+    EXPECT_EQ(serializedMessage.at("data").at("name"), Name);
 
-    EXPECT_EQ(serializedMessage.at("data").at("inputChannelIds"), inputChannelIds);
-    EXPECT_EQ(serializedMessage.at("data").at("speakersNumber"), speakersNumber);
-    EXPECT_EQ(serializedMessage.at("data").at("auxiliaryChannelIds"), auxiliaryChannelIds);
+    EXPECT_EQ(serializedMessage.at("data").at("inputChannelIds"), InputChannelIds);
+    EXPECT_EQ(serializedMessage.at("data").at("speakersNumber"), SpeakersNumber);
+    EXPECT_EQ(serializedMessage.at("data").at("auxiliaryChannelIds"), AuxiliaryChannelIds);
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }

@@ -8,21 +8,21 @@ using namespace std;
 
 TEST(SymmetryConfirmationMessageTests, constructor_shouldSetTheAttributes)
 {
-    constexpr size_t symmetry = 1;
-    SymmetryConfirmationMessage message(symmetry);
+    constexpr size_t Symmetry = 1;
+    SymmetryConfirmationMessage message(Symmetry);
 
     EXPECT_EQ(message.seqId(), 5);
-    EXPECT_EQ(message.symmetry(), symmetry);
+    EXPECT_EQ(message.symmetry(), Symmetry);
 }
 
 TEST(SymmetryConfirmationMessageTests, serialization_shouldSerializaToJson)
 {
-    constexpr size_t symmetry = 1;
-    SymmetryConfirmationMessage message(symmetry);
+    constexpr size_t Symmetry = 1;
+    SymmetryConfirmationMessage message(Symmetry);
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 5);
-    EXPECT_EQ(serializedMessage.at("data").at("symmetry"), symmetry);
+    EXPECT_EQ(serializedMessage.at("data").at("symmetry"), Symmetry);
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 

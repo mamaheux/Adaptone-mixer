@@ -8,64 +8,64 @@ using namespace std;
 
 TEST(ConfigurationChoiceMessageTests, constructor_shouldSetTheAttributes)
 {
-    constexpr size_t id = 10;
-    const string name = "a name";
+    constexpr size_t Id = 10;
+    const string Name = "a name";
 
-    const vector<size_t> inputChannelIds{ 1, 2, 3 };
-    constexpr size_t speakersNumber = 2;
-    const vector<size_t> auxiliaryChannelIds{ 4, 5 };
+    const vector<size_t> InputChannelIds{ 1, 2, 3 };
+    constexpr size_t SpeakersNumber = 2;
+    const vector<size_t> AuxiliaryChannelIds{ 4, 5 };
 
-    constexpr double x = 10;
-    constexpr double y = 12;
-    constexpr PositionType type = PositionType::Speaker;
-    const vector<ConfigurationPosition> positions{ ConfigurationPosition(x, y, type) };
+    constexpr double X = 10;
+    constexpr double X = 12;
+    constexpr PositionType Type = PositionType::Speaker;
+    const vector<ConfigurationPosition> Positions{ ConfigurationPosition(X, Y, Type) };
 
-    ConfigurationChoiceMessage message(id, name, inputChannelIds, speakersNumber, auxiliaryChannelIds, positions);
+    ConfigurationChoiceMessage message(Id, Name, InputChannelIds, SpeakersNumber, AuxiliaryChannelIds, Positions);
 
     EXPECT_EQ(message.seqId(), 0);
 
-    EXPECT_EQ(message.id(), id);
-    EXPECT_EQ(message.name(), name);
+    EXPECT_EQ(message.id(), Id);
+    EXPECT_EQ(message.name(), Name);
 
     EXPECT_EQ(message.inputChannelIds(), vector<size_t>({ 1, 2, 3 }));
-    EXPECT_EQ(message.speakersNumber(), speakersNumber);
+    EXPECT_EQ(message.speakersNumber(), SpeakersNumber);
     EXPECT_EQ(message.auxiliaryChannelIds(), vector<size_t>({ 4, 5 }));
 
     EXPECT_EQ(message.positions().size(), 1);
-    EXPECT_EQ(message.positions()[0].x(), x);
-    EXPECT_EQ(message.positions()[0].y(), y);
-    EXPECT_EQ(message.positions()[0].type(), type);
+    EXPECT_EQ(message.positions()[0].x(), X);
+    EXPECT_EQ(message.positions()[0].y(), Y);
+    EXPECT_EQ(message.positions()[0].type(), Type);
 }
 
 TEST(ConfigurationChoiceMessageTests, serialization_shouldSerializaToJson)
 {
-    constexpr size_t id = 10;
-    const string name = "a name";
+    constexpr size_t Id = 10;
+    const string Name = "a name";
 
-    const vector<size_t> inputChannelIds{ 1, 2, 3 };
-    constexpr size_t speakersNumber = 2;
-    const vector<size_t> auxiliaryChannelIds{ 4, 5 };
+    const vector<size_t> InputChannelIds{ 1, 2, 3 };
+    constexpr size_t SpeakersNumber = 2;
+    const vector<size_t> AuxiliaryChannelIds{ 4, 5 };
 
-    constexpr double x = 10;
-    constexpr double y = 12;
-    constexpr PositionType type = PositionType::Speaker;
-    const vector<ConfigurationPosition> positions{ ConfigurationPosition(x, y, type) };
+    constexpr double X = 10;
+    constexpr double Y = 12;
+    constexpr PositionType Type = PositionType::Speaker;
+    const vector<ConfigurationPosition> Positions{ ConfigurationPosition(X, Y, Type) };
 
-    ConfigurationChoiceMessage message(id, name, inputChannelIds, speakersNumber, auxiliaryChannelIds, positions);
+    ConfigurationChoiceMessage message(Id, Name, InputChannelIds, SpeakersNumber, AuxiliaryChannelIds, Positions);
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 0);
 
-    EXPECT_EQ(serializedMessage.at("data").at("id"), id);
-    EXPECT_EQ(serializedMessage.at("data").at("name"), name);
+    EXPECT_EQ(serializedMessage.at("data").at("id"), Id);
+    EXPECT_EQ(serializedMessage.at("data").at("name"), Name);
 
-    EXPECT_EQ(serializedMessage.at("data").at("inputChannelIds"), inputChannelIds);
-    EXPECT_EQ(serializedMessage.at("data").at("speakersNumber"), speakersNumber);
-    EXPECT_EQ(serializedMessage.at("data").at("auxiliaryChannelIds"), auxiliaryChannelIds);
+    EXPECT_EQ(serializedMessage.at("data").at("inputChannelIds"), InputChannelIds);
+    EXPECT_EQ(serializedMessage.at("data").at("speakersNumber"), SpeakersNumber);
+    EXPECT_EQ(serializedMessage.at("data").at("auxiliaryChannelIds"), AuxiliaryChannelIds);
 
     EXPECT_EQ(serializedMessage.at("data").at("positions").size(), 1);
-    EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("x"), x);
-    EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("y"), y);
+    EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("x"), X);
+    EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("y"), Y);
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("type"), "s");
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());

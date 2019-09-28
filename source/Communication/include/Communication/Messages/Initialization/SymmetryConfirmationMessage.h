@@ -17,7 +17,7 @@ namespace adaptone
 
     public:
         SymmetryConfirmationMessage();
-        SymmetryConfirmationMessage(std::size_t symmetry);
+        explicit SymmetryConfirmationMessage(std::size_t symmetry);
         ~SymmetryConfirmationMessage() override;
 
         std::size_t symmetry() const;

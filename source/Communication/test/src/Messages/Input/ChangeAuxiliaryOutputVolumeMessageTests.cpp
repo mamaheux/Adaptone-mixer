@@ -8,28 +8,28 @@ using namespace std;
 
 TEST(ChangeAuxiliaryOutputVolumeMessageTests, constructor_shouldSetTheAttributes)
 {
-    constexpr size_t channelId = 2;
-    constexpr double gain = 10;
-    ChangeAuxiliaryOutputVolumeMessage message(channelId, gain);
+    constexpr size_t ChannelId = 2;
+    constexpr double Gain = 10;
+    ChangeAuxiliaryOutputVolumeMessage message(ChannelId, Gain);
 
     EXPECT_EQ(message.seqId(), 20);
 
-    EXPECT_EQ(message.channelId(), channelId);
-    EXPECT_EQ(message.gain(), gain);
+    EXPECT_EQ(message.channelId(), ChannelId);
+    EXPECT_EQ(message.gain(), Gain);
 }
 
 TEST(ChangeAuxiliaryOutputVolumeMessageTests, serialization_shouldSerializaToJson)
 {
-    constexpr size_t channelId = 2;
-    constexpr double gain = 10;
-    ChangeAuxiliaryOutputVolumeMessage message(channelId, gain);
+    constexpr size_t ChannelId = 2;
+    constexpr double Gain = 10;
+    ChangeAuxiliaryOutputVolumeMessage message(ChannelId, Gain);
 
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 20);
 
-    EXPECT_EQ(serializedMessage.at("data").at("channelId"), channelId);
-    EXPECT_EQ(serializedMessage.at("data").at("gain"), gain);
+    EXPECT_EQ(serializedMessage.at("data").at("channelId"), ChannelId);
+    EXPECT_EQ(serializedMessage.at("data").at("gain"), Gain);
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }

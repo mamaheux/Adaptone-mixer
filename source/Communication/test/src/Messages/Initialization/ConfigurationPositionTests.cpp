@@ -10,34 +10,34 @@ using namespace std;
 
 TEST(ConfigurationPositionTests, constructor_shouldSetTheAttributes)
 {
-    constexpr double x = 10;
-    constexpr double y = 12;
-    constexpr PositionType type = PositionType::Speaker;
-    ConfigurationPosition position(x, y, type);
+    constexpr double X = 10;
+    constexpr double Y = 12;
+    constexpr PositionType Type = PositionType::Speaker;
+    ConfigurationPosition position(X, Y, Type);
 
-    EXPECT_EQ(position.x(), x);
-    EXPECT_EQ(position.y(), y);
-    EXPECT_EQ(position.type(), type);
+    EXPECT_EQ(position.x(), X);
+    EXPECT_EQ(position.y(), Y);
+    EXPECT_EQ(position.type(), Type);
 }
 
 TEST(ConfigurationPositionTests, serialization_shouldSerializaToJson)
 {
-    constexpr double x = 10;
-    constexpr double y = 12;
-    constexpr PositionType type1 = PositionType::Speaker;
-    constexpr PositionType type2 = PositionType::Probe;
-    ConfigurationPosition position1(10, 12, type1);
-    ConfigurationPosition position2(x, y, type2);
+    constexpr double X = 10;
+    constexpr double Y = 12;
+    constexpr PositionType Type1 = PositionType::Speaker;
+    constexpr PositionType Type2 = PositionType::Probe;
+    ConfigurationPosition Position1(10, 12, Type1);
+    ConfigurationPosition Position2(X, Y, Type2);
 
-    json serializedPosition1 = position1;
-    json serializedPosition2 = position2;
+    json serializedPosition1 = Position1;
+    json serializedPosition2 = Position2;
 
-    EXPECT_EQ(serializedPosition1.at("x"), x);
-    EXPECT_EQ(serializedPosition1.at("y"), y);
+    EXPECT_EQ(serializedPosition1.at("x"), X);
+    EXPECT_EQ(serializedPosition1.at("y"), Y);
     EXPECT_EQ(serializedPosition1.at("type"), "s");
 
-    EXPECT_EQ(serializedPosition2.at("x"), x);
-    EXPECT_EQ(serializedPosition2.at("y"), y);
+    EXPECT_EQ(serializedPosition2.at("x"), X);
+    EXPECT_EQ(serializedPosition2.at("y"), Y);
     EXPECT_EQ(serializedPosition2.at("type"), "m");
 }
 
