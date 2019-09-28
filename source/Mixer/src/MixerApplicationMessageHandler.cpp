@@ -34,6 +34,7 @@ MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<Channe
     ADD_HANDLE_FUNCTION(ChangeInputGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeInputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterMixInputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeMasterMixInputVolumesMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryMixInputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterOutputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputEqGainsMessage);
@@ -176,6 +177,20 @@ void MixerApplicationMessageHandler::handleChangeMasterMixInputVolumeMessage(
     for (size_t outputChannelIndex : m_channelIdMapping->getMasterOutputIndexes())
     {
         m_signalProcessor->setMixingGain(inputChannelIndex, outputChannelIndex, message.gain());
+    }
+}
+
+void MixerApplicationMessageHandler::handleChangeMasterMixInputVolumesMessage(
+    const ChangeMasterMixInputVolumesMessage& message,
+    const function<void(const ApplicationMessage&)>& send)
+{
+    for (size_t outputChannelIndex : m_channelIdMapping->getMasterOutputIndexes())
+    {
+        for (const ChannelGain& channelGain : message.gains())
+        {
+            size_t inputChannelIndex = m_channelIdMapping->getInputIndexFromChannelId(channelGain.channelId());
+            m_signalProcessor->setMixingGain(inputChannelIndex, outputChannelIndex, channelGain.gain());
+        }
     }
 }
 

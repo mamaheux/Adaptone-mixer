@@ -15,6 +15,7 @@
 #include <Communication/Messages/Input/ChangeInputGainsMessage.h>
 #include <Communication/Messages/Input/ChangeInputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeMasterMixInputVolumesMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
@@ -52,6 +53,7 @@ DEFINE_TYPE_MATCHER(ChangeInputGainMessage);
 DEFINE_TYPE_MATCHER(ChangeInputGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeInputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeMasterMixInputVolumeMessage);
+DEFINE_TYPE_MATCHER(ChangeMasterMixInputVolumesMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryMixInputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeMasterOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputEqGainsMessage);
@@ -321,6 +323,31 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeMasterMixInputVolumeMessage_sh
         "  \"data\": {"
         "    \"channelId\": 0,"
         "    \"gain\": 1.0"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ChangeMasterMixInputVolumesMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsChangeMasterMixInputVolumesMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 14,"
+        "  \"data\": {"
+        "    \"gains\": ["
+        "      {"
+        "         \"channelId\": 1,"
+        "         \"gain\" : 1"
+        "      },"
+        "      {"
+        "        \"channelId\": 2,"
+        "        \"gain\" : 10"
+        "      }"
+        "    ]"
         "  }"
         "}";
 
