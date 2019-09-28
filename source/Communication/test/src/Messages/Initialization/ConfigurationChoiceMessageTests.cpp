@@ -16,7 +16,7 @@ TEST(ConfigurationChoiceMessageTests, constructor_shouldSetTheAttributes)
     const vector<size_t> AuxiliaryChannelIds{ 4, 5 };
 
     constexpr double X = 10;
-    constexpr double X = 12;
+    constexpr double Y = 12;
     constexpr PositionType Type = PositionType::Speaker;
     const vector<ConfigurationPosition> Positions{ ConfigurationPosition(X, Y, Type) };
 
