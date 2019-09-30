@@ -1,4 +1,4 @@
-#include <Communication/Messages/Input/ChangeInputGainsMessage.h>
+#include <Communication/Messages/Input/ChangeMasterMixInputVolumesMessage.h>
 
 #include <gtest/gtest.h>
 
@@ -6,34 +6,34 @@ using namespace adaptone;
 using namespace nlohmann;
 using namespace std;
 
-TEST(ChangeInputGainsMessageTests, constructor_shouldSetTheAttributes)
+TEST(ChangeMasterMixInputVolumesMessageTests, constructor_shouldSetTheAttributes)
 {
     const vector<ChannelGain> Gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
-    ChangeInputGainsMessage message(Gains);
+    ChangeMasterMixInputVolumesMessage message(Gains);
 
-    EXPECT_EQ(message.seqId(), 11);
+    EXPECT_EQ(message.seqId(), 14);
 
     EXPECT_EQ(message.gains(), Gains);
 }
 
-TEST(ChangeInputGainsMessageTests, serialization_shouldSerializaToJson)
+TEST(ChangeMasterMixInputVolumesMessageTests, serialization_shouldSerializaToJson)
 {
     const vector<ChannelGain> Gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
-    ChangeInputGainsMessage message(Gains);
+    ChangeMasterMixInputVolumesMessage message(Gains);
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 11);
+    EXPECT_EQ(serializedMessage.at("seqId"), 14);
 
     EXPECT_EQ(serializedMessage.at("data").at("gains"), Gains);
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
 
-TEST(ChangeInputGainsMessageTests, deserialization_shouldDeserializeFromJson)
+TEST(ChangeMasterMixInputVolumesMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 11,"
+        "  \"seqId\": 14,"
         "  \"data\": {"
         "    \"gains\": ["
         "      {"
@@ -48,9 +48,9 @@ TEST(ChangeInputGainsMessageTests, deserialization_shouldDeserializeFromJson)
         "  }"
         "}";
 
-    auto deserializedMessage = json::parse(serializedMessage).get<ChangeInputGainsMessage>();
+    auto deserializedMessage = json::parse(serializedMessage).get<ChangeMasterMixInputVolumesMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 11);
+    EXPECT_EQ(deserializedMessage.seqId(), 14);
 
     EXPECT_EQ(deserializedMessage.gains(), vector<ChannelGain>({ ChannelGain(1, 1), ChannelGain(2, 10) }));
 }

@@ -8,14 +8,14 @@ namespace adaptone
     class ChangeMasterOutputVolumeMessage : public ApplicationMessage
     {
     public:
-        static constexpr std::size_t SeqId = 17;
+        static constexpr std::size_t SeqId = 19;
 
     private:
         double m_gain;
 
     public:
         ChangeMasterOutputVolumeMessage();
-        ChangeMasterOutputVolumeMessage(double gain);
+        explicit ChangeMasterOutputVolumeMessage(double gain);
         ~ChangeMasterOutputVolumeMessage() override;
 
         double gain() const;

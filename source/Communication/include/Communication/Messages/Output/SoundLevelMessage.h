@@ -53,7 +53,7 @@ namespace adaptone
     class SoundLevelMessage : public ApplicationMessage
     {
     public:
-        static constexpr std::size_t SeqId = 21;
+        static constexpr std::size_t SeqId = 23;
 
     private:
         std::vector<ChannelSoundLevel> m_inputAfterGain;

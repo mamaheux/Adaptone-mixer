@@ -8,7 +8,7 @@ namespace adaptone
     class ChangeAuxiliaryOutputEqGainsMessage : public ApplicationMessage
     {
     public:
-        static constexpr std::size_t SeqId = 16;
+        static constexpr std::size_t SeqId = 18;
 
     private:
         std::size_t m_channelId;

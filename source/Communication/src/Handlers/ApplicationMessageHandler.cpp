@@ -15,12 +15,16 @@
 #include <Communication/Messages/Input/ChangeInputGainsMessage.h>
 #include <Communication/Messages/Input/ChangeInputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeMasterMixInputVolumesMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAuxiliaryMixInputVolumesMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputEqGainsMessage.h>
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
+#include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 
+#include <Communication/Messages/Output/SoundErrorMessage.h>
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
 #include <Communication/Messages/Output/SoundLevelMessage.h>
 
@@ -52,12 +56,16 @@ ApplicationMessageHandler::ApplicationMessageHandler()
     ADD_HANDLE_FUNCTION(ChangeInputGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeInputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterMixInputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeMasterMixInputVolumesMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryMixInputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeAuxiliaryMixInputVolumesMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterOutputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputEqGainsMessage);
     ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputVolumeMessage);
+    ADD_HANDLE_FUNCTION(ChangeAllProcessingParametersMessage);
 
+    ADD_HANDLE_FUNCTION(SoundErrorMessage);
     ADD_HANDLE_FUNCTION(InputSpectrumMessage);
     ADD_HANDLE_FUNCTION(SoundLevelMessage);
 }

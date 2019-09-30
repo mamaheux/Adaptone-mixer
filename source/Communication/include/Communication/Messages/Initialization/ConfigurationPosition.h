@@ -1,6 +1,8 @@
 #ifndef COMMUNICATION_MESAGES_INITIALIZATION_CONFIGURATION_POSITION_H
 #define COMMUNICATION_MESAGES_INITIALIZATION_CONFIGURATION_POSITION_H
 
+#include <Communication/Messages/PositionType.h>
+
 #include <nlohmann/json.hpp>
 
 #include <cstddef>
@@ -9,28 +11,20 @@ namespace adaptone
 {
     class ConfigurationPosition
     {
-    public:
-        enum class Type
-        {
-            Speaker,
-            Probe
-        };
-
-    private:
         double m_x;
         double m_y;
 
-        Type m_type;
+        PositionType m_type;
 
     public:
         ConfigurationPosition();
-        ConfigurationPosition(double x, double y, Type type);
+        ConfigurationPosition(double x, double y, PositionType type);
         virtual ~ConfigurationPosition();
 
         double x() const;
         double y() const;
 
-        Type type() const;
+        PositionType type() const;
 
         friend void to_json(nlohmann::json& j, const ConfigurationPosition& o);
         friend void from_json(const nlohmann::json& j, ConfigurationPosition& o);
@@ -46,22 +40,21 @@ namespace adaptone
         return m_y;
     }
 
-    inline ConfigurationPosition::Type ConfigurationPosition::type() const
+    inline PositionType ConfigurationPosition::type() const
     {
         return m_type;
     }
 
     inline void to_json(nlohmann::json& j, const ConfigurationPosition& o)
     {
-        const char* type = o.m_type == ConfigurationPosition::Type::Speaker ? "s" : "m";
-        j = nlohmann::json{{ "x", o.m_x }, { "y", o.m_y }, { "type", type }};
+        j = nlohmann::json{{ "x", o.m_x }, { "y", o.m_y }, { "type", o.m_type }};
     }
 
     inline void from_json(const nlohmann::json& j, ConfigurationPosition& o)
     {
         j.at("x").get_to(o.m_x);
         j.at("y").get_to(o.m_y);
-        o.m_type = j.at("type") == "s" ? ConfigurationPosition::Type::Speaker : ConfigurationPosition::Type::Probe;
+        j.at("type").get_to(o.m_type);
     }
 }
 

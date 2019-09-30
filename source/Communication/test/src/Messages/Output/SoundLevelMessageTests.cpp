@@ -8,32 +8,32 @@ using namespace std;
 
 TEST(SoundLevelMessageTests, constructor_shouldSetTheAttributes)
 {
-    const vector<ChannelSoundLevel> inputAfterGain{ ChannelSoundLevel(0, 1), ChannelSoundLevel(1, 2) };
-    const vector<ChannelSoundLevel> inputAfterEq{ ChannelSoundLevel(0, 4), ChannelSoundLevel(1, 4) };
-    const vector<ChannelSoundLevel> outputAfterGain{ ChannelSoundLevel(0, 5), ChannelSoundLevel(1, 6) };
-    SoundLevelMessage message(inputAfterGain, inputAfterEq, outputAfterGain);
+    const vector<ChannelSoundLevel> InputAfterGain{ ChannelSoundLevel(0, 1), ChannelSoundLevel(1, 2) };
+    const vector<ChannelSoundLevel> InputAfterEq{ ChannelSoundLevel(0, 4), ChannelSoundLevel(1, 4) };
+    const vector<ChannelSoundLevel> OutputAfterGain{ ChannelSoundLevel(0, 5), ChannelSoundLevel(1, 6) };
+    SoundLevelMessage message(InputAfterGain, InputAfterEq, OutputAfterGain);
 
-    EXPECT_EQ(message.seqId(), 21);
+    EXPECT_EQ(message.seqId(), 23);
 
-    EXPECT_EQ(message.inputAfterGain(), inputAfterGain);
-    EXPECT_EQ(message.inputAfterEq(), inputAfterEq);
-    EXPECT_EQ(message.outputAfterGain(), outputAfterGain);
+    EXPECT_EQ(message.inputAfterGain(), InputAfterGain);
+    EXPECT_EQ(message.inputAfterEq(), InputAfterEq);
+    EXPECT_EQ(message.outputAfterGain(), OutputAfterGain);
 }
 
 TEST(SoundLevelMessageTests, serialization_shouldSerializaToJson)
 {
-    const vector<ChannelSoundLevel> inputAfterGain{ ChannelSoundLevel(0, 1), ChannelSoundLevel(1, 2) };
-    const vector<ChannelSoundLevel> inputAfterEq{ ChannelSoundLevel(0, 4), ChannelSoundLevel(1, 4) };
-    const vector<ChannelSoundLevel> outputAfterGain{ ChannelSoundLevel(0, 5), ChannelSoundLevel(1, 6) };
-    SoundLevelMessage message(inputAfterGain, inputAfterEq, outputAfterGain);
+    const vector<ChannelSoundLevel> InputAfterGain{ ChannelSoundLevel(0, 1), ChannelSoundLevel(1, 2) };
+    const vector<ChannelSoundLevel> InputAfterEq{ ChannelSoundLevel(0, 4), ChannelSoundLevel(1, 4) };
+    const vector<ChannelSoundLevel> OutputAfterGain{ ChannelSoundLevel(0, 5), ChannelSoundLevel(1, 6) };
+    SoundLevelMessage message(InputAfterGain, InputAfterEq, OutputAfterGain);
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 21);
+    EXPECT_EQ(serializedMessage.at("seqId"), 23);
 
-    EXPECT_EQ(serializedMessage.at("data").at("inputAfterGain"), inputAfterGain);
-    EXPECT_EQ(serializedMessage.at("data").at("inputAfterEq"), inputAfterEq);
-    EXPECT_EQ(serializedMessage.at("data").at("outputAfterGain"), outputAfterGain);
+    EXPECT_EQ(serializedMessage.at("data").at("inputAfterGain"), InputAfterGain);
+    EXPECT_EQ(serializedMessage.at("data").at("inputAfterEq"), InputAfterEq);
+    EXPECT_EQ(serializedMessage.at("data").at("outputAfterGain"), OutputAfterGain);
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
@@ -41,7 +41,7 @@ TEST(SoundLevelMessageTests, serialization_shouldSerializaToJson)
 TEST(SoundLevelMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 21,"
+        "  \"seqId\": 23,"
         "  \"data\": {"
         "    \"inputAfterGain\": ["
         "      {"
@@ -78,7 +78,7 @@ TEST(SoundLevelMessageTests, deserialization_shouldDeserializeFromJson)
 
     auto deserializedMessage = json::parse(serializedMessage).get<SoundLevelMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 21);
+    EXPECT_EQ(deserializedMessage.seqId(), 23);
 
     EXPECT_EQ(deserializedMessage.inputAfterGain(),
         vector<ChannelSoundLevel>({ ChannelSoundLevel(0, 1), ChannelSoundLevel(1, 2) }));

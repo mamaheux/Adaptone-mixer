@@ -5,11 +5,11 @@ using namespace adaptone;
 ConfigurationPosition::ConfigurationPosition() :
     m_x(0),
     m_y(0),
-    m_type(ConfigurationPosition::Type::Speaker)
+    m_type(PositionType::Speaker)
 {
 }
 
-ConfigurationPosition::ConfigurationPosition(double x, double y, ConfigurationPosition::Type type) :
+ConfigurationPosition::ConfigurationPosition(double x, double y, PositionType type) :
     m_x(x),
     m_y(y),
     m_type(type)

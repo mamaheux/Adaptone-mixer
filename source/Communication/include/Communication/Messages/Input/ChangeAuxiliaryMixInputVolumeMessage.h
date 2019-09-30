@@ -8,7 +8,7 @@ namespace adaptone
     class ChangeAuxiliaryMixInputVolumeMessage : public ApplicationMessage
     {
     public:
-        static constexpr std::size_t SeqId = 14;
+        static constexpr std::size_t SeqId = 15;
 
     private:
         std::size_t m_channelId;
