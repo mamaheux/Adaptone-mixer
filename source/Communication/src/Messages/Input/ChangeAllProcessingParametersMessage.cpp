@@ -75,17 +75,25 @@ AuxiliaryProcessingParameters::~AuxiliaryProcessingParameters()
 
 constexpr size_t ChangeAllProcessingParametersMessage::SeqId;
 
-ChangeAllProcessingParametersMessage::ChangeAllProcessingParametersMessage() : ApplicationMessage(SeqId)
+ChangeAllProcessingParametersMessage::ChangeAllProcessingParametersMessage() :
+    ApplicationMessage(SeqId),
+    m_speakersNumber(0)
 {
 }
 
 ChangeAllProcessingParametersMessage::ChangeAllProcessingParametersMessage(
     const vector<InputProcessingParameters>& inputs,
     const MasterProcessingParameters& master,
-    const vector<AuxiliaryProcessingParameters>& auxiliaries) : ApplicationMessage(SeqId),
+    const vector<AuxiliaryProcessingParameters>& auxiliaries,
+    const vector<std::size_t>& inputChannelIds,
+    size_t speakersNumber,
+    const vector<std::size_t>& auxiliaryChannelIds) : ApplicationMessage(SeqId),
     m_inputs(inputs),
     m_master(master),
-    m_auxiliaries(auxiliaries)
+    m_auxiliaries(auxiliaries),
+    m_inputChannelIds(inputChannelIds),
+    m_speakersNumber(speakersNumber),
+    m_auxiliaryChannelIds(auxiliaryChannelIds)
 {
 
 }
