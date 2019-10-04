@@ -75,15 +75,17 @@ void Mixer::run()
     m_stopped.store(false);
     m_applicationWebSocketThread = make_unique<thread>(&Mixer::applicationWebSocketRun, this);
     m_analysisDispatcher->start();
-    //m_uniformizationService->start();
+    m_uniformizationService->start();
 
     this_thread::sleep_for(1s); //Make sure the websocket is properly started.
 
+    m_logger->log(Logger::Level::Information, "Processing started");
     processingRun();
+    m_logger->log(Logger::Level::Information, "Processing finished");
 
     m_applicationWebSocketThread->join();
     m_analysisDispatcher->stop();
-    //m_uniformizationService->stop();
+    m_uniformizationService->stop();
 }
 
 void Mixer::stop()
