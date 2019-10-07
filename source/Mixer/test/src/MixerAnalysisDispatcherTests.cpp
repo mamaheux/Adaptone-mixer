@@ -48,7 +48,8 @@ shared_ptr<ChannelIdMapping> getDummyChannelIdMapping()
     {
         inputChannelIds.push_back(i);
     }
-    shared_ptr<ChannelIdMapping> channelIdMapping = make_shared<ChannelIdMapping>(InputChannelCount, 1);
+    shared_ptr<ChannelIdMapping> channelIdMapping =
+        make_shared<ChannelIdMapping>(InputChannelCount, 1, vector<size_t>());
     channelIdMapping->update(inputChannelIds, {}, 1);
     return channelIdMapping;
 }

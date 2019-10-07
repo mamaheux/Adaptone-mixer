@@ -21,17 +21,20 @@ if (CUDA_FOUND)
         include/*)
 
     set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};-std=c++14;-DUSE_CUDA;--expt-relaxed-constexpr;-Xptxas;-O3")
+    set(CUDA_NVCC_FLAGS "${CUDA_NVCC_FLAGS};-gencode=arch=compute_62,code=sm_62;-rdc=true")
+    set(CUDA_SEPARABLE_COMPILATION ON)
+
 
     cuda_add_library(SignalProcessing
         STATIC
         ${source_files})
-
     target_link_libraries(SignalProcessing
         armadillo
         ${openblas_LIBRARY}
         ${fftw_LIBRARY}
         gfortran
-        ${CUDA_LIBRARIES})
+        ${CUDA_LIBRARIES}
+        ${CUDA_cudadevrt_LIBRARY})
 
     add_definitions(-DUSE_CUDA)
 

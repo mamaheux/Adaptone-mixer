@@ -8,24 +8,24 @@ using namespace std;
 
 TEST(ChangeInputGainsMessageTests, constructor_shouldSetTheAttributes)
 {
-    const vector<ChannelGain> gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
-    ChangeInputGainsMessage message(gains);
+    const vector<ChannelGain> Gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
+    ChangeInputGainsMessage message(Gains);
 
     EXPECT_EQ(message.seqId(), 11);
 
-    EXPECT_EQ(message.gains(), gains);
+    EXPECT_EQ(message.gains(), Gains);
 }
 
 TEST(ChangeInputGainsMessageTests, serialization_shouldSerializaToJson)
 {
-    const vector<ChannelGain> gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
-    ChangeInputGainsMessage message(gains);
+    const vector<ChannelGain> Gains{ ChannelGain(1, 1), ChannelGain(2, 10) };
+    ChangeInputGainsMessage message(Gains);
 
     json serializedMessage = message;
 
     EXPECT_EQ(serializedMessage.at("seqId"), 11);
 
-    EXPECT_EQ(serializedMessage.at("data").at("gains"), gains);
+    EXPECT_EQ(serializedMessage.at("data").at("gains"), Gains);
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }

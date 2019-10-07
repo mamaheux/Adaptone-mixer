@@ -85,7 +85,8 @@ namespace adaptone
         void stopInputEqOutputFrameSpectrumAnalysisThread();
 
         void sendInputSpectrumMessage(const std::vector<std::vector<SpectrumPoint>>& spectrums);
-        std::vector<ChannelSoundLevel> convertSoundLevels(const std::vector<double>& soundLevel);
+        std::vector<ChannelSoundLevel> convertInputSoundLevels(const std::vector<double>& soundLevel);
+        std::vector<ChannelSoundLevel> convertOutputSoundLevels(const std::vector<double>& soundLevel);
     };
 }
 

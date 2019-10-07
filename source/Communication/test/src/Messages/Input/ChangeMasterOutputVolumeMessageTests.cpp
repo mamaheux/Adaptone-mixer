@@ -8,24 +8,24 @@ using namespace std;
 
 TEST(ChangeMasterOutputVolumeMessageTests, constructor_shouldSetTheAttributes)
 {
-    constexpr double gain = 10;
-    ChangeMasterOutputVolumeMessage message(gain);
+    constexpr double Gain = 10;
+    ChangeMasterOutputVolumeMessage message(Gain);
 
-    EXPECT_EQ(message.seqId(), 17);
+    EXPECT_EQ(message.seqId(), 19);
 
-    EXPECT_EQ(message.gain(), gain);
+    EXPECT_EQ(message.gain(), Gain);
 }
 
 TEST(ChangeMasterOutputVolumeMessageTests, serialization_shouldSerializaToJson)
 {
-    constexpr double gain = 10;
-    ChangeMasterOutputVolumeMessage message(gain);
+    constexpr double Gain = 10;
+    ChangeMasterOutputVolumeMessage message(Gain);
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 17);
+    EXPECT_EQ(serializedMessage.at("seqId"), 19);
 
-    EXPECT_EQ(serializedMessage.at("data").at("gain"), gain);
+    EXPECT_EQ(serializedMessage.at("data").at("gain"), Gain);
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
@@ -33,7 +33,7 @@ TEST(ChangeMasterOutputVolumeMessageTests, serialization_shouldSerializaToJson)
 TEST(ChangeMasterOutputVolumeMessageTests, deserialization_shouldDeserializeFromJson)
 {
     string serializedMessage = "{"
-        "  \"seqId\": 17,"
+        "  \"seqId\": 19,"
         "  \"data\": {"
         "    \"gain\": 100.0"
         "  }"
@@ -41,7 +41,7 @@ TEST(ChangeMasterOutputVolumeMessageTests, deserialization_shouldDeserializeFrom
 
     auto deserializedMessage = json::parse(serializedMessage).get<ChangeMasterOutputVolumeMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 17);
+    EXPECT_EQ(deserializedMessage.seqId(), 19);
 
     EXPECT_EQ(deserializedMessage.gain(), 100);
 }

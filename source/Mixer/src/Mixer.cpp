@@ -14,6 +14,7 @@
 #endif
 
 #include <Uniformization/SignalOverride/PassthroughSignalOverride.h>
+#include <Uniformization/SignalOverride/HeadphoneProbeSignalOverride.h>
 
 #include <Utils/Exception/NotSupportedException.h>
 #include <Utils/Logger/ConsoleLogger.h>
@@ -34,6 +35,8 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     shared_ptr<SignalProcessor> signalProcessor = createSignalProcessor(analysisDispatcher);
     shared_ptr<GenericSignalOverride> outputSignalOverride = createOutputSignalOverride();
 
+    unique_ptr<UniformizationService> uniformizationService = createUniformizationService(logger, outputSignalOverride);
+
     shared_ptr<ConnectionHandler> connectionHandler = createConnectionHandler(signalProcessor);
     shared_ptr<ApplicationMessageHandler> applicationMessageHandler = createApplicationMessageHandler(channelIdMapping,
         signalProcessor);
@@ -51,6 +54,8 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     m_analysisDispatcher = analysisDispatcher;
     m_signalProcessor = signalProcessor;
     m_outputSignalOverride = outputSignalOverride;
+
+    m_uniformizationService = move(uniformizationService);
 
     m_connectionHandler = connectionHandler;
     m_applicationMessageHandler = applicationMessageHandler;
@@ -70,13 +75,17 @@ void Mixer::run()
     m_stopped.store(false);
     m_applicationWebSocketThread = make_unique<thread>(&Mixer::applicationWebSocketRun, this);
     m_analysisDispatcher->start();
+    m_uniformizationService->start();
 
     this_thread::sleep_for(1s); //Make sure the websocket is properly started.
 
+    m_logger->log(Logger::Level::Information, "Processing started");
     processingRun();
+    m_logger->log(Logger::Level::Information, "Processing finished");
 
     m_applicationWebSocketThread->join();
     m_analysisDispatcher->stop();
+    m_uniformizationService->stop();
 }
 
 void Mixer::stop()
@@ -106,7 +115,8 @@ shared_ptr<Logger> Mixer::createLogger()
 shared_ptr<ChannelIdMapping> Mixer::createChannelIdMapping()
 {
     return make_shared<ChannelIdMapping>(m_configuration.audio().inputChannelCount(),
-        m_configuration.audio().outputChannelCount());
+        m_configuration.audio().outputChannelCount(),
+        m_configuration.audio().headphoneChannelIndexes());
 }
 
 unique_ptr<AudioInput> Mixer::createAudioInput()
@@ -175,25 +185,27 @@ shared_ptr<AnalysisDispatcher> Mixer::createAnalysisDispatcher(shared_ptr<Logger
 
 shared_ptr<SignalProcessor> Mixer::createSignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatcher)
 {
-    return make_unique<SignalProcessor>(m_configuration.audio().processingDataType(),
-        m_configuration.audio().frameSampleCount(),
-        m_configuration.audio().sampleFrequency(),
-        m_configuration.audio().inputChannelCount(),
-        m_configuration.audio().outputChannelCount(),
-        m_configuration.audioInput().format(),
-        m_configuration.audioOutput().format(),
-        m_configuration.audio().eqCenterFrequencies(),
-        m_configuration.audio().maxOutputDelay(),
-        m_configuration.audio().soundLevelLength(),
-        analysisDispatcher);
+    return make_unique<SignalProcessor>(analysisDispatcher, m_configuration.toSignalProcessorParameters());
 }
 
 shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
 {
-    vector<unique_ptr<SpecificSignalOverride>> signalOverrides;
-    signalOverrides.emplace_back(make_unique<PassthroughSignalOverride>());
+    vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
+    signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
+    signalOverrides.emplace_back(make_shared<HeadphoneProbeSignalOverride>(m_configuration.audioOutput().format(),
+        m_configuration.audio().outputChannelCount(),
+        m_configuration.audio().frameSampleCount(),
+        m_configuration.audio().headphoneChannelIndexes()));
 
     return make_shared<GenericSignalOverride>(move(signalOverrides));
+}
+
+unique_ptr<UniformizationService> Mixer::createUniformizationService(shared_ptr<Logger> logger,
+    shared_ptr<GenericSignalOverride> outputSignalOverride)
+{
+    return make_unique<UniformizationService>(logger,
+        outputSignalOverride,
+        m_configuration.toUniformizationServiceParameters());
 }
 
 shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalProcessor> signalProcessor)

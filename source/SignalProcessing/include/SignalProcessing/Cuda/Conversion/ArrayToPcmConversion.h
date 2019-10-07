@@ -53,8 +53,8 @@ namespace adaptone
     __device__ void arrayToSignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         PcmT* output = reinterpret_cast<PcmT*>(outputBytes);
@@ -78,8 +78,8 @@ namespace adaptone
     {
         constexpr T AbsMin = 1 << 23;
 
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         for (std::size_t i = startIndex; i < n; i += stride)
@@ -107,8 +107,8 @@ namespace adaptone
     {
         constexpr T AbsMin = 1 << 23;
 
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         int32_t* output = reinterpret_cast<int32_t*>(outputBytes);
@@ -128,8 +128,8 @@ namespace adaptone
     __device__ void arrayToUnsignedPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         PcmT* output = reinterpret_cast<PcmT*>(outputBytes);
@@ -154,8 +154,8 @@ namespace adaptone
     {
         constexpr T Max = (1 << 24) - 1;
 
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         for (std::size_t i = startIndex; i < n; i += stride)
@@ -183,8 +183,8 @@ namespace adaptone
     {
         constexpr T Max = (1 << 24) - 1;
 
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         uint32_t* output = reinterpret_cast<uint32_t*>(outputBytes);
@@ -204,8 +204,8 @@ namespace adaptone
     __device__ void arrayToFloatingPointPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         PcmT* output = reinterpret_cast<PcmT*>(outputBytes);

@@ -74,28 +74,33 @@ Pour se connecter en `ssh` avec le Jetson TX2, il suffit d'utiliser ce script `c
 ```
 #!/usr/bin/env sh
 
-ssh -t nvidia@192.168.1.8 "mkdir -p ~/Desktop/mixer"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "mkdir -p ~/Desktop/mixer"
 
-rsync -au Adaptone-mixer/source/ nvidia@192.168.1.8:~/Desktop/mixer/
+sshpass -p "nvidia" rsync -au Adaptone-mixer/source/Communication/ nvidia@192.168.0.103:~/Desktop/mixer/Communication/
+sshpass -p "nvidia" rsync -au Adaptone-mixer/source/Mixer/ nvidia@192.168.0.103:~/Desktop/mixer/Mixer/
+sshpass -p "nvidia" rsync -au Adaptone-mixer/source/SignalProcessing/ nvidia@192.168.0.103:~/Desktop/mixer/SignalProcessing/
+sshpass -p "nvidia" rsync -au Adaptone-mixer/source/Utils/ nvidia@192.168.0.103:~/Desktop/mixer/Utils/
+sshpass -p "nvidia" rsync -au Adaptone-mixer/source/Uniformization/ nvidia@192.168.0.103:~/Desktop/mixer/Uniformization/
 
-scp Adaptone-mixer/source/CMakeLists.txt nvidia@192.168.1.8:~/Desktop/mixer/CMakeLists.txt
+sshpass -p "nvidia" scp Adaptone-mixer/source/CMakeLists.txt nvidia@192.168.0.103:~/Desktop/mixer/CMakeLists.txt
 
-ssh -t nvidia@192.168.1.8 "mkdir -p ~/Desktop/mixer/build"
-ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build; cmake .. -DCMAKE_BUILD_TYPE=RELEASE"
-ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build; make"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "mkdir -p ~/Desktop/mixer/build"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build; cmake .. -DCMAKE_BUILD_TYPE=RELEASE"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build; make -j6"
 ```
 
 Pour exécuter les tests en `ssh` sur le Jetson TX2, il suffit d'utiliser ce script :
 ```
 #!/usr/bin/env sh
-ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/Mixer/test; ./MixerTests"
-ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/SignalProcessing/test; ./SignalProcessingTests"
-ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/Utils/test; ./UtilsTests"
-ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/Communication/test; ./CommunicationTests"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build/Mixer/test; ./MixerTests"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build/SignalProcessing/test; ./SignalProcessingTests"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build/Utils/test; ./UtilsTests"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build/Communication/test; ./CommunicationTests"
+sshpass -p "nvidia" ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build/Uniformization/test; ./UniformizationTests"
 ```
 
 Pour exécuter le code du mixeur, il suffit d'utiiser ce script `execute_mixer.sh`, en prenant soin de modifier les _paths_ si nécessaire :
 ```
 #!/usr/bin/env sh
-ssh -t nvidia@192.168.1.8 "cd ~/Desktop/mixer/build/Mixer; ./Mixer"
+ssh -t nvidia@192.168.0.103 "cd ~/Desktop/mixer/build/Mixer; sudo ./Mixer"
 ```

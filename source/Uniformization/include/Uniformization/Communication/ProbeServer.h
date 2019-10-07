@@ -1,6 +1,7 @@
 #ifndef UNIFORMIZATION_COMMUNICATION_PROBE_SERVER_H
 #define UNIFORMIZATION_COMMUNICATION_PROBE_SERVER_H
 
+#include <Uniformization/Communication/ProbeServerParameters.h>
 #include <Uniformization/Communication/ProbeDiscoverer.h>
 #include <Uniformization/Communication/ProbeMessageHandler.h>
 #include <Uniformization/Communication/Messages/Tcp/TcpMessageReader.h>
@@ -22,13 +23,11 @@ namespace adaptone
     class ProbeServer
     {
         std::shared_ptr<Logger> m_logger;
-        int m_timeoutMs;
+        std::shared_ptr<ProbeMessageHandler> m_messageHandler;
+        ProbeServerParameters m_probeServerParameters;
         bool m_isMaster;
         std::atomic<bool> m_isConnected;
         std::size_t m_id;
-        std::size_t m_sampleFrequency;
-        PcmAudioFrameFormat m_format;
-        std::shared_ptr<ProbeMessageHandler> m_messageHandler;
 
         boost::asio::ip::tcp::endpoint m_endpoint;
         std::unique_ptr<boost::asio::io_service> m_ioService;
@@ -45,13 +44,10 @@ namespace adaptone
 
     public:
         ProbeServer(std::shared_ptr<Logger> logger,
-            uint16_t tcpConnectionPort,
-            int probeTimeoutMs,
+            std::shared_ptr<ProbeMessageHandler> messageHandler,
             const DiscoveredProbe& discoveredProbe,
             std::size_t id,
-            std::size_t sampleFrequency,
-            PcmAudioFrameFormat format,
-            std::shared_ptr<ProbeMessageHandler> messageHandler);
+            const ProbeServerParameters& probeServerParameters);
         virtual ~ProbeServer();
 
         DECLARE_NOT_COPYABLE(ProbeServer);

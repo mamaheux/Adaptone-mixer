@@ -14,6 +14,7 @@ namespace adaptone
     {
         std::size_t m_inputChannelCount;
         std::size_t m_outputChannelCount;
+        std::vector<std::size_t> m_headphoneChannelIndexes;
 
         std::shared_mutex m_mutex;
 
@@ -25,7 +26,9 @@ namespace adaptone
         std::vector<std::size_t> m_masterOutputIndexes;
 
     public:
-        ChannelIdMapping(std::size_t inputChannelCount, std::size_t outputChannelCount);
+        ChannelIdMapping(std::size_t inputChannelCount,
+            std::size_t outputChannelCount,
+            const std::vector<std::size_t>& headphoneChannelIndexes);
         virtual ~ChannelIdMapping();
 
         DECLARE_NOT_COPYABLE(ChannelIdMapping);
@@ -46,6 +49,10 @@ namespace adaptone
         std::optional<std::size_t> getAuxiliaryOutputIndexFromChannelIdOrNull(std::size_t channelId);
 
         std::vector<std::size_t> getMasterOutputIndexes();
+        std::size_t getMasterChannelId();
+
+    private:
+        bool isHeadphoneChannelIndex(std::size_t channelIndex);
     };
 
     inline std::size_t ChannelIdMapping::getChannelIdFromInputIndex(std::size_t index)
@@ -120,6 +127,11 @@ namespace adaptone
     {
         std::shared_lock lock(m_mutex);
         return m_masterOutputIndexes;
+    }
+
+    inline std::size_t ChannelIdMapping::getMasterChannelId()
+    {
+        return 0;
     }
 }
 

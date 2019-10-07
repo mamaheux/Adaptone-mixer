@@ -5,6 +5,8 @@
 
 #include <Utils/Exception/NotSupportedException.h>
 
+#include <cooperative_groups.h>
+
 #include <cstddef>
 #include <cstdint>
 
@@ -25,8 +27,8 @@ namespace adaptone
     __device__ void calcultateCurentOutputFrameFromFilterOutputs(CudaEqBuffers<T>& buffers,
         T* currentInputFrame, T* currentOutputFrame, std::size_t currentFrameIndex)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = buffers.frameSampleCount() * buffers.channelCount();
 
         for (std::size_t i = startIndex; i < n; i += stride)
@@ -69,8 +71,8 @@ namespace adaptone
     __device__ void calculateFilterOutputs(CudaEqBuffers<T>& buffers, T* lastInputFrame, T* currentInputFrame,
         std::size_t currentFrameIndex)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = buffers.filterCountPerChannel() * buffers.channelCount();
 
         for (std::size_t i = startIndex; i < n; i += stride)
@@ -113,12 +115,13 @@ namespace adaptone
     __device__ void processEq(CudaEqBuffers<T>& buffers, T* inputFrames, T* currentOutputFrame,
         std::size_t currentFrameIndex)
     {
+        cooperative_groups::grid_group grid = cooperative_groups::this_grid();
         std::size_t frameSize = buffers.frameSampleCount() * buffers.channelCount();
         T* lastInputFrame = inputFrames + ((currentFrameIndex - 1) % buffers.frameCount()) * frameSize;
         T* currentInputFrame = inputFrames + currentFrameIndex * frameSize;
 
         calculateFilterOutputs(buffers, lastInputFrame, currentInputFrame, currentFrameIndex);
-        __syncthreads();
+        grid.sync();
         calcultateCurentOutputFrameFromFilterOutputs(buffers, currentInputFrame, currentOutputFrame, currentFrameIndex);
     }
 }

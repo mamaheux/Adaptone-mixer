@@ -4,6 +4,7 @@
 #include <SignalProcessing/ProcessingDataType.h>
 #include <SignalProcessing/SpecificSignalProcessor.h>
 #include <SignalProcessing/AnalysisDispatcher.h>
+#include <SignalProcessing/SignalProcessorParameters.h>
 
 #include <Utils/ClassMacro.h>
 #include <Utils/Data/PcmAudioFrame.h>
@@ -17,17 +18,8 @@ namespace adaptone
         std::unique_ptr<SpecificSignalProcessor> m_specificSignalProcessor;
 
     public:
-        SignalProcessor(ProcessingDataType processingDataType,
-            std::size_t frameSampleCount,
-            std::size_t sampleFrequency,
-            std::size_t inputChannelCount,
-            std::size_t outputChannelCount,
-            PcmAudioFrameFormat inputFormat,
-            PcmAudioFrameFormat outputFormat,
-            const std::vector<double>& eqCenterFrequencies,
-            std::size_t maxOutputDelay,
-            std::size_t soundLevelLength,
-            std::shared_ptr<AnalysisDispatcher> analysisDispatcher);
+        SignalProcessor(std::shared_ptr<AnalysisDispatcher> analysisDispatcher,
+            const SignalProcessorParameters& parameters);
         virtual ~SignalProcessor();
 
         DECLARE_NOT_COPYABLE(SignalProcessor);

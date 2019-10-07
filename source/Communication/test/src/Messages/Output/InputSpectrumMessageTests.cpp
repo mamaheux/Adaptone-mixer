@@ -15,7 +15,7 @@ TEST(InputSpectrumMessageTests, constructor_shouldSetTheAttributes)
         ChannelSpectrum(ChannelId, { SpectrumPoint(Frequency, Amplitude) }) };
     InputSpectrumMessage message(channelSpectrums);
 
-    EXPECT_EQ(message.seqId(), 20);
+    EXPECT_EQ(message.seqId(), 22);
 
     ASSERT_EQ(message.channelSpectrums().size(), 1);
     EXPECT_EQ(message.channelSpectrums()[0].channelId(), ChannelId);
@@ -35,7 +35,7 @@ TEST(InputSpectrumMessageTests, serialization_shouldSerializaToJson)
 
     json serializedMessage = message;
 
-    EXPECT_EQ(serializedMessage.at("seqId"), 20);
+    EXPECT_EQ(serializedMessage.at("seqId"), 22);
 
     ASSERT_EQ(serializedMessage.at("data").at("spectrums").size(), 1);
     EXPECT_EQ(serializedMessage.at("data").at("spectrums")[0].at("channelId"), ChannelId);
@@ -52,7 +52,7 @@ TEST(InputSpectrumMessageTests, deserialization_shouldDeserializeFromJson)
     constexpr double Frequency = 1;
     constexpr double Amplitude = 2;
     string serializedMessage = "{"
-        "  \"seqId\": 20,"
+        "  \"seqId\": 22,"
         "  \"data\": {"
         "    \"spectrums\": ["
         "      {"
@@ -70,7 +70,7 @@ TEST(InputSpectrumMessageTests, deserialization_shouldDeserializeFromJson)
 
     auto deserializedMessage = json::parse(serializedMessage).get<InputSpectrumMessage>();
 
-    EXPECT_EQ(deserializedMessage.seqId(), 20);
+    EXPECT_EQ(deserializedMessage.seqId(), 22);
 
     ASSERT_EQ(deserializedMessage.channelSpectrums().size(), 1);
     EXPECT_EQ(deserializedMessage.channelSpectrums()[0].channelId(), ChannelId);

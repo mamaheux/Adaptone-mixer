@@ -10,8 +10,8 @@ namespace adaptone
     __device__ void processGain(T* inputFrame, T* outputFrame, T* gains, std::size_t frameSampleCount,
         std::size_t channelCount)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = frameSampleCount * channelCount;
 
         for (std::size_t i = startIndex; i < n; i += stride)

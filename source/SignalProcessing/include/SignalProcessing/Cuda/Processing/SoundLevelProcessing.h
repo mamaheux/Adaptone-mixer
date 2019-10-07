@@ -14,8 +14,8 @@ namespace adaptone
     template<class T>
     __device__ void processSoundLevel(CudaSoundLevelBuffers<T>& soundLevelBuffer, T* currentInputFrame)
     {
-        std::size_t startIndex = threadIdx.x;
-        std::size_t stride = blockDim.x;
+        std::size_t startIndex = blockIdx.x * blockDim.x + threadIdx.x;
+        std::size_t stride = blockDim.x * gridDim.x;
         std::size_t n = soundLevelBuffer.channelCount();
 
         for (std::size_t channelIndex = startIndex; channelIndex < n; channelIndex += stride)

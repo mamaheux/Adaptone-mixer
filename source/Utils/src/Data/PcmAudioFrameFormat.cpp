@@ -7,7 +7,7 @@
 using namespace adaptone;
 using namespace std;
 
-PcmAudioFrameFormat adaptone::parseFormat(const std::string& format)
+PcmAudioFrameFormat adaptone::parseFormat(const string& format)
 {
     static const unordered_map<string, PcmAudioFrameFormat> Mapping(
         {
