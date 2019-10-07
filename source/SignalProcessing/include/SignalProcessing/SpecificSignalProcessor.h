@@ -30,6 +30,10 @@ namespace adaptone
         virtual void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
             const std::vector<double>& gains);
 
+        virtual void setUniformizationGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains);
+        virtual void setUniformizationGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+            const std::vector<double>& gains);
+
         virtual void setOutputGain(std::size_t channelIndex, double gain);
         virtual void setOutputGains(const std::vector<double>& gains);
 

@@ -14,7 +14,7 @@ namespace adaptone
         std::mutex m_mutex;
 
     public:
-        RealtimeParameters();
+        RealtimeParameters(bool isDirty = false);
         virtual ~RealtimeParameters();
 
         DECLARE_NOT_COPYABLE(RealtimeParameters);

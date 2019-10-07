@@ -17,7 +17,7 @@ namespace adaptone
         std::vector<std::size_t> m_delays;
 
     public:
-        DelayParameters(std::size_t channelCount, std::size_t maxDelay);
+        DelayParameters(std::size_t channelCount, std::size_t maxDelay, bool isDirty = false);
         ~DelayParameters() override;
 
         DECLARE_NOT_COPYABLE(DelayParameters);

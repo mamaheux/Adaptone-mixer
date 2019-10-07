@@ -20,7 +20,7 @@ namespace adaptone
         std::vector<T> m_gains;
 
     public:
-        MixingParameters(std::size_t inputChannelCount, std::size_t outputChannelCount);
+        MixingParameters(std::size_t inputChannelCount, std::size_t outputChannelCount, bool isDirty = false);
         ~MixingParameters() override;
 
         DECLARE_NOT_COPYABLE(MixingParameters);
@@ -33,7 +33,8 @@ namespace adaptone
     };
 
     template<class T>
-    MixingParameters<T>::MixingParameters(std::size_t inputChannelCount, std::size_t outputChannelCount) :
+    MixingParameters<T>::MixingParameters(std::size_t inputChannelCount, std::size_t outputChannelCount, bool isDirty) :
+        RealtimeParameters(isDirty),
         m_inputChannelCount(inputChannelCount),
         m_outputChannelCount(outputChannelCount),
         m_gains(inputChannelCount * outputChannelCount, 0)

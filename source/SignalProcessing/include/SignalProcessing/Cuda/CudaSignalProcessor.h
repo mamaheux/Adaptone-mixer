@@ -28,6 +28,7 @@
 namespace adaptone
 {
     constexpr std::size_t CudaSignalProcessorFrameCount = 2;
+    constexpr bool InitialParameterDirtyState = true;
 
     template<class T>
     class CudaSignalProcessor : public SpecificSignalProcessor
@@ -41,6 +42,7 @@ namespace adaptone
         EqParameters<T> m_inputEqParameters;
         MixingParameters<T> m_mixingGainParameters;
         EqParameters<T> m_outputEqParameters;
+        EqParameters<T> m_uniformizationEqParameters;
         GainParameters<T> m_outputGainParameters;
         DelayParameters m_outputDelayParameters;
 
@@ -74,6 +76,10 @@ namespace adaptone
         void setOutputGain(std::size_t channelIndex, double gain) override;
         void setOutputGains(const std::vector<double>& gains) override;
 
+        void setUniformizationGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains) override;
+        void setUniformizationGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+            const std::vector<double>& gains) override;
+
         void setOutputDelay(std::size_t channelIndex, std::size_t delay) override;
         void setOutputDelays(const std::vector<std::size_t>& delays) override;
 
@@ -86,6 +92,7 @@ namespace adaptone
         void pushInputEqUpdate(std::size_t channelIndex);
         void pushMixingGainUpdate();
         void pushOutputEqUpdate(std::size_t channelIndex);
+        void pushUniformizationEqUpdate(std::size_t channelIndex);
         void pushOutputGainUpdate();
         void pushOutputDelayUpdate();
 
@@ -99,16 +106,26 @@ namespace adaptone
         m_parameters(parameters),
         m_outputFrame(parameters.outputFormat(), parameters.outputChannelCount(), parameters.frameSampleCount()),
         m_buffers(parameters, CudaSignalProcessorFrameCount, 2 * parameters.eqCenterFrequencies().size()),
-        m_inputGainParameters(parameters.inputChannelCount()),
+        m_inputGainParameters(parameters.inputChannelCount(), InitialParameterDirtyState),
         m_inputEqParameters(parameters.sampleFrequency(),
             parameters.eqCenterFrequencies(),
-            parameters.inputChannelCount()),
-        m_mixingGainParameters(parameters.inputChannelCount(), parameters.outputChannelCount()),
+            parameters.inputChannelCount(),
+            InitialParameterDirtyState),
+        m_mixingGainParameters(parameters.inputChannelCount(),
+            parameters.outputChannelCount(),
+            InitialParameterDirtyState),
         m_outputEqParameters(parameters.sampleFrequency(),
             parameters.eqCenterFrequencies(),
-            parameters.outputChannelCount()),
-        m_outputGainParameters(parameters.outputChannelCount()),
-        m_outputDelayParameters(parameters.outputChannelCount(), parameters.maxOutputDelay()),
+            parameters.outputChannelCount(),
+            InitialParameterDirtyState),
+        m_uniformizationEqParameters(parameters.sampleFrequency(),
+            parameters.eqCenterFrequencies(),
+            parameters.outputChannelCount(),
+            InitialParameterDirtyState),
+        m_outputGainParameters(parameters.outputChannelCount(), InitialParameterDirtyState),
+        m_outputDelayParameters(parameters.outputChannelCount(),
+            parameters.maxOutputDelay(),
+            InitialParameterDirtyState),
 
         m_frameSampleCounter(0),
         m_analysisDispatcher(analysisDispatcher)
@@ -120,6 +137,7 @@ namespace adaptone
         pushInputGainUpdate();
         pushMixingGainUpdate();
         pushOutputGainUpdate();
+        pushOutputDelayUpdate();
 
         for (std::size_t i = 0; i < parameters.inputChannelCount(); i++)
         {
@@ -129,6 +147,7 @@ namespace adaptone
         for (std::size_t i = 0; i < parameters.outputChannelCount(); i++)
         {
             pushOutputEqUpdate(i);
+            pushUniformizationEqUpdate(i);
         }
 
         forceRefreshParameters();
@@ -216,6 +235,26 @@ namespace adaptone
     }
 
     template<class T>
+    void CudaSignalProcessor<T>::setUniformizationGraphicEqGains(std::size_t channelIndex,
+        const std::vector<double>& gains)
+    {
+        m_uniformizationEqParameters.setGraphicEqGains(channelIndex, gains);
+        pushUniformizationEqUpdate(channelIndex);
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::setUniformizationGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+            const std::vector<double>& gains)
+    {
+        m_uniformizationEqParameters.setGraphicEqGains(startChannelIndex, n, gains);
+
+        for (std::size_t i = 0; i < n; i++)
+        {
+            pushUniformizationEqUpdate(startChannelIndex + i);
+        }
+    }
+
+    template<class T>
     void CudaSignalProcessor<T>::setOutputDelay(std::size_t channelIndex, std::size_t delay)
     {
         m_outputDelayParameters.setDelay(channelIndex, delay);
@@ -276,7 +315,13 @@ namespace adaptone
             buffers.currentFrameIndex());
         grid.sync();
 
-        processGain(buffers.currentOutputEqOutputFrame(),
+        processEq(buffers.uniformizationEqBuffers(),
+            buffers.outputEqOutputFrames(),
+            buffers.currentUniformizationEqOutputFrame(),
+            buffers.currentFrameIndex());
+        grid.sync();
+
+        processGain(buffers.currentUniformizationEqOutputFrame(),
             buffers.currentOutputFrame(),
             buffers.outputGains(),
             buffers.frameSampleCount(),
@@ -378,6 +423,20 @@ namespace adaptone
                 m_buffers.outputEqBuffers().update(channelIndex,
                     m_outputEqParameters.biquadCoefficients(channelIndex).data(),
                     m_outputEqParameters.d0(channelIndex));
+            });
+        });
+    }
+
+    template<class T>
+    void CudaSignalProcessor<T>::pushUniformizationEqUpdate(std::size_t channelIndex)
+    {
+        m_updateFunctionQueue.push([&, channelIndex]()
+        {
+            return m_uniformizationEqParameters.tryApplyingUpdate(channelIndex, [&, channelIndex]()
+            {
+                m_buffers.uniformizationEqBuffers().update(channelIndex,
+                    m_uniformizationEqParameters.biquadCoefficients(channelIndex).data(),
+                    m_uniformizationEqParameters.d0(channelIndex));
             });
         });
     }
