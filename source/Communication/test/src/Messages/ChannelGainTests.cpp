@@ -40,3 +40,18 @@ TEST(ChannelGainTests, deserialization_shouldDeserializeFromJson)
     EXPECT_EQ(channelGain.channelId(), 1);
     EXPECT_EQ(channelGain.gain(), 2);
 }
+
+TEST(ChannelGainTests, deserialization_data_shouldDeserializeFromJson)
+{
+    string serializedChannelGain = "{"
+        "  \"data\": {"
+        "    \"channelId\": 1,"
+        "    \"gain\" : 2"
+        "  }"
+        "}";
+
+    auto channelGain = json::parse(serializedChannelGain).get<ChannelGain>();
+
+    EXPECT_EQ(channelGain.channelId(), 1);
+    EXPECT_EQ(channelGain.gain(), 2);
+}

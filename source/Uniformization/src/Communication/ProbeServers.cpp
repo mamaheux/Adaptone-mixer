@@ -82,8 +82,6 @@ void ProbeServers::run()
     {
         m_logger->log(Logger::Level::Error, ex);
     }
-
-    stop();
 }
 
 void ProbeServers::createUdpSocket()

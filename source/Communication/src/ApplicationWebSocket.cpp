@@ -97,9 +97,10 @@ void ApplicationWebSocket::onError(shared_ptr<WsServer::Connection> connection, 
 void ApplicationWebSocket::onMessage(shared_ptr<WsServer::Connection> connection,
     shared_ptr<WsServer::InMessage> message)
 {
+    json j;
     try
     {
-        json j = json::parse(message->string());
+        j = json::parse(message->string());
         m_applicationMessageHandler->handle(j, [this](const ApplicationMessage& messageToSend)
         {
             send(messageToSend);
@@ -107,10 +108,10 @@ void ApplicationWebSocket::onMessage(shared_ptr<WsServer::Connection> connection
     }
     catch (exception& ex)
     {
-        m_logger->log(Logger::Level::Error, ex, "message=" + message->string());
+        m_logger->log(Logger::Level::Error, ex, "message=" + j.dump());
     }
     catch (...)
     {
-        m_logger->log(Logger::Level::Error, "Unknown error message=" + message->string());
+        m_logger->log(Logger::Level::Error, "Unknown error message=" + j.dump());
     }
 }

@@ -63,20 +63,22 @@ namespace adaptone
 
     inline void to_json(nlohmann::json& j, const InputProcessingParameters& o)
     {
-        j = nlohmann::json{{ "channelId", o.m_channelId },
+        nlohmann::json data{{ "channelId", o.m_channelId },
             { "gain", o.m_gain },
             { "isMuted", o.m_isMuted },
             { "isSolo", o.m_isSolo },
             { "eqGains", o.m_eqGains }};
+
+        j = nlohmann::json{{ "data", data }};
     }
 
     inline void from_json(const nlohmann::json& j, InputProcessingParameters& o)
     {
-        j.at("channelId").get_to(o.m_channelId);
-        j.at("gain").get_to(o.m_gain);
-        j.at("isMuted").get_to(o.m_isMuted);
-        j.at("isSolo").get_to(o.m_isSolo);
-        j.at("eqGains").get_to(o.m_eqGains);
+        j.at("data").at("channelId").get_to(o.m_channelId);
+        j.at("data").at("gain").get_to(o.m_gain);
+        j.at("data").at("isMuted").get_to(o.m_isMuted);
+        j.at("data").at("isSolo").get_to(o.m_isSolo);
+        j.at("data").at("eqGains").get_to(o.m_eqGains);
     }
 
     inline bool operator==(const InputProcessingParameters& l, const InputProcessingParameters& r)
@@ -135,18 +137,20 @@ namespace adaptone
 
     inline void to_json(nlohmann::json& j, const MasterProcessingParameters& o)
     {
-        j = nlohmann::json{{ "gain", o.m_gain },
+        nlohmann::json data{{ "gain", o.m_gain },
             { "isMuted", o.m_isMuted },
             { "inputs", o.m_inputs },
             { "eqGains", o.m_eqGains }};
+
+        j = nlohmann::json{{ "data", data }};
     }
 
     inline void from_json(const nlohmann::json& j, MasterProcessingParameters& o)
     {
-        j.at("gain").get_to(o.m_gain);
-        j.at("isMuted").get_to(o.m_isMuted);
-        j.at("inputs").get_to(o.m_inputs);
-        j.at("eqGains").get_to(o.m_eqGains);
+        j.at("data").at("gain").get_to(o.m_gain);
+        j.at("data").at("isMuted").get_to(o.m_isMuted);
+        j.at("data").at("inputs").get_to(o.m_inputs);
+        j.at("data").at("eqGains").get_to(o.m_eqGains);
     }
 
     inline bool operator==(const MasterProcessingParameters& l, const MasterProcessingParameters& r)
@@ -212,20 +216,22 @@ namespace adaptone
 
     inline void to_json(nlohmann::json& j, const AuxiliaryProcessingParameters& o)
     {
-        j = nlohmann::json{{ "auxiliaryChannelId", o.m_auxiliaryChannelId },
+        nlohmann::json data{{ "channelId", o.m_auxiliaryChannelId },
             { "gain", o.m_gain },
             { "isMuted", o.m_isMuted },
             { "inputs", o.m_inputs },
             { "eqGains", o.m_eqGains }};
+
+        j = nlohmann::json{{ "data", data }};
     }
 
     inline void from_json(const nlohmann::json& j, AuxiliaryProcessingParameters& o)
     {
-        j.at("auxiliaryChannelId").get_to(o.m_auxiliaryChannelId);
-        j.at("gain").get_to(o.m_gain);
-        j.at("isMuted").get_to(o.m_isMuted);
-        j.at("inputs").get_to(o.m_inputs);
-        j.at("eqGains").get_to(o.m_eqGains);
+        j.at("data").at("channelId").get_to(o.m_auxiliaryChannelId);
+        j.at("data").at("gain").get_to(o.m_gain);
+        j.at("data").at("isMuted").get_to(o.m_isMuted);
+        j.at("data").at("inputs").get_to(o.m_inputs);
+        j.at("data").at("eqGains").get_to(o.m_eqGains);
     }
 
     inline bool operator==(const AuxiliaryProcessingParameters& l, const AuxiliaryProcessingParameters& r)
@@ -246,17 +252,26 @@ namespace adaptone
         std::vector<InputProcessingParameters> m_inputs;
         MasterProcessingParameters m_master;
         std::vector<AuxiliaryProcessingParameters> m_auxiliaries;
+        std::vector<std::size_t> m_inputChannelIds;
+        std::size_t m_speakersNumber;
+        std::vector<std::size_t> m_auxiliaryChannelIds;
 
     public:
         ChangeAllProcessingParametersMessage();
         ChangeAllProcessingParametersMessage(const std::vector<InputProcessingParameters>& inputs,
             const MasterProcessingParameters& master,
-            const std::vector<AuxiliaryProcessingParameters>& auxiliaries);
+            const std::vector<AuxiliaryProcessingParameters>& auxiliaries,
+            const std::vector<std::size_t>& inputChannelIds,
+            std::size_t speakersNumber,
+            const std::vector<std::size_t>& auxiliaryChannelIds);
         ~ChangeAllProcessingParametersMessage() override;
 
         const std::vector<InputProcessingParameters>& inputs() const;
         const MasterProcessingParameters& master() const;
         const std::vector<AuxiliaryProcessingParameters>& auxiliaries() const;
+        const std::vector<std::size_t>& inputChannelIds() const;
+        const std::size_t speakersNumber() const;
+        const std::vector<std::size_t>& auxiliaryChannelIds() const;
 
         std::string toJson() const override;
         friend void to_json(nlohmann::json& j, const ChangeAllProcessingParametersMessage& o);
@@ -278,6 +293,21 @@ namespace adaptone
         return m_auxiliaries;
     }
 
+    inline const std::vector<std::size_t>& ChangeAllProcessingParametersMessage::inputChannelIds() const
+    {
+        return m_inputChannelIds;
+    }
+
+    inline const std::size_t ChangeAllProcessingParametersMessage::speakersNumber() const
+    {
+        return m_speakersNumber;
+    }
+
+    inline const std::vector<std::size_t>& ChangeAllProcessingParametersMessage::auxiliaryChannelIds() const
+    {
+        return m_auxiliaryChannelIds;
+    }
+
     inline std::string ChangeAllProcessingParametersMessage::toJson() const
     {
         nlohmann::json serializedMessage = *this;
@@ -288,7 +318,10 @@ namespace adaptone
     {
         nlohmann::json channels({{ "inputs", o.m_inputs },
             { "master", o.m_master },
-            { "auxiliaries", o.m_auxiliaries }
+            { "auxiliaries", o.m_auxiliaries },
+            { "inputChannelIds", o.m_inputChannelIds },
+            { "speakersNumber", o.m_speakersNumber },
+            { "auxiliaryChannelIds", o.m_auxiliaryChannelIds }
         });
         nlohmann::json data({{ "channels", channels }});
         j = nlohmann::json{{ "seqId", o.seqId() }, { "data", data }};
@@ -299,6 +332,9 @@ namespace adaptone
         j.at("data").at("channels").at("inputs").get_to(o.m_inputs);
         j.at("data").at("channels").at("master").get_to(o.m_master);
         j.at("data").at("channels").at("auxiliaries").get_to(o.m_auxiliaries);
+        j.at("data").at("inputChannelIds").get_to(o.m_inputChannelIds);
+        j.at("data").at("speakersNumber").get_to(o.m_speakersNumber);
+        j.at("data").at("auxiliaryChannelIds").get_to(o.m_auxiliaryChannelIds);
     }
 }
 

@@ -79,7 +79,9 @@ void Mixer::run()
 
     this_thread::sleep_for(1s); //Make sure the websocket is properly started.
 
+    m_logger->log(Logger::Level::Information, "Processing started");
     processingRun();
+    m_logger->log(Logger::Level::Information, "Processing finished");
 
     m_applicationWebSocketThread->join();
     m_analysisDispatcher->stop();

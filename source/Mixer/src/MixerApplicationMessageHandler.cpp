@@ -258,6 +258,8 @@ void MixerApplicationMessageHandler::handleChangeAllProcessingParametersMessage(
     const ChangeAllProcessingParametersMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    m_channelIdMapping->update(message.inputChannelIds(), message.auxiliaryChannelIds(), message.speakersNumber());
+
     applyInputProcessingParameters(message.inputs());
     applyMasterProcessingParameters(message.master());
 

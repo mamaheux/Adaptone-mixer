@@ -42,8 +42,16 @@ namespace adaptone
 
     inline void from_json(const nlohmann::json& j, ChannelGain& o)
     {
-        j.at("channelId").get_to(o.m_channelId);
-        j.at("gain").get_to(o.m_gain);
+        if (j.contains("data"))
+        {
+            j.at("data").at("channelId").get_to(o.m_channelId);
+            j.at("data").at("gain").get_to(o.m_gain);
+        }
+        else
+        {
+            j.at("channelId").get_to(o.m_channelId);
+            j.at("gain").get_to(o.m_gain);
+        }
     }
 
     inline bool operator==(const ChannelGain& l, const ChannelGain& r)
