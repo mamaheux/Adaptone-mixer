@@ -96,11 +96,6 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     processor.setMixingGains({ 1, 0, 0, 1 });
     processor.setOutputGains({ 1, 1 });
 
-    processor.setInputGraphicEqGains(0, { 1, 1, 1 });
-    processor.setInputGraphicEqGains(1, { 1, 1, 1 });
-    processor.setOutputGraphicEqGains(0, { 1, 1, 1 });
-    processor.setOutputGraphicEqGains(1, { 1, 1, 1 });
-
     processor.forceRefreshParameters();
 
     PcmAudioFrame inputFrame(OutputFormat, OutputChannelCount, FrameSampleCount);
@@ -173,7 +168,28 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
 
+    processor.setUniformizationGraphicEqGains(0, { 2, 2, 2 });
+    outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
+
+    EXPECT_NEAR(outputFrameDouble[0], 0.16, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[1], 0.04, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[2], 0.32, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
+
+
+    processor.setUniformizationGraphicEqGains(1, { 2, 2, 2 });
+    outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
+
+    EXPECT_NEAR(outputFrameDouble[0], 0.16, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[1], 0.08, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[2], 0.32, MaxAbsError);
+    EXPECT_NEAR(outputFrameDouble[3], 0.24, MaxAbsError);
+
+    processor.setUniformizationGraphicEqGains(0, { 1, 1, 1 });
+    processor.setUniformizationGraphicEqGains(1, { 1, 1, 1 });
     processor.setOutputGains({ 2, 2 });
+    processor.process(inputFrame);
+    processor.process(inputFrame);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.16, MaxAbsError);
@@ -227,16 +243,21 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[2], 0.16, MaxAbsError);
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
+
     processor.setOutputDelay(0, 1);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
+
     EXPECT_NEAR(outputFrameDouble[2], 0.08, MaxAbsError);
     EXPECT_NEAR(outputFrameDouble[1], 0.04, MaxAbsError);
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
+
     processor.setOutputDelay(1, 1);
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
+
     EXPECT_NEAR(outputFrameDouble[2], 0.08, MaxAbsError);
     EXPECT_NEAR(outputFrameDouble[3], 0.04, MaxAbsError);
+
 
     processor.setOutputDelays({0, 0});
     processor.setMixingGain(1, 0, 0);

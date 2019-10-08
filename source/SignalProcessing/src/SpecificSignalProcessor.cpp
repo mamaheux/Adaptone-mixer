@@ -43,6 +43,16 @@ void SpecificSignalProcessor::setOutputGraphicEqGains(size_t startChannelIndex, 
 {
 }
 
+void SpecificSignalProcessor::setUniformizationGraphicEqGains(std::size_t channelIndex,
+    const std::vector<double>& gains)
+{
+}
+
+void SpecificSignalProcessor::setUniformizationGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+    const std::vector<double>& gains)
+{
+}
+
 void SpecificSignalProcessor::setOutputGain(size_t channelIndex, double gain)
 {
 }
