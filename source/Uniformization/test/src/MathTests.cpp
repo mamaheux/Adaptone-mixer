@@ -120,3 +120,64 @@ TEST(MathTests, relativePositionFromDistance_3D_shouldGetRelativePositionFromDis
 
     EXPECT_TRUE( passedNb / TestNb >= 0.99);
 }
+
+TEST(MathTests, rotSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSet)
+{
+    arma::mat set = {
+        {0, 1, 2},
+        {1, 2, 3},
+        {-1, -2, -3},
+        {4, 5, 9},
+        {0, -1, -7},
+        {0.5, 0.333, 1.4},
+        {0, 0, 0}
+    };
+    arma::vec unitVec = {0,0,1};
+
+    rotSetAroundVec3D(set, unitVec, 0.25);
+
+    constexpr float Tol = 0.00001;
+    arma::mat setTarget = {
+        {-0.24740,   0.96891,   2.00000},
+        {0.47410,   2.18523,   3.00000},
+        {-0.47410,  -2.18523,  -3.00000},
+        {2.63863,   5.83418,   9.00000},
+        {0.24740,  -0.96891,  -7.00000},
+        {0.40207,   0.44635,   1.40000},
+        {0.00000,   0.00000,   0.00000}
+    };
+
+    // test every matrix entries - successive ROT 1
+    int rowNb = set.n_rows;
+    int colNb = set.n_cols;
+    for (int i = 0; i < rowNb; i++)
+    {
+        for (int j = 0; j < colNb; j++)
+        {
+            EXPECT_NEAR(set(i,j), setTarget(i,j), Tol);
+        }
+    }
+
+    arma::vec vec = {-1.7, 2.45, 1.2};
+
+    rotSetAroundVec3D(set, vec, 2.64);
+
+    setTarget = {
+        {-0.82803,  1.92625, -0.77712},
+        {-2.22450,  2.55790, -1.58390},
+        {2.22450 , -2.55790,  1.58390},
+        {-6.42613,  6.81781, -5.84999},
+        {0.84839 , -5.86785,  3.85339},
+        {-0.56498,  0.96693, -1.03283},
+        {0.00000 ,  0.00000,  0.00000}
+    };
+
+    // test every matrix entries - successive ROT 2
+    for (int i = 0; i < rowNb; i++)
+    {
+        for (int j = 0; j < colNb; j++)
+        {
+            EXPECT_NEAR(set(i,j), setTarget(i,j), Tol);
+        }
+    }
+}

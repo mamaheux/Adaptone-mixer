@@ -1,8 +1,12 @@
 #include "Uniformization/Math.h"
 
+
+using namespace arma;
+using namespace std;
+
 namespace adaptone
 {
-    double relativePositionsFromDistances(arma::mat distMat, arma::mat setAPosMat, arma::mat setBPosMat, int iterNb, int tryNb,
+    double relativePositionsFromDistances(mat &distMat, mat &setAPosMat, mat &setBPosMat, int iterNb, int tryNb,
         int thermalIterNb, float alpha, float epsilonTotalDistError, float epsilonDeltaTotalDistError,
         int countThreshold, int dimension)
     {
@@ -15,19 +19,19 @@ namespace adaptone
         int rowNb = distMat.n_rows;
         int colNb = distMat.n_cols;
 
-        double avgDist = arma::mean(arma::mean(distMat));
+        double avgDist = mean(mean(distMat));
         // initialize speaker and mic position as random inside a space bound by a guessed box from distances
         if (setAPosMat.is_empty())
         {
-            setAPosMat = avgDist * arma::randu<arma::mat>(rowNb, dimension);
+            setAPosMat = avgDist * randu<mat>(rowNb, dimension);
         }
 
         if (setBPosMat.is_empty())
         {
-            setBPosMat = avgDist * arma::randu<arma::mat>(colNb, dimension);
+            setBPosMat = avgDist * randu<mat>(colNb, dimension);
         }
 
-        arma::mat distNewMat = arma::zeros(rowNb, colNb);
+        mat distNewMat = zeros(rowNb, colNb);
 
         for (int k = 0; k < tryNb; k++)
         {
@@ -44,32 +48,32 @@ namespace adaptone
                     status = 0;
                     for (int j = 0; j < colNb; j++)
                     {
-                        arma::mat uVec = setAPosMat.row(i) - setBPosMat.row(j);
-                        double uNorm = arma::norm(uVec);
-                        arma::mat uNormVec = uVec / uNorm;
+                        mat uVec = setAPosMat.row(i) - setBPosMat.row(j);
+                        double uNorm = norm(uVec);
+                        mat uNormVec = uVec / uNorm;
 
                         distNewMat(i, j) = uNorm;
 
                         double distError = distNewMat(i, j) - distMat(i, j);
-                        totalDistError += std::abs(distError);
+                        totalDistError += abs(distError);
 
-                        arma::mat distErrorVec = distError * uNormVec;
-                        arma::mat setAOffset = -alpha * 0.5 * distErrorVec;
-                        arma::mat setBOffset = alpha * 0.5 * distErrorVec;
+                        mat distErrorVec = distError * uNormVec;
+                        mat setAOffset = -alpha * 0.5 * distErrorVec;
+                        mat setBOffset = alpha * 0.5 * distErrorVec;
 
-                        //double thermalNoiseFactor = std::fmax(0.0, 0.2 * (thermalIterNb - n) / thermalIterNb);
-                        double thermalNoiseFactor = 0.5 * avgDist * std::exp(-5 * n / thermalIterNb);
-                        arma::mat setAThermalOffset =
-                            thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1, dimension));
-                        arma::mat setBThermalOffset =
-                            thermalNoiseFactor * (1 - 2 * arma::randu<arma::mat>(1, dimension));
+                        //double thermalNoiseFactor = fmax(0.0, 0.2 * (thermalIterNb - n) / thermalIterNb);
+                        double thermalNoiseFactor = 0.5 * avgDist * exp(-5 * n / thermalIterNb);
+                        mat setAThermalOffset =
+                            thermalNoiseFactor * (1 - 2 * randu<mat>(1, dimension));
+                        mat setBThermalOffset =
+                            thermalNoiseFactor * (1 - 2 * randu<mat>(1, dimension));
 
                         setAPosMat.row(i) += setAOffset + setAThermalOffset;
                         setBPosMat.row(j) += setBOffset + setBThermalOffset;
                     }
                 }
 
-                deltaTotalDistError = std::abs(prevTotalDistError - totalDistError);
+                deltaTotalDistError = abs(prevTotalDistError - totalDistError);
                 prevTotalDistError = totalDistError;
 
                 if (deltaTotalDistError < epsilonDeltaTotalDistError)
@@ -102,5 +106,21 @@ namespace adaptone
             }
         }
         return totalDistError;
+    }
+
+    void rotSetAroundVec3D(mat &set, vec &u, float angle)
+    {
+        //normalize u if not already
+        u = normalise(u);
+
+        mat rotMat = { {cos(angle) + u[0]*u[0]*(1 - cos(angle)),        u[0]*u[1]*(1 - cos(angle)) - u[2]*sin(angle),   u[0]*u[2]*(1 - cos(angle)) + u[1]*sin(angle)},
+                       {u[1]*u[0]*(1 - cos(angle)) + u[2]*sin(angle),   cos(angle) + u[1]*u[1]*(1 - cos(angle)),        u[1]*u[2]*(1 - cos(angle)) - u[0]*sin(angle)},
+                       {u[2]*u[0]*(1 - cos(angle)) - u[1]*sin(angle),   u[2]*u[1]*(1 - cos(angle)) + u[0]*sin(angle),   cos(angle) + u[2]*u[2]*(1 - cos(angle))} };
+
+        int rowNb = set.n_rows;
+        for (int i = 0; i < rowNb; i++)
+        {
+            set.row(i) = trans(rotMat * set.row(i).t());
+        }
     }
 }
