@@ -27,7 +27,7 @@ namespace adaptone
             std::shared_ptr<HeadphoneProbeSignalOverride> headphoneProbeSignalOverride);
         ~UniformizationProbeMessageHandler() override;
 
-        void handle(const ProbeMessage& message, std::size_t probeId, bool isMaster) override;
+        void handle(const ProbeMessage& message, uint32_t probeId, bool isMaster) override;
 
     private:
         void handleProbeSoundDataMessage(const ProbeSoundDataMessage& message, std::size_t probeId, bool isMaster);

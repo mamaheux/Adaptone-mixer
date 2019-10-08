@@ -17,13 +17,11 @@ using namespace std::chrono_literals;
 ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     shared_ptr<ProbeMessageHandler> messageHandler,
     const DiscoveredProbe& discoveredProbe,
-    size_t id,
     const ProbeServerParameters& probeServerParameters) :
     m_logger(logger),
     m_messageHandler(messageHandler),
     m_isMaster(false),
     m_isConnected(false),
-    m_id(id),
     m_probeServerParameters(probeServerParameters),
     m_sendingBuffer(MaxTcpMessageSize)
 {
@@ -136,7 +134,8 @@ void ProbeServer::connect(boost::asio::ip::tcp::socket& socket)
     {
         THROW_NETWORK_EXCEPTION("Not compatible probe");
     }
-    m_isMaster = response.isMaster();
+    m_isMaster.store(response.isMaster());
+    m_id.store(response.probeId());
     m_isConnected.store(true);
 
     m_lastHeartbeatSendingTime = chrono::system_clock::now();

@@ -25,7 +25,7 @@ UniformizationProbeMessageHandler::~UniformizationProbeMessageHandler()
 {
 }
 
-void UniformizationProbeMessageHandler::handle(const ProbeMessage& message, size_t probeId, bool isMaster)
+void UniformizationProbeMessageHandler::handle(const ProbeMessage& message, uint32_t probeId, bool isMaster)
 {
     auto it = m_handlersById.find(message.id());
     if (it == m_handlersById.end())

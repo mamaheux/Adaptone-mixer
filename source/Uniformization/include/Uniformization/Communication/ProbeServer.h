@@ -25,9 +25,9 @@ namespace adaptone
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<ProbeMessageHandler> m_messageHandler;
         ProbeServerParameters m_probeServerParameters;
-        bool m_isMaster;
+        std::atomic<bool> m_isMaster;
         std::atomic<bool> m_isConnected;
-        std::size_t m_id;
+        std::atomic<uint32_t> m_id;
 
         boost::asio::ip::tcp::endpoint m_endpoint;
         std::unique_ptr<boost::asio::io_service> m_ioService;
@@ -46,7 +46,6 @@ namespace adaptone
         ProbeServer(std::shared_ptr<Logger> logger,
             std::shared_ptr<ProbeMessageHandler> messageHandler,
             const DiscoveredProbe& discoveredProbe,
-            std::size_t id,
             const ProbeServerParameters& probeServerParameters);
         virtual ~ProbeServer();
 
@@ -58,6 +57,7 @@ namespace adaptone
 
         bool isMaster();
         bool isConnected();
+        uint32_t id();
 
         void send(const ProbeMessage& message);
 
@@ -72,12 +72,17 @@ namespace adaptone
 
     inline bool ProbeServer::isMaster()
     {
-        return m_isMaster;
+        return m_isMaster.load();
     }
 
     inline bool ProbeServer::isConnected()
     {
         return m_isConnected.load();
+    }
+
+    inline uint32_t ProbeServer::id()
+    {
+        return m_id.load();
     }
 }
 
