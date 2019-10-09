@@ -38,7 +38,7 @@ namespace adaptone
 
     inline arma::vec setGetCentroid(const arma::mat& set)
     {
-        return  arma::conv_to< arma::vec >::from(arma::mean(set, 0));
+        return  arma::conv_to<arma::vec>::from(arma::mean(set, 0));
     }
 
     float findSetAngle2D(const arma::mat& set);
