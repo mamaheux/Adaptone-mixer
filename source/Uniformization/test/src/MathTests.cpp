@@ -179,8 +179,6 @@ TEST(MathTests, rotSet2D_shouldApplyProperRotationToAllPointsInTheSet)
             EXPECT_NEAR(set(i,j), setTarget(i,j), Tol);
         }
     }
-
-
 }
 
 TEST(MathTests, rotSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSet)
