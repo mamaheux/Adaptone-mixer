@@ -1,4 +1,4 @@
-#include "Uniformization/AutoPosition.h"
+#include <Uniformization/AutoPosition.h>
 #include "Uniformization/Math.h"
 
 #include <armadillo>
