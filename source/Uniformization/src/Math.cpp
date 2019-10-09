@@ -1,4 +1,4 @@
-#include "Uniformization/Math.h"
+#include <Uniformization/Math.h>
 
 using namespace arma;
 using namespace std;

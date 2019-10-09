@@ -1,4 +1,4 @@
-#include "Uniformization/Model/AutoPosition.h"
+#include <Uniformization/Model/AutoPosition.h>
 
 #include <armadillo>
 

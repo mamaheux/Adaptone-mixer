@@ -1,8 +1,8 @@
 #ifndef UNIFORMIZATION_MODEL_AUTOPOSITION_H
 #define UNIFORMIZATION_MODEL_AUTOPOSITION_H
 
-#include "Uniformization/Math.h"
-#include "Room.h"
+#include <Uniformization/Math.h>
+#include <Uniformization/Model/Room.h>
 
 #include <armadillo>
 

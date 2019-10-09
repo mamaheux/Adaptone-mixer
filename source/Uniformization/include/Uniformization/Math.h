@@ -40,7 +40,7 @@ namespace adaptone
 
     inline arma::vec getSetCentroid(const arma::mat& set)
     {
-        return  arma::conv_to< arma::vec >::from(arma::mean(set, 0));
+        return  arma::conv_to<arma::vec>::from(arma::mean(set, 0));
     }
 }
 

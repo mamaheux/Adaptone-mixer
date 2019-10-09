@@ -1,8 +1,8 @@
 #ifndef UNIFORMIZATION_MODEL_ROOM_H
 #define UNIFORMIZATION_MODEL_ROOM_H
 
-#include "Probe.h"
-#include "Speaker.h"
+#include <Uniformization/Model/Probe.h>
+#include <Uniformization/Model/Speaker.h>
 
 #include <Utils/Exception/InvalidValueException.h>
 
@@ -14,14 +14,14 @@ namespace adaptone
 {
     class Room
     {
-        int m_probeNb;
-        int m_speakerNb;
+        std::size_t m_probeCount;
+        std::size_t m_speakerCount;
         std::vector<Probe> m_probes;
         std::vector<Speaker> m_speakers;
 
     public:
         Room();
-        Room(int speakerNb, int probeNb);
+        Room(std::size_t speakerCount, std::size_t probeCount);
         Room(const arma::mat& speakerPosMat, const arma::mat& probePosMat);
         ~Room();
 
