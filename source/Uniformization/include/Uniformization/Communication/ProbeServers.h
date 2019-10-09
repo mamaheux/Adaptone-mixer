@@ -28,9 +28,9 @@ namespace adaptone
         std::shared_ptr<ProbeMessageHandler> m_messageHandler;
 
         ProbeDiscoverer m_probeDiscoverer;
-        std::unordered_map<std::size_t, std::unique_ptr<ProbeServer>> m_probeServersById;
-        std::map<boost::asio::ip::address, std::size_t> m_probeIdsByAddress;
-        std::size_t m_masterProbeId;
+        std::unordered_map<uint32_t, std::unique_ptr<ProbeServer>> m_probeServersById;
+        std::map<boost::asio::ip::address, uint32_t> m_probeIdsByAddress;
+        uint32_t m_masterProbeId;
 
         std::unique_ptr<boost::asio::io_service> m_ioService;
         std::unique_ptr<boost::asio::ip::udp::socket> m_udpSocket;

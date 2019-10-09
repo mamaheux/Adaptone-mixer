@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <cstddef>
+#include <cstdint>
 #include <mutex>
 
 namespace adaptone
@@ -25,7 +26,7 @@ namespace adaptone
         std::size_t m_currentOverrideDataIndex;
         std::size_t m_currentWriteDataIndex;
 
-        std::size_t m_currentProbeId;
+        uint32_t m_currentProbeId;
 
     public:
         HeadphoneProbeSignalOverride(PcmAudioFrameFormat format,
@@ -38,12 +39,12 @@ namespace adaptone
         DECLARE_NOT_MOVABLE(HeadphoneProbeSignalOverride);
 
         const PcmAudioFrame& override(const PcmAudioFrame& frame) override;
-        void writeData(const ProbeSoundDataMessage& message, std::size_t probeId);
+        void writeData(const ProbeSoundDataMessage& message, uint32_t probeId);
 
-        void setCurrentProbeId(std::size_t currentProbeId);
+        void setCurrentProbeId(uint32_t currentProbeId);
     };
 
-    inline void HeadphoneProbeSignalOverride::setCurrentProbeId(std::size_t currentProbeId)
+    inline void HeadphoneProbeSignalOverride::setCurrentProbeId(uint32_t currentProbeId)
     {
         std::lock_guard currentOverrideDataIndexLock(m_currentOverrideDataIndexMutex);
         std::lock_guard currentWriteDataIndexLock(m_writeDataMutex);

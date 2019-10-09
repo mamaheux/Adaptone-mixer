@@ -16,7 +16,7 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(ProbeMessageHandler);
         DECLARE_NOT_MOVABLE(ProbeMessageHandler);
 
-        virtual void handle(const ProbeMessage& message, std::size_t probeId, bool isMaster) = 0;
+        virtual void handle(const ProbeMessage& message, uint32_t probeId, bool isMaster) = 0;
     };
 }
 

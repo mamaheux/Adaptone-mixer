@@ -11,7 +11,7 @@ TEST(HeadphoneProbeSignalOverrideTests, override_shouldWriteProbeData)
     constexpr size_t ChannelCount = 4;
     constexpr size_t FrameSampleCount = 32;
     const vector<size_t> HeadphoneChannelIndexes{ 2, 3 };
-    constexpr size_t ProbeId = 0;
+    constexpr uint32_t ProbeId = 0;
 
     HeadphoneProbeSignalOverride signalOverride(Format, ChannelCount, FrameSampleCount, HeadphoneChannelIndexes);
     PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, ChannelCount, FrameSampleCount);
@@ -48,7 +48,7 @@ TEST(HeadphoneProbeSignalOverrideTests, override_wrongProbeId_shouldDoNothing)
     constexpr size_t ChannelCount = 4;
     constexpr size_t FrameSampleCount = 32;
     const vector<size_t> HeadphoneChannelIndexes{ 2, 3 };
-    constexpr size_t ProbeId = 0;
+    constexpr uint32_t ProbeId = 0;
     constexpr uint8_t Value = 1;
 
     HeadphoneProbeSignalOverride signalOverride(Format, ChannelCount, FrameSampleCount, HeadphoneChannelIndexes);

@@ -46,7 +46,7 @@ const PcmAudioFrame& HeadphoneProbeSignalOverride::override(const PcmAudioFrame&
     return m_frame;
 }
 
-void HeadphoneProbeSignalOverride::writeData(const ProbeSoundDataMessage& message, size_t probeId)
+void HeadphoneProbeSignalOverride::writeData(const ProbeSoundDataMessage& message, uint32_t probeId)
 {
     lock_guard lock(m_writeDataMutex);    
     if (probeId != m_currentProbeId)

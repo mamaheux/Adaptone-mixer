@@ -114,12 +114,13 @@ void ProbeServers::createProbeServer(const DiscoveredProbe& discoveredProbe)
     unique_lock lock(m_mutex);
     try
     {
-        size_t id = m_probeServersById.size();
-        m_probeServersById.emplace(id, make_unique<ProbeServer>(m_logger,
+        unique_ptr<ProbeServer> probeServer = make_unique<ProbeServer>(m_logger,
             m_messageHandler,
             discoveredProbe,
-            id,
-            m_probeServerParameters));
+            m_probeServerParameters);
+
+        uint32_t id = probeServer->id();
+        m_probeServersById.emplace(id, move(probeServer));
         m_probeIdsByAddress.emplace(discoveredProbe.address(), id);
         m_probeServersById[id]->start();
         if (m_probeServersById[id]->isMaster())
@@ -142,7 +143,7 @@ void ProbeServers::readUdpSocket()
             m_udpMessageReader.read(*m_udpSocket,
                 [&](const ProbeMessage& message, const boost::asio::ip::address& address)
                 {
-                    size_t probeId = m_probeIdsByAddress[address];
+                    uint32_t probeId = m_probeIdsByAddress[address];
                     m_messageHandler->handle(message, probeId, probeId == m_masterProbeId);
                 });
         }

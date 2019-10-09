@@ -15,6 +15,7 @@ namespace adaptone
     class DiscoveredProbe
     {
         boost::asio::ip::address m_address;
+
     public:
         DiscoveredProbe(const boost::asio::ip::address& address);
         virtual ~DiscoveredProbe();
