@@ -7,258 +7,259 @@ using namespace std;
 
 TEST(MathTests, logSinChirp_shouldReturnTheLogSinChirp)
 {
-    constexpr float T = 1;
+    constexpr float Tolerance = 0.001;
+    constexpr float Period = 1;
     constexpr uint32_t Fs = 44100;
-    constexpr float Tol = 0.001;
 
-    arma::fvec chirp = logSinChirp<arma::fvec>(20.0, 10000.0, T, Fs);
+    arma::fvec chirp = logSinChirp<arma::fvec>(20.0, 10000.0, Period, Fs);
 
     EXPECT_EQ(chirp.n_elem, 44100);
-    EXPECT_NEAR(chirp(0), 0.0, Tol);
-    EXPECT_NEAR(chirp(200), 0.54637, Tol);
-    EXPECT_NEAR(chirp(5001), 0.96303, Tol);
-    EXPECT_NEAR(chirp(20000), -0.93309, Tol);
-    EXPECT_NEAR(chirp(44099), -0.61934, Tol);
+    EXPECT_NEAR(chirp(0), 0.0, Tolerance);
+    EXPECT_NEAR(chirp(200), 0.54637, Tolerance);
+    EXPECT_NEAR(chirp(5001), 0.96303, Tolerance);
+    EXPECT_NEAR(chirp(20000), -0.93309, Tolerance);
+    EXPECT_NEAR(chirp(44099), -0.61934, Tolerance);
 }
 
-TEST(MathTests, linearReg_shouldReturnTheGoodCoefficients)
+TEST(MathTests, linearRegression_shouldReturnTheGoodCoefficients)
 {
-    arma::mat set = {
-        {0, 1},
-        {1, 2},
-        {-1, -2},
-        {4, 5},
-        {0, -1},
-        {0.5, 0.333},
-        {0, 0}
+    constexpr float Tolerance = 0.00001;
+
+    const arma::mat set = {
+        { 0, 1 },
+        { 1, 2 },
+        { -1, -2 },
+        { 4, 5 },
+        { 0, -1 },
+        { 0.5, 0.333 },
+        { 0, 0 }
     };
 
     arma::mat X = arma::ones(arma::size(set));
     X.col(1) = set.col(0);
 
-    arma::vec coeff = linearReg(set.col(1), X);
+    arma::vec coeff = linearRegression(set.col(1), X);
 
-    constexpr float Tol = 0.00001;
-    EXPECT_NEAR(coeff(0),-0.10625, Tol);
-    EXPECT_NEAR(coeff(1),1.35039, Tol);
+    EXPECT_NEAR(coeff(0),-0.10625, Tolerance);
+    EXPECT_NEAR(coeff(1),1.35039, Tolerance);
 }
 
-TEST(MathTests, relativePositionFromDistance_2D_shouldGetRelativePositionFromDistance)
+TEST(MathTests, computeRelativePositionsFromDistances_2D_shouldGetRelativePositionFromDistance)
 {
-    constexpr int TestNb = 25;
+    constexpr int TestCount = 25;
 
     constexpr double Alpha = 1.0;
-    constexpr double EspilonTotalDistError = 5e-3;
-    constexpr double EspilonDeltaTotalDistError = 1e-6;
+    constexpr double EpsilonTotalDistanceError = 5e-3;
+    constexpr double EpsilonDeltaTotalDistError = 1e-6;
 
-    constexpr int IterNb = 750;
-    constexpr int ThermalIterNb = 100;
-    constexpr int TryNb = 5;
-    constexpr int CountThreshold = 5;
-    constexpr int dimension = 2;
+    constexpr size_t IterationCount = 750;
+    constexpr size_t ThermalIterationCount = 100;
+    constexpr size_t TryCount = 5;
+    constexpr size_t CountThreshold = 5;
+    constexpr size_t Dimension = 2;
 
-    int passedNb = 0;
-    for(int n = 0; n < TestNb; n++)
+    int passedCount = 0;
+    for(int n = 0; n < TestCount; n++)
     {
-        int setANb = std::rand() % 13 + 4; //value in range [4, 16]
-        int setBNb = std::rand() % 13 + 4; //value in range [4, 16]
+        size_t setACount = rand() % 13 + 4; //value in range [4, 16]
+        size_t setBCount = rand() % 13 + 4; //value in range [4, 16]
 
-        arma::mat setAPosMat = 10 * arma::randu<arma::mat>(setANb, dimension);
-        arma::mat setBPosMat = 10 * arma::randu<arma::mat>(setBNb, dimension);
-        arma::mat distMat = arma::zeros<arma::mat>(setANb, setBNb);
+        arma::mat setAPosMat = 10 * arma::randu<arma::mat>(setACount, Dimension);
+        arma::mat setBPosMat = 10 * arma::randu<arma::mat>(setBCount, Dimension);
+        arma::mat distMat = arma::zeros<arma::mat>(setACount, setBCount);
 
         // compute distance between each pair of the two set (A and B)
-        for (int i = 0; i < setANb; i++)
+        for (int i = 0; i < setACount; i++)
         {
-            for (int j = 0; j < setBNb; j++)
+            for (int j = 0; j < setBCount; j++)
             {
                 distMat(i, j) = arma::norm(setAPosMat.row(i) - setBPosMat.row(j));
             }
         }
 
-        arma::mat setAPosNewMat;
-        arma::mat setBPosNewMat;
+        arma::mat setAPositionNewMat;
+        arma::mat setBPositionNewMat;
 
-        //double avgDist = arma::mean(arma::mean(distMat));
-        //double epsilonTotalDistError = avgDist * distRelativeError;
+        double totalDistanceError = computeRelativePositionsFromDistances(distMat, IterationCount, TryCount,
+            ThermalIterationCount, Alpha, EpsilonTotalDistanceError, EpsilonDeltaTotalDistError, CountThreshold,
+            Dimension, setAPositionNewMat, setBPositionNewMat);
 
-        double totalDistError = relativePositionsFromDistances(distMat, setAPosNewMat, setBPosNewMat, IterNb, TryNb,
-            ThermalIterNb, Alpha, EspilonTotalDistError, EspilonDeltaTotalDistError, CountThreshold, dimension);
-
-        if (totalDistError < EspilonTotalDistError)
+        if (totalDistanceError < EpsilonTotalDistanceError)
         {
-            passedNb++;
+            passedCount++;
         }
     }
 
-    EXPECT_TRUE( passedNb / TestNb >= (TestNb-2)/TestNb);
+    EXPECT_TRUE(passedCount >= TestCount - 2);
 }
 
-TEST(MathTests, relativePositionFromDistance_3D_shouldGetRelativePositionFromDistance)
+TEST(MathTests, computeRelativePositionsFromDistances_3D_shouldGetRelativePositionFromDistance)
 {
-    constexpr int TestNb = 25;
+    constexpr int TestCount = 25;
 
     constexpr double Alpha = 1.0;
-    constexpr double EspilonTotalDistError = 5e-3;
-    constexpr double EspilonDeltaTotalDistError = 1e-6;
+    constexpr double EpsilonTotalDistanceError = 5e-3;
+    constexpr double EpsilonDeltaTotalDistError = 1e-6;
 
-    constexpr int IterNb = 750;
-    constexpr int ThermalIterNb = 100;
-    constexpr int TryNb = 5;
-    constexpr int CountThreshold = 5;
-    constexpr int dimension = 3;
+    constexpr size_t IterationCount = 2000;
+    constexpr size_t ThermalIterationCount = 100;
+    constexpr size_t TryCount = 5;
+    constexpr size_t CountThreshold = 5;
+    constexpr size_t Dimension = 3;
 
-    int passedNb = 0;
-    for(int n = 0; n < TestNb; n++)
+    int passedCount = 0;
+    for(int n = 0; n < TestCount; n++)
     {
-        int setANb = std::rand() % 13 + 4; //value in range [4, 16]
-        int setBNb = std::rand() % 13 + 4; //value in range [4, 16]
+        size_t setACount = std::rand() % 13 + 4; //value in range [4, 16]
+        size_t setBCount = std::rand() % 13 + 4; //value in range [4, 16]
 
-        arma::mat setAPosMat = 10 * arma::randu<arma::mat>(setANb, dimension);
-        arma::mat setBPosMat = 10 * arma::randu<arma::mat>(setBNb, dimension);
-        arma::mat distMat = arma::zeros<arma::mat>(setANb, setBNb);
+        arma::mat setAPosMat = 10 * arma::randu<arma::mat>(setACount, Dimension);
+        arma::mat setBPosMat = 10 * arma::randu<arma::mat>(setBCount, Dimension);
+        arma::mat distMat = arma::zeros<arma::mat>(setACount, setBCount);
 
         // compute distance between each pair of the two set (A and B)
-        for (int i = 0; i < setANb; i++)
+        for (int i = 0; i < setACount; i++)
         {
-            for (int j = 0; j < setBNb; j++)
+            for (int j = 0; j < setBCount; j++)
             {
                 distMat(i, j) = arma::norm(setAPosMat.row(i) - setBPosMat.row(j));
             }
         }
 
-        arma::mat setAPosNewMat;
-        arma::mat setBPosNewMat;
-        double avgDist = arma::mean(arma::mean(distMat));
-        //double epsilonTotalDistError = avgDist * distRelativeError;
+        arma::mat setAPositionNewMat;
+        arma::mat setBPositionNewMat;
 
-        double totalDistError = relativePositionsFromDistances(distMat, setAPosNewMat, setBPosNewMat, IterNb, TryNb,
-            ThermalIterNb, Alpha, EspilonTotalDistError, EspilonDeltaTotalDistError, CountThreshold, dimension);
+        double totalDistanceError = computeRelativePositionsFromDistances(distMat, IterationCount, TryCount,
+            ThermalIterationCount, Alpha, EpsilonTotalDistanceError, EpsilonDeltaTotalDistError, CountThreshold,
+            Dimension, setAPositionNewMat, setBPositionNewMat);
 
-        if (totalDistError < EspilonTotalDistError)
+        if (totalDistanceError < EpsilonTotalDistanceError)
         {
-            passedNb++;
+            passedCount++;
         }
     }
 
-    EXPECT_TRUE( passedNb / TestNb >= (TestNb-2)/TestNb);
+    EXPECT_TRUE(passedCount >= TestCount - 2);
 }
 
-TEST(MathTests, rotSet2D_shouldApplyProperRotationToAllPointsInTheSet)
+TEST(MathTests, rotateSet2D_shouldApplyProperRotationToAllPointsInTheSet)
 {
+    constexpr float Tolerance = 0.00001;
+
     arma::mat set = {
-        {0, 1},
-        {1, 2},
-        {-1, -2},
-        {4, 5},
-        {0, -1},
-        {0.5, 0.333},
-        {0, 0}
+        { 0, 1 },
+        { 1, 2 },
+        { -1, -2 },
+        { 4, 5 },
+        { 0, -1 },
+        { 0.5, 0.333 },
+        { 0, 0 }
     };
 
-    rotSet2D(set, 0.25);
+    rotateSet2D(set, 0.25);
 
-    constexpr float Tol = 0.00001;
-    arma::mat setTarget = {
-        {-0.24740,   0.96891},
-        {0.47410,   2.18523},
-        {-0.47410,  -2.18523},
-        {2.63863,   5.83418},
-        {0.24740,  -0.96891},
-        {0.40207,   0.44635},
-        {0.00000,   0.00000}
+    const arma::mat SetTarget = {
+        { -0.24740, 0.96891 },
+        { 0.47410, 2.18523 },
+        { -0.47410, -2.18523 },
+        { 2.63863, 5.83418 },
+        { 0.24740, -0.96891 },
+        { 0.40207, 0.44635 },
+        { 0.00000, 0.00000 }
     };
 
     // test every matrix entries - successive ROT 1
-    int rowNb = set.n_rows;
-    int colNb = set.n_cols;
-    for (int i = 0; i < rowNb; i++)
+    int rowCount = set.n_rows;
+    int colCount = set.n_cols;
+    for (int i = 0; i < rowCount; i++)
     {
-        for (int j = 0; j < colNb; j++)
+        for (int j = 0; j < colCount; j++)
         {
-            EXPECT_NEAR(set(i,j), setTarget(i,j), Tol);
+            EXPECT_NEAR(set(i,j), SetTarget(i,j), Tolerance);
         }
     }
 }
 
-TEST(MathTests, rotSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSet)
+TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSet)
 {
+    constexpr float Tolerance = 0.00001;
+
     arma::mat set = {
-        {0, 1, 2},
-        {1, 2, 3},
-        {-1, -2, -3},
-        {4, 5, 9},
-        {0, -1, -7},
-        {0.5, 0.333, 1.4},
-        {0, 0, 0}
+        { 0, 1, 2 },
+        { 1, 2, 3 },
+        { -1, -2, -3 },
+        { 4, 5, 9 },
+        { 0, -1, -7 },
+        { 0.5, 0.333, 1.4 },
+        { 0, 0, 0 }
     };
     arma::vec unitVec = {0,0,1};
 
-    rotSetAroundVec3D(set, unitVec, 0.25);
+    rotateSetAroundVec3D(set, unitVec, 0.25);
 
-    constexpr float Tol = 0.00001;
     arma::mat setTarget = {
-        {-0.24740,   0.96891,   2.00000},
-        {0.47410,   2.18523,   3.00000},
-        {-0.47410,  -2.18523,  -3.00000},
-        {2.63863,   5.83418,   9.00000},
-        {0.24740,  -0.96891,  -7.00000},
-        {0.40207,   0.44635,   1.40000},
-        {0.00000,   0.00000,   0.00000}
+        { -0.24740, 0.96891, 2.00000 },
+        { 0.47410, 2.18523, 3.00000 },
+        { -0.47410, -2.18523, -3.00000 },
+        { 2.63863, 5.83418, 9.00000 },
+        { 0.24740, -0.96891, -7.00000 },
+        { 0.40207, 0.44635, 1.40000 },
+        { 0.00000, 0.00000, 0.00000 }
     };
 
     // test every matrix entries - successive ROT 1
-    int rowNb = set.n_rows;
-    int colNb = set.n_cols;
-    for (int i = 0; i < rowNb; i++)
+    int rowCount = set.n_rows;
+    int colCount = set.n_cols;
+    for (int i = 0; i < rowCount; i++)
     {
-        for (int j = 0; j < colNb; j++)
+        for (int j = 0; j < colCount; j++)
         {
-            EXPECT_NEAR(set(i,j), setTarget(i,j), Tol);
+            EXPECT_NEAR(set(i,j), setTarget(i,j), Tolerance);
         }
     }
 
     arma::vec vec = {-1.7, 2.45, 1.2};
 
-    rotSetAroundVec3D(set, vec, 2.64);
+    rotateSetAroundVec3D(set, vec, 2.64);
 
     setTarget = {
-        {-0.82803,  1.92625, -0.77712},
-        {-2.22450,  2.55790, -1.58390},
-        {2.22450 , -2.55790,  1.58390},
-        {-6.42613,  6.81781, -5.84999},
-        {0.84839 , -5.86785,  3.85339},
-        {-0.56498,  0.96693, -1.03283},
-        {0.00000 ,  0.00000,  0.00000}
+        { -0.82803, 1.92625, -0.77712 },
+        { -2.22450, 2.55790, -1.58390 },
+        { 2.22450 , -2.55790, 1.58390 },
+        { -6.42613, 6.81781, -5.84999 },
+        { 0.84839 , -5.86785, 3.85339 },
+        { -0.56498, 0.96693, -1.03283 },
+        { 0.00000 , 0.00000, 0.00000 }
     };
 
     // test every matrix entries - successive ROT 2
-    for (int i = 0; i < rowNb; i++)
+    for (int i = 0; i < rowCount; i++)
     {
-        for (int j = 0; j < colNb; j++)
+        for (int j = 0; j < colCount; j++)
         {
-            EXPECT_NEAR(set(i,j), setTarget(i,j), Tol);
+            EXPECT_NEAR(set(i,j), setTarget(i,j), Tolerance);
         }
     }
 }
 
-TEST(MathTests, setApplyOffset_shouldApplyOffsetToAllPointsOfASet)
+TEST(MathTests, moveSet_shouldApplyOffsetToAllPointsOfASet)
 {
+    constexpr float Tolerance = 0.00001;
+
     arma::mat set = {
-        {0, 1},
-        {1, 2},
-        {-1, -2},
+        { 0, 1 },
+        { 1, 2 },
+        { -1, -2 },
     };
 
     arma::vec offset = {1, -2.5};
 
-    setApplyOffset(set, offset);
+    moveSet(set, offset);
 
-    constexpr float Tol = 0.00001;
-    arma::mat setTarget = {
-        {1, -1.5},
-        {2, -0.5},
-        {0, -4.5},
+    const arma::mat SetTarget = {
+        { 1, -1.5 },
+        { 2, -0.5 },
+        { 0, -4.5 },
     };
 
     // test every matrix entries
@@ -266,40 +267,42 @@ TEST(MathTests, setApplyOffset_shouldApplyOffsetToAllPointsOfASet)
     {
         for (int j = 0; j < set.n_cols; j++)
         {
-            EXPECT_NEAR(set(i,j), setTarget(i,j), Tol);
+            EXPECT_NEAR(set(i,j), SetTarget(i,j), Tolerance);
         }
     }
 }
 
-TEST(MathTests, setGetCentroid_shouldGetTheCentroidOfASet)
+TEST(MathTests, getSetCentroid_shouldGetTheCentroidOfASet)
 {
+    constexpr float Tolerance = 0.00001;
+
     arma::mat set = {
-        {0,  1},
-        {1,  2},
-        {-1, -2},
+        { 0,  1 },
+        { 1,  2 },
+        { -1, -2 },
     };
 
-    arma::vec centroid = setGetCentroid(set);
+    arma::vec centroid = getSetCentroid(set);
 
-    constexpr float Tol = 0.00001;
-    EXPECT_NEAR(centroid(0), 0, Tol);
-    EXPECT_NEAR(centroid(1), 0.33333333333, Tol);
+    EXPECT_NEAR(centroid(0), 0, Tolerance);
+    EXPECT_NEAR(centroid(1), 0.33333333333, Tolerance);
 }
 
 TEST(MathTests, findSetAngle2D_shouldReturnAngleFromXAxisAndSetOrientation)
 {
+    constexpr float Tolerance = 0.00001;
+
     arma::mat set = {
-        {0, 1},
-        {1, 2},
-        {-1, -2},
-        {4, 5},
-        {0, -1},
-        {0.5, 0.333},
-        {0, 0}
+        { 0, 1 },
+        { 1, 2 },
+        { -1, -2 },
+        { 4, 5 },
+        { 0, -1 },
+        { 0.5, 0.333 },
+        { 0, 0 }
     };
 
     float angle = findSetAngle2D(set);
 
-    constexpr float Tol = 0.00001;
-    EXPECT_NEAR(angle, 0.93339, Tol);
+    EXPECT_NEAR(angle, 0.93339, Tolerance);
 }

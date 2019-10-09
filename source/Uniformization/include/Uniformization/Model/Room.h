@@ -1,8 +1,9 @@
-#ifndef UNIFORMIZATION_ROOM_H
-#define UNIFORMIZATION_ROOM_H
+#ifndef UNIFORMIZATION_MODEL_ROOM_H
+#define UNIFORMIZATION_MODEL_ROOM_H
 
-#include "Uniformization/Probe.h"
-#include "Uniformization/Speaker.h"
+#include "Probe.h"
+#include "Speaker.h"
+
 #include <Utils/Exception/InvalidValueException.h>
 
 #include <vector>
@@ -17,8 +18,6 @@ namespace adaptone
         int m_speakerNb;
         std::vector<Probe> m_probes;
         std::vector<Speaker> m_speakers;
-        arma::mat m_probesPosMat;
-        arma::mat m_speakersPosMat;
 
     public:
         Room();
@@ -32,4 +31,5 @@ namespace adaptone
         arma::mat getSpeakersPosMat();
     };
 }
+
 #endif

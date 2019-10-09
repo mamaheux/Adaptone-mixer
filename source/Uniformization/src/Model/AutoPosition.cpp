@@ -1,24 +1,25 @@
-#include "Uniformization/AutoPosition.h"
-#include "Uniformization/Math.h"
+#include "Uniformization/Model/AutoPosition.h"
 
 #include <armadillo>
+
 #include <cmath>
 
 using namespace arma;
 using namespace adaptone;
+using namespace std;
 
 AutoPosition::AutoPosition()
 {
 }
 
-AutoPosition::AutoPosition(double alpha, double epsilonTotalDistError, double epsilonDeltaTotalDistError, int iterNb,
-    int thermalIterNb, int tryNb, int countThreshold) :
+AutoPosition::AutoPosition(double alpha, double epsilonTotalDistanceError, double epsilonDeltaTotalDistanceError,
+    size_t iterCount, size_t thermalIterCount, size_t tryCount, size_t countThreshold) :
     m_alpha(alpha),
-    m_epsilonTotalDistError(epsilonTotalDistError),
-    m_epsilonDeltaTotalDistError(epsilonDeltaTotalDistError),
-    m_iterNb(iterNb),
-    m_thermalIterNb(thermalIterNb),
-    m_tryNb(tryNb),
+    m_epsilonTotalDistanceError(epsilonTotalDistanceError),
+    m_epsilonDeltaTotalDistanceError(epsilonDeltaTotalDistanceError),
+    m_iterCount(iterCount),
+    m_thermalIterCount(thermalIterCount),
+    m_tryCount(tryCount),
     m_countThreshold(countThreshold)
 {
 }
@@ -27,8 +28,8 @@ AutoPosition::~AutoPosition()
 {
 }
 
-void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMat, float distRelativeError,
-    bool randomInitConfig)
+void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMat, float distanceRelativeError,
+    bool randomInitConfiguration)
 {
     //===================================================
     // 1) Get relative positions from distances matrix
@@ -40,7 +41,7 @@ void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMa
     double avgDist = arma::mean(arma::mean(distancesMat));
 
     // Force the room to have no initial configuration if one is already defined
-    if (randomInitConfig)
+    if (randomInitConfiguration)
     {
         speakersPosMat.clear();
         probesPosMat.clear();
@@ -53,19 +54,18 @@ void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMa
 
     // Compute the epsilonTotalDistError value according to distances predicted relative error if one is defined
     double epsilonTotalDistError;
-    if (distRelativeError > 0.0)
+    if (distanceRelativeError > 0.0)
     {
-        epsilonTotalDistError = avgDist * distRelativeError;
+        epsilonTotalDistError = avgDist * distanceRelativeError;
     }
     else
     {
-        epsilonTotalDistError = m_epsilonTotalDistError;
+        epsilonTotalDistError = m_epsilonTotalDistanceError;
     }
 
     // Compute relatives positions from distances matrix
-    float error = relativePositionsFromDistances(distancesMat, speakersPosMat, probesPosMat, m_iterNb,
-        m_tryNb, m_thermalIterNb, m_alpha, epsilonTotalDistError,
-        m_epsilonDeltaTotalDistError,m_countThreshold, 2);
+    computeRelativePositionsFromDistances(distancesMat, m_iterCount, m_tryCount, m_thermalIterCount, m_alpha,
+        epsilonTotalDistError, m_epsilonDeltaTotalDistanceError,m_countThreshold, 2, speakersPosMat, probesPosMat);
 
     // Resize speakers/probesPosMat to be in 3 dimension to match room data format
     speakersPosMat.resize(speakersPosMat.n_rows,3);
@@ -78,10 +78,10 @@ void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMa
     //===================================================
 
     // Make all positions origin based on Speakers centroid
-    vec speakersCentroid = setGetCentroid(speakersPosMat);
-    vec probesCentroid = setGetCentroid(probesPosMat);
-    setApplyOffset(speakersPosMat, -speakersCentroid);
-    setApplyOffset(probesPosMat, -speakersCentroid);
+    vec speakersCentroid = getSetCentroid(speakersPosMat);
+    vec probesCentroid = getSetCentroid(probesPosMat);
+    moveSet(speakersPosMat, -speakersCentroid);
+    moveSet(probesPosMat, -speakersCentroid);
 
     // Determined the proper angle to apply
     float angleS = findSetAngle2D(speakersPosMat); //return value between -pi/2 and pi/2
@@ -100,8 +100,8 @@ void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMa
     }
 
     // Apply rotation
-    rotSet2D(speakersPosMat, rotAngle);
-    rotSet2D(probesPosMat, rotAngle);
+    rotateSet2D(speakersPosMat, rotAngle);
+    rotateSet2D(probesPosMat, rotAngle);
 
     //===================================================
     // 3) Update Room with new Probe and Speaker positions

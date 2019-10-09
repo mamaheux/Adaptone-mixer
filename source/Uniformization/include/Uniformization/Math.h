@@ -7,8 +7,20 @@
 
 namespace adaptone
 {
+    arma::colvec linearRegression(const arma::vec& y, const arma::mat& X);
+
+    double computeRelativePositionsFromDistances(const arma::mat& distanceMat, int iterationCount, int tryCount,
+        int thermalIterationCount, double alpha, double epsilonTotalDistanceError, double epsilonDeltaTotalDistanceError,
+        int countThreshold, int dimension, arma::mat& setAPositionMat, arma::mat& setBPositionMat);
+
+    void rotateSetAroundVec3D(arma::mat& set, arma::vec u, double angle);
+
+    void rotateSet2D(arma::mat& set, double angle);
+
+    double findSetAngle2D(const arma::mat& set);
+
     template<class T>
-    inline T logSinChirp(float f1, float f2, float period, uint32_t fs)
+    inline T logSinChirp(double f1, double f2, double period, uint32_t fs)
     {
         const std::size_t N = round(period * fs);
 
@@ -17,17 +29,7 @@ namespace adaptone
         return arma::sin(2 * M_PI * f1 * period / logf2f1 * (arma::exp(logf2f1 * t / period) - 1));
     }
 
-    arma::colvec linearReg(const arma::vec& y, const arma::mat& X);
-
-    double relativePositionsFromDistances(const arma::mat& distMat, arma::mat& setAPosMat, arma::mat& setBPosMat, int iterNb,
-        int tryNb, int thermalIterNb, float alpha, float epsilonTotalDistError, float epsilonDeltaTotalDistError,
-        int countThreshold, int dimension);
-
-    void rotSetAroundVec3D(arma::mat& set, arma::vec u, float angle);
-
-    void rotSet2D(arma::mat& set, float angle);
-
-    inline void setApplyOffset(arma::mat& set, const arma::vec& offset)
+    inline void moveSet(arma::mat& set, const arma::vec& offset)
     {
         int colNb = set.n_cols;
         for (int i = 0; i < colNb; i++)
@@ -36,12 +38,10 @@ namespace adaptone
         }
     }
 
-    inline arma::vec setGetCentroid(const arma::mat& set)
+    inline arma::vec getSetCentroid(const arma::mat& set)
     {
         return  arma::conv_to< arma::vec >::from(arma::mean(set, 0));
     }
-
-    float findSetAngle2D(const arma::mat& set);
 }
 
 #endif
