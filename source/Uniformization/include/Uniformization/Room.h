@@ -13,7 +13,7 @@ namespace adaptone
 {
     class Room
     {
-        int m_probeNb;
+        std::size_t m_probeCount;
         int m_speakerNb;
         std::vector<Probe> m_probes;
         std::vector<Speaker> m_speakers;
