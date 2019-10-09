@@ -22,7 +22,7 @@ namespace adaptone
 
     public:
         Room();
-        Room(int speakerNb, int probeNb);
+        Room(std::size_t speakerCount, std::size_t probeCount);
         Room(const arma::mat& speakerPosMat, const arma::mat& probePosMat);
         ~Room();
 
