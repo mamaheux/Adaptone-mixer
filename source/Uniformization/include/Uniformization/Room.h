@@ -14,7 +14,7 @@ namespace adaptone
     class Room
     {
         std::size_t m_probeCount;
-        int m_speakerNb;
+        std::size_t m_speakerCount;
         std::vector<Probe> m_probes;
         std::vector<Speaker> m_speakers;
         arma::mat m_probesPosMat;
