@@ -5,31 +5,22 @@ namespace adaptone
 {
     class Speaker
     {
-        float m_coord[2];
+        float m_coord[3];
 
     public:
         Speaker();
         Speaker(float x, float y);
+        Speaker(float x, float y, float z);
         ~Speaker();
 
-        float* getSpeakerCoord();
-        float getSpeakerX();
-        float getSpeakerY();
+        void setCoord(const float coord[3]);
+        void setX(float x);
+        void setY(float y);
+        void setZ(float z);
+        float* getCoord();
+        float getX();
+        float getY();
+        float getZ();
     };
-
-    float* Speaker::getSpeakerCoord()
-    {
-        return m_coord;
-    }
-
-    float Speaker::getSpeakerX()
-    {
-        return m_coord[0];
-    }
-
-    float Speaker::getSpeakerY()
-    {
-        return m_coord[1];
-    }
 }
 #endif

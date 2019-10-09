@@ -5,31 +5,22 @@ namespace adaptone
 {
     class Probe
     {
-        float m_coord[2];
+        float m_coord[3];
 
     public:
         Probe();
         Probe(float x, float y);
+        Probe(float x, float y, float z);
         ~Probe();
 
-        float* getProbeCoord();
-        float getProbeX();
-        float getProbeY();
+        void setCoord(const float coord[3]);
+        void setX(float x);
+        void setY(float y);
+        void setZ(float z);
+        float* getCoord();
+        float getX();
+        float getY();
+        float getZ();
     };
-
-    float* Probe::getProbeCoord()
-    {
-        return m_coord;
-    }
-
-    float Probe::getProbeX()
-    {
-        return m_coord[0];
-    }
-
-    float Probe::getProbeY()
-    {
-        return m_coord[1];
-    }
 }
 #endif

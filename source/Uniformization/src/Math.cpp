@@ -6,7 +6,20 @@ using namespace std;
 
 namespace adaptone
 {
-    double relativePositionsFromDistances(mat &distMat, mat &setAPosMat, mat &setBPosMat, int iterNb, int tryNb,
+
+    arma::colvec linearReg(const arma::vec & y, const arma::mat & X) {
+
+        int n = X.n_rows, k = X.n_cols;
+
+        arma::colvec coef = arma::solve(X, y);
+        arma::colvec resid = y - X*coef;
+
+        double sig2 = arma::as_scalar(arma::trans(resid)*resid/(n-k));
+
+        return coef;
+    }
+
+    double relativePositionsFromDistances(const mat& distMat, mat& setAPosMat, mat& setBPosMat, int iterNb, int tryNb,
         int thermalIterNb, float alpha, float epsilonTotalDistError, float epsilonDeltaTotalDistError,
         int countThreshold, int dimension)
     {
@@ -14,13 +27,13 @@ namespace adaptone
         double prevTotalDistError = 0;
         double totalDistError;
         int count = 0;
-        int status;
+        int status = 0;
 
         int rowNb = distMat.n_rows;
         int colNb = distMat.n_cols;
 
         double avgDist = mean(mean(distMat));
-        // initialize speaker and mic position as random inside a space bound by a guessed box from distances
+        // initialize setA and setB position as random inside a space bound by a guessed box from distances
         if (setAPosMat.is_empty())
         {
             setAPosMat = avgDist * randu<mat>(rowNb, dimension);
@@ -108,7 +121,7 @@ namespace adaptone
         return totalDistError;
     }
 
-    void rotSetAroundVec3D(mat &set, vec &u, float angle)
+    void rotSetAroundVec3D(mat& set, vec u, float angle)
     {
         //normalize u if not already
         u = normalise(u);
@@ -120,7 +133,31 @@ namespace adaptone
         int rowNb = set.n_rows;
         for (int i = 0; i < rowNb; i++)
         {
-            set.row(i) = trans(rotMat * set.row(i).t());
+            set.cols(0,2).row(i) = trans(rotMat * set.cols(0,2).row(i).t());
         }
+    }
+
+    void rotSet2D(mat& set, float angle)
+    {
+        mat rotMat = { {cos(angle), -sin(angle)},
+                       {sin(angle),  cos(angle)} };
+
+        int rowNb = set.n_rows;
+        for (int i = 0; i < rowNb; i++)
+        {
+            set.cols(0,1).row(i) = trans(rotMat * set.cols(0,1).row(i).t());
+        }
+    }
+
+    float findSetAngle2D(const arma::mat& set)
+    {
+        vec y = set.col(1);
+
+        mat X = ones(set.n_rows, 2);
+        X.col(1) = set.col(0);
+
+        vec coeff = linearReg(y, X);
+
+        return atan2(coeff(1),1);
     }
 }
