@@ -1,7 +1,7 @@
 #ifndef UNIFORMIZATION_ROOM_H
 #define UNIFORMIZATION_ROOM_H
 
-#include "Uniformization/Probe.h"
+#include <Uniformization/Probe.h>
 #include "Uniformization/Speaker.h"
 #include <Utils/Exception/InvalidValueException.h>
 
