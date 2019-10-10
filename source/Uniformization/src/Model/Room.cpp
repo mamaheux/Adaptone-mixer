@@ -2,12 +2,6 @@
 
 using namespace adaptone;
 
-Room::Room()
-{
-    m_speakerCount = 0;
-    m_probeCount = 0;
-}
-
 Room::Room(size_t speakerCount, size_t probeCount) : m_speakerCount(speakerCount), m_probeCount(probeCount)
 {
     for (int i = 0; i < m_speakerCount; i++)
@@ -65,9 +59,9 @@ arma::mat Room::getProbesPosMat()
     arma::mat probesPosMat = arma::zeros(m_probeCount, 3);
     for (int i = 0; i < m_probeCount; i++)
     {
-        probesPosMat(i,0) = m_probes[i].getX();
-        probesPosMat(i,1) = m_probes[i].getY();
-        probesPosMat(i,2) = m_probes[i].getZ();
+        probesPosMat(i,0) = m_probes[i].x();
+        probesPosMat(i,1) = m_probes[i].y();
+        probesPosMat(i,2) = m_probes[i].z();
     }
     return probesPosMat;
 }
@@ -77,9 +71,9 @@ arma::mat Room::getSpeakersPosMat()
     arma::mat speakersPosMat = arma::zeros(m_speakerCount, 3);
     for (int i = 0; i < m_speakerCount; i++)
     {
-        speakersPosMat(i,0) = m_speakers[i].getX();
-        speakersPosMat(i,1) = m_speakers[i].getY();
-        speakersPosMat(i,2) = m_speakers[i].getZ();
+        speakersPosMat(i,0) = m_speakers[i].x();
+        speakersPosMat(i,1) = m_speakers[i].y();
+        speakersPosMat(i,2) = m_speakers[i].z();
     }
     return speakersPosMat;
 }

@@ -6,11 +6,11 @@ Probe::Probe()
 {
 }
 
-Probe::Probe(float x, float y) : m_x(x), m_y(y), m_z(0)
+Probe::Probe(double x, double y) : ModelElement(x, y)
 {
 }
 
-Probe::Probe(float x, float y, float z) : m_x(x), m_y(y), m_z(z)
+Probe::Probe(double x, double y, double z) : ModelElement(x, y, z)
 {
 }
 

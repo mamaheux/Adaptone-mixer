@@ -20,10 +20,9 @@ namespace adaptone
         std::vector<Speaker> m_speakers;
 
     public:
-        Room();
         Room(std::size_t speakerCount, std::size_t probeCount);
         Room(const arma::mat& speakerPosMat, const arma::mat& probePosMat);
-        ~Room();
+        virtual ~Room();
 
         void setProbesPosFromMat(const arma::mat posMat);
         void setSpeakersPosFromMat(const arma::mat posMat);

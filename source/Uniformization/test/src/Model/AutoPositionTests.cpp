@@ -1,8 +1,6 @@
 #include <Uniformization/Model/AutoPosition.h>
-#include <Uniformization/Model/Room.h>
 
 #include <gtest/gtest.h>
-#include <armadillo>
 
 using namespace adaptone;
 using namespace std;
@@ -24,14 +22,16 @@ TEST(AutoPositionTests, computeRoomConfiguration2D_shouldFindProperRoomConfigura
 
     constexpr float DistanceRelativeError = 0;
 
-    arma::mat speakersMat = {
+    arma::mat speakersMat =
+    {
         { 0, 0 },
         { 1, -0.5 },
         { 2, 0 },
         { 3, -0.5 },
         { 4, 0 }
     };
-    arma::mat probesMat = {
+    arma::mat probesMat =
+    {
         { 0, 3 },
         { 1, 4 },
         { 1.5, 2 },
@@ -68,14 +68,16 @@ TEST(AutoPositionTests, computeRoomConfiguration2D_shouldFindProperRoomConfigura
         speakersNewMat = room.getSpeakersPosMat();
         probesNewMat = room.getProbesPosMat();
 
-        arma::mat speakersTargetMat = {
+        arma::mat speakersTargetMat =
+        {
             { -2, 0.2, 0 },
             { -1, -0.3, 0 },
             { 0, 0.2, 0 },
             { 1, -0.3, 0 },
             { 2, 0.2, 0 }
         };
-        arma::mat probesTargetMat = {
+        arma::mat probesTargetMat =
+        {
             { -2, 3.2, 0 },
             { -1, 4.2, 0 },
             { -0.5, 2.2, 0 },

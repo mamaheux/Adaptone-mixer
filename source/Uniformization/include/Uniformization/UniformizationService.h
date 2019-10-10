@@ -6,7 +6,7 @@
 #include <Uniformization/Communication/ProbeServers.h>
 #include <Uniformization/SignalOverride/GenericSignalOverride.h>
 
-
+#include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
 
 #include <memory>
@@ -28,6 +28,9 @@ namespace adaptone
             std::shared_ptr<GenericSignalOverride> signalOverride,
             const UniformizationServiceParameters& parameters);
         virtual ~UniformizationService();
+
+        DECLARE_NOT_COPYABLE(UniformizationService);
+        DECLARE_NOT_MOVABLE(UniformizationService);
 
         void start();
         void stop();

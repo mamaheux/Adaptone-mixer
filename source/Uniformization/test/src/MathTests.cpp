@@ -25,7 +25,8 @@ TEST(MathTests, linearRegression_shouldReturnTheGoodCoefficients)
 {
     constexpr float Tolerance = 0.00001;
 
-    const arma::mat set = {
+    const arma::mat Set =
+    {
         { 0, 1 },
         { 1, 2 },
         { -1, -2 },
@@ -35,13 +36,13 @@ TEST(MathTests, linearRegression_shouldReturnTheGoodCoefficients)
         { 0, 0 }
     };
 
-    arma::mat X = arma::ones(arma::size(set));
-    X.col(1) = set.col(0);
+    arma::mat X = arma::ones(arma::size(Set));
+    X.col(1) = Set.col(0);
 
-    arma::vec coeff = linearRegression(set.col(1), X);
+    arma::vec coeff = linearRegression(Set.col(1), X);
 
-    EXPECT_NEAR(coeff(0),-0.10625, Tolerance);
-    EXPECT_NEAR(coeff(1),1.35039, Tolerance);
+    EXPECT_NEAR(coeff(0), -0.10625, Tolerance);
+    EXPECT_NEAR(coeff(1), 1.35039, Tolerance);
 }
 
 TEST(MathTests, computeRelativePositionsFromDistances_2D_shouldGetRelativePositionFromDistance)
@@ -110,8 +111,8 @@ TEST(MathTests, computeRelativePositionsFromDistances_3D_shouldGetRelativePositi
     int passedCount = 0;
     for(int n = 0; n < TestCount; n++)
     {
-        size_t setACount = std::rand() % 13 + 4; //value in range [4, 16]
-        size_t setBCount = std::rand() % 13 + 4; //value in range [4, 16]
+        size_t setACount = rand() % 13 + 4; //value in range [4, 16]
+        size_t setBCount = rand() % 13 + 4; //value in range [4, 16]
 
         arma::mat setAPosMat = 10 * arma::randu<arma::mat>(setACount, Dimension);
         arma::mat setBPosMat = 10 * arma::randu<arma::mat>(setBCount, Dimension);
@@ -146,7 +147,8 @@ TEST(MathTests, rotateSet2D_shouldApplyProperRotationToAllPointsInTheSet)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set = {
+    arma::mat set =
+    {
         { 0, 1 },
         { 1, 2 },
         { -1, -2 },
@@ -158,7 +160,8 @@ TEST(MathTests, rotateSet2D_shouldApplyProperRotationToAllPointsInTheSet)
 
     rotateSet2D(set, 0.25);
 
-    const arma::mat SetTarget = {
+    const arma::mat SetTarget =
+    {
         { -0.24740, 0.96891 },
         { 0.47410, 2.18523 },
         { -0.47410, -2.18523 },
@@ -184,7 +187,8 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set = {
+    arma::mat set =
+    {
         { 0, 1, 2 },
         { 1, 2, 3 },
         { -1, -2, -3 },
@@ -197,7 +201,8 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
 
     rotateSetAroundVec3D(set, unitVec, 0.25);
 
-    arma::mat setTarget = {
+    arma::mat setTarget =
+    {
         { -0.24740, 0.96891, 2.00000 },
         { 0.47410, 2.18523, 3.00000 },
         { -0.47410, -2.18523, -3.00000 },
@@ -222,7 +227,8 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
 
     rotateSetAroundVec3D(set, vec, 2.64);
 
-    setTarget = {
+    setTarget =
+    {
         { -0.82803, 1.92625, -0.77712 },
         { -2.22450, 2.55790, -1.58390 },
         { 2.22450 , -2.55790, 1.58390 },
@@ -246,7 +252,8 @@ TEST(MathTests, moveSet_shouldApplyOffsetToAllPointsOfASet)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set = {
+    arma::mat set =
+    {
         { 0, 1 },
         { 1, 2 },
         { -1, -2 },
@@ -256,7 +263,8 @@ TEST(MathTests, moveSet_shouldApplyOffsetToAllPointsOfASet)
 
     moveSet(set, offset);
 
-    const arma::mat SetTarget = {
+    const arma::mat SetTarget =
+    {
         { 1, -1.5 },
         { 2, -0.5 },
         { 0, -4.5 },
@@ -276,7 +284,8 @@ TEST(MathTests, getSetCentroid_shouldGetTheCentroidOfASet)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set = {
+    arma::mat set =
+    {
         { 0,  1 },
         { 1,  2 },
         { -1, -2 },
@@ -292,7 +301,8 @@ TEST(MathTests, findSetAngle2D_shouldReturnAngleFromXAxisAndSetOrientation)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set = {
+    arma::mat set =
+    {
         { 0, 1 },
         { 1, 2 },
         { -1, -2 },
@@ -302,7 +312,7 @@ TEST(MathTests, findSetAngle2D_shouldReturnAngleFromXAxisAndSetOrientation)
         { 0, 0 }
     };
 
-    float angle = findSetAngle2D(set);
+    double angle = findSetAngle2D(set);
 
     EXPECT_NEAR(angle, 0.93339, Tolerance);
 }
