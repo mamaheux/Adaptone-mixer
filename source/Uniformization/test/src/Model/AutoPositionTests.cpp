@@ -1,3 +1,5 @@
+#include <UniformizationTests/ArmadilloUtils.h>
+
 #include <Uniformization/Model/AutoPosition.h>
 
 #include <gtest/gtest.h>
@@ -99,19 +101,8 @@ TEST(AutoPositionTests, computeRoomConfiguration2D_shouldFindProperRoomConfigura
         speakersNewMat.save("test1.txt", arma::csv_ascii);
         probesNewMat.save("test2.txt", arma::csv_ascii);
 
-        // Check correct position for each Probes and Speakers
-        for (int i = 0; i < speakerCount; i++)
-        {
-            EXPECT_NEAR(speakersNewMat(i,0), speakersTargetMat(i,0), Tolerance);
-            EXPECT_NEAR(speakersNewMat(i,1), speakersTargetMat(i,1), Tolerance);
-            EXPECT_NEAR(speakersNewMat(i,2), speakersTargetMat(i,2), Tolerance);
-        }
-        for (int i = 0; i < probeCount; i++)
-        {
-            EXPECT_NEAR(probesNewMat(i,0), probesTargetMat(i,0), Tolerance);
-            EXPECT_NEAR(probesNewMat(i,1), probesTargetMat(i,1), Tolerance);
-            EXPECT_NEAR(probesNewMat(i,2), probesTargetMat(i,2), Tolerance);
-        }
+        EXPECT_MAT_NEAR(speakersNewMat, speakersTargetMat, Tolerance);
+        EXPECT_MAT_NEAR(probesNewMat, probesTargetMat, Tolerance);
     }
 }
 

@@ -3,28 +3,34 @@
 using namespace arma;
 using namespace std;
 
-colvec adaptone::linearRegression(const vec & y, const mat & X)
+vec adaptone::linearRegression(const vec & y, const mat & X)
 {
-    int n = X.n_rows, k = X.n_cols;
-
-    colvec coef = solve(X, y);
-    colvec resid = y - X*coef;
+    vec coef = solve(X, y);
+    vec resid = y - X*coef;
 
     return coef;
 }
 
-double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat, int iterationCount, int tryCount,
-    int thermalIterationCount, double alpha, double epsilonTotalDistanceError, double epsilonDeltaTotalDistanceError,
-    int countThreshold, int dimension, mat& setAPositionMat, mat& setBPositionMat)
+double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
+    size_t iterationCount,
+    size_t tryCount,
+    size_t thermalIterationCount,
+    double alpha,
+    double epsilonTotalDistanceError,
+    double epsilonDeltaTotalDistanceError,
+    size_t countThreshold,
+    size_t dimension,
+    mat& setAPositionMat,
+    mat& setBPositionMat)
 {
     double deltaTotalDistError = INFINITY;
     double prevTotalDistError = 0;
     double totalDistanceError;
-    int count = 0;
+    size_t count = 0;
     int status = 0;
 
-    int rowCount = distanceMat.n_rows;
-    int colCount = distanceMat.n_cols;
+    size_t rowCount = distanceMat.n_rows;
+    size_t colCount = distanceMat.n_cols;
 
     double avgDist = mean(mean(distanceMat));
     // initialize setA and setB position as random inside a space bound by a guessed box from distances
@@ -40,20 +46,20 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat, i
 
     mat distanceNewMat = zeros(rowCount, colCount);
 
-    for (int k = 0; k < tryCount; k++)
+    for (size_t k = 0; k < tryCount; k++)
     {
         if (status == 1)
         {
             break;
         }
 
-        for (int n = 0; n < iterationCount; n++)
+        for (size_t n = 0; n < iterationCount; n++)
         {
             totalDistanceError = 0;
-            for (int i = 0; i < rowCount; i++)
+            for (size_t i = 0; i < rowCount; i++)
             {
                 status = 0;
-                for (int j = 0; j < colCount; j++)
+                for (size_t j = 0; j < colCount; j++)
                 {
                     mat uVec = setAPositionMat.row(i) - setBPositionMat.row(j);
                     double uNorm = norm(uVec);
@@ -68,11 +74,10 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat, i
                     mat setAOffset = -alpha * 0.5 * distanceErrorVec;
                     mat setBOffset = alpha * 0.5 * distanceErrorVec;
 
-                    double thermalNoiseFactor = 0.5 * avgDist * exp(-3.0 * (double)n / thermalIterationCount);
-                    mat setAThermalOffset =
-                        thermalNoiseFactor * (1 - 2 * randu<mat>(1, dimension));
-                    mat setBThermalOffset =
-                        thermalNoiseFactor * (1 - 2 * randu<mat>(1, dimension));
+                    double thermalNoiseFactor =
+                        0.5 * avgDist * exp(-3.0 * static_cast<double>(n) / thermalIterationCount);
+                    mat setAThermalOffset = thermalNoiseFactor * (1 - 2 * randu<mat>(1, dimension));
+                    mat setBThermalOffset = thermalNoiseFactor * (1 - 2 * randu<mat>(1, dimension));
 
                     setAPositionMat.row(i) += setAOffset + setAThermalOffset;
                     setBPositionMat.row(j) += setBOffset + setBThermalOffset;
@@ -122,8 +127,7 @@ void adaptone::rotateSetAroundVec3D(mat& set, vec u, double angle)
                    {u[1]*u[0]*(1 - cos(angle)) + u[2]*sin(angle),   cos(angle) + u[1]*u[1]*(1 - cos(angle)),        u[1]*u[2]*(1 - cos(angle)) - u[0]*sin(angle)},
                    {u[2]*u[0]*(1 - cos(angle)) - u[1]*sin(angle),   u[2]*u[1]*(1 - cos(angle)) + u[0]*sin(angle),   cos(angle) + u[2]*u[2]*(1 - cos(angle))} };
 
-    int rowCount = set.n_rows;
-    for (int i = 0; i < rowCount; i++)
+    for (size_t i = 0; i < set.n_rows; i++)
     {
         set.cols(0,2).row(i) = trans(rotMat * set.cols(0,2).row(i).t());
     }
@@ -134,8 +138,7 @@ void adaptone::rotateSet2D(mat& set, double angle)
     mat rotMat = { {cos(angle), -sin(angle)},
                    {sin(angle),  cos(angle)} };
 
-    int rowCount = set.n_rows;
-    for (int i = 0; i < rowCount; i++)
+    for (size_t i = 0; i < set.n_rows; i++)
     {
         set.cols(0,1).row(i) = trans(rotMat * set.cols(0,1).row(i).t());
     }

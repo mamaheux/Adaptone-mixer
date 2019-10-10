@@ -7,11 +7,19 @@
 
 namespace adaptone
 {
-    arma::colvec linearRegression(const arma::vec& y, const arma::mat& X);
+    arma::vec linearRegression(const arma::vec& y, const arma::mat& X);
 
-    double computeRelativePositionsFromDistances(const arma::mat& distanceMat, int iterationCount, int tryCount,
-        int thermalIterationCount, double alpha, double epsilonTotalDistanceError, double epsilonDeltaTotalDistanceError,
-        int countThreshold, int dimension, arma::mat& setAPositionMat, arma::mat& setBPositionMat);
+    double computeRelativePositionsFromDistances(const arma::mat& distanceMat,
+        std::size_t iterationCount,
+        std::size_t tryCount,
+        std::size_t thermalIterationCount,
+        double alpha,
+        double epsilonTotalDistanceError,
+        double epsilonDeltaTotalDistanceError,
+        std::size_t countThreshold,
+        std::size_t dimension,
+        arma::mat& setAPositionMat,
+        arma::mat& setBPositionMat);
 
     void rotateSetAroundVec3D(arma::mat& set, arma::vec u, double angle);
 
@@ -20,7 +28,7 @@ namespace adaptone
     double findSetAngle2D(const arma::mat& set);
 
     template<class T>
-    inline T logSinChirp(double f1, double f2, double period, uint32_t fs)
+    inline T logSinChirp(double f1, double f2, double period, std::size_t fs)
     {
         const std::size_t N = round(period * fs);
 
@@ -31,8 +39,7 @@ namespace adaptone
 
     inline void moveSet(arma::mat& set, const arma::vec& offset)
     {
-        int colNb = set.n_cols;
-        for (int i = 0; i < colNb; i++)
+        for (std::size_t i = 0; i < set.n_cols; i++)
         {
             set.col(i) += offset(i);
         }

@@ -8,17 +8,18 @@ using namespace arma;
 using namespace adaptone;
 using namespace std;
 
-AutoPosition::AutoPosition()
-{
-}
-
-AutoPosition::AutoPosition(double alpha, double epsilonTotalDistanceError, double epsilonDeltaTotalDistanceError,
-    size_t iterCount, size_t thermalIterCount, size_t tryCount, size_t countThreshold) :
+AutoPosition::AutoPosition(double alpha,
+    double epsilonTotalDistanceError,
+    double epsilonDeltaTotalDistanceError,
+    size_t iterationCount,
+    size_t thermalIterationCount,
+    size_t tryCount,
+    size_t countThreshold) :
     m_alpha(alpha),
     m_epsilonTotalDistanceError(epsilonTotalDistanceError),
     m_epsilonDeltaTotalDistanceError(epsilonDeltaTotalDistanceError),
-    m_iterCount(iterCount),
-    m_thermalIterCount(thermalIterCount),
+    m_iterationCount(iterationCount),
+    m_thermalIterationCount(thermalIterationCount),
     m_tryCount(tryCount),
     m_countThreshold(countThreshold)
 {
@@ -64,7 +65,7 @@ void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMa
     }
 
     // Compute relatives positions from distances matrix
-    computeRelativePositionsFromDistances(distancesMat, m_iterCount, m_tryCount, m_thermalIterCount, m_alpha,
+    computeRelativePositionsFromDistances(distancesMat, m_iterationCount, m_tryCount, m_thermalIterationCount, m_alpha,
         epsilonTotalDistError, m_epsilonDeltaTotalDistanceError,m_countThreshold, 2, speakersPosMat, probesPosMat);
 
     // Resize speakers/probesPosMat to be in 3 dimension to match room data format

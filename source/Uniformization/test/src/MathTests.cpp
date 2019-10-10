@@ -1,3 +1,5 @@
+#include <UniformizationTests/ArmadilloUtils.h>
+
 #include <Uniformization/Math.h>
 
 #include <gtest/gtest.h>
@@ -9,7 +11,7 @@ TEST(MathTests, logSinChirp_shouldReturnTheLogSinChirp)
 {
     constexpr float Tolerance = 0.001;
     constexpr float Period = 1;
-    constexpr uint32_t Fs = 44100;
+    constexpr size_t Fs = 44100;
 
     arma::fvec chirp = logSinChirp<arma::fvec>(20.0, 10000.0, Period, Fs);
 
@@ -171,16 +173,7 @@ TEST(MathTests, rotateSet2D_shouldApplyProperRotationToAllPointsInTheSet)
         { 0.00000, 0.00000 }
     };
 
-    // test every matrix entries - successive ROT 1
-    int rowCount = set.n_rows;
-    int colCount = set.n_cols;
-    for (int i = 0; i < rowCount; i++)
-    {
-        for (int j = 0; j < colCount; j++)
-        {
-            EXPECT_NEAR(set(i,j), SetTarget(i,j), Tolerance);
-        }
-    }
+    EXPECT_MAT_NEAR(set, SetTarget, Tolerance);
 }
 
 TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSet)
@@ -212,16 +205,7 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
         { 0.00000, 0.00000, 0.00000 }
     };
 
-    // test every matrix entries - successive ROT 1
-    int rowCount = set.n_rows;
-    int colCount = set.n_cols;
-    for (int i = 0; i < rowCount; i++)
-    {
-        for (int j = 0; j < colCount; j++)
-        {
-            EXPECT_NEAR(set(i,j), setTarget(i,j), Tolerance);
-        }
-    }
+    EXPECT_MAT_NEAR(set, setTarget, Tolerance);
 
     arma::vec vec = {-1.7, 2.45, 1.2};
 
@@ -238,14 +222,7 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
         { 0.00000 , 0.00000, 0.00000 }
     };
 
-    // test every matrix entries - successive ROT 2
-    for (int i = 0; i < rowCount; i++)
-    {
-        for (int j = 0; j < colCount; j++)
-        {
-            EXPECT_NEAR(set(i,j), setTarget(i,j), Tolerance);
-        }
-    }
+    EXPECT_MAT_NEAR(set, setTarget, Tolerance);
 }
 
 TEST(MathTests, moveSet_shouldApplyOffsetToAllPointsOfASet)
@@ -270,14 +247,7 @@ TEST(MathTests, moveSet_shouldApplyOffsetToAllPointsOfASet)
         { 0, -4.5 },
     };
 
-    // test every matrix entries
-    for (int i = 0; i < set.n_rows; i++)
-    {
-        for (int j = 0; j < set.n_cols; j++)
-        {
-            EXPECT_NEAR(set(i,j), SetTarget(i,j), Tolerance);
-        }
-    }
+    EXPECT_MAT_NEAR(set, SetTarget, Tolerance);
 }
 
 TEST(MathTests, getSetCentroid_shouldGetTheCentroidOfASet)
