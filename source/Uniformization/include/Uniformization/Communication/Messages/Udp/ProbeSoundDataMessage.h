@@ -11,7 +11,7 @@ namespace adaptone
     class ProbeSoundDataMessage : public PayloadMessage
     {
     public:
-        static constexpr uint32_t Id = 9;
+        static constexpr uint32_t Id = 7;
         static constexpr std::size_t MinimumMessageSize = 17;
 
     private:

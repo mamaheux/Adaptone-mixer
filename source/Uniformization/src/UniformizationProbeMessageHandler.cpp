@@ -18,7 +18,6 @@ UniformizationProbeMessageHandler::UniformizationProbeMessageHandler(shared_ptr<
 {
     ADD_HANDLE_FUNCTION(ProbeSoundDataMessage);
     ADD_HANDLE_FUNCTION(RecordResponseMessage);
-    ADD_HANDLE_FUNCTION(FftResponseMessage);
 }
 
 UniformizationProbeMessageHandler::~UniformizationProbeMessageHandler()
@@ -42,11 +41,6 @@ void UniformizationProbeMessageHandler::handleProbeSoundDataMessage(const ProbeS
 }
 
 void UniformizationProbeMessageHandler::handleRecordResponseMessage(const RecordResponseMessage& message, size_t probeId,
-    bool isMaster)
-{
-}
-
-void UniformizationProbeMessageHandler::handleFftResponseMessage(const FftResponseMessage& message, size_t probeId,
     bool isMaster)
 {
 }
