@@ -18,9 +18,11 @@ using namespace std;
     }
 
 MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<ChannelIdMapping> channelIdMapping,
-    shared_ptr<SignalProcessor> signalProcessor) :
+    shared_ptr<SignalProcessor> signalProcessor,
+    shared_ptr<UniformizationService> uniformizationService) :
     m_channelIdMapping(channelIdMapping),
-    m_signalProcessor(signalProcessor)
+    m_signalProcessor(signalProcessor),
+    m_uniformizationService(uniformizationService)
 {
     ADD_HANDLE_FUNCTION(ConfigurationChoiceMessage);
     ADD_HANDLE_FUNCTION(InitialParametersCreationMessage);

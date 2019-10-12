@@ -23,7 +23,7 @@
 using namespace adaptone;
 using namespace std;
 
-Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration), m_stopped(false)
+Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration), m_stopped(true)
 {
     shared_ptr<Logger> logger = createLogger();
     shared_ptr<ChannelIdMapping> channelIdMapping = createChannelIdMapping();
@@ -35,11 +35,14 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     shared_ptr<SignalProcessor> signalProcessor = createSignalProcessor(analysisDispatcher);
     shared_ptr<GenericSignalOverride> outputSignalOverride = createOutputSignalOverride();
 
-    unique_ptr<UniformizationService> uniformizationService = createUniformizationService(logger, outputSignalOverride);
+    shared_ptr<UniformizationService> uniformizationService = createUniformizationService(logger,
+        outputSignalOverride,
+        signalProcessor);
 
     shared_ptr<ConnectionHandler> connectionHandler = createConnectionHandler(signalProcessor);
     shared_ptr<ApplicationMessageHandler> applicationMessageHandler = createApplicationMessageHandler(channelIdMapping,
-        signalProcessor);
+        signalProcessor,
+        uniformizationService);
     unique_ptr<ApplicationWebSocket> applicationWebSocket = createApplicationWebSocket(logger,
         connectionHandler,
         applicationMessageHandler);
@@ -55,7 +58,7 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     m_signalProcessor = signalProcessor;
     m_outputSignalOverride = outputSignalOverride;
 
-    m_uniformizationService = move(uniformizationService);
+    m_uniformizationService = uniformizationService;
 
     m_connectionHandler = connectionHandler;
     m_applicationMessageHandler = applicationMessageHandler;
@@ -201,10 +204,12 @@ shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
 }
 
 unique_ptr<UniformizationService> Mixer::createUniformizationService(shared_ptr<Logger> logger,
-    shared_ptr<GenericSignalOverride> outputSignalOverride)
+    shared_ptr<GenericSignalOverride> outputSignalOverride,
+    shared_ptr<SignalProcessor> signalProcessor)
 {
     return make_unique<UniformizationService>(logger,
         outputSignalOverride,
+        signalProcessor,
         m_configuration.toUniformizationServiceParameters());
 }
 
@@ -216,9 +221,10 @@ shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalPr
 
 shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
     shared_ptr<ChannelIdMapping> channelIdMapping,
-    shared_ptr<SignalProcessor> signalProcessor)
+    shared_ptr<SignalProcessor> signalProcessor,
+    shared_ptr<UniformizationService> uniformizationService)
 {
-    return make_shared<MixerApplicationMessageHandler>(channelIdMapping, signalProcessor);
+    return make_shared<MixerApplicationMessageHandler>(channelIdMapping, signalProcessor, uniformizationService);
 }
 
 unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger,

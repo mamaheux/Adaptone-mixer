@@ -8,15 +8,15 @@ using namespace std;
 TEST(SignalProcessorParametersTests, constructor_shouldSetTheAttributes)
 {
     constexpr ProcessingDataType ProcessingDataType = ProcessingDataType::Double;
-    constexpr std::size_t FrameSampleCount = 1;
-    constexpr std::size_t SampleFrequency = 2;
-    constexpr std::size_t InputChannelCount = 3;
-    constexpr std::size_t OutputChannelCount = 4;
+    constexpr size_t FrameSampleCount = 1;
+    constexpr size_t SampleFrequency = 2;
+    constexpr size_t InputChannelCount = 3;
+    constexpr size_t OutputChannelCount = 4;
     constexpr PcmAudioFrameFormat InputFormat = PcmAudioFrameFormat::Signed8;
     constexpr PcmAudioFrameFormat OutputFormat = PcmAudioFrameFormat::UnsignedPadded24;
-    const std::vector<double>& EqCenterFrequencies{ 1, 2 };
-    constexpr std::size_t MaxOutputDelay = 5;
-    constexpr std::size_t SoundLevelLength = 6;
+    const vector<double>& EqCenterFrequencies{ 1, 2 };
+    constexpr size_t MaxOutputDelay = 5;
+    constexpr size_t SoundLevelLength = 6;
 
     SignalProcessorParameters parameters(ProcessingDataType,
         FrameSampleCount,
