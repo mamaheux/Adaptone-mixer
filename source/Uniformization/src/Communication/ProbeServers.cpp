@@ -16,7 +16,8 @@ ProbeServers::ProbeServers(shared_ptr<Logger> logger,
     m_probeDiscoverer(probeServerParameters.discoveryEndpoint(),
         probeServerParameters.discoveryTimeoutMs(),
         probeServerParameters.discoveryTrialCount()),
-    m_masterProbeId(-1)
+    m_masterProbeId(-1),
+    m_stopped(true)
 {
 }
 

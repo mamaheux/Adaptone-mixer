@@ -23,7 +23,8 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     m_isMaster(false),
     m_isConnected(false),
     m_probeServerParameters(probeServerParameters),
-    m_sendingBuffer(MaxTcpMessageSize)
+    m_sendingBuffer(MaxTcpMessageSize),
+    m_stopped(true)
 {
     m_endpoint = boost::asio::ip::tcp::endpoint(discoveredProbe.address(), m_probeServerParameters.tcpConnectionPort());
 

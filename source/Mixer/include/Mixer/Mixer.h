@@ -38,7 +38,7 @@ namespace adaptone
         std::shared_ptr<SignalProcessor> m_signalProcessor;
         std::shared_ptr<GenericSignalOverride> m_outputSignalOverride;
 
-        std::unique_ptr<UniformizationService> m_uniformizationService;
+        std::shared_ptr<UniformizationService> m_uniformizationService;
 
         std::shared_ptr<ConnectionHandler> m_connectionHandler;
         std::shared_ptr<ApplicationMessageHandler> m_applicationMessageHandler;
@@ -70,12 +70,14 @@ namespace adaptone
         std::shared_ptr<GenericSignalOverride> createOutputSignalOverride();
 
         std::unique_ptr<UniformizationService> createUniformizationService(std::shared_ptr<Logger> logger,
-            std::shared_ptr<GenericSignalOverride> outputSignalOverride);
+            std::shared_ptr<GenericSignalOverride> outputSignalOverride,
+            std::shared_ptr<SignalProcessor> signalProcessor);
 
         std::shared_ptr<ConnectionHandler> createConnectionHandler(std::shared_ptr<SignalProcessor> signalProcessor);
         std::shared_ptr<ApplicationMessageHandler> createApplicationMessageHandler(
             std::shared_ptr<ChannelIdMapping> channelIdMapping,
-            std::shared_ptr<SignalProcessor> signalProcessor);
+            std::shared_ptr<SignalProcessor> signalProcessor,
+            std::shared_ptr<UniformizationService> uniformizationService);
         std::unique_ptr<ApplicationWebSocket> createApplicationWebSocket(std::shared_ptr<Logger> logger,
             std::shared_ptr<ConnectionHandler> connectionHandler,
             std::shared_ptr<ApplicationMessageHandler> applicationMessageHandler);
