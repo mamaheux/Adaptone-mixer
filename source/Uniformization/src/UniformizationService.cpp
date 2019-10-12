@@ -4,6 +4,8 @@ using namespace adaptone;
 using namespace std;
 using namespace std::chrono_literals;
 
+constexpr chrono::milliseconds UniformizationServiceSleepDuration(10);
+
 UniformizationService::UniformizationService(shared_ptr<Logger> logger,
     shared_ptr<GenericSignalOverride> signalOverride,
     shared_ptr<SignalProcessor> signalProcessor,
@@ -41,6 +43,7 @@ void UniformizationService::stop()
 {
     bool wasStopped = m_stopped.load();
     m_stopped.store(true);
+
     if (!wasStopped)
     {
         m_uniformizationThread->join();
@@ -84,7 +87,7 @@ void UniformizationService::run()
             }
             else
             {
-                this_thread::sleep_for(10ms);
+                this_thread::sleep_for(UniformizationServiceSleepDuration);
             }
         }
     }
