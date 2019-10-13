@@ -79,6 +79,10 @@ void ProbeServers::run()
 
         readUdpSocket();
     }
+    catch (NetworkTimeoutException& ex)
+    {
+        m_logger->log(Logger::Level::Debug, ex);
+    }
     catch (exception& ex)
     {
         m_logger->log(Logger::Level::Error, ex);
@@ -147,6 +151,10 @@ void ProbeServers::readUdpSocket()
                     uint32_t probeId = m_probeIdsByAddress[address];
                     m_messageHandler->handle(message, probeId, probeId == m_masterProbeId);
                 });
+        }
+        catch (NetworkTimeoutException& ex)
+        {
+            m_logger->log(Logger::Level::Debug, ex);
         }
         catch (exception& ex)
         {

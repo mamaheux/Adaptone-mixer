@@ -106,10 +106,10 @@ shared_ptr<Logger> Mixer::createLogger()
     switch (m_configuration.logger().type())
     {
         case LoggerConfiguration::Type::Console:
-            return make_shared<ConsoleLogger>();
+            return make_shared<ConsoleLogger>(m_configuration.logger().level());
 
         case LoggerConfiguration::Type::File:
-            return make_shared<FileLogger>(m_configuration.logger().filename());
+            return make_shared<FileLogger>(m_configuration.logger().level(), m_configuration.logger().filename());
     }
 
     THROW_NOT_SUPPORTED_EXCEPTION("Not supported logger type.");

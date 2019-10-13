@@ -5,6 +5,7 @@
 #include <Uniformization/Communication/Messages/ProbeMessage.h>
 
 #include <Utils/Exception/NetworkException.h>
+#include <Utils/Exception/NetworkTimeoutException.h>
 #include <Utils/Network/NetworkBuffer.h>
 
 #include <boost/asio.hpp>
@@ -42,7 +43,7 @@ namespace adaptone
         }
         if (messageSize == 0)
         {
-            THROW_NETWORK_EXCEPTION("Timeout");
+            THROW_NETWORK_TIMEOUT_EXCEPTION("Timeout");
         }
 
         return T::fromBuffer(buffer, messageSize);

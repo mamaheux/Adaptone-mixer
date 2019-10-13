@@ -43,7 +43,11 @@ namespace adaptone
             boost::asio::detail::buffer_size_helper(buffer),
             flags);
 
-        if (bytesReceived < 0)
+        if (bytesReceived < 0 && errno == EAGAIN)
+        {
+            return 0;
+        }
+        if (bytesReceived <= 0)
         {
             ec = boost::asio::error::fault;
         }
@@ -66,7 +70,11 @@ namespace adaptone
             senderEndpoint.data(),
             &addr_len);
 
-        if (bytesReceived < 0)
+        if (bytesReceived < 0 && errno == EAGAIN)
+        {
+            return 0;
+        }
+        if (bytesReceived <= 0)
         {
             ec = boost::asio::error::fault;
         }
