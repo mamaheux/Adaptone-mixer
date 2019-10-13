@@ -24,9 +24,7 @@ bool ProbeMessage::hasPayload(uint32_t id)
             { 4, false },
             { 5, true },
             { 6, true },
-            { 7, true },
-            { 8, true },
-            { 9, true }
+            { 7, true }
         });
 
     auto it = Mapping.find(id);

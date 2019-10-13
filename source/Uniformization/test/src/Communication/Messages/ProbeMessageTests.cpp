@@ -61,8 +61,6 @@ TEST(ProbeMessageTests, hasPayload_shouldReturnTrueIfTheMessageHasAPayload)
     EXPECT_TRUE(ProbeMessage::hasPayload(5));
     EXPECT_TRUE(ProbeMessage::hasPayload(6));
     EXPECT_TRUE(ProbeMessage::hasPayload(7));
-    EXPECT_TRUE(ProbeMessage::hasPayload(8));
-    EXPECT_TRUE(ProbeMessage::hasPayload(9));
 }
 
 TEST(ProbeMessageTests, hasPayload_invalidId_shouldReturnTrueIfTheMessageHasAPayload)
