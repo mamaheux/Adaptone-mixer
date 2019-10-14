@@ -1,7 +1,5 @@
 #include <Uniformization/Communication/Messages/Tcp/TcpMessageReader.h>
 
-#include <Uniformization/Communication/Messages/Tcp/FftRequestMessage.h>
-#include <Uniformization/Communication/Messages/Tcp/FftResponseMessage.h>
 #include <Uniformization/Communication/Messages/Tcp/HeartbeatMessage.h>
 #include <Uniformization/Communication/Messages/Tcp/ProbeInitializationRequestMessage.h>
 #include <Uniformization/Communication/Messages/Tcp/ProbeInitializationResponseMessage.h>
@@ -19,8 +17,6 @@ using namespace std;
 
 TcpMessageReader::TcpMessageReader() : m_buffer(MaxTcpMessageSize)
 {
-    ADD_HANDLE_FUNCTION(FftRequestMessage);
-    ADD_HANDLE_FUNCTION(FftResponseMessage);
     ADD_HANDLE_FUNCTION(HeartbeatMessage);
     ADD_HANDLE_FUNCTION(ProbeInitializationRequestMessage);
     ADD_HANDLE_FUNCTION(ProbeInitializationResponseMessage);

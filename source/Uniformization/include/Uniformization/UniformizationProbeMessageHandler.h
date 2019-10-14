@@ -4,7 +4,6 @@
 #include <Uniformization/Communication/ProbeMessageHandler.h>
 #include <Uniformization/Communication/Messages/Udp/ProbeSoundDataMessage.h>
 #include <Uniformization/Communication/Messages/Tcp/RecordResponseMessage.h>
-#include <Uniformization/Communication/Messages/Tcp/FftResponseMessage.h>
 #include <Uniformization/SignalOverride/HeadphoneProbeSignalOverride.h>
 
 #include <Utils/Logger/Logger.h>
@@ -32,7 +31,6 @@ namespace adaptone
     private:
         void handleProbeSoundDataMessage(const ProbeSoundDataMessage& message, std::size_t probeId, bool isMaster);
         void handleRecordResponseMessage(const RecordResponseMessage& message, std::size_t probeId, bool isMaster);
-        void handleFftResponseMessage(const FftResponseMessage& message, std::size_t probeId, bool isMaster);
     };
 }
 
