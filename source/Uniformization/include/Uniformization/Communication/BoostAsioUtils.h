@@ -19,6 +19,11 @@ namespace adaptone
         return ::setsockopt(socket.native_handle(), SOL_SOCKET, SO_RCVTIMEO, &timeoutValue, sizeof(DWORD)) >= 0;
     }
 
+    inline bool hasSocketTimeout(int size)
+    {
+        return size < 0 && WSAGetLasError() == WSAETIMEDOUT;
+    }
+
 #elif defined(__unix__) || defined(__linux__)
 
     template<class Protocol, class DatagramSocketService>
@@ -29,6 +34,11 @@ namespace adaptone
         tv.tv_usec = (timeoutMs % 1000) * 1000;
 
         return ::setsockopt(socket.native_handle(), SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv)) >= 0;
+    }
+
+    inline bool hasSocketTimeout(int size)
+    {
+        return size < 0 && errno == EAGAIN;
     }
 
 #endif
@@ -43,7 +53,7 @@ namespace adaptone
             boost::asio::detail::buffer_size_helper(buffer),
             flags);
 
-        if (bytesReceived < 0 && errno == EAGAIN)
+        if (hasSocketTimeout(bytesReceived))
         {
             return 0;
         }
@@ -70,7 +80,7 @@ namespace adaptone
             senderEndpoint.data(),
             &addr_len);
 
-        if (bytesReceived < 0 && errno == EAGAIN)
+        if (hasSocketTimeout(bytesReceived))
         {
             return 0;
         }
