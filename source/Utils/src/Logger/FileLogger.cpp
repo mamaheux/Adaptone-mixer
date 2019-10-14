@@ -7,6 +7,12 @@ FileLogger::FileLogger(const string& filename) : m_stream(filename, ofstream::ou
 {
 }
 
+FileLogger::FileLogger(Level level, const std::string& filename) :
+    Logger(level),
+    m_stream(filename, ofstream::out | ofstream::app)
+{
+}
+
 FileLogger::~FileLogger()
 {
 }

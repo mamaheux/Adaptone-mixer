@@ -7,8 +7,11 @@ using namespace std;
 
 LoggerConfiguration::LoggerConfiguration(const Properties& properties)
 {
+    constexpr const char* LoggerLevelPropertyKey = "logger.level";
     constexpr const char* LoggerTypePropertyKey = "logger.type";
     constexpr const char* LoggerFilenamePropertyKey = "logger.filename";
+
+    m_level = Logger::parseLevel(properties.get<string>(LoggerLevelPropertyKey));
 
     string type = properties.get<string>(LoggerTypePropertyKey);
 

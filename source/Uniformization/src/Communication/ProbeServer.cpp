@@ -31,18 +31,6 @@ ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     unique_ptr<boost::asio::io_service> ioService = make_unique<boost::asio::io_service>();
     unique_ptr<boost::asio::ip::tcp::socket> socket = make_unique<boost::asio::ip::tcp::socket>(*ioService);
 
-    boost::system::error_code error;
-    socket->set_option(boost::asio::socket_base::broadcast(true), error);
-    if (error)
-    {
-        THROW_NETWORK_EXCEPTION("Unable to set the broadcast flag");
-    }
-
-    if (!setReceivingTimeout(*socket, m_probeServerParameters.probeTimeoutMs()))
-    {
-        THROW_NETWORK_EXCEPTION("Unable to set the receive timeout");
-    }
-
     connect(*socket);
 
     m_ioService = move(ioService);
@@ -104,16 +92,21 @@ void ProbeServer::run()
         {
             if (m_isConnected.load())
             {
-                readMessage();
                 updateHeartbeat();
+                readMessage();
             }
             else
             {
                 reconnect();
             }
         }
+        catch (NetworkTimeoutException& ex)
+        {
+            m_logger->log(Logger::Level::Debug, ex);
+        }
         catch (exception& ex)
         {
+            m_isConnected.store(false);
             m_logger->log(Logger::Level::Error, ex);
         }
     }
@@ -122,6 +115,17 @@ void ProbeServer::run()
 void ProbeServer::connect(boost::asio::ip::tcp::socket& socket)
 {
     boost::system::error_code error;
+    socket.open(boost::asio::ip::tcp::v4(), error);
+    if (error)
+    {
+        THROW_NETWORK_EXCEPTION("Socket opening error");
+    }
+
+    if (!setReceivingTimeout(socket, m_probeServerParameters.probeTimeoutMs()))
+    {
+        THROW_NETWORK_EXCEPTION("Unable to set the receive timeout");
+    }
+
     socket.connect(m_endpoint, error);
     if (error)
     {
@@ -173,17 +177,17 @@ void ProbeServer::readMessage()
 void ProbeServer::updateHeartbeat()
 {
     const chrono::system_clock::duration HeartbeatInterval =
-        chrono::microseconds(10 * m_probeServerParameters.probeTimeoutMs());
+        chrono::milliseconds(5 * m_probeServerParameters.probeTimeoutMs());
     const chrono::system_clock::duration HeartbeatTimeout =
-        chrono::microseconds(20 * m_probeServerParameters.probeTimeoutMs());
+        chrono::milliseconds(20 * m_probeServerParameters.probeTimeoutMs());
 
     auto now = chrono::system_clock::now();
-    if (m_lastHeartbeatSendingTime - now > HeartbeatInterval)
+    if (now - m_lastHeartbeatSendingTime > HeartbeatInterval)
     {
         send(HeartbeatMessage());
         m_lastHeartbeatSendingTime = now;
     }
-    if (m_lastHeartbeatReceivingTime - now > HeartbeatTimeout)
+    if (now - m_lastHeartbeatReceivingTime > HeartbeatTimeout)
     {
         m_isConnected.store(false);
     }

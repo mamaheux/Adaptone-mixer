@@ -9,6 +9,10 @@ ConsoleLogger::ConsoleLogger()
 {
 }
 
+ConsoleLogger::ConsoleLogger(Level level) : Logger(level)
+{
+}
+
 ConsoleLogger::~ConsoleLogger()
 {
 }
