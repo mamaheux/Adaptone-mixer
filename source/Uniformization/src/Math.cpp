@@ -3,11 +3,11 @@
 using namespace arma;
 using namespace std;
 
-enum RelativePositionAlgorithmStatus
+enum class RelativePositionAlgorithmStatus
 {
     ITERATION_CONVERGED,
     ITERATION_DID_NOT_CONVERGE,
-    COMPUTING_ITERATION,
+    COMPUTING_ITERATION
 };
 
 vec adaptone::linearRegression(const vec & y, const mat & X)
@@ -34,7 +34,7 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
     double prevTotalDistError = 0;
     double totalDistanceError;
     size_t count = 0;
-    RelativePositionAlgorithmStatus status = COMPUTING_ITERATION;
+    RelativePositionAlgorithmStatus status = RelativePositionAlgorithmStatus::COMPUTING_ITERATION;
 
     size_t rowCount = distanceMat.n_rows;
     size_t colCount = distanceMat.n_cols;
@@ -55,7 +55,7 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
 
     for (size_t k = 0; k < tryCount; k++)
     {
-        if (status == ITERATION_CONVERGED)
+        if (status == RelativePositionAlgorithmStatus::ITERATION_CONVERGED)
         {
             break;
         }
@@ -63,7 +63,7 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
         for (size_t n = 0; n < iterationCount; n++)
         {
             totalDistanceError = 0;
-            status = COMPUTING_ITERATION;
+            status = RelativePositionAlgorithmStatus::COMPUTING_ITERATION;
 
             for (size_t i = 0; i < rowCount; i++)
             {
@@ -102,12 +102,12 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
                 {
                     if (totalDistanceError < epsilonTotalDistanceError)
                     {
-                        status = ITERATION_CONVERGED;
+                        status = RelativePositionAlgorithmStatus::ITERATION_CONVERGED;
                         break;
                     }
                     else
                     {
-                        status = ITERATION_DID_NOT_CONVERGE;
+                        status = RelativePositionAlgorithmStatus::ITERATION_DID_NOT_CONVERGE;
                         break;
                     }
                 }
@@ -115,10 +115,11 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
 
             if (n == iterationCount && totalDistanceError < epsilonTotalDistanceError)
             {
-                status = ITERATION_CONVERGED;
+                status = RelativePositionAlgorithmStatus::ITERATION_CONVERGED;
             }
 
-            if (status == ITERATION_CONVERGED || status == ITERATION_DID_NOT_CONVERGE)
+            if (status == RelativePositionAlgorithmStatus::ITERATION_CONVERGED ||
+                status == RelativePositionAlgorithmStatus::ITERATION_DID_NOT_CONVERGE)
             {
                 break;
             }
