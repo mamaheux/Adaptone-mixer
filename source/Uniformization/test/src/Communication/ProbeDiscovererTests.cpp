@@ -10,7 +10,7 @@ using namespace std::chrono_literals;
 
 TEST(ProbeDiscovererTests, discover_shouldTryTheSpecifiedTrialCount)
 {
-    constexpr double MaxAbsElapsedMsTimeError = 1000;
+    constexpr double MaxAbsElapsedMsTimeError = 2500;
     constexpr int TimeoutMs = 100;
     constexpr size_t DiscoveryTrialCount = 10;
 
