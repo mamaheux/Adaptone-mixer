@@ -105,8 +105,8 @@ TEST(MathTests, computeRelativePositionsFromDistances_3D_shouldGetRelativePositi
     constexpr double EpsilonDeltaTotalDistError = 1e-6;
 
     constexpr size_t IterationCount = 2000;
-    constexpr size_t ThermalIterationCount = 100;
-    constexpr size_t TryCount = 5;
+    constexpr size_t ThermalIterationCount = 50;
+    constexpr size_t TryCount = 10;
     constexpr size_t CountThreshold = 5;
     constexpr size_t Dimension = 3;
 

@@ -3,6 +3,13 @@
 using namespace arma;
 using namespace std;
 
+enum RelativePositionAlgorithmStatus
+{
+    ITERATION_CONVERGED,
+    ITERATION_DID_NOT_CONVERGE,
+    COMPUTING_ITERATION,
+};
+
 vec adaptone::linearRegression(const vec & y, const mat & X)
 {
     vec coef = solve(X, y);
@@ -27,7 +34,7 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
     double prevTotalDistError = 0;
     double totalDistanceError;
     size_t count = 0;
-    int status = 0;
+    RelativePositionAlgorithmStatus status = COMPUTING_ITERATION;
 
     size_t rowCount = distanceMat.n_rows;
     size_t colCount = distanceMat.n_cols;
@@ -48,7 +55,7 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
 
     for (size_t k = 0; k < tryCount; k++)
     {
-        if (status == 1)
+        if (status == ITERATION_CONVERGED)
         {
             break;
         }
@@ -56,9 +63,10 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
         for (size_t n = 0; n < iterationCount; n++)
         {
             totalDistanceError = 0;
+            status = COMPUTING_ITERATION;
+
             for (size_t i = 0; i < rowCount; i++)
             {
-                status = 0;
                 for (size_t j = 0; j < colCount; j++)
                 {
                     mat uVec = setAPositionMat.row(i) - setBPositionMat.row(j);
@@ -94,12 +102,12 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
                 {
                     if (totalDistanceError < epsilonTotalDistanceError)
                     {
-                        status = 1;
+                        status = ITERATION_CONVERGED;
                         break;
                     }
                     else
                     {
-                        status = -1;
+                        status = ITERATION_DID_NOT_CONVERGE;
                         break;
                     }
                 }
@@ -107,10 +115,10 @@ double adaptone::computeRelativePositionsFromDistances(const mat& distanceMat,
 
             if (n == iterationCount && totalDistanceError < epsilonTotalDistanceError)
             {
-                status = 1;
+                status = ITERATION_CONVERGED;
             }
 
-            if (status == 1 || status == -1)
+            if (status == ITERATION_CONVERGED || status == ITERATION_DID_NOT_CONVERGE)
             {
                 break;
             }

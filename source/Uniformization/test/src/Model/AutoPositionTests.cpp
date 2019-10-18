@@ -14,12 +14,12 @@ TEST(AutoPositionTests, computeRoomConfiguration2D_shouldFindProperRoomConfigura
     constexpr int TestCount = 5;
 
     constexpr double Alpha = 1.0;
-    constexpr double EpsilonTotalDistanceError = 5e-4;
-    constexpr double EpsilonDeltaTotalDistanceError = 1e-6;
+    constexpr double EpsilonTotalDistanceError = 5e-5;
+    constexpr double EpsilonDeltaTotalDistanceError = 1e-7;
 
-    constexpr int IterationCount = 5000;
-    constexpr int ThermalIterationCount = 500;
-    constexpr int TryCount = 10;
+    constexpr int IterationCount = 10000;
+    constexpr int ThermalIterationCount = 200;
+    constexpr int TryCount = 50;
     constexpr int CountThreshold = 10;
 
     constexpr float DistanceRelativeError = 0;

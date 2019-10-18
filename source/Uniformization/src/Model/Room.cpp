@@ -16,7 +16,7 @@ Room::Room(size_t speakerCount, size_t probeCount) : m_speakerCount(speakerCount
 }
 
 Room::Room(const arma::mat& speakerPosMat, const arma::mat& probePosMat) :
-Room(speakerPosMat.n_rows, probePosMat.n_rows)
+    Room(speakerPosMat.n_rows, probePosMat.n_rows)
 {
     setSpeakersPosFromMat(speakerPosMat);
     setProbesPosFromMat(probePosMat);
@@ -30,7 +30,7 @@ void Room::setProbesPosFromMat(const arma::mat posMat)
 {
     if (posMat.n_rows != m_probeCount)
     {
-        //TODO
+        THROW_INVALID_VALUE_EXCEPTION("posMat.n_rows != m_probeCount", "");
     }
     for (int i = 0; i < m_probeCount; i++)
     {
@@ -44,7 +44,7 @@ void Room::setSpeakersPosFromMat(const arma::mat posMat)
 {
     if (posMat.n_rows != m_speakerCount)
     {
-        //TODO
+        THROW_INVALID_VALUE_EXCEPTION("posMat.n_rows != m_probeCount", "");
     }
     for (int i = 0; i < m_speakerCount; i++)
     {
