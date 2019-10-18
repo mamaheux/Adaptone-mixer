@@ -11,10 +11,12 @@ TEST(LoggerConfigurationTests, constructor_consoleType_shouldSetTheTypeRelatedAt
 {
     LoggerConfiguration configuration(Properties(
     {
+        { "logger.level", "information" },
         { "logger.type", "console" },
         { "logger.filename", "log.txt" }
     }));
 
+    EXPECT_EQ(configuration.level(), Logger::Level::Information);
     EXPECT_EQ(configuration.type(), LoggerConfiguration::Type::Console);
     EXPECT_EQ(configuration.filename(), "");
 }
@@ -23,10 +25,12 @@ TEST(LoggerConfigurationTests, constructor_fileType_shouldSetTheTypeRelatedAttri
 {
     LoggerConfiguration configuration(Properties(
     {
+        { "logger.level", "information" },
         { "logger.type", "file" },
         { "logger.filename", "log.txt" }
     }));
 
+    EXPECT_EQ(configuration.level(), Logger::Level::Information);
     EXPECT_EQ(configuration.type(), LoggerConfiguration::Type::File);
     EXPECT_EQ(configuration.filename(), "log.txt");
 }
@@ -35,6 +39,7 @@ TEST(LoggerConfigurationTests, constructor_invalidType_shouldSetTheTypeRelatedAt
 {
     EXPECT_THROW(LoggerConfiguration(Properties(
         {
+            { "logger.level", "information" },
             { "logger.type", "bob" },
             { "logger.filename", "log.txt" }
         })),

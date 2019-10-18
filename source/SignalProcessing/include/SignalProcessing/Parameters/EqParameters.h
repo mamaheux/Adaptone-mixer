@@ -23,7 +23,7 @@ namespace adaptone
 
     public:
         EqParameters(std::size_t sampleFrequency, const std::vector<double>& eqCenterFrequencies,
-            std::size_t channelCount);
+            std::size_t channelCount, bool isDirty = false);
         virtual ~EqParameters();
 
         DECLARE_NOT_COPYABLE(EqParameters);
@@ -43,13 +43,13 @@ namespace adaptone
 
     template<class T>
     EqParameters<T>::EqParameters(std::size_t sampleFrequency, const std::vector<double>& eqCenterFrequencies,
-        std::size_t channelCount) :
+        std::size_t channelCount, bool isDirty) :
         m_eqCenterFrequencies(eqCenterFrequencies)
     {
         for (std::size_t i = 0; i < channelCount; i++)
         {
             m_graphicEqDesigners.emplace_back(sampleFrequency, eqCenterFrequencies);
-            m_realtimeParameters.emplace_back();
+            m_realtimeParameters.emplace_back(isDirty);
         }
     }
 

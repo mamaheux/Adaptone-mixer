@@ -69,6 +69,7 @@ namespace adaptone
 
         T* m_mixingOutputFrames;
         T* m_outputEqOutputFrames;
+        T* m_uniformizationEqOutputFrames;
         T* m_outputFrames;
         T* m_delayedOutputFrames;
 
@@ -76,6 +77,7 @@ namespace adaptone
         CudaEqBuffers<T> m_inputEqBuffers;
         T* m_mixingGains;
         CudaEqBuffers<T> m_outputEqBuffers;
+        CudaEqBuffers<T> m_uniformizationEqBuffers;
         T* m_outputGains;
         std::size_t* m_outputDelays;
 
@@ -133,6 +135,8 @@ namespace adaptone
 
         __device__ __host__ T* outputEqOutputFrames();
         __device__ __host__ T* currentOutputEqOutputFrame();
+        __device__ __host__ T* uniformizationEqOutputFrames();
+        __device__ __host__ T* currentUniformizationEqOutputFrame();
 
         __device__ __host__ T* outputFrames();
         __device__ __host__ T* currentOutputFrame();
@@ -144,6 +148,7 @@ namespace adaptone
         __device__ __host__ CudaEqBuffers<T>& inputEqBuffers();
         __device__ __host__ T* mixingGains();
         __device__ __host__ CudaEqBuffers<T>& outputEqBuffers();
+        __device__ __host__ CudaEqBuffers<T>& uniformizationEqBuffers();
         __device__ __host__ T* outputGains();
         __device__ __host__ std::size_t* outputDelays();
 
@@ -207,6 +212,8 @@ namespace adaptone
             parameters.frameSampleCount()),
         m_outputEqBuffers(parameters.outputChannelCount(), eqFilterCountPerChannel, frameCount,
             parameters.frameSampleCount()),
+        m_uniformizationEqBuffers(parameters.outputChannelCount(), eqFilterCountPerChannel, frameCount,
+            parameters.frameSampleCount()),
 
         m_inputGainSoundLevelBuffers(parameters.inputChannelCount(), parameters.frameSampleCount()),
         m_inputEqSoundLevelBuffers(parameters.inputChannelCount(), parameters.frameSampleCount()),
@@ -226,9 +233,11 @@ namespace adaptone
 
         cudaMalloc(reinterpret_cast<void**>(&m_mixingOutputFrames), m_outputFrameSize * frameCount * sizeof(T));
         cudaMalloc(reinterpret_cast<void**>(&m_outputEqOutputFrames), m_outputFrameSize * frameCount * sizeof(T));
+        cudaMalloc(reinterpret_cast<void**>(&m_uniformizationEqOutputFrames),
+            m_outputFrameSize * frameCount * sizeof(T));
         cudaMalloc(reinterpret_cast<void**>(&m_outputFrames), m_outputFrameSize * frameCount * sizeof(T));
-        cudaMalloc(reinterpret_cast<void**>(&m_delayedOutputFrames), m_outputFrameSize * m_delayedOutputFrameCount *
-            sizeof(T));
+        cudaMalloc(reinterpret_cast<void**>(&m_delayedOutputFrames),
+            m_outputFrameSize * m_delayedOutputFrameCount * sizeof(T));
 
         cudaMalloc(reinterpret_cast<void**>(&m_inputGains), m_inputChannelCount * sizeof(T));
         cudaMalloc(reinterpret_cast<void**>(&m_mixingGains), m_mixingGainsSize * sizeof(T));
@@ -253,6 +262,7 @@ namespace adaptone
 
         m_mixingOutputFrames(other.m_mixingOutputFrames),
         m_outputEqOutputFrames(other.m_outputEqOutputFrames),
+        m_uniformizationEqOutputFrames(other.m_uniformizationEqOutputFrames),
         m_outputFrames(other.m_outputFrames),
         m_delayedOutputFrames(other.m_delayedOutputFrames),
 
@@ -260,6 +270,7 @@ namespace adaptone
         m_inputEqBuffers(other.m_inputEqBuffers),
         m_mixingGains(other.m_mixingGains),
         m_outputEqBuffers(other.m_outputEqBuffers),
+        m_uniformizationEqBuffers(other.m_uniformizationEqBuffers),
         m_outputGains(other.m_outputGains),
         m_outputDelays(other.m_outputDelays),
         m_inputGainSoundLevelBuffers(other.m_inputGainSoundLevelBuffers),
@@ -301,6 +312,7 @@ namespace adaptone
 
             cudaFree(m_mixingOutputFrames);
             cudaFree(m_outputEqOutputFrames);
+            cudaFree(m_uniformizationEqOutputFrames);
             cudaFree(m_outputFrames);
             cudaFree(m_delayedOutputFrames);
 
@@ -396,6 +408,18 @@ namespace adaptone
     }
 
     template<class T>
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::uniformizationEqOutputFrames()
+    {
+        return m_uniformizationEqOutputFrames;
+    }
+
+    template<class T>
+    inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::currentUniformizationEqOutputFrame()
+    {
+        return m_uniformizationEqOutputFrames + m_currentFrameIndex * m_outputFrameSize;
+    }
+
+    template<class T>
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::currentOutputFrame()
     {
         return m_outputFrames + m_currentFrameIndex * m_inputFrameSize;
@@ -462,11 +486,16 @@ namespace adaptone
     }
 
     template<class T>
+    inline __device__ __host__ CudaEqBuffers<T>& CudaSignalProcessorBuffers<T>::uniformizationEqBuffers()
+    {
+        return m_uniformizationEqBuffers;
+    }
+
+    template<class T>
     inline __device__ __host__ T* CudaSignalProcessorBuffers<T>::outputGains()
     {
         return m_outputGains;
     }
-
 
     template<class T>
     inline __device__ __host__ std::size_t* CudaSignalProcessorBuffers<T>::outputDelays()

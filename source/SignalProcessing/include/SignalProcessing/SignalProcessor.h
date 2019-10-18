@@ -37,6 +37,10 @@ namespace adaptone
         void setOutputGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains);
         void setOutputGraphicEqGains(std::size_t startChannelIndex, std::size_t n, const std::vector<double>& gains);
 
+        void setUniformizationGraphicEqGains(std::size_t channelIndex, const std::vector<double>& gains);
+        void setUniformizationGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+            const std::vector<double>& gains);
+
         void setOutputGain(std::size_t channelIndex, double gain);
         void setOutputGains(const std::vector<double>& gains);
 
@@ -86,6 +90,18 @@ namespace adaptone
         const std::vector<double>& gains)
     {
         m_specificSignalProcessor->setOutputGraphicEqGains(startChannelIndex, n, gains);
+    }
+
+    inline void SignalProcessor::setUniformizationGraphicEqGains(std::size_t channelIndex,
+        const std::vector<double>& gains)
+    {
+        m_specificSignalProcessor->setUniformizationGraphicEqGains(channelIndex, gains);
+    }
+
+    inline void SignalProcessor::setUniformizationGraphicEqGains(std::size_t startChannelIndex, std::size_t n,
+        const std::vector<double>& gains)
+    {
+        m_specificSignalProcessor->setUniformizationGraphicEqGains(startChannelIndex, n, gains);
     }
 
     inline void SignalProcessor::setOutputGain(std::size_t channelIndex, double gain)

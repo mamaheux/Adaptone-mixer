@@ -17,7 +17,7 @@ namespace adaptone
         std::vector<T> m_gains;
 
     public:
-        GainParameters(std::size_t channelCount);
+        GainParameters(std::size_t channelCount, bool isDirty = false);
         ~GainParameters() override;
 
         DECLARE_NOT_COPYABLE(GainParameters);
@@ -29,7 +29,8 @@ namespace adaptone
     };
 
     template<class T>
-    GainParameters<T>::GainParameters(std::size_t channelCount) : m_gains(channelCount, 1)
+    GainParameters<T>::GainParameters(std::size_t channelCount, bool isDirty) :
+        RealtimeParameters(isDirty), m_gains(channelCount, 1)
     {
     }
 

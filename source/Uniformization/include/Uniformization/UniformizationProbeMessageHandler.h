@@ -4,7 +4,6 @@
 #include <Uniformization/Communication/ProbeMessageHandler.h>
 #include <Uniformization/Communication/Messages/Udp/ProbeSoundDataMessage.h>
 #include <Uniformization/Communication/Messages/Tcp/RecordResponseMessage.h>
-#include <Uniformization/Communication/Messages/Tcp/FftResponseMessage.h>
 #include <Uniformization/SignalOverride/HeadphoneProbeSignalOverride.h>
 
 #include <Utils/Logger/Logger.h>
@@ -27,15 +26,11 @@ namespace adaptone
             std::shared_ptr<HeadphoneProbeSignalOverride> headphoneProbeSignalOverride);
         ~UniformizationProbeMessageHandler() override;
 
-        DECLARE_NOT_COPYABLE(UniformizationProbeMessageHandler);
-        DECLARE_NOT_MOVABLE(UniformizationProbeMessageHandler);
-
-        void handle(const ProbeMessage& message, std::size_t probeId, bool isMaster) override;
+        void handle(const ProbeMessage& message, uint32_t probeId, bool isMaster) override;
 
     private:
         void handleProbeSoundDataMessage(const ProbeSoundDataMessage& message, std::size_t probeId, bool isMaster);
         void handleRecordResponseMessage(const RecordResponseMessage& message, std::size_t probeId, bool isMaster);
-        void handleFftResponseMessage(const FftResponseMessage& message, std::size_t probeId, bool isMaster);
     };
 }
 

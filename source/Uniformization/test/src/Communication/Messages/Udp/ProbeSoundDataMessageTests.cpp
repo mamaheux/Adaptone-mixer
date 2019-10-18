@@ -17,7 +17,7 @@ TEST(ProbeSoundDataMessageTests, constructor_shouldSetTheAttributes)
     constexpr uint8_t Data[DataSize] = { 0, 1, 2 };
     ProbeSoundDataMessage message(SoundDataId, Hours, Minutes, Seconds, Milliseconds, Microseconds, Data, DataSize);
 
-    EXPECT_EQ(message.id(), 9);
+    EXPECT_EQ(message.id(), 7);
     EXPECT_EQ(message.fullSize(), 20);
 
     EXPECT_EQ(message.soundDataId(), SoundDataId);
@@ -45,7 +45,7 @@ TEST(ProbeSoundDataMessageTests, toBuffer_shouldSerializeTheMessage)
 
     message.toBuffer(buffer);
 
-    EXPECT_EQ(message.id(), 9);
+    EXPECT_EQ(message.id(), 7);
     EXPECT_EQ(message.fullSize(), 20);
 
     EXPECT_EQ(buffer.data()[8], 0);
@@ -85,7 +85,7 @@ TEST(ProbeSoundDataMessageTests, fromBuffer_wrongMessageLength_shouldThrowInvali
     constexpr size_t MessageSize = 17;
     uint8_t messageData[MessageSize] =
     {
-        0, 0, 0, 9,
+        0, 0, 0, 7,
         0, 0, 0, 9,
         1, 2, 3, 0,
         4, 0, 5, 6,
@@ -101,7 +101,7 @@ TEST(ProbeSoundDataMessageTests, fromBuffer_shouldDeserialize)
     constexpr size_t MessageSize = 20;
     uint8_t messageData[MessageSize] =
     {
-        0, 0, 0, 9,
+        0, 0, 0, 7,
         0, 0, 0, 12,
         0, 1, 2, 3,
         4, 0, 5, 0,
@@ -111,7 +111,7 @@ TEST(ProbeSoundDataMessageTests, fromBuffer_shouldDeserialize)
 
     ProbeSoundDataMessage message = ProbeSoundDataMessage::fromBuffer(buffer, MessageSize);
 
-    EXPECT_EQ(message.id(), 9);
+    EXPECT_EQ(message.id(), 7);
     EXPECT_EQ(message.fullSize(), MessageSize);
 
     EXPECT_EQ(message.soundDataId(), 1);

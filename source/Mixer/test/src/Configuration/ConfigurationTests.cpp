@@ -9,6 +9,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
 {
     Configuration configuration(Properties(
     {
+        { "logger.level", "information" },
         { "logger.type", "console" },
         { "logger.filename", "log.txt" },
 
@@ -47,6 +48,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "web_socket.port", "8080" }
     }));
 
+    EXPECT_EQ(configuration.logger().level(), Logger::Level::Information);
     EXPECT_EQ(configuration.logger().type(), LoggerConfiguration::Type::Console);
     EXPECT_EQ(configuration.logger().filename(), "");
 

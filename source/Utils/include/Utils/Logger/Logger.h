@@ -18,14 +18,20 @@ namespace adaptone
     public:
         enum class Level
         {
-            Debug,
-            Information,
-            Warning,
-            Error,
-            Performance
+            Debug = 0,
+            Information = 1,
+            Warning = 2,
+            Error = 3
         };
 
+        static Level parseLevel(const std::string& level);
+
+    private:
+        Level m_level;
+
+    public:
         Logger();
+        Logger(Level level);
         virtual ~Logger();
 
         DECLARE_NOT_COPYABLE(Logger);
@@ -43,6 +49,11 @@ namespace adaptone
 
     inline void Logger::log(Logger::Level level, const std::string& message)
     {
+        if (level < m_level)
+        {
+            return;
+        }
+
         std::stringstream ss;
 
         writeTime(ss);
@@ -54,6 +65,11 @@ namespace adaptone
 
     inline void Logger::log(Logger::Level level, const std::exception& exception)
     {
+        if (level < m_level)
+        {
+            return;
+        }
+
         std::stringstream ss;
 
         writeTime(ss);
@@ -65,6 +81,11 @@ namespace adaptone
 
     inline void Logger::log(Logger::Level level, const std::exception& exception, const std::string& message)
     {
+        if (level < m_level)
+        {
+            return;
+        }
+
         std::stringstream ss;
 
         writeTime(ss);
@@ -98,10 +119,6 @@ namespace adaptone
 
             case Logger::Level::Error:
                 ss << "Error";
-                break;
-
-            case Logger::Level::Performance:
-                ss << "Performance";
                 break;
         }
     }

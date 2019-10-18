@@ -37,7 +37,7 @@ void UdpMessageReader::read(boost::asio::ip::udp::socket& socket,
     }
     if (messageSize == 0)
     {
-        THROW_NETWORK_EXCEPTION("Timeout");
+        THROW_NETWORK_TIMEOUT_EXCEPTION("Timeout");
     }
     if (messageSize < sizeof(uint32_t))
     {

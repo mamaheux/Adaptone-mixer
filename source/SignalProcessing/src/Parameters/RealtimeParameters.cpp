@@ -2,7 +2,7 @@
 
 using namespace adaptone;
 
-RealtimeParameters::RealtimeParameters() : m_isDirty(false)
+RealtimeParameters::RealtimeParameters(bool isDirty) : m_isDirty(isDirty)
 {
 }
 
