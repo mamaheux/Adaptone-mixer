@@ -12,9 +12,11 @@ using namespace std;
     }
 
 UniformizationProbeMessageHandler::UniformizationProbeMessageHandler(shared_ptr<Logger> logger,
-    shared_ptr<HeadphoneProbeSignalOverride> headphoneProbeSignalOverride) :
+    shared_ptr<HeadphoneProbeSignalOverride> headphoneProbeSignalOverride,
+    shared_ptr<RecordResponseMessageAgregator> recordResponseMessageAgregator) :
     m_logger(logger),
-    m_headphoneProbeSignalOverride(headphoneProbeSignalOverride)
+    m_headphoneProbeSignalOverride(headphoneProbeSignalOverride),
+    m_recordResponseMessageAgregator(recordResponseMessageAgregator)
 {
     ADD_HANDLE_FUNCTION(ProbeSoundDataMessage);
     ADD_HANDLE_FUNCTION(RecordResponseMessage);
@@ -34,13 +36,14 @@ void UniformizationProbeMessageHandler::handle(const ProbeMessage& message, uint
     it->second(message, probeId, isMaster);
 }
 
-void UniformizationProbeMessageHandler::handleProbeSoundDataMessage(const ProbeSoundDataMessage& message, size_t probeId,
+void UniformizationProbeMessageHandler::handleProbeSoundDataMessage(const ProbeSoundDataMessage& message, uint32_t probeId,
     bool isMaster)
 {
     m_headphoneProbeSignalOverride->writeData(message, probeId);
 }
 
-void UniformizationProbeMessageHandler::handleRecordResponseMessage(const RecordResponseMessage& message, size_t probeId,
+void UniformizationProbeMessageHandler::handleRecordResponseMessage(const RecordResponseMessage& message, uint32_t probeId,
     bool isMaster)
 {
+    m_recordResponseMessageAgregator->agregate(message, probeId);
 }

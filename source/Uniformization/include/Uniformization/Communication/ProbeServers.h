@@ -52,6 +52,9 @@ namespace adaptone
         void start();
         void stop();
 
+        std::size_t probeCount();
+        uint32_t masterProbeId();
+
         void sendToProbes(const ProbeMessage& message);
 
     private:
