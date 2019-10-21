@@ -10,17 +10,20 @@
 using namespace adaptone;
 using namespace std;
 
+static constexpr std::size_t ChannelCount = 2;
+static constexpr std::size_t SampleCount = 3;
+
 TEST(PcmAudioFrameTests, constructor_shouldSetParameterAndAllocateMemory)
 {
-    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, ChannelCount, SampleCount);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
     }
 
     EXPECT_EQ(frame.format(), PcmAudioFrameFormat::Signed24);
-    EXPECT_EQ(frame.channelCount(), 2);
-    EXPECT_EQ(frame.sampleCount(), 3);
+    EXPECT_EQ(frame.channelCount(), ChannelCount);
+    EXPECT_EQ(frame.sampleCount(), SampleCount);
     EXPECT_EQ(frame.size(), 18);
     EXPECT_TRUE(frame.hasOwnership());
 
@@ -32,16 +35,16 @@ TEST(PcmAudioFrameTests, constructor_shouldSetParameterAndAllocateMemory)
 
 TEST(PcmAudioFrameTests, constructor_noCopy_shouldSetParameter)
 {
-    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Signed24) * 2 * 3);
-    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3, dataVector.data());
+    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Signed24) * ChannelCount * SampleCount);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, ChannelCount, SampleCount, dataVector.data());
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
     }
 
     EXPECT_EQ(frame.format(), PcmAudioFrameFormat::Signed24);
-    EXPECT_EQ(frame.channelCount(), 2);
-    EXPECT_EQ(frame.sampleCount(), 3);
+    EXPECT_EQ(frame.channelCount(), ChannelCount);
+    EXPECT_EQ(frame.sampleCount(), SampleCount);
     EXPECT_EQ(frame.size(), 18);
     EXPECT_FALSE(frame.hasOwnership());
 
@@ -53,7 +56,7 @@ TEST(PcmAudioFrameTests, constructor_noCopy_shouldSetParameter)
 
 TEST(PcmAudioFrameTests, constructor_audioFrame_shouldConvertTheFrame)
 {
-    AudioFrame<float> frame(2, 3);
+    AudioFrame<float> frame(ChannelCount, SampleCount);
 
     frame[0] = -1;
     frame[1] = 1;
@@ -78,7 +81,7 @@ TEST(PcmAudioFrameTests, constructor_audioFrame_shouldConvertTheFrame)
 
 TEST(PcmAudioFrameTests, copyConstructor_shouldCopy)
 {
-    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, ChannelCount, SampleCount);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
@@ -87,8 +90,8 @@ TEST(PcmAudioFrameTests, copyConstructor_shouldCopy)
     PcmAudioFrame copy(frame);
 
     EXPECT_EQ(copy.format(), PcmAudioFrameFormat::Signed24);
-    EXPECT_EQ(copy.channelCount(), 2);
-    EXPECT_EQ(copy.sampleCount(), 3);
+    EXPECT_EQ(copy.channelCount(), ChannelCount);
+    EXPECT_EQ(copy.sampleCount(), SampleCount);
     EXPECT_EQ(copy.size(), 18);
     EXPECT_TRUE(copy.hasOwnership());
     EXPECT_NE(frame.data(), copy.data());
@@ -101,7 +104,7 @@ TEST(PcmAudioFrameTests, copyConstructor_shouldCopy)
 
 TEST(PcmAudioFrameTests, moveConstructor_shouldMove)
 {
-    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, ChannelCount, SampleCount);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
@@ -111,8 +114,8 @@ TEST(PcmAudioFrameTests, moveConstructor_shouldMove)
     const PcmAudioFrame movedFrame(move(frame));
 
     EXPECT_EQ(movedFrame.format(), PcmAudioFrameFormat::Signed24);
-    EXPECT_EQ(movedFrame.channelCount(), 2);
-    EXPECT_EQ(movedFrame.sampleCount(), 3);
+    EXPECT_EQ(movedFrame.channelCount(), ChannelCount);
+    EXPECT_EQ(movedFrame.sampleCount(), SampleCount);
     EXPECT_EQ(movedFrame.size(), 18);
     EXPECT_TRUE(movedFrame.hasOwnership());
     EXPECT_EQ(movedFrame.data(), data);
@@ -131,8 +134,8 @@ TEST(PcmAudioFrameTests, moveConstructor_shouldMove)
 
 TEST(PcmAudioFrameTests, moveConstructor_ownershipFalse_shouldMove)
 {
-    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Signed24) * 2 * 3);
-    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3, dataVector.data());
+    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Signed24) * ChannelCount * SampleCount);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, ChannelCount, SampleCount, dataVector.data());
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
@@ -142,8 +145,8 @@ TEST(PcmAudioFrameTests, moveConstructor_ownershipFalse_shouldMove)
     const PcmAudioFrame movedFrame(move(frame));
 
     EXPECT_EQ(movedFrame.format(), PcmAudioFrameFormat::Signed24);
-    EXPECT_EQ(movedFrame.channelCount(), 2);
-    EXPECT_EQ(movedFrame.sampleCount(), 3);
+    EXPECT_EQ(movedFrame.channelCount(), ChannelCount);
+    EXPECT_EQ(movedFrame.sampleCount(), SampleCount);
     EXPECT_EQ(movedFrame.size(), 18);
     EXPECT_FALSE(movedFrame.hasOwnership());
     EXPECT_EQ(movedFrame.data(), data);
@@ -162,7 +165,7 @@ TEST(PcmAudioFrameTests, moveConstructor_ownershipFalse_shouldMove)
 
 TEST(PcmAudioFrameTests, assignationOperator_shouldCopy)
 {
-    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed24, ChannelCount, SampleCount);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
@@ -174,8 +177,8 @@ TEST(PcmAudioFrameTests, assignationOperator_shouldCopy)
 
     EXPECT_NE(oldDataBuffer, copy.data());
     EXPECT_EQ(copy.format(), PcmAudioFrameFormat::Signed24);
-    EXPECT_EQ(copy.channelCount(), 2);
-    EXPECT_EQ(copy.sampleCount(), 3);
+    EXPECT_EQ(copy.channelCount(), ChannelCount);
+    EXPECT_EQ(copy.sampleCount(), SampleCount);
     EXPECT_EQ(copy.size(), 18);
     EXPECT_TRUE(copy.hasOwnership());
     EXPECT_NE(frame.data(), copy.data());
@@ -188,20 +191,20 @@ TEST(PcmAudioFrameTests, assignationOperator_shouldCopy)
 
 TEST(PcmAudioFrameTests, assignationOperator_sameType_shouldCopyWithoutMemoryAllocation)
 {
-    PcmAudioFrame frame(PcmAudioFrameFormat::Signed16, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Signed16, ChannelCount, SampleCount);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
     }
 
-    PcmAudioFrame copy(PcmAudioFrameFormat::Signed16, 2, 3);
+    PcmAudioFrame copy(PcmAudioFrameFormat::Signed16, ChannelCount, SampleCount);
     uint8_t* oldDataBuffer = copy.data();
     copy = frame;
 
     EXPECT_EQ(oldDataBuffer, copy.data());
     EXPECT_EQ(copy.format(), PcmAudioFrameFormat::Signed16);
-    EXPECT_EQ(copy.channelCount(), 2);
-    EXPECT_EQ(copy.sampleCount(), 3);
+    EXPECT_EQ(copy.channelCount(), ChannelCount);
+    EXPECT_EQ(copy.sampleCount(), SampleCount);
     EXPECT_EQ(copy.size(), 12);
     EXPECT_TRUE(copy.hasOwnership());
     EXPECT_NE(frame.data(), copy.data());
@@ -214,7 +217,7 @@ TEST(PcmAudioFrameTests, assignationOperator_sameType_shouldCopyWithoutMemoryAll
 
 TEST(PcmAudioFrameTests, moveAssignationOperator_shouldMove)
 {
-    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned24, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned24, ChannelCount, SampleCount);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
@@ -225,8 +228,8 @@ TEST(PcmAudioFrameTests, moveAssignationOperator_shouldMove)
     movedFrame = move(frame);
 
     EXPECT_EQ(movedFrame.format(), PcmAudioFrameFormat::Unsigned24);
-    EXPECT_EQ(movedFrame.channelCount(), 2);
-    EXPECT_EQ(movedFrame.sampleCount(), 3);
+    EXPECT_EQ(movedFrame.channelCount(), ChannelCount);
+    EXPECT_EQ(movedFrame.sampleCount(), SampleCount);
     EXPECT_EQ(movedFrame.size(), 18);
     EXPECT_TRUE(movedFrame.hasOwnership());
     EXPECT_EQ(movedFrame.data(), data);
@@ -244,8 +247,8 @@ TEST(PcmAudioFrameTests, moveAssignationOperator_shouldMove)
 
 TEST(PcmAudioFrameTests, moveAssignationOperator_ownershipFalse_shouldMove)
 {
-    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Unsigned24) * 2 * 3);
-    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned24, 2, 3, dataVector.data());
+    vector<uint8_t> dataVector(formatSize(PcmAudioFrameFormat::Unsigned24) * ChannelCount * SampleCount);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned24, ChannelCount, SampleCount, dataVector.data());
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
@@ -256,8 +259,8 @@ TEST(PcmAudioFrameTests, moveAssignationOperator_ownershipFalse_shouldMove)
     movedFrame = move(frame);
 
     EXPECT_EQ(movedFrame.format(), PcmAudioFrameFormat::Unsigned24);
-    EXPECT_EQ(movedFrame.channelCount(), 2);
-    EXPECT_EQ(movedFrame.sampleCount(), 3);
+    EXPECT_EQ(movedFrame.channelCount(), ChannelCount);
+    EXPECT_EQ(movedFrame.sampleCount(), SampleCount);
     EXPECT_EQ(movedFrame.size(), 18);
     EXPECT_FALSE(movedFrame.hasOwnership());
     EXPECT_EQ(movedFrame.data(), data);
@@ -275,7 +278,7 @@ TEST(PcmAudioFrameTests, moveAssignationOperator_ownershipFalse_shouldMove)
 
 TEST(PcmAudioFrameTests, clear_shouldSetAllBytesTo0)
 {
-    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, 2, 3);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, ChannelCount, SampleCount);
     for (size_t i = 0; i < frame.size(); i++)
     {
         frame[i] = i + 1;
@@ -290,8 +293,8 @@ TEST(PcmAudioFrameTests, clear_shouldSetAllBytesTo0)
 
 TEST(PcmAudioFrameTests, writeChannel_shouldWriteTheSpecifiedChannel)
 {
-    PcmAudioFrame frame0(PcmAudioFrameFormat::Unsigned24, 2, 2);
-    PcmAudioFrame frame1(PcmAudioFrameFormat::Unsigned24, 3, 2);
+    PcmAudioFrame frame0(PcmAudioFrameFormat::Unsigned24, ChannelCount, ChannelCount);
+    PcmAudioFrame frame1(PcmAudioFrameFormat::Unsigned24, SampleCount, ChannelCount);
     for (size_t i = 0; i < frame0.size(); i++)
     {
         frame0[i] = i + 1;
@@ -361,12 +364,38 @@ TEST(PcmAudioFrameTests, writeChannel_performance)
     cout << "Elapsed time (max) = " << maxElapsedTimeSeconds << " s" << endl;
 }
 
+TEST(PcmAudioFrameTests, audioFrameConversionOperator_shouldConvertTheFrame)
+{
+    constexpr float MaxAbsError = 0.1;
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, ChannelCount, SampleCount);
+
+    frame[0] = 0;
+    frame[1] = 128;
+    frame[2] = 255;
+    frame[3] = 191;
+    frame[4] = 64;
+    frame[5] = 159;
+
+    AudioFrame<float> convertedFrame(frame);
+
+    ASSERT_EQ(convertedFrame.size(), 6);
+    EXPECT_TRUE(convertedFrame.hasOwnership());
+
+    EXPECT_NEAR(convertedFrame[0], -1, MaxAbsError);
+    EXPECT_NEAR(convertedFrame[1], 1, MaxAbsError);
+    EXPECT_NEAR(convertedFrame[2], -0.5, MaxAbsError);
+
+    EXPECT_NEAR(convertedFrame[3], 0, MaxAbsError);
+    EXPECT_NEAR(convertedFrame[4], 0.5, MaxAbsError);
+    EXPECT_NEAR(convertedFrame[5], 0.25, MaxAbsError);
+}
+
 TEST(PcmAudioFrameTests, extractionOperator_shouldExtractDataFromTheStream)
 {
     stringstream ss;
     ss << "ab";
 
-    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, 2, 1);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, ChannelCount, 1);
 
     ss >> frame;
 
@@ -377,7 +406,7 @@ TEST(PcmAudioFrameTests, extractionOperator_shouldExtractDataFromTheStream)
 TEST(PcmAudioFrameTests, insertionOperator_shouldInsertDataIntoTheStream)
 {
     stringstream ss;
-    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, 2, 1);
+    PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, ChannelCount, 1);
     frame[0] = 'a';
     frame[1] = 'b';
 

@@ -17,11 +17,19 @@ UniformizationService::UniformizationService(shared_ptr<Logger> logger,
     m_eqControlerEnabled(false),
     m_stopped(true)
 {
-    shared_ptr<UniformizationProbeMessageHandler> probeMessageHandler = make_shared<UniformizationProbeMessageHandler>(
-        m_logger, m_signalOverride->getSignalOverride<HeadphoneProbeSignalOverride>());
-    shared_ptr<ProbeServers> probeServers = make_shared<ProbeServers>(m_logger, probeMessageHandler,
+    shared_ptr<RecordResponseMessageAgregator> recordResponseMessageAgregator =
+        make_shared<RecordResponseMessageAgregator>(parameters.format());
+
+    shared_ptr<UniformizationProbeMessageHandler> probeMessageHandler =
+        make_shared<UniformizationProbeMessageHandler>(m_logger,
+        m_signalOverride->getSignalOverride<HeadphoneProbeSignalOverride>(),
+        recordResponseMessageAgregator);
+
+    shared_ptr<ProbeServers> probeServers = make_shared<ProbeServers>(m_logger,
+        probeMessageHandler,
         parameters.toProbeServerParameters());
 
+    m_recordResponseMessageAgregator = recordResponseMessageAgregator;
     m_probeMessageHandler = probeMessageHandler;
     m_probeServers = probeServers;
 }
@@ -53,7 +61,7 @@ void UniformizationService::stop()
     }
 }
 
-void UniformizationService::listenToProbeSound(size_t probeId)
+void UniformizationService::listenToProbeSound(uint32_t probeId)
 {
     m_signalOverride->getSignalOverride<HeadphoneProbeSignalOverride>()->setCurrentProbeId(probeId);
     m_signalOverride->setCurrentSignalOverrideType<HeadphoneProbeSignalOverride>();
