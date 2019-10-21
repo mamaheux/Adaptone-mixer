@@ -33,7 +33,7 @@ namespace adaptone
 
         void reset(uint8_t currentRecordId, std::size_t probeCount);
         void agregate(const RecordResponseMessage& message, uint32_t probeId);
-        std::optional<const std::unordered_map<uint32_t, AudioFrame<double>>> read(int timeoutMs);
+        std::optional<std::unordered_map<uint32_t, AudioFrame<double>>> read(int timeoutMs);
     };
 }
 

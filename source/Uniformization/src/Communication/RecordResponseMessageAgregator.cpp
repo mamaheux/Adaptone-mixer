@@ -43,7 +43,7 @@ void RecordResponseMessageAgregator::agregate(const RecordResponseMessage& messa
     }
 }
 
-optional<const unordered_map<uint32_t, AudioFrame<double>>> RecordResponseMessageAgregator::read(int timeoutMs)
+optional<unordered_map<uint32_t, AudioFrame<double>>> RecordResponseMessageAgregator::read(int timeoutMs)
 {
     {
         lock_guard lock(m_dataMutex);
