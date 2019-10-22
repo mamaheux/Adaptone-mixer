@@ -139,7 +139,7 @@ namespace adaptone
     template<class T>
     inline AudioFrame<T>& AudioFrame<T>::operator=(const AudioFrame<T>& other)
     {
-        if (m_data != nullptr)
+        if (m_data != nullptr && m_hasOwnership)
         {
             delete[] m_data;
         }
@@ -157,7 +157,7 @@ namespace adaptone
     template<class T>
     inline AudioFrame<T>& AudioFrame<T>::operator=(AudioFrame<T>&& other)
     {
-        if (m_data != nullptr)
+        if (m_data != nullptr && m_hasOwnership)
         {
             delete[] m_data;
         }

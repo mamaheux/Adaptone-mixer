@@ -51,7 +51,7 @@ PcmAudioFrame& PcmAudioFrame::operator=(const PcmAudioFrame& other)
 {
     if (m_format != other.m_format || m_channelCount != other.m_channelCount || m_sampleCount != other.m_sampleCount)
     {
-        if (m_data != nullptr)
+        if (m_data != nullptr && m_hasOwnership)
         {
             delete[] m_data;
         }
@@ -70,7 +70,7 @@ PcmAudioFrame& PcmAudioFrame::operator=(const PcmAudioFrame& other)
 
 PcmAudioFrame& PcmAudioFrame::operator=(PcmAudioFrame&& other)
 {
-    if (m_data != nullptr)
+    if (m_data != nullptr && m_hasOwnership)
     {
         delete[] m_data;
     }
