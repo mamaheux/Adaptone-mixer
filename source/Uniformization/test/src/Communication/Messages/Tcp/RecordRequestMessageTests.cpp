@@ -11,9 +11,9 @@ TEST(RecordRequestMessageTests, constructor_shouldSetTheAttributes)
     constexpr uint8_t Minutes = 2;
     constexpr uint8_t Seconds = 3;
     constexpr uint16_t Milliseconds = 4;
-    constexpr uint16_t Duration = 5;
+    constexpr uint16_t DurationMs = 5;
     constexpr uint8_t RecordId = 6;
-    RecordRequestMessage message(Hours, Minutes, Seconds, Milliseconds, Duration, RecordId);
+    RecordRequestMessage message(Hours, Minutes, Seconds, Milliseconds, DurationMs, RecordId);
 
     EXPECT_EQ(message.id(), 5);
     EXPECT_EQ(message.fullSize(), 16);
@@ -22,7 +22,7 @@ TEST(RecordRequestMessageTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(message.minutes(), Minutes);
     EXPECT_EQ(message.seconds(), Seconds);
     EXPECT_EQ(message.milliseconds(), Milliseconds);
-    EXPECT_EQ(message.duration(), Duration);
+    EXPECT_EQ(message.durationMs(), DurationMs);
     EXPECT_EQ(message.recordId(), RecordId);
 }
 
@@ -32,9 +32,9 @@ TEST(RecordRequestMessageTests, toBuffer_shouldSerializeTheMessage)
     constexpr uint8_t Minutes = 2;
     constexpr uint8_t Seconds = 3;
     constexpr uint16_t Milliseconds = 4;
-    constexpr uint16_t Duration = 5;
+    constexpr uint16_t DurationMs = 5;
     constexpr uint8_t RecordId = 6;
-    RecordRequestMessage message(Hours, Minutes, Seconds, Milliseconds, Duration, RecordId);
+    RecordRequestMessage message(Hours, Minutes, Seconds, Milliseconds, DurationMs, RecordId);
     NetworkBuffer buffer(100);
 
     message.toBuffer(buffer);
@@ -104,6 +104,6 @@ TEST(RecordRequestMessageTests, fromBuffer_shouldDeserialize)
     EXPECT_EQ(message.minutes(), 2);
     EXPECT_EQ(message.seconds(), 3);
     EXPECT_EQ(message.milliseconds(), 4);
-    EXPECT_EQ(message.duration(), 5);
+    EXPECT_EQ(message.durationMs(), 5);
     EXPECT_EQ(message.recordId(), 6);
 }

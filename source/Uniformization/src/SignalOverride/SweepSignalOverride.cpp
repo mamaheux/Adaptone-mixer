@@ -1,9 +1,31 @@
 #include <Uniformization/SignalOverride/SweepSignalOverride.h>
+#include <Uniformization/Math.h>
+
+#include <armadillo>
 
 using namespace adaptone;
 
-SweepSignalOverride::SweepSignalOverride()
+SweepSignalOverride::SweepSignalOverride(PcmAudioFrameFormat format,
+    size_t sampleFrequency,
+    size_t outputChannelCount,
+    size_t frameSampleCount,
+    double f1,
+    double f2,
+    double period) :
+    m_sweepPcmAudioFrame(format, 1, frameSampleCount),
+    m_frame(format, outputChannelCount, frameSampleCount)
 {
+    arma::vec sweepVec = logSinChirp<arma::vec>(f1, f2, period, sampleFrequency);
+
+    constexpr size_t ChannelCount = 1;
+    AudioFrame<double> sweepAudioFrame(ChannelCount, sweepVec.n_elem, sweepVec.memptr());
+
+    PcmAudioFrame sweepPcmAudioFrame(sweepAudioFrame, format);
+    m_sweepPcmAudioFrame = sweepPcmAudioFrame;
+
+    m_outputChannelIndex = 0;
+    m_currentSweepFrame = 0;
+    m_sweepActive = false;
 }
 
 SweepSignalOverride::~SweepSignalOverride()
@@ -12,5 +34,23 @@ SweepSignalOverride::~SweepSignalOverride()
 
 const PcmAudioFrame& SweepSignalOverride::override(const PcmAudioFrame& frame)
 {
-    return frame;
+    m_frame = frame;
+
+    if (m_sweepActive)
+    {
+        size_t offset = m_currentSweepFrame * frame.sampleCount();
+        m_currentSweepFrame++;
+
+        if ((m_currentSweepFrame + 1) * frame.sampleCount() > m_sweepPcmAudioFrame.size())
+        {
+            m_sweepActive = false;
+        }
+
+        PcmAudioFrame tmp(m_sweepPcmAudioFrame.format(), 1, frame.sampleCount(), m_sweepPcmAudioFrame.data() + offset);
+        m_frame.writeChannel(m_outputChannelIndex, tmp, 0);
+    }
+
+    return m_frame;
 }
+
+

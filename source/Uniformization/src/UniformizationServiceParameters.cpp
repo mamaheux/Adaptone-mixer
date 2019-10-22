@@ -10,6 +10,8 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     uint16_t udpReceivingPort,
     int probeTimeoutMs,
     size_t sampleFrequency,
+    float sweepDuration,
+    float sweepMaxDelay,
     PcmAudioFrameFormat format) :
     m_discoveryEndpoint(discoveryEndpoint),
     m_discoveryTimeoutMs(discoveryTimeoutMs),
@@ -18,6 +20,8 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     m_udpReceivingPort(udpReceivingPort),
     m_probeTimeoutMs(probeTimeoutMs),
     m_sampleFrequency(sampleFrequency),
+    m_sweepDuration(sweepDuration),
+    m_sweepMaxDelay(sweepMaxDelay),
     m_format(format)
 {
 }

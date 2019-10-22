@@ -29,12 +29,14 @@ TEST(AudioOutputConfigurationTests, constructor_alsaType_shouldSetTheTypeRelated
     {
         { "audio.output.type", "alsa" },
         { "audio.output.format", "signed_8" },
-        { "audio.output.device", "hw:0,0" }
+        { "audio.output.device", "hw:0,0" },
+        { "audio.output.hardware_delay", "0.017" }
     }));
 
     EXPECT_EQ(configuration.type(), AudioOutputConfiguration::Type::Alsa);
     EXPECT_EQ(configuration.format(), PcmAudioFrameFormat::Signed8);
     EXPECT_EQ(configuration.device(), "hw:0,0");
+    EXPECT_FLOAT_EQ(configuration.hardwareDelay(), 0.017);
 }
 
 #endif

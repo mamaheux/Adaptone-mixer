@@ -27,6 +27,7 @@ namespace adaptone
 #if defined(__unix__) || defined(__linux__)
         //Alsa
         std::string m_device;
+        float m_hardwareDelay;
 #endif
 
     public:
@@ -40,6 +41,7 @@ namespace adaptone
 
 #if defined(__unix__) || defined(__linux__)
         const std::string& device() const;
+        const float hardwareDelay() const;
 #endif
     };
 
@@ -63,6 +65,11 @@ namespace adaptone
     inline const std::string& AudioOutputConfiguration::device() const
     {
         return m_device;
+    }
+
+    inline const float AudioOutputConfiguration::hardwareDelay() const
+    {
+        return m_hardwareDelay;
     }
 
 #endif

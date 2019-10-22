@@ -14,6 +14,8 @@ namespace adaptone
         uint16_t m_udpReceivingPort;
         int m_probeTimeoutMs;
         std::size_t m_sampleFrequency;
+        float m_sweepDuration;
+        float m_sweepMaxDelay;
         PcmAudioFrameFormat m_format;
 
     public:
@@ -24,6 +26,8 @@ namespace adaptone
             uint16_t udpReceivingPort,
             int probeTimeoutMs,
             std::size_t sampleFrequency,
+            float sweepDuration,
+            float sweepMaxDelay,
             PcmAudioFrameFormat format);
         virtual ~UniformizationServiceParameters();
 
@@ -34,6 +38,8 @@ namespace adaptone
         uint16_t udpReceivingPort() const;
         int probeTimeoutMs() const;
         std::size_t sampleFrequency() const;
+        float sweepDuration() const;
+        float sweepMaxDelay() const;
         PcmAudioFrameFormat format() const;
 
         ProbeServerParameters toProbeServerParameters() const;
@@ -72,6 +78,16 @@ namespace adaptone
     inline std::size_t UniformizationServiceParameters::sampleFrequency() const
     {
         return m_sampleFrequency;
+    }
+
+    inline float UniformizationServiceParameters::sweepDuration() const
+    {
+        return m_sweepDuration;
+    }
+
+    inline float UniformizationServiceParameters::sweepMaxDelay() const
+    {
+        return m_sweepMaxDelay;
     }
 
     inline PcmAudioFrameFormat UniformizationServiceParameters::format() const

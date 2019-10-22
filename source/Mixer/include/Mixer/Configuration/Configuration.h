@@ -93,6 +93,8 @@ namespace adaptone
             m_uniformizationConfiguration.udpReceivingPort(),
             m_uniformizationConfiguration.probeTimeoutMs(),
             m_audioConfiguration.sampleFrequency(),
+            m_uniformizationConfiguration.routineIRSweepT(),
+            m_uniformizationConfiguration.routineIRSweepMaxDelay(),
             m_audioOutputConfiguration.format());
     }
 }

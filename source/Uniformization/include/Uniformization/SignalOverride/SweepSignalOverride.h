@@ -7,15 +7,38 @@ namespace adaptone
 {
     class SweepSignalOverride : public SpecificSignalOverride
     {
+        std::size_t m_outputChannelIndex;
+        std::size_t m_currentSweepFrame;
+        bool m_sweepActive;
+
+        PcmAudioFrame m_frame;
+        PcmAudioFrame m_sweepPcmAudioFrame;
+
     public:
-        SweepSignalOverride();
+        SweepSignalOverride(PcmAudioFrameFormat format, size_t sampleFrequency, size_t outputChannelCount,
+            size_t frameSampleCount, double f1, double f2, double period);
         ~SweepSignalOverride() override;
 
         DECLARE_NOT_COPYABLE(SweepSignalOverride);
         DECLARE_NOT_MOVABLE(SweepSignalOverride);
 
         const PcmAudioFrame& override(const PcmAudioFrame& frame) override;
+
+        void startSweep(std::size_t outputChannelIndex);
+        bool isSweepActive();
     };
+
+    inline void SweepSignalOverride::startSweep(std::size_t outputChannelIndex)
+    {
+        m_outputChannelIndex = outputChannelIndex;
+        m_currentSweepFrame = 0;
+        m_sweepActive = true;
+    }
+
+    inline bool SweepSignalOverride::isSweepActive()
+    {
+        return m_sweepActive;
+    }
 }
 
 #endif

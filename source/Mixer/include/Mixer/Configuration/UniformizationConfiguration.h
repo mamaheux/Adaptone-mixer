@@ -19,6 +19,7 @@ namespace adaptone
         float m_routineIRSweepF1;
         float m_routineIRSweepF2;
         float m_routineIRSweepT;
+        float m_routineIRSweepMaxDelay;
 
     public:
         explicit UniformizationConfiguration(const Properties& properties);
@@ -35,6 +36,7 @@ namespace adaptone
         float routineIRSweepF1() const;
         float routineIRSweepF2() const;
         float routineIRSweepT() const;
+        float routineIRSweepMaxDelay() const;
     };
 
     inline const Endpoint& UniformizationConfiguration::discoveryEndpoint() const
@@ -80,6 +82,11 @@ namespace adaptone
     inline float UniformizationConfiguration::routineIRSweepT() const
     {
         return m_routineIRSweepT;
+    };
+
+    inline float UniformizationConfiguration::routineIRSweepMaxDelay() const
+    {
+        return m_routineIRSweepMaxDelay;
     };
 }
 

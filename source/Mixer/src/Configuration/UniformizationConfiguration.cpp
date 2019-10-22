@@ -15,6 +15,7 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     constexpr const char* RoutineIRSweepF1PropertyKey = "uniformization.routine_ir_sweep_f1";
     constexpr const char* RoutineIRSweepF2PropertyKey = "uniformization.routine_ir_sweep_f2";
     constexpr const char* RoutineIRSweepTPropertyKey = "uniformization.routine_ir_sweep_t";
+    constexpr const char* RoutineIRSweepMaxDelayPropertyKey = "uniformization.routine_ir_sweep_max_delay";
 
     m_discoveryEndpoint = properties.get<Endpoint>(DiscoveryEndpointPropertyKey);
     m_discoveryTimeoutMs = properties.get<int>(DiscoveryTimeoutMsPropertyKey);
@@ -27,6 +28,7 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     m_routineIRSweepF1 = properties.get<float>(RoutineIRSweepF1PropertyKey);
     m_routineIRSweepF2 = properties.get<float>(RoutineIRSweepF2PropertyKey);
     m_routineIRSweepT = properties.get<float>(RoutineIRSweepTPropertyKey);
+    m_routineIRSweepMaxDelay = properties.get<float>(RoutineIRSweepMaxDelayPropertyKey);
 }
 
 UniformizationConfiguration::~UniformizationConfiguration()

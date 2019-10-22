@@ -18,7 +18,8 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
 
         { "uniformization.routine_ir_sweep_f1", "1" },
         { "uniformization.routine_ir_sweep_f2", "2" },
-        { "uniformization.routine_ir_sweep_t", "3" }
+        { "uniformization.routine_ir_sweep_t", "3" },
+        { "uniformization.routine_ir_sweep_max_delay", "0.5" }
     }));
 
     EXPECT_EQ(configuration.discoveryEndpoint().ipAddress(), "192.168.1.255");
@@ -33,4 +34,5 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(configuration.routineIRSweepF1(), 1);
     EXPECT_EQ(configuration.routineIRSweepF2(), 2);
     EXPECT_EQ(configuration.routineIRSweepT(), 3);
+    EXPECT_FLOAT_EQ(configuration.routineIRSweepMaxDelay(), 0.5);
 }

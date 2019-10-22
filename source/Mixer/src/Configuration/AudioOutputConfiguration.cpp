@@ -14,6 +14,8 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
 
     constexpr const char* DevicePropertyKey = "audio.output.device";
 
+    constexpr const char* HardwareDelayPropertyKey = "audio.output.hardware_delay";
+
     string type = properties.get<string>(TypePropertyKey);
 
     m_format = parseFormat(properties.get<string>(FormatPropertyKey));
@@ -28,6 +30,7 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
     {
         m_type = AudioOutputConfiguration::Type::Alsa;
         m_device = properties.get<string>(DevicePropertyKey);
+        m_hardwareDelay = properties.get<float>(HardwareDelayPropertyKey);
     }
 #endif
     else

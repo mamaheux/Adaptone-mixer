@@ -16,7 +16,7 @@ namespace adaptone
         uint8_t m_minutes;
         uint8_t m_seconds;
         uint16_t m_milliseconds;
-        uint16_t m_duration;
+        uint16_t m_durationMs;
         uint8_t m_recordId;
 
     public:
@@ -28,7 +28,7 @@ namespace adaptone
         uint8_t minutes() const;
         uint8_t seconds() const;
         uint16_t milliseconds() const;
-        uint16_t duration() const;
+        uint16_t durationMs() const;
         uint8_t recordId() const;
 
         static RecordRequestMessage fromBuffer(NetworkBufferView buffer, std::size_t messageSize);
@@ -57,9 +57,9 @@ namespace adaptone
         return m_milliseconds;
     }
 
-    inline uint16_t RecordRequestMessage::duration() const
+    inline uint16_t RecordRequestMessage::durationMs() const
     {
-        return m_duration;
+        return m_durationMs;
     }
 
     inline uint8_t RecordRequestMessage::recordId() const

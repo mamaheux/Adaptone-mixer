@@ -95,6 +95,11 @@ void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const Lau
 void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const RelaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+
+    vector<size_t> masterOutputIndexes =  m_channelIdMapping->getMasterOutputIndexes();
+    m_uniformizationService->initializeRoom(masterOutputIndexes);
+
+    /*
     this_thread::sleep_for(2s);
     send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, PositionType::Speaker),
             ConfigurationPosition(2.5, 0, PositionType::Speaker),
@@ -106,6 +111,7 @@ void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const R
             ConfigurationPosition(6.25, 10, PositionType::Probe),
             ConfigurationPosition(8.75, 10, PositionType::Probe) },
         { ConfigurationPosition(10, 10, PositionType::Speaker) }));
+    */
 }
 
 void MixerApplicationMessageHandler::handleSymmetryConfirmationMessage(const SymmetryConfirmationMessage& message,

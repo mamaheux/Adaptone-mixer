@@ -6,6 +6,8 @@
 #include <Uniformization/Communication/ProbeServers.h>
 #include <Uniformization/Communication/RecordResponseMessageAgregator.h>
 #include <Uniformization/SignalOverride/GenericSignalOverride.h>
+#include <Uniformization/SignalOverride/SweepSignalOverride.h>
+#include <Uniformization/Model/Room.h>
 
 #include <SignalProcessing/SignalProcessor.h>
 
@@ -48,13 +50,16 @@ namespace adaptone
         void stop();
 
         void listenToProbeSound(uint32_t probeId);
-        void initializeRoom();
+        Room initializeRoom(std::vector<std::size_t> masterOutputIndexes);
         void confirmRoomPositions();
 
     private:
         void run();
 
         void performEqControlIteration();
+
+        std::optional<std::unordered_map<uint32_t, AudioFrame<double>>>sweepRoutineAtOutputX(size_t masterOutputIndex);
+        arma::vec computeDelaysFromSweepData(std::optional<std::unordered_map<uint32_t, AudioFrame<double>>> data);
     };
 }
 

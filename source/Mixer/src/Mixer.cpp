@@ -196,7 +196,14 @@ shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
 {
     vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
     signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
-    signalOverrides.emplace_back(make_shared<SweepSignalOverride>());
+    signalOverrides.emplace_back(make_shared<SweepSignalOverride>(
+        m_configuration.toUniformizationServiceParameters().format(),
+        m_configuration.audio().sampleFrequency(),
+        m_configuration.audio().outputChannelCount(),
+        m_configuration.audio().frameSampleCount(),
+        m_configuration.uniformization().routineIRSweepF1(),
+        m_configuration.uniformization().routineIRSweepF2(),
+        m_configuration.uniformization().routineIRSweepT()));
     signalOverrides.emplace_back(make_shared<HeadphoneProbeSignalOverride>(m_configuration.audioOutput().format(),
         m_configuration.audio().outputChannelCount(),
         m_configuration.audio().frameSampleCount(),

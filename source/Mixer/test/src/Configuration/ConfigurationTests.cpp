@@ -43,6 +43,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "uniformization.routine_ir_sweep_f1", "1" },
         { "uniformization.routine_ir_sweep_f2", "2" },
         { "uniformization.routine_ir_sweep_t", "3" },
+        { "uniformization.routine_ir_sweep_max_delay", "0.5" },
 
         { "web_socket.endpoint", "^/echo/?$" },
         { "web_socket.port", "8080" }
@@ -83,6 +84,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.uniformization().routineIRSweepF1(), 1);
     EXPECT_EQ(configuration.uniformization().routineIRSweepF2(), 2);
     EXPECT_EQ(configuration.uniformization().routineIRSweepT(), 3);
+    EXPECT_FLOAT_EQ(configuration.uniformization().routineIRSweepMaxDelay(), 0.5);
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
     EXPECT_EQ(configuration.webSocket().port(), 8080);
