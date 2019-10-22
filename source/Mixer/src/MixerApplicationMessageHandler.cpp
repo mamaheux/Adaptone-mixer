@@ -78,7 +78,8 @@ void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(
 void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const LaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    this_thread::sleep_for(2s);
+
+    //this_thread::sleep_for(2s);
     send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, PositionType::Speaker),
             ConfigurationPosition(2.5, 0, PositionType::Speaker),
             ConfigurationPosition(5, 0, PositionType::Speaker),

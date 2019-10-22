@@ -14,6 +14,7 @@
 #endif
 
 #include <Uniformization/SignalOverride/PassthroughSignalOverride.h>
+#include <Uniformization/SignalOverride/SweepSignalOverride.h>
 #include <Uniformization/SignalOverride/HeadphoneProbeSignalOverride.h>
 
 #include <Utils/Exception/NotSupportedException.h>
@@ -195,6 +196,7 @@ shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
 {
     vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
     signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
+    signalOverrides.emplace_back(make_shared<SweepSignalOverride>());
     signalOverrides.emplace_back(make_shared<HeadphoneProbeSignalOverride>(m_configuration.audioOutput().format(),
         m_configuration.audio().outputChannelCount(),
         m_configuration.audio().frameSampleCount(),
