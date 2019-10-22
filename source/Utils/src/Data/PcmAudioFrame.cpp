@@ -14,7 +14,6 @@ PcmAudioFrame::PcmAudioFrame(PcmAudioFrameFormat format, size_t channelCount, si
 PcmAudioFrame::PcmAudioFrame(PcmAudioFrameFormat format, size_t channelCount, size_t sampleCount, uint8_t* data) :
     m_format(format), m_channelCount(channelCount), m_sampleCount(sampleCount), m_data(data), m_hasOwnership(false)
 {
-
 }
 
 PcmAudioFrame::PcmAudioFrame(const PcmAudioFrame& other) :

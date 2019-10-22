@@ -4,6 +4,7 @@
 #include <Utils/Data/PcmAudioFrameFormat.h>
 #include <Utils/Data/AudioFrame.h>
 #include <Utils/Data/ArrayToPcmConverter.h>
+#include <Utils/Data/PcmToArrayConverter.h>
 
 #include <cstddef>
 #include <cstdint>
@@ -33,7 +34,7 @@ namespace adaptone
 
         PcmAudioFrame(const PcmAudioFrame& other);
         PcmAudioFrame(PcmAudioFrame&& other);
-        ~PcmAudioFrame();
+        virtual ~PcmAudioFrame();
 
         PcmAudioFrameFormat format() const;
         std::size_t channelCount() const;
@@ -53,6 +54,9 @@ namespace adaptone
 
         void clear();
         void writeChannel(std::size_t thisChannelIndex, const PcmAudioFrame& other, std::size_t otherChannelIndex);
+
+        template<class T>
+        operator AudioFrame<T>();
 
         friend std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame);
         friend std::ostream& operator<<(std::ostream& stream, const PcmAudioFrame& frame);
@@ -113,6 +117,14 @@ namespace adaptone
     inline void PcmAudioFrame::clear()
     {
         std::memset(m_data, 0, size());
+    }
+
+    template<class T>
+    inline PcmAudioFrame::operator AudioFrame<T>()
+    {
+        AudioFrame<T> convertedFrame(m_channelCount, m_sampleCount);
+        PcmToArrayConverter::convertPcmToArray(m_data, convertedFrame.data(), m_sampleCount, m_channelCount, m_format);
+        return convertedFrame;
     }
 
     inline std::istream& operator>>(std::istream& stream, PcmAudioFrame& frame)

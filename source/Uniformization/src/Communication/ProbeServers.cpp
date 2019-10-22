@@ -51,6 +51,18 @@ void ProbeServers::stop()
     }
 }
 
+size_t ProbeServers::probeCount()
+{
+    shared_lock lock(m_mutex);
+    return m_probeServersById.size();
+}
+
+uint32_t ProbeServers::masterProbeId()
+{
+    shared_lock lock(m_mutex);
+    return m_masterProbeId;
+}
+
 void ProbeServers::sendToProbes(const ProbeMessage& message)
 {
     shared_lock lock(m_mutex);

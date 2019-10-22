@@ -51,6 +51,7 @@ namespace adaptone
         static void convertArrayToPcm(const T* input, uint8_t* outputBytes, std::size_t frameSampleCount,
             std::size_t channelCount, PcmAudioFrameFormat format);
     };
+
     template<class T>
     inline T ArrayToPcmConverter::round(T value)
     {

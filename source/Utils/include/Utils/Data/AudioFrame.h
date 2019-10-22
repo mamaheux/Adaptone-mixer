@@ -15,12 +15,14 @@ namespace adaptone
         std::size_t m_channelCount;
         std::size_t m_sampleCount;
         T* m_data;
+        bool m_hasOwnership;
 
     public:
         AudioFrame(std::size_t channelCount, std::size_t sampleCount);
+        AudioFrame(std::size_t channelCount, std::size_t sampleCount, T* data);
         AudioFrame(const AudioFrame& other);
         AudioFrame(AudioFrame&& other);
-        ~AudioFrame();
+        virtual ~AudioFrame();
 
         std::size_t channelCount() const;
         std::size_t sampleCount() const;
@@ -29,6 +31,9 @@ namespace adaptone
         const T* data() const;
         std::size_t size() const;
         std::size_t byteSize() const;
+
+        bool hasOwnership() const;
+
         T& operator[](std::size_t i);
         const T& operator[](std::size_t i) const;
 
@@ -38,14 +43,20 @@ namespace adaptone
 
     template<class T>
     inline AudioFrame<T>::AudioFrame(std::size_t channelCount, std::size_t sampleCount) :
-        m_channelCount(channelCount), m_sampleCount(sampleCount)
+        m_channelCount(channelCount), m_sampleCount(sampleCount), m_hasOwnership(true)
     {
         m_data = new T[m_channelCount * m_sampleCount];
     }
 
     template<class T>
+    inline AudioFrame<T>::AudioFrame(std::size_t channelCount, std::size_t sampleCount, T* data) :
+        m_channelCount(channelCount), m_sampleCount(sampleCount), m_data(data), m_hasOwnership(false)
+    {
+    }
+
+    template<class T>
     inline AudioFrame<T>::AudioFrame(const AudioFrame<T>& other) :
-        m_channelCount(other.m_channelCount), m_sampleCount(other.m_sampleCount)
+        m_channelCount(other.m_channelCount), m_sampleCount(other.m_sampleCount), m_hasOwnership(true)
     {
         m_data = new T[m_channelCount * m_sampleCount];
         std::memcpy(m_data, other.m_data, m_channelCount * m_sampleCount * sizeof(T));
@@ -53,7 +64,7 @@ namespace adaptone
 
     template<class T>
     inline AudioFrame<T>::AudioFrame(AudioFrame<T>&& other):
-        m_channelCount(other.m_channelCount), m_sampleCount(other.m_sampleCount)
+        m_channelCount(other.m_channelCount), m_sampleCount(other.m_sampleCount), m_hasOwnership(other.m_hasOwnership)
     {
         m_data = other.m_data;
 
@@ -65,7 +76,7 @@ namespace adaptone
     template<class T>
     inline AudioFrame<T>::~AudioFrame()
     {
-        if (m_data != nullptr)
+        if (m_data != nullptr && m_hasOwnership)
         {
             delete[] m_data;
         }
@@ -108,6 +119,12 @@ namespace adaptone
     }
 
     template<class T>
+    inline bool AudioFrame<T>::hasOwnership() const
+    {
+        return m_hasOwnership;
+    }
+
+    template<class T>
     inline T& AudioFrame<T>::operator[](std::size_t i)
     {
         return m_data[i];
@@ -129,6 +146,7 @@ namespace adaptone
 
         m_channelCount = other.m_channelCount;
         m_sampleCount = other.m_sampleCount;
+        m_hasOwnership = true;
 
         m_data = new T[m_channelCount * m_sampleCount];
         std::memcpy(m_data, other.m_data, m_channelCount * m_sampleCount * sizeof(T));
@@ -147,6 +165,7 @@ namespace adaptone
         m_channelCount = other.m_channelCount;
         m_sampleCount = other.m_sampleCount;
         m_data = other.m_data;
+        m_hasOwnership = other.m_hasOwnership;
 
         other.m_channelCount = 0;
         other.m_sampleCount = 0;

@@ -4,6 +4,7 @@
 #include <Uniformization/UniformizationServiceParameters.h>
 #include <Uniformization/UniformizationProbeMessageHandler.h>
 #include <Uniformization/Communication/ProbeServers.h>
+#include <Uniformization/Communication/RecordResponseMessageAgregator.h>
 #include <Uniformization/SignalOverride/GenericSignalOverride.h>
 
 #include <SignalProcessing/SignalProcessor.h>
@@ -23,6 +24,7 @@ namespace adaptone
 
         const UniformizationServiceParameters& m_parameters;
 
+        std::shared_ptr<RecordResponseMessageAgregator> m_recordResponseMessageAgregator;
         std::shared_ptr<UniformizationProbeMessageHandler> m_probeMessageHandler;
         std::shared_ptr<ProbeServers> m_probeServers;
 
@@ -45,7 +47,7 @@ namespace adaptone
         void start();
         void stop();
 
-        void listenToProbeSound(std::size_t probeId);
+        void listenToProbeSound(uint32_t probeId);
         void initializeRoom();
         void confirmRoomPositions();
 
