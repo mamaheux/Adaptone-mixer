@@ -14,8 +14,10 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     constexpr uint16_t UdpReceivingPort = 4;
     constexpr int ProbeTimeoutMs = 5;
     constexpr size_t SampleFrequency = 6;
-    constexpr float SweepDuration = 7.7;
-    constexpr float SweepMaxDelay = 8.8;
+    constexpr double SweepDuration = 7.7;
+    constexpr double SweepMaxDelay = 8.8;
+    constexpr double OutputHardwareDelay = 9.9;
+    constexpr double SpeedOfSound = 10.10;
     constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Double;
 
     UniformizationServiceParameters parameters(DiscoveryEndpoint,
@@ -27,6 +29,8 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
         SampleFrequency,
         SweepDuration,
         SweepMaxDelay,
+        OutputHardwareDelay,
+        SpeedOfSound,
         Format);
 
     EXPECT_EQ(parameters.discoveryEndpoint().ipAddress(), DiscoveryEndpoint.ipAddress());
@@ -39,6 +43,8 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(parameters.sampleFrequency(), SampleFrequency);
     EXPECT_EQ(parameters.sweepDuration(), SweepDuration);
     EXPECT_EQ(parameters.sweepMaxDelay(), SweepMaxDelay);
+    EXPECT_EQ(parameters.outputHardwareDelay(), OutputHardwareDelay);
+    EXPECT_EQ(parameters.speedOfSound(), SpeedOfSound);
     EXPECT_EQ(parameters.format(), Format);
 
 

@@ -95,6 +95,8 @@ namespace adaptone
             m_audioConfiguration.sampleFrequency(),
             m_uniformizationConfiguration.routineIRSweepT(),
             m_uniformizationConfiguration.routineIRSweepMaxDelay(),
+            m_audioOutputConfiguration.hardwareDelay(),
+            m_uniformizationConfiguration.speedOfSound(),
             m_audioOutputConfiguration.format());
     }
 }

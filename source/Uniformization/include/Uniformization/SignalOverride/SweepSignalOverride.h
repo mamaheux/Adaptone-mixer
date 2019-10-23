@@ -3,6 +3,8 @@
 
 #include <Uniformization/SignalOverride/SpecificSignalOverride.h>
 
+#include <armadillo>
+
 namespace adaptone
 {
     class SweepSignalOverride : public SpecificSignalOverride
@@ -11,6 +13,7 @@ namespace adaptone
         std::size_t m_currentSweepFrame;
         bool m_sweepActive;
 
+        arma::vec m_sweepVec;
         PcmAudioFrame m_frame;
         PcmAudioFrame m_sweepPcmAudioFrame;
 
@@ -26,6 +29,7 @@ namespace adaptone
 
         void startSweep(std::size_t outputChannelIndex);
         bool isSweepActive();
+        const arma::vec& sweepVec() const;
     };
 
     inline void SweepSignalOverride::startSweep(std::size_t outputChannelIndex)
@@ -38,6 +42,11 @@ namespace adaptone
     inline bool SweepSignalOverride::isSweepActive()
     {
         return m_sweepActive;
+    }
+
+    inline const arma::vec& SweepSignalOverride::sweepVec() const
+    {
+        return m_sweepVec;
     }
 }
 

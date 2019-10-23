@@ -19,7 +19,18 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
         { "uniformization.routine_ir_sweep_f1", "1" },
         { "uniformization.routine_ir_sweep_f2", "2" },
         { "uniformization.routine_ir_sweep_t", "3" },
-        { "uniformization.routine_ir_sweep_max_delay", "0.5" }
+        { "uniformization.routine_ir_sweep_max_delay", "0.5" },
+
+        { "uniformization.speed_of_sound", "343" },
+
+        { "uniformization.auto_position_alpha", "1.0" },
+        { "uniformization.auto_position_epsilon_total_distance_error", "5e-5" },
+        { "uniformization.auto_position_epsilon_delta_total_distance_error", "1e-7" },
+        { "uniformization.auto_position_distance_relative_error", "0" },
+        { "uniformization.auto_position_iteration_count", "10000" },
+        { "uniformization.auto_position_thermal_iteration_count", "200" },
+        { "uniformization.auto_position_try_count", "50" },
+        { "uniformization.auto_position_count_threshold", "10" }
     }));
 
     EXPECT_EQ(configuration.discoveryEndpoint().ipAddress(), "192.168.1.255");
@@ -35,4 +46,14 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(configuration.routineIRSweepF2(), 2);
     EXPECT_EQ(configuration.routineIRSweepT(), 3);
     EXPECT_FLOAT_EQ(configuration.routineIRSweepMaxDelay(), 0.5);
+    EXPECT_FLOAT_EQ(configuration.speedOfSound(), 343);
+
+    EXPECT_FLOAT_EQ(configuration.autoPositionAlpha(), 1.0);
+    EXPECT_FLOAT_EQ(configuration.autoPositionEpsilonTotalDistanceError(), 5e-5);
+    EXPECT_FLOAT_EQ(configuration.autoPositionEpsilonDeltaTotalDistanceError(), 1e-7);
+    EXPECT_FLOAT_EQ(configuration.autoPositionDistanceRelativeError(), 0.0);
+    EXPECT_EQ(configuration.autoPositionIterationCount(), 10000);
+    EXPECT_EQ(configuration.autoPositionThermalIterationCount(), 200);
+    EXPECT_EQ(configuration.autoPositionTryCount(), 50);
+    EXPECT_EQ(configuration.autoPositionCountThreshold(), 10);
 }

@@ -11,8 +11,11 @@
 
 #include <SignalProcessing/SignalProcessor.h>
 
+#include <Uniformization/Model/AutoPosition.h>
 #include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
+
+#include <armadillo>
 
 #include <memory>
 
@@ -23,6 +26,8 @@ namespace adaptone
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<GenericSignalOverride> m_signalOverride;
         std::shared_ptr<SignalProcessor> m_signalProcessor;
+
+        std::shared_ptr<AutoPosition> m_autoPosition;
 
         const UniformizationServiceParameters& m_parameters;
 
@@ -36,10 +41,13 @@ namespace adaptone
         std::atomic<bool> m_stopped;
         std::unique_ptr<std::thread> m_uniformizationThread;
 
+        arma::mat m_speakersToProbesdelaysMat;
+
     public:
         UniformizationService(std::shared_ptr<Logger> logger,
             std::shared_ptr<GenericSignalOverride> signalOverride,
             std::shared_ptr<SignalProcessor> signalProcessor,
+            std::shared_ptr<AutoPosition> autoPosition,
             const UniformizationServiceParameters& parameters);
         virtual ~UniformizationService();
 

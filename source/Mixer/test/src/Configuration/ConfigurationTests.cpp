@@ -44,6 +44,15 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "uniformization.routine_ir_sweep_f2", "2" },
         { "uniformization.routine_ir_sweep_t", "3" },
         { "uniformization.routine_ir_sweep_max_delay", "0.5" },
+        { "uniformization.speed_of_sound", "343" },
+        { "uniformization.auto_position_alpha", "1.0" },
+        { "uniformization.auto_position_epsilon_total_distance_error", "5e-5" },
+        { "uniformization.auto_position_epsilon_delta_total_distance_error", "1e-7" },
+        { "uniformization.auto_position_distance_relative_error", "0" },
+        { "uniformization.auto_position_iteration_count", "10000" },
+        { "uniformization.auto_position_thermal_iteration_count", "200" },
+        { "uniformization.auto_position_try_count", "50" },
+        { "uniformization.auto_position_count_threshold", "10" },
 
         { "web_socket.endpoint", "^/echo/?$" },
         { "web_socket.port", "8080" }
@@ -84,6 +93,15 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.uniformization().routineIRSweepF1(), 1);
     EXPECT_EQ(configuration.uniformization().routineIRSweepF2(), 2);
     EXPECT_EQ(configuration.uniformization().routineIRSweepT(), 3);
+    EXPECT_FLOAT_EQ(configuration.uniformization().speedOfSound(), 343);
+    EXPECT_FLOAT_EQ(configuration.uniformization().autoPositionAlpha(), 1.0);
+    EXPECT_FLOAT_EQ(configuration.uniformization().autoPositionEpsilonTotalDistanceError(), 5e-5);
+    EXPECT_FLOAT_EQ(configuration.uniformization().autoPositionEpsilonDeltaTotalDistanceError(), 1e-7);
+    EXPECT_FLOAT_EQ(configuration.uniformization().autoPositionDistanceRelativeError(), 0.0);
+    EXPECT_EQ(configuration.uniformization().autoPositionIterationCount(), 10000);
+    EXPECT_EQ(configuration.uniformization().autoPositionThermalIterationCount(), 200);
+    EXPECT_EQ(configuration.uniformization().autoPositionTryCount(), 50);
+    EXPECT_EQ(configuration.uniformization().autoPositionCountThreshold(), 10);
     EXPECT_FLOAT_EQ(configuration.uniformization().routineIRSweepMaxDelay(), 0.5);
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");

@@ -15,10 +15,10 @@ SweepSignalOverride::SweepSignalOverride(PcmAudioFrameFormat format,
     m_sweepPcmAudioFrame(format, 1, frameSampleCount),
     m_frame(format, outputChannelCount, frameSampleCount)
 {
-    arma::vec sweepVec = logSinChirp<arma::vec>(f1, f2, period, sampleFrequency);
+    m_sweepVec = logSinChirp<arma::vec>(f1, f2, period, sampleFrequency);
 
     constexpr size_t ChannelCount = 1;
-    AudioFrame<double> sweepAudioFrame(ChannelCount, sweepVec.n_elem, sweepVec.memptr());
+    AudioFrame<double> sweepAudioFrame(ChannelCount, m_sweepVec.n_elem, m_sweepVec.memptr());
 
     PcmAudioFrame sweepPcmAudioFrame(sweepAudioFrame, format);
     m_sweepPcmAudioFrame = sweepPcmAudioFrame;

@@ -1,5 +1,7 @@
 #include <Uniformization/UniformizationService.h>
+
 #include <Uniformization/Communication/Messages/Tcp/RecordRequestMessage.h>
+#include <Uniformization/Math.h>
 
 #include <ctime>
 
@@ -12,10 +14,12 @@ constexpr chrono::milliseconds UniformizationServiceSleepDuration(10);
 UniformizationService::UniformizationService(shared_ptr<Logger> logger,
     shared_ptr<GenericSignalOverride> signalOverride,
     shared_ptr<SignalProcessor> signalProcessor,
+    shared_ptr<AutoPosition> autoPosition,
     const UniformizationServiceParameters& parameters) :
     m_logger(logger),
     m_signalOverride(signalOverride),
     m_signalProcessor(signalProcessor),
+    m_autoPosition(autoPosition),
     m_parameters(parameters),
     m_eqControlerEnabled(false),
     m_stopped(true)
@@ -72,11 +76,8 @@ void UniformizationService::listenToProbeSound(uint32_t probeId)
 
 Room UniformizationService::initializeRoom(vector<size_t> masterOutputIndexes)
 {
-
     m_eqControlerEnabled.store(false);
     lock_guard lock(m_probeServerMutex);
-
-    m_signalOverride->setCurrentSignalOverrideType<SweepSignalOverride>();
 
     arma::mat delaysMat = arma::zeros(masterOutputIndexes.size(), m_probeServers->probeCount());
     for (int i = 0; i < masterOutputIndexes.size(); i++)
@@ -85,16 +86,21 @@ Room UniformizationService::initializeRoom(vector<size_t> masterOutputIndexes)
         delaysMat.row(i) = computeDelaysFromSweepData(result);
     }
 
+    m_speakersToProbesdelaysMat = delaysMat;
 
+    arma::mat distanceSpeakersToProbesMat = delaysMat / m_parameters.speedOfSound();
 
-    Room room(2,2);
-    //TODO add initiazation code
+    Room room(masterOutputIndexes.size(), m_probeServers->probeCount());
+    m_autoPosition->computeRoomConfiguration2D(room, distanceSpeakersToProbesMat, true);
+
     return room;
 }
 
 optional<unordered_map<uint32_t, AudioFrame<double>>>
 UniformizationService::sweepRoutineAtOutputX(size_t masterOutputIndex)
 {
+    m_signalOverride->setCurrentSignalOverrideType<SweepSignalOverride>();
+
     timespec ts;
     timespec_get(&ts, TIME_UTC);
     struct tm recordStartTime;
@@ -109,8 +115,10 @@ UniformizationService::sweepRoutineAtOutputX(size_t masterOutputIndex)
 
     // Request record to all connected probes
     m_recordResponseMessageAgregator->reset(masterOutputIndex, m_probeServers->probeCount());
+
     RecordRequestMessage message(recordStartTime.tm_hour, recordStartTime.tm_min, recordStartTime.tm_sec, 0,
         durationMs, masterOutputIndex);
+
     m_probeServers->sendToProbes(message);
 
     // Wait until record time is met
@@ -125,14 +133,28 @@ UniformizationService::sweepRoutineAtOutputX(size_t masterOutputIndex)
     m_signalOverride->getSignalOverride<SweepSignalOverride>()->startSweep(masterOutputIndex);
 
     auto result = m_recordResponseMessageAgregator->read(round(1.5 * durationMs));
+
+    m_signalOverride->setCurrentSignalOverrideType<GenericSignalOverride>();
+
+    return result;
 }
 
-
 arma::vec UniformizationService::computeDelaysFromSweepData(std::optional<std::unordered_map<uint32_t,
-    AudioFrame<double>>> data)
+    AudioFrame<double>>> AudioFrames)
 {
+    size_t probesCount = AudioFrames->size();
+    arma::vec delays = arma::zeros<arma::vec>(probesCount);
+    const arma::vec sweepVec = m_signalOverride->getSignalOverride<SweepSignalOverride>()->sweepVec();
 
-    return arma::vec();
+    for (uint32_t i = 0; i < probesCount; i++)
+    {
+        arma::vec probeData((*AudioFrames).at(i).data(), (*AudioFrames).at(i).size(), false, false);
+        size_t sampleDelay = findDelay(probeData, sweepVec);
+        delays(i) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());
+        delays(i) += m_parameters.outputHardwareDelay();
+    }
+
+    return delays;
 }
 
 void UniformizationService::confirmRoomPositions()

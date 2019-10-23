@@ -21,6 +21,19 @@ namespace adaptone
         float m_routineIRSweepT;
         float m_routineIRSweepMaxDelay;
 
+        float m_speedOfSound;
+
+        float m_autoPositionAlpha;
+        float m_autoPositionEpsilonTotalDistanceError;
+        float m_autoPositionEpsilonDeltaTotalDistanceError;
+        float m_autoPositionDistanceRelativeError;
+        size_t m_autoPositionIterationCount;
+        size_t m_autoPositionThermalIterationCount;
+        size_t m_autoPositionTryCount;
+        size_t m_autoPositionCountThreshold;
+
+
+
     public:
         explicit UniformizationConfiguration(const Properties& properties);
         virtual ~UniformizationConfiguration();
@@ -37,6 +50,17 @@ namespace adaptone
         float routineIRSweepF2() const;
         float routineIRSweepT() const;
         float routineIRSweepMaxDelay() const;
+
+        float speedOfSound() const;
+
+        float autoPositionAlpha() const;
+        float autoPositionEpsilonTotalDistanceError() const;
+        float autoPositionEpsilonDeltaTotalDistanceError() const;
+        float autoPositionDistanceRelativeError() const;
+        size_t autoPositionIterationCount() const;
+        size_t autoPositionThermalIterationCount() const;
+        size_t autoPositionTryCount() const;
+        size_t autoPositionCountThreshold() const;
     };
 
     inline const Endpoint& UniformizationConfiguration::discoveryEndpoint() const
@@ -88,6 +112,50 @@ namespace adaptone
     {
         return m_routineIRSweepMaxDelay;
     };
+
+    inline float UniformizationConfiguration::speedOfSound() const
+    {
+        return m_speedOfSound;
+    };
+
+    inline float UniformizationConfiguration::autoPositionAlpha() const
+    {
+        return m_autoPositionAlpha;
+    }
+    inline float UniformizationConfiguration::autoPositionEpsilonTotalDistanceError() const
+    {
+        return m_autoPositionEpsilonTotalDistanceError;
+    }
+
+    inline float UniformizationConfiguration::autoPositionEpsilonDeltaTotalDistanceError() const
+    {
+        return m_autoPositionEpsilonDeltaTotalDistanceError;
+    }
+
+    inline float UniformizationConfiguration::autoPositionDistanceRelativeError() const
+    {
+        return m_autoPositionDistanceRelativeError;
+    }
+
+    inline size_t UniformizationConfiguration::autoPositionIterationCount() const
+    {
+        return m_autoPositionIterationCount;
+    }
+
+    inline size_t UniformizationConfiguration::autoPositionThermalIterationCount() const
+    {
+        return m_autoPositionThermalIterationCount;
+    }
+
+    inline size_t UniformizationConfiguration::autoPositionTryCount() const
+    {
+        return m_autoPositionTryCount;
+    }
+
+    inline size_t UniformizationConfiguration::autoPositionCountThreshold() const
+    {
+        return m_autoPositionCountThreshold;
+    }
 }
 
 #endif

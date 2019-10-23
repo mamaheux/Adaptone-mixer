@@ -14,8 +14,10 @@ namespace adaptone
         uint16_t m_udpReceivingPort;
         int m_probeTimeoutMs;
         std::size_t m_sampleFrequency;
-        float m_sweepDuration;
-        float m_sweepMaxDelay;
+        double m_sweepDuration;
+        double m_sweepMaxDelay;
+        double m_outputHardwareDelay;
+        double m_speedOfSound;
         PcmAudioFrameFormat m_format;
 
     public:
@@ -26,8 +28,10 @@ namespace adaptone
             uint16_t udpReceivingPort,
             int probeTimeoutMs,
             std::size_t sampleFrequency,
-            float sweepDuration,
-            float sweepMaxDelay,
+            double sweepDuration,
+            double sweepMaxDelay,
+            double outputHardwareDelay,
+            double m_speedOfSound,
             PcmAudioFrameFormat format);
         virtual ~UniformizationServiceParameters();
 
@@ -38,8 +42,11 @@ namespace adaptone
         uint16_t udpReceivingPort() const;
         int probeTimeoutMs() const;
         std::size_t sampleFrequency() const;
-        float sweepDuration() const;
-        float sweepMaxDelay() const;
+        double sweepDuration() const;
+        double sweepMaxDelay() const;
+        double outputHardwareDelay() const;
+        double speedOfSound() const;
+
         PcmAudioFrameFormat format() const;
 
         ProbeServerParameters toProbeServerParameters() const;
@@ -80,14 +87,24 @@ namespace adaptone
         return m_sampleFrequency;
     }
 
-    inline float UniformizationServiceParameters::sweepDuration() const
+    inline double UniformizationServiceParameters::sweepDuration() const
     {
         return m_sweepDuration;
     }
 
-    inline float UniformizationServiceParameters::sweepMaxDelay() const
+    inline double UniformizationServiceParameters::sweepMaxDelay() const
     {
         return m_sweepMaxDelay;
+    }
+
+    inline double UniformizationServiceParameters::outputHardwareDelay() const
+    {
+        return m_outputHardwareDelay;
+    }
+
+    inline double UniformizationServiceParameters::speedOfSound() const
+    {
+        return m_speedOfSound;
     }
 
     inline PcmAudioFrameFormat UniformizationServiceParameters::format() const

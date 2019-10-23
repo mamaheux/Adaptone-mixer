@@ -219,6 +219,16 @@ unique_ptr<UniformizationService> Mixer::createUniformizationService(shared_ptr<
     return make_unique<UniformizationService>(logger,
         outputSignalOverride,
         signalProcessor,
+        make_shared<AutoPosition>(
+            m_configuration.uniformization().autoPositionAlpha(),
+            m_configuration.uniformization().autoPositionEpsilonTotalDistanceError(),
+            m_configuration.uniformization().autoPositionEpsilonDeltaTotalDistanceError(),
+            m_configuration.uniformization().autoPositionDistanceRelativeError(),
+            m_configuration.uniformization().autoPositionIterationCount(),
+            m_configuration.uniformization().autoPositionThermalIterationCount(),
+            m_configuration.uniformization().autoPositionTryCount(),
+            m_configuration.uniformization().autoPositionCountThreshold()
+            ),
         m_configuration.toUniformizationServiceParameters());
 }
 

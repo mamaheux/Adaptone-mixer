@@ -6,6 +6,7 @@
 
 using namespace adaptone;
 using namespace std;
+using namespace arma;
 
 TEST(MathTests, logSinChirp_shouldReturnTheLogSinChirp)
 {
@@ -13,7 +14,7 @@ TEST(MathTests, logSinChirp_shouldReturnTheLogSinChirp)
     constexpr float Period = 1;
     constexpr size_t Fs = 44100;
 
-    arma::fvec chirp = logSinChirp<arma::fvec>(20.0, 10000.0, Period, Fs);
+    fvec chirp = logSinChirp<fvec>(20.0, 10000.0, Period, Fs);
 
     EXPECT_EQ(chirp.n_elem, 44100);
     EXPECT_NEAR(chirp(0), 0.0, Tolerance);
@@ -27,7 +28,7 @@ TEST(MathTests, linearRegression_shouldReturnTheGoodCoefficients)
 {
     constexpr float Tolerance = 0.00001;
 
-    const arma::mat Set =
+    const mat Set =
     {
         { 0, 1 },
         { 1, 2 },
@@ -38,10 +39,10 @@ TEST(MathTests, linearRegression_shouldReturnTheGoodCoefficients)
         { 0, 0 }
     };
 
-    arma::mat X = arma::ones(arma::size(Set));
+    mat X = ones(arma::size(Set));
     X.col(1) = Set.col(0);
 
-    arma::vec coeff = linearRegression(Set.col(1), X);
+    vec coeff = linearRegression(Set.col(1), X);
 
     EXPECT_NEAR(coeff(0), -0.10625, Tolerance);
     EXPECT_NEAR(coeff(1), 1.35039, Tolerance);
@@ -67,21 +68,21 @@ TEST(MathTests, computeRelativePositionsFromDistances_2D_shouldGetRelativePositi
         size_t setACount = rand() % 13 + 4; //value in range [4, 16]
         size_t setBCount = rand() % 13 + 4; //value in range [4, 16]
 
-        arma::mat setAPosMat = 10 * arma::randu<arma::mat>(setACount, Dimension);
-        arma::mat setBPosMat = 10 * arma::randu<arma::mat>(setBCount, Dimension);
-        arma::mat distMat = arma::zeros<arma::mat>(setACount, setBCount);
+        mat setAPosMat = 10 * randu<mat>(setACount, Dimension);
+        mat setBPosMat = 10 * randu<mat>(setBCount, Dimension);
+        mat distMat = zeros<mat>(setACount, setBCount);
 
         // compute distance between each pair of the two set (A and B)
         for (int i = 0; i < setACount; i++)
         {
             for (int j = 0; j < setBCount; j++)
             {
-                distMat(i, j) = arma::norm(setAPosMat.row(i) - setBPosMat.row(j));
+                distMat(i, j) = norm(setAPosMat.row(i) - setBPosMat.row(j));
             }
         }
 
-        arma::mat setAPositionNewMat;
-        arma::mat setBPositionNewMat;
+        mat setAPositionNewMat;
+        mat setBPositionNewMat;
 
         double totalDistanceError = computeRelativePositionsFromDistances(distMat, IterationCount, TryCount,
             ThermalIterationCount, Alpha, EpsilonTotalDistanceError, EpsilonDeltaTotalDistError, CountThreshold,
@@ -116,21 +117,21 @@ TEST(MathTests, computeRelativePositionsFromDistances_3D_shouldGetRelativePositi
         size_t setACount = rand() % 13 + 4; //value in range [4, 16]
         size_t setBCount = rand() % 13 + 4; //value in range [4, 16]
 
-        arma::mat setAPosMat = 10 * arma::randu<arma::mat>(setACount, Dimension);
-        arma::mat setBPosMat = 10 * arma::randu<arma::mat>(setBCount, Dimension);
-        arma::mat distMat = arma::zeros<arma::mat>(setACount, setBCount);
+        mat setAPosMat = 10 * randu<mat>(setACount, Dimension);
+        mat setBPosMat = 10 * randu<mat>(setBCount, Dimension);
+        mat distMat = zeros<mat>(setACount, setBCount);
 
         // compute distance between each pair of the two set (A and B)
         for (int i = 0; i < setACount; i++)
         {
             for (int j = 0; j < setBCount; j++)
             {
-                distMat(i, j) = arma::norm(setAPosMat.row(i) - setBPosMat.row(j));
+                distMat(i, j) = norm(setAPosMat.row(i) - setBPosMat.row(j));
             }
         }
 
-        arma::mat setAPositionNewMat;
-        arma::mat setBPositionNewMat;
+        mat setAPositionNewMat;
+        mat setBPositionNewMat;
 
         double totalDistanceError = computeRelativePositionsFromDistances(distMat, IterationCount, TryCount,
             ThermalIterationCount, Alpha, EpsilonTotalDistanceError, EpsilonDeltaTotalDistError, CountThreshold,
@@ -149,7 +150,7 @@ TEST(MathTests, rotateSet2D_shouldApplyProperRotationToAllPointsInTheSet)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set =
+    mat set =
     {
         { 0, 1 },
         { 1, 2 },
@@ -162,7 +163,7 @@ TEST(MathTests, rotateSet2D_shouldApplyProperRotationToAllPointsInTheSet)
 
     rotateSet2D(set, 0.25);
 
-    const arma::mat SetTarget =
+    const mat SetTarget =
     {
         { -0.24740, 0.96891 },
         { 0.47410, 2.18523 },
@@ -180,7 +181,7 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set =
+    mat set =
     {
         { 0, 1, 2 },
         { 1, 2, 3 },
@@ -190,11 +191,11 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
         { 0.5, 0.333, 1.4 },
         { 0, 0, 0 }
     };
-    arma::vec unitVec = {0,0,1};
+    vec unitVec = {0,0,1};
 
     rotateSetAroundVec3D(set, unitVec, 0.25);
 
-    arma::mat setTarget =
+    mat setTarget =
     {
         { -0.24740, 0.96891, 2.00000 },
         { 0.47410, 2.18523, 3.00000 },
@@ -207,7 +208,7 @@ TEST(MathTests, rotateSetAroundVec3D_shouldApplyProperRotationToAllPointsInTheSe
 
     EXPECT_MAT_NEAR(set, setTarget, Tolerance);
 
-    arma::vec vec = {-1.7, 2.45, 1.2};
+    vec vec = {-1.7, 2.45, 1.2};
 
     rotateSetAroundVec3D(set, vec, 2.64);
 
@@ -229,18 +230,18 @@ TEST(MathTests, moveSet_shouldApplyOffsetToAllPointsOfASet)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set =
+    mat set =
     {
         { 0, 1 },
         { 1, 2 },
         { -1, -2 },
     };
 
-    arma::vec offset = {1, -2.5};
+    vec offset = {1, -2.5};
 
     moveSet(set, offset);
 
-    const arma::mat SetTarget =
+    const mat SetTarget =
     {
         { 1, -1.5 },
         { 2, -0.5 },
@@ -254,14 +255,14 @@ TEST(MathTests, getSetCentroid_shouldGetTheCentroidOfASet)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set =
+    mat set =
     {
         { 0,  1 },
         { 1,  2 },
         { -1, -2 },
     };
 
-    arma::vec centroid = getSetCentroid(set);
+    vec centroid = getSetCentroid(set);
 
     EXPECT_NEAR(centroid(0), 0, Tolerance);
     EXPECT_NEAR(centroid(1), 0.33333333333, Tolerance);
@@ -271,7 +272,7 @@ TEST(MathTests, findSetAngle2D_shouldReturnAngleFromXAxisAndSetOrientation)
 {
     constexpr float Tolerance = 0.00001;
 
-    arma::mat set =
+    mat set =
     {
         { 0, 1 },
         { 1, 2 },
@@ -286,3 +287,28 @@ TEST(MathTests, findSetAngle2D_shouldReturnAngleFromXAxisAndSetOrientation)
 
     EXPECT_NEAR(angle, 0.93339, Tolerance);
 }
+
+TEST(MathTests, correlation_shouldReturnTheCorrelationVectorBetweenTwoVector)
+{
+    constexpr double Tolerance = 0.0001;
+    const vec A = { -1, 2, 3, 4, 5, 6, 9, -2, -3, 0, 4 };
+    const vec B = { 5, 4, 9, -3, 2, 0, -5, 2, -6, 4, 5 };
+
+    const vec RTarget = { -5, 6, 29, 18, 32, 22, 30, -13, -99, 1, 17, 75, 67, 71, 110, 57, 18, -34, 21, 16, 20 };
+    vec R = correlation(A, B);
+
+    EXPECT_MAT_NEAR(conv_to<mat>::from(R), conv_to<mat>::from(RTarget), Tolerance);
+}
+
+TEST(MathTests, findDelay_shouldReturnTheCorrelationVectorBetweenTwoVector)
+{
+    const vec A = { 0, 0, 0, 1, 2, 3, 2, 1, -1, -2, -3, -2, -1, 0, 0, 0 };
+    const vec B = { 0, 0, 0, 0, 0, 0, 1, 2, 3, 2, 1, -1, -2, -3, -2, -1 };
+
+    size_t delayAB = findDelay(A, B);
+    size_t delayBA = findDelay(B, A);
+
+    EXPECT_EQ(delayAB, -3);
+    EXPECT_EQ(delayBA, 3);
+}
+

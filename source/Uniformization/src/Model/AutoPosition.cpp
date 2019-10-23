@@ -11,6 +11,7 @@ using namespace std;
 AutoPosition::AutoPosition(double alpha,
     double epsilonTotalDistanceError,
     double epsilonDeltaTotalDistanceError,
+    double distanceRelativeError,
     size_t iterationCount,
     size_t thermalIterationCount,
     size_t tryCount,
@@ -18,6 +19,7 @@ AutoPosition::AutoPosition(double alpha,
     m_alpha(alpha),
     m_epsilonTotalDistanceError(epsilonTotalDistanceError),
     m_epsilonDeltaTotalDistanceError(epsilonDeltaTotalDistanceError),
+    m_distanceRelativeError(distanceRelativeError),
     m_iterationCount(iterationCount),
     m_thermalIterationCount(thermalIterationCount),
     m_tryCount(tryCount),
@@ -29,8 +31,7 @@ AutoPosition::~AutoPosition()
 {
 }
 
-void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMat, float distanceRelativeError,
-    bool randomInitConfiguration)
+void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMat, bool randomInitConfiguration)
 {
     //===================================================
     // 1) Get relative positions from distances matrix
@@ -55,9 +56,9 @@ void AutoPosition::computeRoomConfiguration2D(Room& room, const mat& distancesMa
 
     // Compute the epsilonTotalDistError value according to distances predicted relative error if one is defined
     double epsilonTotalDistError;
-    if (distanceRelativeError > 0.0)
+    if (m_distanceRelativeError > 0.0)
     {
-        epsilonTotalDistError = avgDist * distanceRelativeError;
+        epsilonTotalDistError = avgDist * m_distanceRelativeError;
     }
     else
     {
