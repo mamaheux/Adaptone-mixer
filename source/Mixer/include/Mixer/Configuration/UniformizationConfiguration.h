@@ -16,21 +16,21 @@ namespace adaptone
         uint16_t m_udpReceivingPort;
         int m_probeTimeoutMs;
 
-        float m_routineIRSweepF1;
-        float m_routineIRSweepF2;
-        float m_routineIRSweepT;
-        float m_routineIRSweepMaxDelay;
+        double m_routineIRSweepF1;
+        double m_routineIRSweepF2;
+        double m_routineIRSweepT;
+        double m_routineIRSweepMaxDelay;
 
-        float m_speedOfSound;
+        double m_speedOfSound;
 
-        float m_autoPositionAlpha;
-        float m_autoPositionEpsilonTotalDistanceError;
-        float m_autoPositionEpsilonDeltaTotalDistanceError;
-        float m_autoPositionDistanceRelativeError;
-        size_t m_autoPositionIterationCount;
-        size_t m_autoPositionThermalIterationCount;
-        size_t m_autoPositionTryCount;
-        size_t m_autoPositionCountThreshold;
+        double m_autoPositionAlpha;
+        double m_autoPositionEpsilonTotalDistanceError;
+        double m_autoPositionEpsilonDeltaTotalDistanceError;
+        double m_autoPositionDistanceRelativeError;
+        std::size_t m_autoPositionIterationCount;
+        std::size_t m_autoPositionThermalIterationCount;
+        std::size_t m_autoPositionTryCount;
+        std::size_t m_autoPositionCountThreshold;
 
 
 
@@ -46,21 +46,21 @@ namespace adaptone
         uint16_t udpReceivingPort() const;
         int probeTimeoutMs() const;
 
-        float routineIRSweepF1() const;
-        float routineIRSweepF2() const;
-        float routineIRSweepT() const;
-        float routineIRSweepMaxDelay() const;
+        double routineIRSweepF1() const;
+        double routineIRSweepF2() const;
+        double routineIRSweepT() const;
+        double routineIRSweepMaxDelay() const;
 
-        float speedOfSound() const;
+        double speedOfSound() const;
 
-        float autoPositionAlpha() const;
-        float autoPositionEpsilonTotalDistanceError() const;
-        float autoPositionEpsilonDeltaTotalDistanceError() const;
-        float autoPositionDistanceRelativeError() const;
-        size_t autoPositionIterationCount() const;
-        size_t autoPositionThermalIterationCount() const;
-        size_t autoPositionTryCount() const;
-        size_t autoPositionCountThreshold() const;
+        double autoPositionAlpha() const;
+        double autoPositionEpsilonTotalDistanceError() const;
+        double autoPositionEpsilonDeltaTotalDistanceError() const;
+        double autoPositionDistanceRelativeError() const;
+        std::size_t autoPositionIterationCount() const;
+        std::size_t autoPositionThermalIterationCount() const;
+        std::size_t autoPositionTryCount() const;
+        std::size_t autoPositionCountThreshold() const;
     };
 
     inline const Endpoint& UniformizationConfiguration::discoveryEndpoint() const
@@ -93,66 +93,66 @@ namespace adaptone
         return m_probeTimeoutMs;
     }
 
-    inline float UniformizationConfiguration::routineIRSweepF1() const
+    inline double UniformizationConfiguration::routineIRSweepF1() const
     {
         return m_routineIRSweepF1;
     }
 
-    inline float UniformizationConfiguration::routineIRSweepF2() const
+    inline double UniformizationConfiguration::routineIRSweepF2() const
     {
         return m_routineIRSweepF2;
     }
 
-    inline float UniformizationConfiguration::routineIRSweepT() const
+    inline double UniformizationConfiguration::routineIRSweepT() const
     {
         return m_routineIRSweepT;
-    };
+    }
 
-    inline float UniformizationConfiguration::routineIRSweepMaxDelay() const
+    inline double UniformizationConfiguration::routineIRSweepMaxDelay() const
     {
         return m_routineIRSweepMaxDelay;
-    };
+    }
 
-    inline float UniformizationConfiguration::speedOfSound() const
+    inline double UniformizationConfiguration::speedOfSound() const
     {
         return m_speedOfSound;
-    };
+    }
 
-    inline float UniformizationConfiguration::autoPositionAlpha() const
+    inline double UniformizationConfiguration::autoPositionAlpha() const
     {
         return m_autoPositionAlpha;
     }
-    inline float UniformizationConfiguration::autoPositionEpsilonTotalDistanceError() const
+    inline double UniformizationConfiguration::autoPositionEpsilonTotalDistanceError() const
     {
         return m_autoPositionEpsilonTotalDistanceError;
     }
 
-    inline float UniformizationConfiguration::autoPositionEpsilonDeltaTotalDistanceError() const
+    inline double UniformizationConfiguration::autoPositionEpsilonDeltaTotalDistanceError() const
     {
         return m_autoPositionEpsilonDeltaTotalDistanceError;
     }
 
-    inline float UniformizationConfiguration::autoPositionDistanceRelativeError() const
+    inline double UniformizationConfiguration::autoPositionDistanceRelativeError() const
     {
         return m_autoPositionDistanceRelativeError;
     }
 
-    inline size_t UniformizationConfiguration::autoPositionIterationCount() const
+    inline std::size_t UniformizationConfiguration::autoPositionIterationCount() const
     {
         return m_autoPositionIterationCount;
     }
 
-    inline size_t UniformizationConfiguration::autoPositionThermalIterationCount() const
+    inline std::size_t UniformizationConfiguration::autoPositionThermalIterationCount() const
     {
         return m_autoPositionThermalIterationCount;
     }
 
-    inline size_t UniformizationConfiguration::autoPositionTryCount() const
+    inline std::size_t UniformizationConfiguration::autoPositionTryCount() const
     {
         return m_autoPositionTryCount;
     }
 
-    inline size_t UniformizationConfiguration::autoPositionCountThreshold() const
+    inline std::size_t UniformizationConfiguration::autoPositionCountThreshold() const
     {
         return m_autoPositionCountThreshold;
     }

@@ -2,6 +2,8 @@
 #include <Uniformization/Communication/Messages/Tcp/RecordRequestMessage.h>
 #include <Uniformization/Math.h>
 
+#include <Utils/Exception/InvalidValueException.h>
+
 #include <ctime>
 
 using namespace adaptone;
@@ -13,12 +15,10 @@ constexpr chrono::milliseconds UniformizationServiceSleepDuration(10);
 UniformizationService::UniformizationService(shared_ptr<Logger> logger,
     shared_ptr<GenericSignalOverride> signalOverride,
     shared_ptr<SignalProcessor> signalProcessor,
-    shared_ptr<AutoPosition> autoPosition,
     const UniformizationServiceParameters& parameters) :
     m_logger(logger),
     m_signalOverride(signalOverride),
     m_signalProcessor(signalProcessor),
-    m_autoPosition(autoPosition),
     m_parameters(parameters),
     m_eqControlerEnabled(false),
     m_stopped(true),
@@ -36,6 +36,17 @@ UniformizationService::UniformizationService(shared_ptr<Logger> logger,
         probeMessageHandler,
         parameters.toProbeServerParameters());
 
+    shared_ptr<AutoPosition> autoPosition = make_shared<AutoPosition>(
+        m_parameters.autoPositionAlpha(),
+        m_parameters.autoPositionEpsilonTotalDistanceError(),
+        m_parameters.autoPositionEpsilonDeltaTotalDistanceError(),
+        m_parameters.autoPositionDistanceRelativeError(),
+        m_parameters.autoPositionIterationCount(),
+        m_parameters.autoPositionThermalIterationCount(),
+        m_parameters.autoPositionTryCount(),
+        m_parameters.autoPositionCountThreshold());
+
+    m_autoPosition = autoPosition;
     m_recordResponseMessageAgregator = recordResponseMessageAgregator;
     m_probeMessageHandler = probeMessageHandler;
     m_probeServers = probeServers;
@@ -74,7 +85,7 @@ void UniformizationService::listenToProbeSound(uint32_t probeId)
     m_signalOverride->setCurrentSignalOverrideType<HeadphoneProbeSignalOverride>();
 }
 
-Room UniformizationService::initializeRoom(vector<size_t> masterOutputIndexes)
+Room UniformizationService::initializeRoom(const vector<size_t>& masterOutputIndexes)
 {
     m_eqControlerEnabled.store(false);
     lock_guard lock(m_probeServerMutex);
@@ -87,7 +98,7 @@ Room UniformizationService::initializeRoom(vector<size_t> masterOutputIndexes)
     return m_room;
 }
 
-arma::mat UniformizationService::distancesExtractionRoutine(vector<size_t> masterOutputIndexes)
+arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>& masterOutputIndexes)
 {
     arma::mat delaysMat = arma::zeros(masterOutputIndexes.size(), m_probeServers->probeCount());
     for (int i = 0; i < masterOutputIndexes.size(); i++)
@@ -99,8 +110,8 @@ arma::mat UniformizationService::distancesExtractionRoutine(vector<size_t> maste
     return delaysMat / m_parameters.speedOfSound();
 }
 
-optional<unordered_map<uint32_t, AudioFrame<double>>>
-UniformizationService::sweepRoutineAtOutputX(size_t masterOutputIndex)
+unordered_map<uint32_t, AudioFrame<double>>
+UniformizationService::sweepRoutineAtOutputX(const size_t masterOutputIndex)
 {
     m_signalOverride->setCurrentSignalOverrideType<SweepSignalOverride>();
 
@@ -114,12 +125,14 @@ UniformizationService::sweepRoutineAtOutputX(size_t masterOutputIndex)
     ts.tv_sec += recordDelay;
     mktime(&recordStartTime);
 
-    uint16_t durationMs = round((m_parameters.sweepDuration() + m_parameters.sweepMaxDelay()) * 1000);
+    constexpr int SecToMs = 1000;
+    uint16_t durationMs = round((m_parameters.sweepDuration() + m_parameters.sweepMaxDelay()) * SecToMs);
 
     // Request record to all connected probes
     m_recordResponseMessageAgregator->reset(masterOutputIndex, m_probeServers->probeCount());
 
-    RecordRequestMessage message(recordStartTime.tm_hour, recordStartTime.tm_min, recordStartTime.tm_sec, 0,
+    constexpr size_t Millisecond = 0;
+    RecordRequestMessage message(recordStartTime.tm_hour, recordStartTime.tm_min, recordStartTime.tm_sec, Millisecond,
         durationMs, masterOutputIndex);
 
     m_probeServers->sendToProbes(message);
@@ -135,23 +148,28 @@ UniformizationService::sweepRoutineAtOutputX(size_t masterOutputIndex)
     // Start emitting the sweep at the desired output
     m_signalOverride->getSignalOverride<SweepSignalOverride>()->startSweep(masterOutputIndex);
 
-    auto result = m_recordResponseMessageAgregator->read(round(1.5 * durationMs));
+    constexpr float WaitTimeFactor = 1.5;
+    auto result = m_recordResponseMessageAgregator->read(round(WaitTimeFactor * durationMs));
+    if (result == nullopt)
+    {
+        THROW_NETWORK_EXCEPTION("Reading probes sweep data timeout");
+    }
 
-    m_signalOverride->setCurrentSignalOverrideType<GenericSignalOverride>();
+    m_signalOverride->setCurrentSignalOverrideType<PassthroughSignalOverride>();
 
-    return result;
+    return *result;
 }
 
-arma::vec UniformizationService::computeDelaysFromSweepData(std::optional<std::unordered_map<uint32_t,
-    AudioFrame<double>>> AudioFrames)
+arma::vec UniformizationService::computeDelaysFromSweepData(std::unordered_map<uint32_t,
+    AudioFrame<double>>& audioFrames)
 {
-    size_t probesCount = AudioFrames->size();
+    size_t probesCount = audioFrames.size();
     arma::vec delays = arma::zeros<arma::vec>(probesCount);
     const arma::vec sweepVec = m_signalOverride->getSignalOverride<SweepSignalOverride>()->sweepVec();
 
     for (uint32_t i = 0; i < probesCount; i++)
     {
-        arma::vec probeData((*AudioFrames).at(i).data(), (*AudioFrames).at(i).size(), false, false);
+        arma::vec probeData(audioFrames.at(i).data(), audioFrames.at(i).size(), false, false);
         size_t sampleDelay = findDelay(probeData, sweepVec);
         delays(i) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());
         delays(i) += m_parameters.outputHardwareDelay();

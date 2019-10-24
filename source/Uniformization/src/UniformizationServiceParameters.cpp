@@ -14,6 +14,14 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     double sweepMaxDelay,
     double outputHardwareDelay,
     double speedOfSound,
+    double autoPositionAlpha,
+    double autoPositionEpsilonTotalDistanceError,
+    double autoPositionEpsilonDeltaTotalDistanceError,
+    double autoPositionDistanceRelativeError,
+    size_t autoPositionIterationCount,
+    size_t autoPositionThermalIterationCount,
+    size_t autoPositionTryCount,
+    size_t autoPositionCountThreshold,
     PcmAudioFrameFormat format) :
     m_discoveryEndpoint(discoveryEndpoint),
     m_discoveryTimeoutMs(discoveryTimeoutMs),
@@ -26,6 +34,14 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     m_sweepMaxDelay(sweepMaxDelay),
     m_outputHardwareDelay(outputHardwareDelay),
     m_speedOfSound(speedOfSound),
+    m_autoPositionAlpha(autoPositionAlpha),
+    m_autoPositionEpsilonTotalDistanceError(autoPositionEpsilonTotalDistanceError),
+    m_autoPositionEpsilonDeltaTotalDistanceError(autoPositionEpsilonDeltaTotalDistanceError),
+    m_autoPositionDistanceRelativeError(autoPositionDistanceRelativeError),
+    m_autoPositionIterationCount(autoPositionIterationCount),
+    m_autoPositionThermalIterationCount(autoPositionThermalIterationCount),
+    m_autoPositionTryCount(autoPositionTryCount),
+    m_autoPositionCountThreshold(autoPositionCountThreshold),
     m_format(format)
 {
 }

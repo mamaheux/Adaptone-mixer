@@ -34,19 +34,21 @@ SweepSignalOverride::~SweepSignalOverride()
 
 const PcmAudioFrame& SweepSignalOverride::override(const PcmAudioFrame& frame)
 {
-    m_frame = frame;
+    m_frame.clear();
 
-    if (m_sweepActive)
+    if (m_sweepActive.load())
     {
-        size_t offset = m_currentSweepFrame * frame.sampleCount();
+        size_t offset = m_currentSweepFrame * frame.sampleCount() * formatSize(frame.format());
         m_currentSweepFrame++;
 
         if ((m_currentSweepFrame + 1) * frame.sampleCount() > m_sweepPcmAudioFrame.size())
         {
-            m_sweepActive = false;
+            m_sweepActive .store(false);
         }
 
-        PcmAudioFrame tmp(m_sweepPcmAudioFrame.format(), 1, frame.sampleCount(), m_sweepPcmAudioFrame.data() + offset);
+        constexpr size_t ChannelCount = 1;
+        PcmAudioFrame tmp(m_sweepPcmAudioFrame.format(), ChannelCount, frame.sampleCount(),
+            m_sweepPcmAudioFrame.data() + offset);
         m_frame.writeChannel(m_outputChannelIndex, tmp, 0);
     }
 

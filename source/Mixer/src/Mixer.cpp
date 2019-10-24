@@ -197,7 +197,7 @@ shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
     vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
     signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
     signalOverrides.emplace_back(make_shared<SweepSignalOverride>(
-        m_configuration.toUniformizationServiceParameters().format(),
+        m_configuration.audioOutput().format(),
         m_configuration.audio().sampleFrequency(),
         m_configuration.audio().outputChannelCount(),
         m_configuration.audio().frameSampleCount(),
@@ -219,16 +219,6 @@ unique_ptr<UniformizationService> Mixer::createUniformizationService(shared_ptr<
     return make_unique<UniformizationService>(logger,
         outputSignalOverride,
         signalProcessor,
-        make_shared<AutoPosition>(
-            m_configuration.uniformization().autoPositionAlpha(),
-            m_configuration.uniformization().autoPositionEpsilonTotalDistanceError(),
-            m_configuration.uniformization().autoPositionEpsilonDeltaTotalDistanceError(),
-            m_configuration.uniformization().autoPositionDistanceRelativeError(),
-            m_configuration.uniformization().autoPositionIterationCount(),
-            m_configuration.uniformization().autoPositionThermalIterationCount(),
-            m_configuration.uniformization().autoPositionTryCount(),
-            m_configuration.uniformization().autoPositionCountThreshold()
-            ),
         m_configuration.toUniformizationServiceParameters());
 }
 

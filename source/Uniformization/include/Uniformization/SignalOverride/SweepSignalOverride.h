@@ -5,13 +5,15 @@
 
 #include <armadillo>
 
+#include <atomic>
+
 namespace adaptone
 {
     class SweepSignalOverride : public SpecificSignalOverride
     {
         std::size_t m_outputChannelIndex;
         std::size_t m_currentSweepFrame;
-        bool m_sweepActive;
+        std::atomic<bool> m_sweepActive;
 
         arma::vec m_sweepVec;
         PcmAudioFrame m_frame;
@@ -36,12 +38,12 @@ namespace adaptone
     {
         m_outputChannelIndex = outputChannelIndex;
         m_currentSweepFrame = 0;
-        m_sweepActive = true;
+        m_sweepActive.store(true);
     }
 
     inline bool SweepSignalOverride::isSweepActive()
     {
-        return m_sweepActive;
+        return m_sweepActive.load();
     }
 
     inline const arma::vec& SweepSignalOverride::sweepVec() const

@@ -20,6 +20,7 @@ namespace adaptone
     private:
         Type m_type;
         PcmAudioFrameFormat m_format;
+        double m_hardwareDelay;
 
         //Raw file
         std::string m_filename;
@@ -27,7 +28,6 @@ namespace adaptone
 #if defined(__unix__) || defined(__linux__)
         //Alsa
         std::string m_device;
-        float m_hardwareDelay;
 #endif
 
     public:
@@ -41,7 +41,7 @@ namespace adaptone
 
 #if defined(__unix__) || defined(__linux__)
         const std::string& device() const;
-        const float hardwareDelay() const;
+        const double hardwareDelay() const;
 #endif
     };
 
@@ -67,7 +67,7 @@ namespace adaptone
         return m_device;
     }
 
-    inline const float AudioOutputConfiguration::hardwareDelay() const
+    inline const double AudioOutputConfiguration::hardwareDelay() const
     {
         return m_hardwareDelay;
     }

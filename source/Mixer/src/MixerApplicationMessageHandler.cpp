@@ -114,6 +114,7 @@ void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const R
 void MixerApplicationMessageHandler::handleSymmetryConfirmationMessage(const SymmetryConfirmationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    //TODO
 }
 
 void MixerApplicationMessageHandler::handleOptimizePositionMessage(const OptimizePositionMessage& message,

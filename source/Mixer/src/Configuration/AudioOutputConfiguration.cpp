@@ -19,6 +19,7 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
     string type = properties.get<string>(TypePropertyKey);
 
     m_format = parseFormat(properties.get<string>(FormatPropertyKey));
+    m_hardwareDelay = properties.get<double>(HardwareDelayPropertyKey);
 
     if (type == "raw_file")
     {
@@ -30,7 +31,6 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
     {
         m_type = AudioOutputConfiguration::Type::Alsa;
         m_device = properties.get<string>(DevicePropertyKey);
-        m_hardwareDelay = properties.get<float>(HardwareDelayPropertyKey);
     }
 #endif
     else

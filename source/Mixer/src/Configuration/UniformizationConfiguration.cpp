@@ -36,17 +36,17 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     m_udpReceivingPort = properties.get<uint16_t>(UdpReceivingPortPropertyKey);
     m_probeTimeoutMs = properties.get<int>(ProbeTimeoutMsPropertyKey);
 
-    m_routineIRSweepF1 = properties.get<float>(RoutineIRSweepF1PropertyKey);
-    m_routineIRSweepF2 = properties.get<float>(RoutineIRSweepF2PropertyKey);
-    m_routineIRSweepT = properties.get<float>(RoutineIRSweepTPropertyKey);
-    m_routineIRSweepMaxDelay = properties.get<float>(RoutineIRSweepMaxDelayPropertyKey);
+    m_routineIRSweepF1 = properties.get<double>(RoutineIRSweepF1PropertyKey);
+    m_routineIRSweepF2 = properties.get<double>(RoutineIRSweepF2PropertyKey);
+    m_routineIRSweepT = properties.get<double>(RoutineIRSweepTPropertyKey);
+    m_routineIRSweepMaxDelay = properties.get<double>(RoutineIRSweepMaxDelayPropertyKey);
 
-    m_speedOfSound = properties.get<float>(SpeedOfSoundPropertyKey);
+    m_speedOfSound = properties.get<double>(SpeedOfSoundPropertyKey);
 
-    m_autoPositionAlpha = properties.get<float>(AutoPositionAlphaPropertyKey);
-    m_autoPositionEpsilonTotalDistanceError = properties.get<float>(AutoPositionEpsilonTotalDistanceErrorPropertyKey);
-    m_autoPositionEpsilonDeltaTotalDistanceError = properties.get<float>(AutoPositionEpsilonDeltaTotalDistanceErrorPropertyKey);
-    m_autoPositionDistanceRelativeError = properties.get<float>(AutoPositionDistanceRelativeErrorPropertyKey);
+    m_autoPositionAlpha = properties.get<double>(AutoPositionAlphaPropertyKey);
+    m_autoPositionEpsilonTotalDistanceError = properties.get<double>(AutoPositionEpsilonTotalDistanceErrorPropertyKey);
+    m_autoPositionEpsilonDeltaTotalDistanceError = properties.get<double>(AutoPositionEpsilonDeltaTotalDistanceErrorPropertyKey);
+    m_autoPositionDistanceRelativeError = properties.get<double>(AutoPositionDistanceRelativeErrorPropertyKey);
     m_autoPositionIterationCount = properties.get<size_t>(AutoPositionIterationCountPropertyKey);
     m_autoPositionThermalIterationCount = properties.get<size_t>(AutoPositionThermalIterationCountPropertyKey);
     m_autoPositionTryCount = properties.get<size_t>(AutoPositionTryCountPropertyKey);

@@ -45,13 +45,14 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(configuration.routineIRSweepF1(), 1);
     EXPECT_EQ(configuration.routineIRSweepF2(), 2);
     EXPECT_EQ(configuration.routineIRSweepT(), 3);
-    EXPECT_FLOAT_EQ(configuration.routineIRSweepMaxDelay(), 0.5);
-    EXPECT_FLOAT_EQ(configuration.speedOfSound(), 343);
 
-    EXPECT_FLOAT_EQ(configuration.autoPositionAlpha(), 1.0);
-    EXPECT_FLOAT_EQ(configuration.autoPositionEpsilonTotalDistanceError(), 5e-5);
-    EXPECT_FLOAT_EQ(configuration.autoPositionEpsilonDeltaTotalDistanceError(), 1e-7);
-    EXPECT_FLOAT_EQ(configuration.autoPositionDistanceRelativeError(), 0.0);
+    EXPECT_DOUBLE_EQ(configuration.routineIRSweepMaxDelay(), 0.5);
+    EXPECT_DOUBLE_EQ(configuration.speedOfSound(), 343);
+
+    EXPECT_DOUBLE_EQ(configuration.autoPositionAlpha(), 1.0);
+    EXPECT_DOUBLE_EQ(configuration.autoPositionEpsilonTotalDistanceError(), 5e-5);
+    EXPECT_DOUBLE_EQ(configuration.autoPositionEpsilonDeltaTotalDistanceError(), 1e-7);
+    EXPECT_DOUBLE_EQ(configuration.autoPositionDistanceRelativeError(), 0.0);
     EXPECT_EQ(configuration.autoPositionIterationCount(), 10000);
     EXPECT_EQ(configuration.autoPositionThermalIterationCount(), 200);
     EXPECT_EQ(configuration.autoPositionTryCount(), 50);
