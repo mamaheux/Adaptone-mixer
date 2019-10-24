@@ -41,7 +41,8 @@ namespace adaptone
         std::atomic<bool> m_stopped;
         std::unique_ptr<std::thread> m_uniformizationThread;
 
-        arma::mat m_speakersToProbesdelaysMat;
+        arma::mat m_speakersToProbesDistancesMat;
+        Room m_room;
 
     public:
         UniformizationService(std::shared_ptr<Logger> logger,
@@ -68,6 +69,7 @@ namespace adaptone
 
         std::optional<std::unordered_map<uint32_t, AudioFrame<double>>>sweepRoutineAtOutputX(size_t masterOutputIndex);
         arma::vec computeDelaysFromSweepData(std::optional<std::unordered_map<uint32_t, AudioFrame<double>>> data);
+        arma::mat distancesExtractionRoutine(std::vector<size_t> masterOutputIndexes);
     };
 }
 

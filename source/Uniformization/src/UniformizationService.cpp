@@ -1,5 +1,4 @@
 #include <Uniformization/UniformizationService.h>
-
 #include <Uniformization/Communication/Messages/Tcp/RecordRequestMessage.h>
 #include <Uniformization/Math.h>
 
@@ -22,7 +21,8 @@ UniformizationService::UniformizationService(shared_ptr<Logger> logger,
     m_autoPosition(autoPosition),
     m_parameters(parameters),
     m_eqControlerEnabled(false),
-    m_stopped(true)
+    m_stopped(true),
+    m_room(Room(0,0))
 {
     shared_ptr<RecordResponseMessageAgregator> recordResponseMessageAgregator =
         make_shared<RecordResponseMessageAgregator>(parameters.format());
@@ -79,6 +79,16 @@ Room UniformizationService::initializeRoom(vector<size_t> masterOutputIndexes)
     m_eqControlerEnabled.store(false);
     lock_guard lock(m_probeServerMutex);
 
+    m_speakersToProbesDistancesMat = distancesExtractionRoutine(masterOutputIndexes);
+
+    m_room = Room(masterOutputIndexes.size(), m_probeServers->probeCount());
+    m_autoPosition->computeRoomConfiguration2D(m_room, m_speakersToProbesDistancesMat, true);
+
+    return m_room;
+}
+
+arma::mat UniformizationService::distancesExtractionRoutine(vector<size_t> masterOutputIndexes)
+{
     arma::mat delaysMat = arma::zeros(masterOutputIndexes.size(), m_probeServers->probeCount());
     for (int i = 0; i < masterOutputIndexes.size(); i++)
     {
@@ -86,14 +96,7 @@ Room UniformizationService::initializeRoom(vector<size_t> masterOutputIndexes)
         delaysMat.row(i) = computeDelaysFromSweepData(result);
     }
 
-    m_speakersToProbesdelaysMat = delaysMat;
-
-    arma::mat distanceSpeakersToProbesMat = delaysMat / m_parameters.speedOfSound();
-
-    Room room(masterOutputIndexes.size(), m_probeServers->probeCount());
-    m_autoPosition->computeRoomConfiguration2D(room, distanceSpeakersToProbesMat, true);
-
-    return room;
+    return delaysMat / m_parameters.speedOfSound();
 }
 
 optional<unordered_map<uint32_t, AudioFrame<double>>>

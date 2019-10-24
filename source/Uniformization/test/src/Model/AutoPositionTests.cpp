@@ -9,7 +9,7 @@ using namespace std;
 
 TEST(AutoPositionTests, computeRoomConfiguration2D_shouldFindProperRoomConfiguration)
 {
-    constexpr float Tolerance = 0.5;
+    constexpr float Tolerance = 0.25;
 
     constexpr int TestCount = 5;
 
