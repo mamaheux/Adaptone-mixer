@@ -95,9 +95,9 @@ Room UniformizationService::initializeRoom(const vector<size_t>& masterOutputInd
     m_eqControlerEnabled.store(false);
     lock_guard lock(m_probeServerMutex);
 
-    m_speakersToProbesDistancesMat = distancesExtractionRoutine(masterOutputIndexes);
-
     m_room = Room(masterOutputIndexes.size(), m_probeServers->probeCount());
+
+    m_speakersToProbesDistancesMat = distancesExtractionRoutine(masterOutputIndexes);
     m_autoPosition->computeRoomConfiguration2D(m_room, m_speakersToProbesDistancesMat, true);
 
     return m_room;
@@ -105,11 +105,17 @@ Room UniformizationService::initializeRoom(const vector<size_t>& masterOutputInd
 
 arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>& masterOutputIndexes)
 {
+    std::vector<Speaker> speakers = m_room.speakers();
     arma::mat delaysMat = arma::zeros(masterOutputIndexes.size(), m_probeServers->probeCount());
     for (int i = 0; i < masterOutputIndexes.size(); i++)
     {
         auto result = sweepRoutineAtOutputX(masterOutputIndexes[i]);
-        delaysMat.row(i) = computeDelaysFromSweepData(result);
+        Metrics metrics = computeMetricsFromSweepData(result);
+
+        delaysMat.row(i) = metrics.m_delays;
+
+        speakers[i].setDirectivities(metrics.m_directivities);
+        speakers[i].setId(masterOutputIndexes[i]);
     }
 
     return delaysMat / m_parameters.speedOfSound();
@@ -165,22 +171,39 @@ unordered_map<uint32_t, AudioFrame<double>> UniformizationService::sweepRoutineA
     return *result;
 }
 
-arma::vec UniformizationService::computeDelaysFromSweepData(std::unordered_map<uint32_t,
+Metrics UniformizationService::computeMetricsFromSweepData(std::unordered_map<uint32_t,
     AudioFrame<double>>& audioFrames)
 {
     size_t probesCount = audioFrames.size();
+    Metrics metrics;
     arma::vec delays = arma::zeros<arma::vec>(probesCount);
+    arma::vec directivities = arma::zeros<arma::vec>(probesCount);
+
     const arma::vec sweepVec = m_signalOverride->getSignalOverride<SweepSignalOverride>()->sweepVec();
 
-    for (uint32_t i = 0; i < probesCount; i++)
+    std::vector<Probe> probes = m_room.probes();
+    size_t n = 0;
+    for (std::pair<uint32_t, AudioFrame<double>> element: audioFrames)
     {
-        arma::vec probeData(audioFrames.at(i).data(), audioFrames.at(i).size(), false, false);
+        arma::vec probeData(element.second.data(), element.second.size(), false, false);
         size_t sampleDelay = findDelay(probeData, sweepVec);
-        delays(i) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());
-        delays(i) += m_parameters.outputHardwareDelay();
+
+        delays(n) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());
+        delays(n) -= m_parameters.outputHardwareDelay();
+
+        arma::vec bandAverage = averageFrequencyBand(probeData(arma::span(sampleDelay, sampleDelay + sweepVec.size())),
+            arma::conv_to<arma::vec>::from(m_parameters.eqCenterFrequencies()), m_parameters.sampleFrequency());
+
+        //directivities(n) = arma::mean(bandAverageTarget - bandAverage + \
+        //   20 * arma::log10(delays(n) / m_parameters.speedOfSound()))
+
+        probes[n].setId(element.first);
+        n++;
     }
 
-    return delays;
+    metrics.m_delays = delays;
+    metrics.m_directivities = directivities;
+    return metrics;
 }
 
 void UniformizationService::confirmRoomPositions()

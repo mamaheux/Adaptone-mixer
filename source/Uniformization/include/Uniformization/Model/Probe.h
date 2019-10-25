@@ -7,11 +7,13 @@ namespace adaptone
 {
     class Probe : public ModelElement
     {
+
     public:
         Probe();
         Probe(double x, double y, uint32_t id);
         Probe(double x, double y, double z, uint32_t id);
         ~Probe() override;
+
     };
 }
 

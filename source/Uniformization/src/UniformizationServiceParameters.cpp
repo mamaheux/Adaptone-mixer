@@ -22,6 +22,7 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     size_t autoPositionThermalIterationCount,
     size_t autoPositionTryCount,
     size_t autoPositionCountThreshold,
+    vector<double> eqCenterFrequencies,
     PcmAudioFrameFormat format) :
     m_discoveryEndpoint(discoveryEndpoint),
     m_discoveryTimeoutMs(discoveryTimeoutMs),
@@ -42,6 +43,7 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     m_autoPositionThermalIterationCount(autoPositionThermalIterationCount),
     m_autoPositionTryCount(autoPositionTryCount),
     m_autoPositionCountThreshold(autoPositionCountThreshold),
+    m_eqCenterFrequencies(eqCenterFrequencies),
     m_format(format)
 {
 }

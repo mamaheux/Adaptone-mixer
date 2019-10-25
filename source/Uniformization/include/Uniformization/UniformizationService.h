@@ -20,8 +20,15 @@
 
 #include <memory>
 
+
 namespace adaptone
 {
+    struct Metrics
+    {
+        arma::vec m_directivities;
+        arma::vec m_delays;
+    };
+
     class UniformizationService
     {
         std::shared_ptr<Logger> m_logger;
@@ -71,7 +78,7 @@ namespace adaptone
 
         std::unordered_map<uint32_t, AudioFrame<double>> sweepRoutineAtOutputX(
             const size_t masterOutputIndex);
-        arma::vec computeDelaysFromSweepData(std::unordered_map<uint32_t, AudioFrame<double>>& data);
+        Metrics computeMetricsFromSweepData(std::unordered_map<uint32_t, AudioFrame<double>>& data);
         arma::mat distancesExtractionRoutine(const std::vector<size_t>& masterOutputIndexes);
     };
 }
