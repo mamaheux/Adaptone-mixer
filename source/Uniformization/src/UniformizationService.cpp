@@ -85,6 +85,11 @@ void UniformizationService::listenToProbeSound(uint32_t probeId)
     m_signalOverride->setCurrentSignalOverrideType<HeadphoneProbeSignalOverride>();
 }
 
+void UniformizationService::stopProbeListening()
+{
+    m_signalOverride->setCurrentSignalOverrideType<PassthroughSignalOverride>();
+}
+
 Room UniformizationService::initializeRoom(const vector<size_t>& masterOutputIndexes)
 {
     m_eqControlerEnabled.store(false);

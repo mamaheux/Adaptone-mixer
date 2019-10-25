@@ -45,6 +45,8 @@ MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<Channe
     ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAllProcessingParametersMessage);
+    ADD_HANDLE_FUNCTION(ListenProbeMessage);
+    ADD_HANDLE_FUNCTION(StopProbeListeningMessage);
 }
 
 MixerApplicationMessageHandler::~MixerApplicationMessageHandler()
@@ -264,6 +266,18 @@ void MixerApplicationMessageHandler::handleChangeAllProcessingParametersMessage(
     {
         applyAuxiliaryProcessingParameters(auxiliary);
     }
+}
+
+void MixerApplicationMessageHandler::handleListenProbeMessage(const ListenProbeMessage& message,
+    const std::function<void(const ApplicationMessage&)>& send)
+{
+    m_uniformizationService->listenToProbeSound(message.probeId());
+}
+
+void MixerApplicationMessageHandler::handleStopProbeListeningMessage(const StopProbeListeningMessage& message,
+    const std::function<void(const ApplicationMessage&)>& send)
+{
+    m_uniformizationService->stopProbeListening();
 }
 
 void MixerApplicationMessageHandler::applyInputProcessingParameters(const vector<InputProcessingParameters>& inputs)
