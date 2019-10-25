@@ -36,7 +36,7 @@ UniformizationService::UniformizationService(shared_ptr<Logger> logger,
         probeMessageHandler,
         parameters.toProbeServerParameters());
 
-    shared_ptr<AutoPosition> autoPosition = make_shared<AutoPosition>(
+    unique_ptr<AutoPosition> autoPosition = make_unique<AutoPosition>(
         m_parameters.autoPositionAlpha(),
         m_parameters.autoPositionEpsilonTotalDistanceError(),
         m_parameters.autoPositionEpsilonDeltaTotalDistanceError(),
