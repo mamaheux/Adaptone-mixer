@@ -14,9 +14,12 @@ AudioOutputConfiguration::AudioOutputConfiguration(const Properties& properties)
 
     constexpr const char* DevicePropertyKey = "audio.output.device";
 
+    constexpr const char* HardwareDelayPropertyKey = "audio.output.hardware_delay";
+
     string type = properties.get<string>(TypePropertyKey);
 
     m_format = parseFormat(properties.get<string>(FormatPropertyKey));
+    m_hardwareDelay = properties.get<double>(HardwareDelayPropertyKey);
 
     if (type == "raw_file")
     {

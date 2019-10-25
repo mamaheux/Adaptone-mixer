@@ -20,13 +20,13 @@ static constexpr size_t DurationSerializePayloadOffset = 5;
 static constexpr size_t RecordIdSerializePayloadOffset = 7;
 
 RecordRequestMessage::RecordRequestMessage(uint8_t hours, uint8_t minutes, uint8_t seconds,
-    uint16_t milliseconds, uint16_t duration, uint8_t recordId) :
+    uint16_t milliseconds, uint16_t durationMs, uint8_t recordId) :
     PayloadMessage(Id, 8),
     m_hours(hours),
     m_minutes(minutes),
     m_seconds(seconds),
     m_milliseconds(milliseconds),
-    m_duration(duration),
+    m_durationMs(durationMs),
     m_recordId(recordId)
 {
 }
@@ -57,7 +57,7 @@ void RecordRequestMessage::serializePayload(NetworkBufferView buffer) const
     *reinterpret_cast<uint16_t*>(buffer.data() + MillisecondsSerializePayloadOffset) =
         boost::endian::native_to_big(m_milliseconds);
     *reinterpret_cast<uint16_t*>(buffer.data() + DurationSerializePayloadOffset) =
-        boost::endian::native_to_big(m_duration);
+        boost::endian::native_to_big(m_durationMs);
 
     buffer.data()[RecordIdSerializePayloadOffset] = m_recordId;
 }

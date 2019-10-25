@@ -27,6 +27,16 @@ namespace adaptone
 
     double findSetAngle2D(const arma::mat& set);
 
+    inline arma::vec correlation(const arma::vec& A, const arma::vec& B)
+    {
+        return arma::conv(A, arma::reverse(B));
+    }
+
+    inline size_t findDelay(const arma::vec& A, const arma::vec& B)
+    {
+        return arma::index_max(correlation(A,B)) - (A.size() + B.size() - 2) / 2;
+    }
+
     template<class T>
     inline T logSinChirp(double f1, double f2, double period, std::size_t fs)
     {

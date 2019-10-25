@@ -14,6 +14,20 @@ namespace adaptone
         uint16_t m_udpReceivingPort;
         int m_probeTimeoutMs;
         std::size_t m_sampleFrequency;
+        double m_sweepDuration;
+        double m_sweepMaxDelay;
+        double m_outputHardwareDelay;
+        double m_speedOfSound;
+
+        double m_autoPositionAlpha;
+        double m_autoPositionEpsilonTotalDistanceError;
+        double m_autoPositionEpsilonDeltaTotalDistanceError;
+        double m_autoPositionDistanceRelativeError;
+        std::size_t m_autoPositionIterationCount;
+        std::size_t m_autoPositionThermalIterationCount;
+        std::size_t m_autoPositionTryCount;
+        std::size_t m_autoPositionCountThreshold;
+
         PcmAudioFrameFormat m_format;
 
     public:
@@ -24,6 +38,18 @@ namespace adaptone
             uint16_t udpReceivingPort,
             int probeTimeoutMs,
             std::size_t sampleFrequency,
+            double sweepDuration,
+            double sweepMaxDelay,
+            double outputHardwareDelay,
+            double m_speedOfSound,
+            double autoPositionAlpha,
+            double autoPositionEpsilonTotalDistanceError,
+            double autoPositionEpsilonDeltaTotalDistanceError,
+            double autoPositionDistanceRelativeError,
+            std::size_t autoPositionIterationCount,
+            std::size_t autoPositionThermalIterationCount,
+            std::size_t autoPositionTryCount,
+            std::size_t autoPositionCountThreshold,
             PcmAudioFrameFormat format);
         virtual ~UniformizationServiceParameters();
 
@@ -34,6 +60,19 @@ namespace adaptone
         uint16_t udpReceivingPort() const;
         int probeTimeoutMs() const;
         std::size_t sampleFrequency() const;
+        double sweepDuration() const;
+        double sweepMaxDelay() const;
+        double outputHardwareDelay() const;
+        double speedOfSound() const;
+        double autoPositionAlpha() const;
+        double autoPositionEpsilonTotalDistanceError() const;
+        double autoPositionEpsilonDeltaTotalDistanceError() const;
+        double autoPositionDistanceRelativeError() const;
+        std::size_t autoPositionIterationCount() const;
+        std::size_t autoPositionThermalIterationCount() const;
+        std::size_t autoPositionTryCount() const;
+        std::size_t autoPositionCountThreshold() const;
+
         PcmAudioFrameFormat format() const;
 
         ProbeServerParameters toProbeServerParameters() const;
@@ -72,6 +111,66 @@ namespace adaptone
     inline std::size_t UniformizationServiceParameters::sampleFrequency() const
     {
         return m_sampleFrequency;
+    }
+
+    inline double UniformizationServiceParameters::sweepDuration() const
+    {
+        return m_sweepDuration;
+    }
+
+    inline double UniformizationServiceParameters::sweepMaxDelay() const
+    {
+        return m_sweepMaxDelay;
+    }
+
+    inline double UniformizationServiceParameters::outputHardwareDelay() const
+    {
+        return m_outputHardwareDelay;
+    }
+
+    inline double UniformizationServiceParameters::speedOfSound() const
+    {
+        return m_speedOfSound;
+    }
+
+    inline double UniformizationServiceParameters::autoPositionAlpha() const
+    {
+        return m_autoPositionAlpha;
+    }
+
+    inline double UniformizationServiceParameters::autoPositionEpsilonTotalDistanceError() const
+    {
+        return m_autoPositionEpsilonTotalDistanceError;
+    }
+
+    inline double UniformizationServiceParameters::autoPositionEpsilonDeltaTotalDistanceError() const
+    {
+        return m_autoPositionEpsilonDeltaTotalDistanceError;
+    }
+
+    inline double UniformizationServiceParameters::autoPositionDistanceRelativeError() const
+    {
+        return m_autoPositionDistanceRelativeError;
+    }
+
+    inline std::size_t UniformizationServiceParameters::autoPositionIterationCount() const
+    {
+        return m_autoPositionIterationCount;
+    }
+
+    inline std::size_t UniformizationServiceParameters::autoPositionThermalIterationCount() const
+    {
+        return m_autoPositionThermalIterationCount;
+    }
+
+    inline std::size_t UniformizationServiceParameters::autoPositionTryCount() const
+    {
+        return m_autoPositionTryCount;
+    }
+
+    inline std::size_t UniformizationServiceParameters::autoPositionCountThreshold() const
+    {
+        return m_autoPositionCountThreshold;
     }
 
     inline PcmAudioFrameFormat UniformizationServiceParameters::format() const

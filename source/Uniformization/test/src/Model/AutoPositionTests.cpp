@@ -9,7 +9,7 @@ using namespace std;
 
 TEST(AutoPositionTests, computeRoomConfiguration2D_shouldFindProperRoomConfiguration)
 {
-    constexpr float Tolerance = 0.5;
+    constexpr float Tolerance = 0.25;
 
     constexpr int TestCount = 5;
 
@@ -62,10 +62,10 @@ TEST(AutoPositionTests, computeRoomConfiguration2D_shouldFindProperRoomConfigura
 
         Room room = Room(speakersNewMat, probesNewMat);
 
-        AutoPosition autoPos = AutoPosition(Alpha, EpsilonTotalDistanceError, EpsilonDeltaTotalDistanceError, IterationCount,
-            ThermalIterationCount, TryCount, CountThreshold);
+        AutoPosition autoPos = AutoPosition(Alpha, EpsilonTotalDistanceError, EpsilonDeltaTotalDistanceError, DistanceRelativeError,
+            IterationCount, ThermalIterationCount, TryCount, CountThreshold);
 
-        autoPos.computeRoomConfiguration2D(room, distancesMat, DistanceRelativeError, true);
+        autoPos.computeRoomConfiguration2D(room, distancesMat, true);
 
         speakersNewMat = room.getSpeakersPosMat();
         probesNewMat = room.getProbesPosMat();

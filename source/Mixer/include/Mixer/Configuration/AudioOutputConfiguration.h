@@ -20,6 +20,7 @@ namespace adaptone
     private:
         Type m_type;
         PcmAudioFrameFormat m_format;
+        double m_hardwareDelay;
 
         //Raw file
         std::string m_filename;
@@ -35,6 +36,7 @@ namespace adaptone
 
         Type type() const;
         PcmAudioFrameFormat format() const;
+        const double hardwareDelay() const;
 
         const std::string& filename() const;
 
@@ -51,6 +53,11 @@ namespace adaptone
     inline PcmAudioFrameFormat AudioOutputConfiguration::format() const
     {
         return m_format;
+    }
+
+    inline const double AudioOutputConfiguration::hardwareDelay() const
+    {
+        return m_hardwareDelay;
     }
 
     inline const std::string& AudioOutputConfiguration::filename() const

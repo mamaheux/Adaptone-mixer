@@ -15,6 +15,18 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     constexpr const char* RoutineIRSweepF1PropertyKey = "uniformization.routine_ir_sweep_f1";
     constexpr const char* RoutineIRSweepF2PropertyKey = "uniformization.routine_ir_sweep_f2";
     constexpr const char* RoutineIRSweepTPropertyKey = "uniformization.routine_ir_sweep_t";
+    constexpr const char* RoutineIRSweepMaxDelayPropertyKey = "uniformization.routine_ir_sweep_max_delay";
+
+    constexpr const char* SpeedOfSoundPropertyKey = "uniformization.speed_of_sound";
+
+    constexpr const char* AutoPositionAlphaPropertyKey = "uniformization.auto_position_alpha";
+    constexpr const char* AutoPositionEpsilonTotalDistanceErrorPropertyKey = "uniformization.auto_position_epsilon_total_distance_error";
+    constexpr const char* AutoPositionEpsilonDeltaTotalDistanceErrorPropertyKey = "uniformization.auto_position_epsilon_delta_total_distance_error";
+    constexpr const char* AutoPositionDistanceRelativeErrorPropertyKey = "uniformization.auto_position_distance_relative_error";
+    constexpr const char* AutoPositionIterationCountPropertyKey = "uniformization.auto_position_iteration_count";
+    constexpr const char* AutoPositionThermalIterationCountPropertyKey = "uniformization.auto_position_thermal_iteration_count";
+    constexpr const char* AutoPositionTryCountPropertyKey = "uniformization.auto_position_try_count";
+    constexpr const char* AutoPositionCountThresholdPropertyKey = "uniformization.auto_position_count_threshold";
 
     m_discoveryEndpoint = properties.get<Endpoint>(DiscoveryEndpointPropertyKey);
     m_discoveryTimeoutMs = properties.get<int>(DiscoveryTimeoutMsPropertyKey);
@@ -24,9 +36,21 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     m_udpReceivingPort = properties.get<uint16_t>(UdpReceivingPortPropertyKey);
     m_probeTimeoutMs = properties.get<int>(ProbeTimeoutMsPropertyKey);
 
-    m_routineIRSweepF1 = properties.get<float>(RoutineIRSweepF1PropertyKey);
-    m_routineIRSweepF2 = properties.get<float>(RoutineIRSweepF2PropertyKey);
-    m_routineIRSweepT = properties.get<float>(RoutineIRSweepTPropertyKey);
+    m_routineIRSweepF1 = properties.get<double>(RoutineIRSweepF1PropertyKey);
+    m_routineIRSweepF2 = properties.get<double>(RoutineIRSweepF2PropertyKey);
+    m_routineIRSweepT = properties.get<double>(RoutineIRSweepTPropertyKey);
+    m_routineIRSweepMaxDelay = properties.get<double>(RoutineIRSweepMaxDelayPropertyKey);
+
+    m_speedOfSound = properties.get<double>(SpeedOfSoundPropertyKey);
+
+    m_autoPositionAlpha = properties.get<double>(AutoPositionAlphaPropertyKey);
+    m_autoPositionEpsilonTotalDistanceError = properties.get<double>(AutoPositionEpsilonTotalDistanceErrorPropertyKey);
+    m_autoPositionEpsilonDeltaTotalDistanceError = properties.get<double>(AutoPositionEpsilonDeltaTotalDistanceErrorPropertyKey);
+    m_autoPositionDistanceRelativeError = properties.get<double>(AutoPositionDistanceRelativeErrorPropertyKey);
+    m_autoPositionIterationCount = properties.get<size_t>(AutoPositionIterationCountPropertyKey);
+    m_autoPositionThermalIterationCount = properties.get<size_t>(AutoPositionThermalIterationCountPropertyKey);
+    m_autoPositionTryCount = properties.get<size_t>(AutoPositionTryCountPropertyKey);
+    m_autoPositionCountThreshold = properties.get<size_t>(AutoPositionCountThresholdPropertyKey);
 }
 
 UniformizationConfiguration::~UniformizationConfiguration()

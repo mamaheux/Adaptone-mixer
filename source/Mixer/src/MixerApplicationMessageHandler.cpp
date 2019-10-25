@@ -78,48 +78,43 @@ void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(
 void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const LaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    this_thread::sleep_for(2s);
-    send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, PositionType::Speaker),
-            ConfigurationPosition(2.5, 0, PositionType::Speaker),
-            ConfigurationPosition(5, 0, PositionType::Speaker),
-            ConfigurationPosition(7.5, 0, PositionType::Speaker),
-            ConfigurationPosition(10, 0, PositionType::Speaker),
-            ConfigurationPosition(1.25, 10, PositionType::Probe),
-            ConfigurationPosition(3.75, 10, PositionType::Probe),
-            ConfigurationPosition(6.25, 10, PositionType::Probe),
-            ConfigurationPosition(8.75, 10, PositionType::Probe) },
-        { ConfigurationPosition(10, 10, PositionType::Speaker) }));
+    vector<size_t> masterOutputIndexes =  m_channelIdMapping->getMasterOutputIndexes();
+    Room room = m_uniformizationService->initializeRoom(masterOutputIndexes);
+
+    const arma::mat speakersPosMat = room.getSpeakersPosMat();
+    const arma::mat probePosMat = room.getProbesPosMat();
+
+    vector<ConfigurationPosition> firstSymmetryPositions;
+    vector<ConfigurationPosition> secondSymmetryPositions;
+    for (int i = 0; i < speakersPosMat.n_rows; i++)
+    {
+        firstSymmetryPositions.emplace_back(ConfigurationPosition(speakersPosMat(i,0), speakersPosMat(i,1),
+            PositionType::Speaker));
+        secondSymmetryPositions.emplace_back(ConfigurationPosition(-speakersPosMat(i,0), speakersPosMat(i,1),
+            PositionType::Speaker));
+    }
+
+    for (int i = 0; i < probePosMat.n_rows; i++)
+    {
+        firstSymmetryPositions.emplace_back(ConfigurationPosition(probePosMat(i,0), probePosMat(i,1),
+            PositionType::Probe));
+        secondSymmetryPositions.emplace_back(ConfigurationPosition(-probePosMat(i,0), probePosMat(i,1),
+            PositionType::Probe));
+    }
+
+    send(PositionConfirmationMessage(firstSymmetryPositions, secondSymmetryPositions));
 }
 
 void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const RelaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    this_thread::sleep_for(2s);
-    send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, PositionType::Speaker),
-            ConfigurationPosition(2.5, 0, PositionType::Speaker),
-            ConfigurationPosition(5, 0, PositionType::Speaker),
-            ConfigurationPosition(7.5, 0, PositionType::Speaker),
-            ConfigurationPosition(10, 0, PositionType::Speaker),
-            ConfigurationPosition(1.25, 10, PositionType::Probe),
-            ConfigurationPosition(3.75, 10, PositionType::Probe),
-            ConfigurationPosition(6.25, 10, PositionType::Probe),
-            ConfigurationPosition(8.75, 10, PositionType::Probe) },
-        { ConfigurationPosition(10, 10, PositionType::Speaker) }));
+    handleLaunchInitializationMessage(LaunchInitializationMessage(), send);
 }
 
 void MixerApplicationMessageHandler::handleSymmetryConfirmationMessage(const SymmetryConfirmationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    send(PositionConfirmationMessage({ ConfigurationPosition(0, 0, PositionType::Speaker),
-            ConfigurationPosition(2.5, 0, PositionType::Speaker),
-            ConfigurationPosition(5, 0, PositionType::Speaker),
-            ConfigurationPosition(7.5, 0, PositionType::Speaker),
-            ConfigurationPosition(10, 0, PositionType::Speaker),
-            ConfigurationPosition(1.25, 10, PositionType::Probe),
-            ConfigurationPosition(3.75, 10, PositionType::Probe),
-            ConfigurationPosition(6.25, 10, PositionType::Probe),
-            ConfigurationPosition(8.75, 10, PositionType::Probe) },
-        { ConfigurationPosition(10, 10, PositionType::Speaker) }));
+    //TODO
 }
 
 void MixerApplicationMessageHandler::handleOptimizePositionMessage(const OptimizePositionMessage& message,

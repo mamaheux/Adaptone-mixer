@@ -6,11 +6,17 @@
 #include <Uniformization/Communication/ProbeServers.h>
 #include <Uniformization/Communication/RecordResponseMessageAgregator.h>
 #include <Uniformization/SignalOverride/GenericSignalOverride.h>
+#include <Uniformization/SignalOverride/PassthroughSignalOverride.h>
+#include <Uniformization/SignalOverride/SweepSignalOverride.h>
+#include <Uniformization/Model/Room.h>
 
 #include <SignalProcessing/SignalProcessor.h>
 
+#include <Uniformization/Model/AutoPosition.h>
 #include <Utils/ClassMacro.h>
 #include <Utils/Logger/Logger.h>
+
+#include <armadillo>
 
 #include <memory>
 
@@ -21,6 +27,8 @@ namespace adaptone
         std::shared_ptr<Logger> m_logger;
         std::shared_ptr<GenericSignalOverride> m_signalOverride;
         std::shared_ptr<SignalProcessor> m_signalProcessor;
+
+        std::unique_ptr<AutoPosition> m_autoPosition;
 
         const UniformizationServiceParameters& m_parameters;
 
@@ -33,6 +41,9 @@ namespace adaptone
 
         std::atomic<bool> m_stopped;
         std::unique_ptr<std::thread> m_uniformizationThread;
+
+        arma::mat m_speakersToProbesDistancesMat;
+        Room m_room;
 
     public:
         UniformizationService(std::shared_ptr<Logger> logger,
@@ -48,13 +59,18 @@ namespace adaptone
         void stop();
 
         void listenToProbeSound(uint32_t probeId);
-        void initializeRoom();
+        Room initializeRoom(const std::vector<std::size_t>& masterOutputIndexes);
         void confirmRoomPositions();
 
     private:
         void run();
 
         void performEqControlIteration();
+
+        std::unordered_map<uint32_t, AudioFrame<double>> sweepRoutineAtOutputX(
+            const size_t masterOutputIndex);
+        arma::vec computeDelaysFromSweepData(std::unordered_map<uint32_t, AudioFrame<double>>& data);
+        arma::mat distancesExtractionRoutine(const std::vector<size_t>& masterOutputIndexes);
     };
 }
 
