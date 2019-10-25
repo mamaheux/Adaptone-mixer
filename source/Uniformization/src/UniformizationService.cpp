@@ -187,8 +187,6 @@ void UniformizationService::confirmRoomPositions()
 {
     lock_guard lock(m_probeServerMutex);
     m_eqControlerEnabled.store(true);
-
-    //TODO add confirmation code
 }
 
 void UniformizationService::run()

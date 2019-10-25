@@ -6,11 +6,11 @@ Speaker::Speaker()
 {
 }
 
-Speaker::Speaker(double x, double y) : ModelElement(x, y)
+Speaker::Speaker(double x, double y, uint32_t id) : ModelElement(x, y, id)
 {
 }
 
-Speaker::Speaker(double x, double y, double z) : ModelElement(x, y, z)
+Speaker::Speaker(double x, double y, double z, uint32_t id) : ModelElement(x, y, z, id)
 {
 }
 

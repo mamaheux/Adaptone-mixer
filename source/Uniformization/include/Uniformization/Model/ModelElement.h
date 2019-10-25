@@ -1,6 +1,8 @@
 #ifndef UNIFORMIZATION_MODEL_MODEL_ELEMENT_H
 #define UNIFORMIZATION_MODEL_MODEL_ELEMENT_H
 
+#include <cstdint>
+
 namespace adaptone
 {
     class ModelElement
@@ -9,10 +11,12 @@ namespace adaptone
         double m_y;
         double m_z;
 
+        uint32_t m_id;
+
     public:
         ModelElement();
-        ModelElement(double x, double y);
-        ModelElement(double x, double y, double z);
+        ModelElement(double x, double y, uint32_t id);
+        ModelElement(double x, double y, double z, uint32_t id);
         virtual ~ModelElement();
 
         void setX(double x);
@@ -22,6 +26,9 @@ namespace adaptone
         double x() const;
         double y() const;
         double z() const;
+
+        void setId(uint32_t id);
+        uint32_t id() const;
     };
 
     inline void ModelElement::setX(double x)
@@ -52,6 +59,16 @@ namespace adaptone
     inline double ModelElement::z() const
     {
         return m_z;
+    }
+
+    inline void ModelElement::setId(uint32_t id)
+    {
+        m_id = id;
+    }
+
+    inline uint32_t ModelElement::id() const
+    {
+        return m_id;
     }
 }
 

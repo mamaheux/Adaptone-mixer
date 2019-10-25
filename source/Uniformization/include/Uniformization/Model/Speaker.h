@@ -7,14 +7,10 @@ namespace adaptone
 {
     class Speaker : public ModelElement
     {
-        float m_x;
-        float m_y;
-        float m_z;
-
     public:
         Speaker();
-        Speaker(double x, double y);
-        Speaker(double x, double y, double z);
+        Speaker(double x, double y, uint32_t id);
+        Speaker(double x, double y, double z, uint32_t id);
         ~Speaker() override;
     };
 }

@@ -54,7 +54,7 @@ void Room::setSpeakersPosFromMat(const arma::mat posMat)
     }
 }
 
-arma::mat Room::getProbesPosMat()
+arma::mat Room::getProbesPosMat() const
 {
     arma::mat probesPosMat = arma::zeros(m_probeCount, 3);
     for (int i = 0; i < m_probeCount; i++)
@@ -66,7 +66,7 @@ arma::mat Room::getProbesPosMat()
     return probesPosMat;
 }
 
-arma::mat Room::getSpeakersPosMat()
+arma::mat Room::getSpeakersPosMat() const
 {
     arma::mat speakersPosMat = arma::zeros(m_speakerCount, 3);
     for (int i = 0; i < m_speakerCount; i++)
