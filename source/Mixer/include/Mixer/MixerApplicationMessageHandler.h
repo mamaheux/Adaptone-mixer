@@ -27,6 +27,8 @@
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
+#include <Communication/Messages/Input/ListenProbeMessage.h>
+#include <Communication/Messages/Input/StopProbeListeningMessage.h>
 
 #include <SignalProcessing/SignalProcessor.h>
 
@@ -97,6 +99,10 @@ namespace adaptone
         void handleChangeAuxiliaryOutputVolumeMessage(const ChangeAuxiliaryOutputVolumeMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
         void handleChangeAllProcessingParametersMessage(const ChangeAllProcessingParametersMessage& message,
+            const std::function<void(const ApplicationMessage&)>& send);
+        void handleListenProbeMessage(const ListenProbeMessage& message,
+            const std::function<void(const ApplicationMessage&)>& send);
+        void handleStopProbeListeningMessage(const StopProbeListeningMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
 
         void applyInputProcessingParameters(const std::vector<InputProcessingParameters>& inputs);

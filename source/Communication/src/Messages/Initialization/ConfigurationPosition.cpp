@@ -9,10 +9,11 @@ ConfigurationPosition::ConfigurationPosition() :
 {
 }
 
-ConfigurationPosition::ConfigurationPosition(double x, double y, PositionType type) :
+ConfigurationPosition::ConfigurationPosition(double x, double y, PositionType type, uint32_t id) :
     m_x(x),
     m_y(y),
-    m_type(type)
+    m_type(type),
+    m_id(id)
 {
 }
 

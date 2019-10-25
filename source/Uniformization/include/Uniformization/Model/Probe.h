@@ -9,8 +9,8 @@ namespace adaptone
     {
     public:
         Probe();
-        Probe(double x, double y);
-        Probe(double x, double y, double z);
+        Probe(double x, double y, uint32_t id);
+        Probe(double x, double y, double z, uint32_t id);
         ~Probe() override;
     };
 }

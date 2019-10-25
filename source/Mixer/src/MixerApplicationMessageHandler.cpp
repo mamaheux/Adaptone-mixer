@@ -45,6 +45,8 @@ MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<Channe
     ADD_HANDLE_FUNCTION(ChangeMasterOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAuxiliaryOutputVolumeMessage);
     ADD_HANDLE_FUNCTION(ChangeAllProcessingParametersMessage);
+    ADD_HANDLE_FUNCTION(ListenProbeMessage);
+    ADD_HANDLE_FUNCTION(StopProbeListeningMessage);
 }
 
 MixerApplicationMessageHandler::~MixerApplicationMessageHandler()
@@ -81,25 +83,18 @@ void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const Lau
     vector<size_t> masterOutputIndexes =  m_channelIdMapping->getMasterOutputIndexes();
     Room room = m_uniformizationService->initializeRoom(masterOutputIndexes);
 
-    const arma::mat speakersPosMat = room.getSpeakersPosMat();
-    const arma::mat probePosMat = room.getProbesPosMat();
-
     vector<ConfigurationPosition> firstSymmetryPositions;
     vector<ConfigurationPosition> secondSymmetryPositions;
-    for (int i = 0; i < speakersPosMat.n_rows; i++)
+    for (const Speaker& speaker : room.speakers())
     {
-        firstSymmetryPositions.emplace_back(ConfigurationPosition(speakersPosMat(i,0), speakersPosMat(i,1),
-            PositionType::Speaker));
-        secondSymmetryPositions.emplace_back(ConfigurationPosition(-speakersPosMat(i,0), speakersPosMat(i,1),
-            PositionType::Speaker));
+        firstSymmetryPositions.emplace_back(speaker.x(), speaker.y(), PositionType::Speaker, speaker.id());
+        secondSymmetryPositions.emplace_back(-speaker.x(), speaker.y(), PositionType::Speaker, speaker.id());
     }
 
-    for (int i = 0; i < probePosMat.n_rows; i++)
+    for (const Probe& probe : room.probes())
     {
-        firstSymmetryPositions.emplace_back(ConfigurationPosition(probePosMat(i,0), probePosMat(i,1),
-            PositionType::Probe));
-        secondSymmetryPositions.emplace_back(ConfigurationPosition(-probePosMat(i,0), probePosMat(i,1),
-            PositionType::Probe));
+        firstSymmetryPositions.emplace_back(probe.x(), probe.y(), PositionType::Probe, probe.id());
+        secondSymmetryPositions.emplace_back(-probe.x(), probe.y(), PositionType::Probe, probe.id());
     }
 
     send(PositionConfirmationMessage(firstSymmetryPositions, secondSymmetryPositions));
@@ -114,29 +109,17 @@ void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const R
 void MixerApplicationMessageHandler::handleSymmetryConfirmationMessage(const SymmetryConfirmationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    //TODO
+    m_uniformizationService->confirmRoomPositions();
 }
 
 void MixerApplicationMessageHandler::handleOptimizePositionMessage(const OptimizePositionMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    this_thread::sleep_for(2s);
-    send(OptimizedPositionMessage({ ConfigurationPosition(-10, 10, PositionType::Speaker) }));
 }
 
 void MixerApplicationMessageHandler::handleReoptimizePositionMessage(const ReoptimizePositionMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    this_thread::sleep_for(2s);
-    send(OptimizedPositionMessage({ ConfigurationPosition(0, 0, PositionType::Speaker),
-        ConfigurationPosition(2.5, 0, PositionType::Speaker),
-        ConfigurationPosition(5, 0, PositionType::Speaker),
-        ConfigurationPosition(7.5, 0, PositionType::Speaker),
-        ConfigurationPosition(10, 0, PositionType::Speaker),
-        ConfigurationPosition(1.25, 10, PositionType::Probe),
-        ConfigurationPosition(3.75, 10, PositionType::Probe),
-        ConfigurationPosition(6.25, 10, PositionType::Probe),
-        ConfigurationPosition(8.75, 10, PositionType::Probe) }));
 }
 
 void MixerApplicationMessageHandler::handleConfigurationConfirmationMessage(
@@ -264,6 +247,18 @@ void MixerApplicationMessageHandler::handleChangeAllProcessingParametersMessage(
     {
         applyAuxiliaryProcessingParameters(auxiliary);
     }
+}
+
+void MixerApplicationMessageHandler::handleListenProbeMessage(const ListenProbeMessage& message,
+    const std::function<void(const ApplicationMessage&)>& send)
+{
+    m_uniformizationService->listenToProbeSound(message.probeId());
+}
+
+void MixerApplicationMessageHandler::handleStopProbeListeningMessage(const StopProbeListeningMessage& message,
+    const std::function<void(const ApplicationMessage&)>& send)
+{
+    m_uniformizationService->stopProbeListening();
 }
 
 void MixerApplicationMessageHandler::applyInputProcessingParameters(const vector<InputProcessingParameters>& inputs)

@@ -59,6 +59,8 @@ namespace adaptone
         void stop();
 
         void listenToProbeSound(uint32_t probeId);
+        void stopProbeListening();
+
         Room initializeRoom(const std::vector<std::size_t>& masterOutputIndexes);
         void confirmRoomPositions();
 

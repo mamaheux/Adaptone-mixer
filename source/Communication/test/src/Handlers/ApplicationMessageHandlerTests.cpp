@@ -23,6 +23,8 @@
 #include <Communication/Messages/Input/ChangeMasterOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAuxiliaryOutputVolumeMessage.h>
 #include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
+#include <Communication/Messages/Input/ListenProbeMessage.h>
+#include <Communication/Messages/Input/StopProbeListeningMessage.h>
 
 #include <Communication/Messages/Output/SoundErrorMessage.h>
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
@@ -64,6 +66,8 @@ DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputEqGainsMessage);
 DEFINE_TYPE_MATCHER(ChangeMasterOutputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeAllProcessingParametersMessage);
+DEFINE_TYPE_MATCHER(ListenProbeMessage);
+DEFINE_TYPE_MATCHER(StopProbeListeningMessage);
 
 DEFINE_TYPE_MATCHER(SoundErrorMessage);
 DEFINE_TYPE_MATCHER(InputSpectrumMessage);
@@ -98,7 +102,8 @@ TEST(ApplicationMessageHandlerTests, handle_ConfigurationChoiceMessage_shouldCal
         "      {"
         "        \"x\": 140,"
         "        \"y\": 340,"
-        "        \"type\": \"s\""
+        "        \"type\": \"s\","
+        "        \"id\": 5"
         "      }"
         "    ]"
         "  }"
@@ -153,14 +158,16 @@ TEST(ApplicationMessageHandlerTests, handle_PositionConfirmationMessage_shouldCa
         "      {"
         "        \"x\": 140,"
         "        \"y\": 340,"
-        "        \"type\": \"s\""
+        "        \"type\": \"s\","
+        "        \"id\": 2"
         "      }"
         "    ],"
         "    \"secondSymmetryPositions\": ["
         "      {"
         "        \"x\": 340,"
         "        \"y\": 140,"
-        "        \"type\": \"s\""
+        "        \"type\": \"s\","
+        "        \"id\": 3"
         "      }"
         "    ]"
         "  }"
@@ -224,7 +231,8 @@ TEST(ApplicationMessageHandlerTests, handle_OptimizedPositionMessage_shouldCallH
         "      {"
         "        \"x\": 140,"
         "        \"y\": 340,"
-        "        \"type\": \"s\""
+        "        \"type\": \"s\","
+        "        \"id\": 5"
         "      }"
         "    ]"
         "  }"
@@ -541,6 +549,35 @@ TEST(ApplicationMessageHandlerTests, handle_ChangeAllProcessingParametersMessage
         "    \"speakersNumber\": 2,"
         "    \"auxiliaryChannelIds\": [4, 5]"
         "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ListenProbeMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsListenProbeMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 25,"
+        "  \"data\": {"
+        "    \"probeId\": 5"
+        "  }"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_StopProbeListeningMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsStopProbeListeningMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 26"
         "}";
 
     json j = json::parse(serializedMessage);

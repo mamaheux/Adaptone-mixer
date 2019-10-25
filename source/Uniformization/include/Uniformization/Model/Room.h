@@ -24,11 +24,24 @@ namespace adaptone
         Room(const arma::mat& speakerPosMat, const arma::mat& probePosMat);
         virtual ~Room();
 
+        const std::vector<Probe>& probes() const;
+        const std::vector<Speaker>& speakers() const;
+
         void setProbesPosFromMat(const arma::mat posMat);
         void setSpeakersPosFromMat(const arma::mat posMat);
-        arma::mat getProbesPosMat();
-        arma::mat getSpeakersPosMat();
+        arma::mat getProbesPosMat() const;
+        arma::mat getSpeakersPosMat() const;
     };
+
+    inline const std::vector<Probe>& Room::probes() const
+    {
+        return m_probes;
+    }
+
+    inline const std::vector<Speaker>& Room::speakers() const
+    {
+        return m_speakers;
+    }
 }
 
 #endif

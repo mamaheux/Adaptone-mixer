@@ -11,7 +11,8 @@ TEST(OptimizedPositionMessageTests, constructor_shouldSetTheAttributes)
     constexpr double X = 10;
     constexpr double Y = 12;
     constexpr PositionType Type = PositionType::Speaker;
-    const vector<ConfigurationPosition> Positions{ ConfigurationPosition(X, Y, Type) };
+    constexpr uint32_t Id = 5;
+    const vector<ConfigurationPosition> Positions{ ConfigurationPosition(X, Y, Type, Id) };
 
     OptimizedPositionMessage message(Positions);
 
@@ -21,6 +22,7 @@ TEST(OptimizedPositionMessageTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(message.positions()[0].x(), X);
     EXPECT_EQ(message.positions()[0].y(), Y);
     EXPECT_EQ(message.positions()[0].type(), Type);
+    EXPECT_EQ(message.positions()[0].id(), Id);
 }
 
 TEST(OptimizedPositionMessageTests, serialization_shouldSerializaToJson)
@@ -28,7 +30,8 @@ TEST(OptimizedPositionMessageTests, serialization_shouldSerializaToJson)
     constexpr double X = 10;
     constexpr double Y = 12;
     constexpr PositionType Type = PositionType::Speaker;
-    const vector<ConfigurationPosition> Positions{ ConfigurationPosition(X, Y, Type) };
+    constexpr uint32_t Id = 5;
+    const vector<ConfigurationPosition> Positions{ ConfigurationPosition(X, Y, Type, Id) };
 
     OptimizedPositionMessage message(Positions);
     json serializedMessage = message;
@@ -39,6 +42,7 @@ TEST(OptimizedPositionMessageTests, serialization_shouldSerializaToJson)
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("x"), X);
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("y"), Y);
     EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("type"), "s");
+    EXPECT_EQ(serializedMessage.at("data").at("positions")[0].at("id"), Id);
 
     EXPECT_EQ(serializedMessage.dump(), message.toJson());
 }
@@ -52,7 +56,8 @@ TEST(OptimizedPositionMessageTests, deserialization_shouldDeserializeFromJson)
         "      {"
         "        \"x\": 140,"
         "        \"y\": 340,"
-        "        \"type\": \"s\""
+        "        \"type\": \"s\","
+        "        \"id\": 5"
         "      }"
         "    ]"
         "  }"
@@ -66,4 +71,5 @@ TEST(OptimizedPositionMessageTests, deserialization_shouldDeserializeFromJson)
     EXPECT_EQ(deserializedMessage.positions()[0].x(), 140);
     EXPECT_EQ(deserializedMessage.positions()[0].y(), 340);
     EXPECT_EQ(deserializedMessage.positions()[0].type(), PositionType::Speaker);
+    EXPECT_EQ(deserializedMessage.positions()[0].id(), 5);
 }
