@@ -46,7 +46,7 @@ UniformizationService::UniformizationService(shared_ptr<Logger> logger,
         m_parameters.autoPositionTryCount(),
         m_parameters.autoPositionCountThreshold());
 
-    m_autoPosition = autoPosition;
+    m_autoPosition = move(autoPosition);
     m_recordResponseMessageAgregator = recordResponseMessageAgregator;
     m_probeMessageHandler = probeMessageHandler;
     m_probeServers = probeServers;
