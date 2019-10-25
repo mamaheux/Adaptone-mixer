@@ -36,12 +36,12 @@ namespace adaptone
 
         Type type() const;
         PcmAudioFrameFormat format() const;
+        const double hardwareDelay() const;
 
         const std::string& filename() const;
 
 #if defined(__unix__) || defined(__linux__)
         const std::string& device() const;
-        const double hardwareDelay() const;
 #endif
     };
 
@@ -55,6 +55,11 @@ namespace adaptone
         return m_format;
     }
 
+    inline const double AudioOutputConfiguration::hardwareDelay() const
+    {
+        return m_hardwareDelay;
+    }
+
     inline const std::string& AudioOutputConfiguration::filename() const
     {
         return m_filename;
@@ -65,11 +70,6 @@ namespace adaptone
     inline const std::string& AudioOutputConfiguration::device() const
     {
         return m_device;
-    }
-
-    inline const double AudioOutputConfiguration::hardwareDelay() const
-    {
-        return m_hardwareDelay;
     }
 
 #endif

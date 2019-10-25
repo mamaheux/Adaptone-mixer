@@ -59,12 +59,12 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(parameters.sampleFrequency(), SampleFrequency);
     EXPECT_EQ(parameters.sweepDuration(), SweepDuration);
     EXPECT_EQ(parameters.sweepMaxDelay(), SweepMaxDelay);
-    EXPECT_EQ(parameters.outputHardwareDelay(), OutputHardwareDelay);
-    EXPECT_EQ(parameters.speedOfSound(), SpeedOfSound);
-    EXPECT_EQ(parameters.autoPositionAlpha(), AutoPositionAlpha);
-    EXPECT_EQ(parameters.autoPositionEpsilonTotalDistanceError(), AutoPositionEpsilonTotalDistanceError);
-    EXPECT_EQ(parameters.autoPositionEpsilonDeltaTotalDistanceError(), AutoPositionEpsilonDeltaTotalDistanceError);
-    EXPECT_EQ(parameters.autoPositionDistanceRelativeError(), AutoPositionDistanceRelativeError);
+    EXPECT_DOUBLE_EQ(parameters.outputHardwareDelay(), OutputHardwareDelay);
+    EXPECT_DOUBLE_EQ(parameters.speedOfSound(), SpeedOfSound);
+    EXPECT_DOUBLE_EQ(parameters.autoPositionAlpha(), AutoPositionAlpha);
+    EXPECT_DOUBLE_EQ(parameters.autoPositionEpsilonTotalDistanceError(), AutoPositionEpsilonTotalDistanceError);
+    EXPECT_DOUBLE_EQ(parameters.autoPositionEpsilonDeltaTotalDistanceError(), AutoPositionEpsilonDeltaTotalDistanceError);
+    EXPECT_DOUBLE_EQ(parameters.autoPositionDistanceRelativeError(), AutoPositionDistanceRelativeError);
     EXPECT_EQ(parameters.autoPositionIterationCount(), AutoPositionIterationCount);
     EXPECT_EQ(parameters.autoPositionThermalIterationCount(), AutoPositionThermalIterationCount);
     EXPECT_EQ(parameters.autoPositionTryCount(), AutoPositionTryCount);
@@ -81,8 +81,6 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(probeServerParameters.udpReceivingPort(), UdpReceivingPort);
     EXPECT_EQ(probeServerParameters.probeTimeoutMs(), ProbeTimeoutMs);
     EXPECT_EQ(probeServerParameters.sampleFrequency(), SampleFrequency);
-
-
 
 
     EXPECT_EQ(probeServerParameters.format(), Format);

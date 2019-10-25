@@ -110,8 +110,7 @@ arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>
     return delaysMat / m_parameters.speedOfSound();
 }
 
-unordered_map<uint32_t, AudioFrame<double>>
-UniformizationService::sweepRoutineAtOutputX(const size_t masterOutputIndex)
+unordered_map<uint32_t, AudioFrame<double>> UniformizationService::sweepRoutineAtOutputX(const size_t masterOutputIndex)
 {
     m_signalOverride->setCurrentSignalOverrideType<SweepSignalOverride>();
 
@@ -141,6 +140,7 @@ UniformizationService::sweepRoutineAtOutputX(const size_t masterOutputIndex)
     size_t recordThreshold = ts.tv_sec;
     do
     {
+        timespec_get(&ts, TIME_UTC);
         gmtime_r(&ts.tv_sec, &recordStartTime);
     }
     while (ts.tv_sec < recordThreshold);

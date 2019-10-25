@@ -129,10 +129,18 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(uniformizationServiceParameters.udpReceivingPort(), 5002);
     EXPECT_EQ(uniformizationServiceParameters.probeTimeoutMs(), 2000);
     EXPECT_EQ(uniformizationServiceParameters.sampleFrequency(), 48000);
-    EXPECT_EQ(uniformizationServiceParameters.speedOfSound(), 343);
     EXPECT_EQ(uniformizationServiceParameters.sweepDuration(), 3);
     EXPECT_DOUBLE_EQ(uniformizationServiceParameters.sweepMaxDelay(), 0.5);
     EXPECT_DOUBLE_EQ(uniformizationServiceParameters.outputHardwareDelay(), 0.017);
+    EXPECT_EQ(uniformizationServiceParameters.speedOfSound(), 343);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.autoPositionAlpha(), 1.0);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.autoPositionEpsilonTotalDistanceError(), 5e-5);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.autoPositionEpsilonDeltaTotalDistanceError(), 1e-7);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.autoPositionDistanceRelativeError(), 0.0);
+    EXPECT_EQ(uniformizationServiceParameters.autoPositionIterationCount(), 10000);
+    EXPECT_EQ(uniformizationServiceParameters.autoPositionThermalIterationCount(), 200);
+    EXPECT_EQ(uniformizationServiceParameters.autoPositionTryCount(), 50);
+    EXPECT_EQ(uniformizationServiceParameters.autoPositionCountThreshold(), 10);
     EXPECT_EQ(uniformizationServiceParameters.format(), PcmAudioFrameFormat::Signed16);
 
 }
