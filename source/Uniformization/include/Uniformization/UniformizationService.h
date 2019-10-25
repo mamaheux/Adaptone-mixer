@@ -28,7 +28,7 @@ namespace adaptone
         std::shared_ptr<GenericSignalOverride> m_signalOverride;
         std::shared_ptr<SignalProcessor> m_signalProcessor;
 
-        std::shared_ptr<AutoPosition> m_autoPosition;
+        std::unique_ptr<AutoPosition> m_autoPosition;
 
         const UniformizationServiceParameters& m_parameters;
 
