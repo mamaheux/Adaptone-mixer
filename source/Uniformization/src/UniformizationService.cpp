@@ -191,11 +191,12 @@ Metrics UniformizationService::computeMetricsFromSweepData(std::unordered_map<ui
         delays(n) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());
         delays(n) -= m_parameters.outputHardwareDelay();
 
+        constexpr bool Normalized = false;
         arma::vec bandAverage = averageFrequencyBand(probeData(arma::span(sampleDelay, sampleDelay + sweepVec.size())),
-            arma::conv_to<arma::vec>::from(m_parameters.eqCenterFrequencies()), m_parameters.sampleFrequency());
+            arma::conv_to<arma::vec>::from(m_parameters.eqCenterFrequencies()), m_parameters.sampleFrequency(),
+            Normalized);
 
-        //directivities(n) = arma::mean(bandAverageTarget - bandAverage + \
-        //   20 * arma::log10(delays(n) / m_parameters.speedOfSound()))
+        directivities(n) = arma::mean(bandAverage + 20 * log10(1 / (m_parameters.speedOfSound() * delays(n)) + 0.0001));
 
         probes[n].setId(element.first);
         n++;

@@ -28,7 +28,8 @@ namespace adaptone
 
     double findSetAngle2D(const arma::mat& set);
 
-    arma::vec averageFrequencyBand(const arma::vec& x, const arma::vec& centerFrequencies, const size_t fs);
+    arma::vec averageFrequencyBand(const arma::vec& x, const arma::vec& centerFrequencies, const size_t fs,
+        bool normalized);
 
     inline arma::vec correlation(const arma::vec& A, const arma::vec& B)
     {

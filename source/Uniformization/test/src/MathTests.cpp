@@ -312,10 +312,12 @@ TEST(MathTests, findDelay_shouldReturnTheCorrelationVectorBetweenTwoVector)
     EXPECT_EQ(delayBA, 3);
 }
 
-TEST(MathTests, averageFrequencyBand_shouldReturnVectorContainingTheAverageFrequencyBandAmplitudeInDB)
+TEST(MathTests, averageFrequencyBand_shouldReturnVectorContainingTheNormalizedAverageFrequencyBandAmplitudeInDB)
 {
-    constexpr double Tolerance = 0.0001;
+    constexpr double Tolerance = 0.01;
     constexpr size_t Fs = 44100;
+    constexpr bool Normalized = true;
+
     const vec Fc = { 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600,
                       2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000 };
     const vec Weights = linspace(0.5, 1, Fc.size());
@@ -331,9 +333,34 @@ TEST(MathTests, averageFrequencyBand_shouldReturnVectorContainingTheAverageFrequ
         X += Weights(i) * sin(2 * M_PI * Fc(i) * linspace(0, 1, Fs));
     }
 
-    arma::vec bandAverage = averageFrequencyBand(X, Fc, Fs);
+    arma::vec bandAverage = averageFrequencyBand(X, Fc, Fs, Normalized);
 
     EXPECT_VEC_NEAR(bandAverage, bandAverageTarget, Tolerance);
 }
 
+TEST(MathTests, averageFrequencyBand_shouldReturnVectorContainingTheAverageFrequencyBandAmplitudeInDB)
+{
+    constexpr double Tolerance = 0.01;
+    constexpr size_t Fs = 44100;
+    constexpr bool Normalized = false;
+
+    const vec Fc = { 20, 25, 31.5, 40, 50, 63, 80, 100, 125, 160, 200, 250, 315, 400, 500, 630, 800, 1000, 1250, 1600,
+                     2000, 2500, 3150, 4000, 5000, 6300, 8000, 10000, 12500, 16000, 20000 };
+    const vec Weights = linspace(0.5, 1, Fc.size());
+
+    const vec bandAverageTarget = { 50.517, 60.178, 67.386, 55.200, 46.935, 40.698, 35.645, 31.098, 27.119, 23.643,
+                                    21.052, 18.863, 17.070, 16.203, 15.529, 14.727, 14.969, 15.218, 14.532, 14.846,
+                                    15.868, 15.795, 15.502, 15.866, 16.371, 16.245, 16.398, 17.137, 17.546, 17.690,
+                                    19.973 };
+    // Construct a signal with frequency of each band and with increasing weight
+    vec X = zeros<vec>(Fs);
+    for (int i = 0; i < Fc.size(); i++)
+    {
+        X += Weights(i) * sin(2 * M_PI * Fc(i) * linspace(0, 1, Fs));
+    }
+
+    arma::vec bandAverage = averageFrequencyBand(X, Fc, Fs, Normalized);
+
+    EXPECT_VEC_NEAR(bandAverage, bandAverageTarget, Tolerance);
+}
 
