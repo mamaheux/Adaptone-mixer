@@ -76,8 +76,8 @@ namespace adaptone
 
         void performEqControlIteration();
 
-        std::unordered_map<uint32_t, AudioFrame<double>> sweepRoutineAtOutputX(
-            const size_t masterOutputIndex);
+        void initializeRoomModelElementId(const std::vector<size_t>& masterOutputIndexes);
+        std::unordered_map<uint32_t, AudioFrame<double>> sweepRoutineAtOutputX(const size_t masterOutputIndex);
         Metrics computeMetricsFromSweepData(std::unordered_map<uint32_t, AudioFrame<double>>& data);
         arma::mat distancesExtractionRoutine(const std::vector<size_t>& masterOutputIndexes);
     };
