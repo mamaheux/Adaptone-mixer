@@ -1,5 +1,4 @@
 #include <Uniformization/SignalOverride/SweepSignalOverride.h>
-
 #include <Uniformization/Math.h>
 
 #include <gtest/gtest.h>
@@ -19,14 +18,15 @@ TEST(SweepSignalOverrideTests, override_shouldOverrideWithSweepFrameData)
     constexpr double Period = 1;
 
     constexpr size_t ChannelCount = 4;
-    constexpr size_t FrameSampleCount = 256;
+    constexpr size_t FrameSampleCount = 32;
     constexpr size_t OutputChannelIndex = 2;
 
     SweepSignalOverride signalOverride(Format, Fs, ChannelCount,
         FrameSampleCount, F1, F2, Period);
 
     vec chirp = logSinChirp<vec>(F1, F2, Period, Fs);
-    constexpr size_t ExtraFrameCount = 1; //needed to verify that the sweepSignalOverride stop outputting chirp frames
+
+    constexpr size_t ExtraFrameCount = 10; //needed to verify that the sweepSignalOverride stop outputting chirp frames
     size_t frameCount = floor(chirp.size() / static_cast<float>(FrameSampleCount)) + ExtraFrameCount;
 
     for (size_t n = 0; n < LoopCount; n++)
