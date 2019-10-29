@@ -72,7 +72,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
 
     constexpr size_t FrameSampleCount = 2;
     constexpr size_t SampleFrequency = 48000;
-    constexpr size_t InputChannelCount = 2;
+    constexpr size_t InputChannelCount = 3;
     constexpr size_t OutputChannelCount = 2;
     constexpr PcmAudioFrameFormat InputFormat = PcmAudioFrameFormat::Double;
     constexpr PcmAudioFrameFormat OutputFormat = PcmAudioFrameFormat::Double;
@@ -92,18 +92,20 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
         MaxOutputDelay,
         SoundLevelLength));
 
-    processor.setInputGains({ 1, 1 });
-    processor.setMixingGains({ 1, 0, 0, 1 });
+    processor.setInputGains({ 1, 1, 0 });
+    processor.setMixingGains({ 1, 0, 0, 0, 1, 0 });
     processor.setOutputGains({ 1, 1 });
 
     processor.forceRefreshParameters();
 
-    PcmAudioFrame inputFrame(OutputFormat, OutputChannelCount, FrameSampleCount);
+    PcmAudioFrame inputFrame(InputFormat, InputChannelCount, FrameSampleCount);
     double* inputFrameDouble = reinterpret_cast<double*>(&inputFrame[0]);
     inputFrameDouble[0] = 0.005;
     inputFrameDouble[1] = 0.01;
-    inputFrameDouble[2] = 0.015;
-    inputFrameDouble[3] = 0.02;
+    inputFrameDouble[2] = 0;
+    inputFrameDouble[3] = 0.015;
+    inputFrameDouble[4] = 0.02;
+    inputFrameDouble[5] = 0;
 
 
     const double* outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
@@ -114,7 +116,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.02, MaxAbsError);
 
 
-    processor.setInputGains({ 2, 2 });
+    processor.setInputGains({ 2, 2, 0 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.01, MaxAbsError);
@@ -141,7 +143,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.08, MaxAbsError);
 
 
-    processor.setMixingGains({ 0, 1, 1, 0 });
+    processor.setMixingGains({ 0, 1, 0, 1, 0, 0 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0.04, MaxAbsError);
@@ -270,7 +272,7 @@ TEST(CudaSignalProcessorTests, process_shouldConsiderVariableParameters)
     EXPECT_NEAR(outputFrameDouble[3], 0.12, MaxAbsError);
 
 
-    processor.setMixingGains(1, { 0, 0 });
+    processor.setMixingGains(1, { 0, 0, 0 });
     outputFrameDouble = reinterpret_cast<const double*>(processor.process(inputFrame).data());
 
     EXPECT_NEAR(outputFrameDouble[0], 0, MaxAbsError);
