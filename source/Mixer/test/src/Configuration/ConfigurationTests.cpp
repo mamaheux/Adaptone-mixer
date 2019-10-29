@@ -141,6 +141,7 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(uniformizationServiceParameters.autoPositionThermalIterationCount(), 200);
     EXPECT_EQ(uniformizationServiceParameters.autoPositionTryCount(), 50);
     EXPECT_EQ(uniformizationServiceParameters.autoPositionCountThreshold(), 10);
+    EXPECT_EQ(uniformizationServiceParameters.eqCenterFrequencies(), vector<double>({ 10, 20 }));
     EXPECT_EQ(uniformizationServiceParameters.format(), PcmAudioFrameFormat::Signed16);
 
 }

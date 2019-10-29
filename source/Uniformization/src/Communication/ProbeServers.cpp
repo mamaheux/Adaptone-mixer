@@ -57,16 +57,14 @@ size_t ProbeServers::probeCount()
     return m_probeServersById.size();
 }
 
-std::vector<size_t> ProbeServers::probeIds()
+vector<uint32_t> ProbeServers::probeIds()
 {
+    vector<uint32_t> probeIds;
     shared_lock lock(m_mutex);
 
-    vector<size_t> probeIds;
-    size_t n = 0;
     for (auto& pair : m_probeServersById)
     {
-        probeIds[n] = pair.second->id();
-        n++;
+        probeIds.push_back(pair.second->id());
     }
     return probeIds;
 }

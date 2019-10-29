@@ -140,21 +140,14 @@ void UniformizationService::performEqControlIteration()
 
 void UniformizationService::initializeRoomModelElementId(const vector<size_t>& masterOutputIndexes)
 {
-    std::vector<Speaker> speakers = m_room.speakers();
-    std::vector<Probe> probes = m_room.probes();
+    m_room.setSpeakersId(masterOutputIndexes);
 
-    for (int i = 0; i < masterOutputIndexes.size(); i++)
+    vector<size_t> ids;
+    for (auto id : m_probeServers->probeIds())
     {
-        speakers[i].setId(masterOutputIndexes[i]);
+        ids.push_back(id);
     }
-
-    std::vector<size_t> ids = m_probeServers->probeIds();
-    size_t i = 0;
-    for (size_t id: ids)
-    {
-        probes[i].setId(id);
-        i++;
-    }
+    m_room.setProbesId(ids);
 }
 
 arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>& masterOutputIndexes)
@@ -170,14 +163,13 @@ arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>
 
         delaysMat.row(i) = metrics.m_delays;
 
-        speakers[i].setDirectivities(metrics.m_directivities);
+        m_room.setSpeakerDirectivities(i, metrics.m_directivities);
     }
 
     return delaysMat / m_parameters.speedOfSound();
 }
 
-Metrics UniformizationService::computeMetricsFromSweepData(std::unordered_map<uint32_t,
-    AudioFrame<double>>& audioFrames)
+Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_t, AudioFrame<double>>& audioFrames)
 {
     size_t probesCount = audioFrames.size();
     Metrics metrics;
@@ -185,11 +177,11 @@ Metrics UniformizationService::computeMetricsFromSweepData(std::unordered_map<ui
     arma::vec directivities = arma::zeros<arma::vec>(probesCount);
 
     const arma::vec sweepVec = m_signalOverride->getSignalOverride<SweepSignalOverride>()->sweepVec();
-
+    auto probeIds = m_probeServers->probeIds();
     size_t n = 0;
-    for (std::pair<uint32_t, AudioFrame<double>> element: audioFrames)
+    for (uint32_t probeId : probeIds)
     {
-        arma::vec probeData(element.second.data(), element.second.size(), false, false);
+        arma::vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
         size_t sampleDelay = findDelay(probeData, sweepVec);
 
         delays(n) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());

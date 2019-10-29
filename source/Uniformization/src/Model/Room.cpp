@@ -26,6 +26,27 @@ Room::~Room()
 {
 }
 
+void Room::setProbesId(const std::vector<size_t>& ids)
+{
+    for (int i = 0; i < m_probes.size(); i++)
+    {
+        m_probes[i].setId(ids[i]);
+    }
+}
+
+void Room::setSpeakersId(const std::vector<size_t>& ids)
+{
+    for (int i = 0; i < m_speakers.size(); i++)
+    {
+        m_speakers[i].setId(ids[i]);
+    }
+}
+
+void Room::setSpeakerDirectivities(size_t speakerIndex, const arma::vec& directivities)
+{
+    m_speakers[speakerIndex].setDirectivities(directivities);
+}
+
 void Room::setProbesPosFromMat(const arma::mat posMat)
 {
     if (posMat.n_rows != m_probeCount)

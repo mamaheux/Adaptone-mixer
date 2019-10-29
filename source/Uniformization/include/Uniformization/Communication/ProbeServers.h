@@ -53,7 +53,7 @@ namespace adaptone
         void stop();
 
         std::size_t probeCount();
-        std::vector<size_t> probeIds();
+        std::vector<uint32_t> probeIds();
         uint32_t masterProbeId();
 
         void sendToProbes(const ProbeMessage& message);

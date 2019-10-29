@@ -20,7 +20,6 @@
 
 #include <memory>
 
-
 namespace adaptone
 {
     struct Metrics

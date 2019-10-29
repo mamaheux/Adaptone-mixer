@@ -22,7 +22,7 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     size_t autoPositionThermalIterationCount,
     size_t autoPositionTryCount,
     size_t autoPositionCountThreshold,
-    vector<double> eqCenterFrequencies,
+    const vector<double>& eqCenterFrequencies,
     PcmAudioFrameFormat format) :
     m_discoveryEndpoint(discoveryEndpoint),
     m_discoveryTimeoutMs(discoveryTimeoutMs),

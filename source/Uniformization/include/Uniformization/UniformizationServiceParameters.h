@@ -52,7 +52,7 @@ namespace adaptone
             std::size_t autoPositionThermalIterationCount,
             std::size_t autoPositionTryCount,
             std::size_t autoPositionCountThreshold,
-            std::vector<double> eqCenterFrequencies,
+            const std::vector<double>& eqCenterFrequencies,
             PcmAudioFrameFormat format);
         virtual ~UniformizationServiceParameters();
 
@@ -76,7 +76,7 @@ namespace adaptone
         std::size_t autoPositionTryCount() const;
         std::size_t autoPositionCountThreshold() const;
 
-        std::vector<double> eqCenterFrequencies() const;
+        const std::vector<double>& eqCenterFrequencies() const;
 
         PcmAudioFrameFormat format() const;
 
@@ -178,7 +178,7 @@ namespace adaptone
         return m_autoPositionCountThreshold;
     }
 
-    inline std::vector<double> UniformizationServiceParameters::eqCenterFrequencies() const
+    inline const std::vector<double>& UniformizationServiceParameters::eqCenterFrequencies() const
     {
         return m_eqCenterFrequencies;
     }
