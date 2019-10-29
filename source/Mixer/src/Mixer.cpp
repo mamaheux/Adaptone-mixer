@@ -153,14 +153,14 @@ unique_ptr<AudioOutput> Mixer::createAudioOutput()
     {
         case AudioOutputConfiguration::Type::RawFile:
             return make_unique<RawFileAudioOutput>(m_configuration.audioOutput().format(),
-                m_configuration.audio().inputChannelCount(),
+                m_configuration.audio().outputChannelCount(),
                 m_configuration.audio().frameSampleCount(),
                 m_configuration.audioOutput().filename());
 
 #if defined(__unix__) || defined(__linux__)
         case AudioOutputConfiguration::Type::Alsa:
             return make_unique<AlsaAudioOutput>(m_configuration.audioOutput().format(),
-                m_configuration.audio().inputChannelCount(),
+                m_configuration.audio().outputChannelCount(),
                 m_configuration.audio().frameSampleCount(),
                 m_configuration.audio().sampleFrequency(),
                 m_configuration.audioOutput().device());

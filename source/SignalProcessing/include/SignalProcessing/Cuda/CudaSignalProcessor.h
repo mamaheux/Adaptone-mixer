@@ -340,7 +340,7 @@ namespace adaptone
         convertArrayToPcm<T>(buffers.currentDelayedOutputFrame(),
             buffers.currentOutputPcmFrame(),
             buffers.frameSampleCount(),
-            buffers.inputChannelCount(),
+            buffers.outputChannelCount(),
             buffers.outputFormat());
         grid.sync();
 
