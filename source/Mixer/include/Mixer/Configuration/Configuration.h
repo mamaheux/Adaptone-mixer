@@ -105,6 +105,7 @@ namespace adaptone
             m_uniformizationConfiguration.autoPositionThermalIterationCount(),
             m_uniformizationConfiguration.autoPositionTryCount(),
             m_uniformizationConfiguration.autoPositionCountThreshold(),
+            m_audioConfiguration.eqCenterFrequencies(),
             m_audioOutputConfiguration.format());
     }
 }

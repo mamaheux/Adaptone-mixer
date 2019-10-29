@@ -164,3 +164,36 @@ double adaptone::findSetAngle2D(const mat& set)
 
     return atan2(coeff(1),1);
 }
+
+vec adaptone::averageFrequencyBand(const vec& x, const vec& centerFrequencies, const size_t fs, bool normalized)
+{
+    cx_vec cx(x, zeros<vec>(x.size()));
+    cx_vec cX;
+    fft(cx, cX);
+    vec cXX = 20 * log10(abs(cX));
+
+    size_t N = centerFrequencies.size();
+    vec edgeFrequencies = zeros<vec>(N + 1);
+    edgeFrequencies(0) = 0;
+    edgeFrequencies(N) = fs / 2.0;
+    for (int i = 0; i < N - 1; i++)
+    {
+        edgeFrequencies(i + 1) = sqrt(centerFrequencies(i) * centerFrequencies(i + 1));
+    }
+
+    vec frequencyIndexes = clamp(round(edgeFrequencies / fs * x.size()), 0, ceil(x.size() / 2) - 1);
+
+    vec bandAverage = zeros<vec>(N);
+    for (int i = 0; i < N; i++)
+    {
+        bandAverage(i) = mean(cXX(span(static_cast<int>(frequencyIndexes(i)),
+            static_cast<int>(frequencyIndexes(i + 1)))));
+    }
+
+    if (normalized)
+    {
+        bandAverage -= mean(bandAverage);
+    }
+
+    return bandAverage;
+}

@@ -27,6 +27,10 @@ namespace adaptone
         const std::vector<Probe>& probes() const;
         const std::vector<Speaker>& speakers() const;
 
+        void setProbesId(const std::vector<uint32_t>& ids);
+        void setSpeakersId(const std::vector<uint32_t>& ids);
+        void setSpeakerDirectivities(std::size_t speakerIndex, const arma::vec& directivities);
+
         void setProbesPosFromMat(const arma::mat posMat);
         void setSpeakersPosFromMat(const arma::mat posMat);
         arma::mat getProbesPosMat() const;

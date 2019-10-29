@@ -26,6 +26,7 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     constexpr size_t AutoPositionThermalIterationCount = 16;
     constexpr size_t AutoPositionTryCount = 17;
     constexpr size_t AutoPositionCountThreshold = 18;
+    const vector<double> EqCenterFrequencies({ 19, 19 });
     constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Double;
 
     UniformizationServiceParameters parameters(DiscoveryEndpoint,
@@ -47,6 +48,7 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
         AutoPositionThermalIterationCount,
         AutoPositionTryCount,
         AutoPositionCountThreshold,
+        EqCenterFrequencies,
         Format);
 
     EXPECT_EQ(parameters.discoveryEndpoint().ipAddress(), DiscoveryEndpoint.ipAddress());
@@ -69,6 +71,7 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(parameters.autoPositionThermalIterationCount(), AutoPositionThermalIterationCount);
     EXPECT_EQ(parameters.autoPositionTryCount(), AutoPositionTryCount);
     EXPECT_EQ(parameters.autoPositionCountThreshold(), AutoPositionCountThreshold);
+    EXPECT_EQ(parameters.eqCenterFrequencies(), EqCenterFrequencies);
     EXPECT_EQ(parameters.format(), Format);
 
 

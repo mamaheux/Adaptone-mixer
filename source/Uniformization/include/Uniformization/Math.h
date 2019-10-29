@@ -1,6 +1,7 @@
 #ifndef UNIFORMIZATION_MATH_H
 #define UNIFORMIZATION_MATH_H
 
+#include <SignalProcessing/Utils/Math.h>
 #include <armadillo>
 #include <cmath>
 #include <cstddef>
@@ -26,6 +27,9 @@ namespace adaptone
     void rotateSet2D(arma::mat& set, double angle);
 
     double findSetAngle2D(const arma::mat& set);
+
+    arma::vec averageFrequencyBand(const arma::vec& x, const arma::vec& centerFrequencies, const size_t fs,
+        bool normalized);
 
     inline arma::vec correlation(const arma::vec& A, const arma::vec& B)
     {
