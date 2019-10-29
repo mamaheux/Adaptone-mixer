@@ -26,16 +26,24 @@ Room::~Room()
 {
 }
 
-void Room::setProbesId(const std::vector<size_t>& ids)
+void Room::setProbesId(const std::vector<uint32_t>& ids)
 {
+    if (ids.size() != m_probeCount)
+    {
+        THROW_INVALID_VALUE_EXCEPTION("ids.size() != m_probeCount", "");
+    }
     for (int i = 0; i < m_probes.size(); i++)
     {
         m_probes[i].setId(ids[i]);
     }
 }
 
-void Room::setSpeakersId(const std::vector<size_t>& ids)
+void Room::setSpeakersId(const std::vector<uint32_t>& ids)
 {
+    if (ids.size() != m_speakerCount)
+    {
+        THROW_INVALID_VALUE_EXCEPTION("ids.size() != m_speakerCount", "");
+    }
     for (int i = 0; i < m_speakers.size(); i++)
     {
         m_speakers[i].setId(ids[i]);

@@ -140,14 +140,8 @@ void UniformizationService::performEqControlIteration()
 
 void UniformizationService::initializeRoomModelElementId(const vector<size_t>& masterOutputIndexes)
 {
-    m_room.setSpeakersId(masterOutputIndexes);
-
-    vector<size_t> ids;
-    for (auto id : m_probeServers->probeIds())
-    {
-        ids.push_back(id);
-    }
-    m_room.setProbesId(ids);
+    m_room.setSpeakersId(vector<uint32_t>(masterOutputIndexes.begin(), masterOutputIndexes.end()));
+    m_room.setProbesId(m_probeServers->probeIds());
 }
 
 arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>& masterOutputIndexes)
