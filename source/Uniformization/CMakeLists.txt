@@ -7,6 +7,7 @@ find_package(Boost COMPONENTS system REQUIRED)
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 
 include_directories(../3rdParty/armadillo-code/include)
+include_directories(../3rdParty/fftw/build/include)
 include_directories(../Utils/include)
 include_directories(../SignalProcessing/include)
 include_directories(${Boost_INCLUDE_DIR})
@@ -28,6 +29,7 @@ target_link_libraries(Uniformization
     SignalProcessing
     armadillo
     ${openblas_LIBRARY}
+    ${fftw_LIBRARY}
     gfortran
     ${Boost_LIBRARIES})
 
