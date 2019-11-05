@@ -4,6 +4,7 @@ import json
 
 PROBE_LISTEN_MESSAGE_SEQ_ID = 25
 STOP_PROBE_LISTEN_MESSAGE_SEQ_ID = 26
+WEBSOCKET_ADDRESS = "localhost"
 WEBSOCKET_PORT = 8765
 
 async def messageHandler(websocket, path):
@@ -19,7 +20,7 @@ async def messageHandler(websocket, path):
       elif seq_id == STOP_PROBE_LISTEN_MESSAGE_SEQ_ID:
         # Stop listening to the corresponding probe
 
-start_websockets_server = websockets.serve(messageHandler, "localhost", WEBSOCKET_PORT)
+start_websockets_server = websockets.serve(messageHandler, WEBSOCKET_ADDRESS, WEBSOCKET_PORT)
 
 asyncio.get_event_loop().run_until_complete(start_websockets_server)
 asyncio.get_event_loop().run_forever()
