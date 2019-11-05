@@ -15,11 +15,9 @@ async def messageHandler(websocket, path):
 
       if seq_id == PROBE_LISTEN_MESSAGE_SEQ_ID:
         # Handle listening to the corresponding probe
-        print(f"{json_message['seqId']}")
-        print(f"{json_message['data']['probeId']}")
+        probe_id = json_message['data']['probeId']
       elif seq_id == STOP_PROBE_LISTEN_MESSAGE_SEQ_ID:
         # Stop listening to the corresponding probe
-        print(f"{json_message['seqId']}")
 
 start_websockets_server = websockets.serve(messageHandler, "localhost", WEBSOCKET_PORT)
 
