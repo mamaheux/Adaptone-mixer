@@ -87,12 +87,14 @@ void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const Lau
     vector<ConfigurationPosition> secondSymmetryPositions;
     for (const Speaker& speaker : room.speakers())
     {
+        cout << "speaker { x : " << speaker.x() << " ;  y : " << speaker.y() << " }" << endl;
         firstSymmetryPositions.emplace_back(speaker.x(), speaker.y(), PositionType::Speaker, speaker.id());
         secondSymmetryPositions.emplace_back(-speaker.x(), speaker.y(), PositionType::Speaker, speaker.id());
     }
 
     for (const Probe& probe : room.probes())
     {
+        cout << "probe { x : " << probe.x() << " ;  y : " << probe.y() << " }" << endl;
         firstSymmetryPositions.emplace_back(probe.x(), probe.y(), PositionType::Probe, probe.id());
         secondSymmetryPositions.emplace_back(-probe.x(), probe.y(), PositionType::Probe, probe.id());
     }

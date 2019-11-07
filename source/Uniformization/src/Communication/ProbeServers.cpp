@@ -4,6 +4,8 @@
 
 #include <Utils/Exception/NetworkException.h>
 
+#include <iostream>
+
 using namespace adaptone;
 using namespace std;
 
@@ -94,6 +96,7 @@ void ProbeServers::run()
         set<DiscoveredProbe> discoveredProbes = m_probeDiscoverer.discover();
         for (const DiscoveredProbe& discoveredProbe : discoveredProbes)
         {
+            cout << "Discovered probe : " << discoveredProbe.address() << endl;
             createProbeServer(discoveredProbe);
         }
         if (m_masterProbeId == -1)
@@ -147,6 +150,8 @@ void ProbeServers::createProbeServer(const DiscoveredProbe& discoveredProbe)
             m_messageHandler,
             discoveredProbe,
             m_probeServerParameters);
+
+        cout << "Probe id : " << probeServer->id() << ", isMaster : " << probeServer->isMaster() << endl;
 
         uint32_t id = probeServer->id();
         m_probeServersById.emplace(id, move(probeServer));

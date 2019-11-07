@@ -2,6 +2,8 @@
 
 #include <unordered_map>
 
+#include <iostream>
+
 using namespace adaptone;
 using namespace std;
 
@@ -33,5 +35,6 @@ bool ProbeMessage::hasPayload(uint32_t id)
         return it->second;
     }
 
+    cout << "hasPayload::id" << id << endl;
     THROW_INVALID_VALUE_EXCEPTION("Format not supported", "");
 }

@@ -6,6 +6,8 @@
 
 #include <ctime>
 
+#include <iostream>
+
 using namespace adaptone;
 using namespace std;
 using namespace std::chrono_literals;
@@ -50,6 +52,9 @@ UniformizationService::UniformizationService(shared_ptr<Logger> logger,
     m_recordResponseMessageAgregator = recordResponseMessageAgregator;
     m_probeMessageHandler = probeMessageHandler;
     m_probeServers = probeServers;
+
+    cout << " > > > m_parameters.sweepDuration() = " << m_parameters.sweepDuration() << endl;
+    cout << " > > > m_parameters.sweepMaxDelay() = " << m_parameters.sweepMaxDelay() << endl;
 }
 
 UniformizationService::~UniformizationService()
@@ -95,10 +100,17 @@ Room UniformizationService::initializeRoom(const vector<size_t>& masterOutputInd
     m_eqControlerEnabled.store(false);
     lock_guard lock(m_probeServerMutex);
 
+    cout << "Room creation... ";
     m_room = Room(masterOutputIndexes.size(), m_probeServers->probeCount());
+    cout << "Done!" << endl;
 
+    cout << "Distance extraction routine : " << endl;
     m_speakersToProbesDistancesMat = distancesExtractionRoutine(masterOutputIndexes);
+    cout << "Distance extraction routine : Done!" << endl;
+
+    cout << "Compute room configuration : " << endl;
     m_autoPosition->computeRoomConfiguration2D(m_room, m_speakersToProbesDistancesMat, true);
+    cout << "Compute room configuration : Done!" << endl;
 
     return m_room;
 }
@@ -140,8 +152,10 @@ void UniformizationService::performEqControlIteration()
 
 void UniformizationService::initializeRoomModelElementId(const vector<size_t>& masterOutputIndexes)
 {
+    cout << " > Initializing room model element id... ";
     m_room.setSpeakersId(vector<uint32_t>(masterOutputIndexes.begin(), masterOutputIndexes.end()));
     m_room.setProbesId(m_probeServers->probeIds());
+    cout << "Done!";
 }
 
 arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>& masterOutputIndexes)
@@ -150,13 +164,23 @@ arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>
 
     std::vector<Speaker> speakers = m_room.speakers();
     arma::mat delaysMat = arma::zeros(masterOutputIndexes.size(), m_probeServers->probeCount());
+    cout << " > Sweep main loop : " << endl;
     for (int i = 0; i < masterOutputIndexes.size(); i++)
     {
+        cout << " > > Speaker index = " << i << endl;
+        cout << " > > Sweep routine at output : " << endl;
         auto result = sweepRoutineAtOutputX(masterOutputIndexes[i]);
+        cout << " > > Sweep routine at output : Done!" << endl;
+
+        cout << " > > Compute metrics from sweep data : " << endl;
         Metrics metrics = computeMetricsFromSweepData(result);
+        cout << " > > Compute metrics from sweep data : Done!" << endl;
 
-        delaysMat.row(i) = metrics.m_delays;
-
+        delaysMat.row(i).print();
+        metrics.m_delays.print();
+        cout << " > > delays assignement" << endl;
+        delaysMat.row(i) = metrics.m_delays.t();
+        cout << " > > directivities assignement" << endl;
         m_room.setSpeakerDirectivities(i, metrics.m_directivities);
     }
 
@@ -169,22 +193,31 @@ Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_
     Metrics metrics;
     arma::vec delays = arma::zeros<arma::vec>(probesCount);
     arma::vec directivities = arma::zeros<arma::vec>(probesCount);
-
     const arma::vec sweepVec = m_signalOverride->getSignalOverride<SweepSignalOverride>()->sweepVec();
     auto probeIds = m_probeServers->probeIds();
     size_t n = 0;
+
+    cout << " > > > Metrics extraction main loop : " << endl;
     for (uint32_t probeId : probeIds)
     {
+        cout << " > > > > Computing delay... ";
         arma::vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
         size_t sampleDelay = findDelay(probeData, sweepVec);
+        cout << "Done!" << endl;
 
         delays(n) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());
         delays(n) -= m_parameters.outputHardwareDelay();
 
+        cout << " > > > > Computing directivities... ";
         constexpr bool Normalized = false;
+        cout << " > > > > > ProbeData size = " << probeData.size() << endl;
+        cout << " > > > > > SampleDelay = " << sampleDelay << endl;
+        cout << " > > > > > SampleDelay + sweepVec.size() = " << sampleDelay + sweepVec.size() << endl;
+        cout << " > > > > > Diff = " << sweepVec.size() << endl;
         arma::vec bandAverage = averageFrequencyBand(probeData(arma::span(sampleDelay, sampleDelay + sweepVec.size())),
             arma::conv_to<arma::vec>::from(m_parameters.eqCenterFrequencies()), m_parameters.sampleFrequency(),
             Normalized);
+        cout << "Done!" << endl;
 
         directivities(n) = arma::mean(bandAverage + 20 * log10(1 / (m_parameters.speedOfSound() * delays(n)) + 0.0001));
         n++;
@@ -204,23 +237,37 @@ unordered_map<uint32_t, AudioFrame<double>> UniformizationService::sweepRoutineA
     struct tm recordStartTime;
 
     gmtime_r(&ts.tv_sec, &recordStartTime);
+
+    cout << " > > > Current time (sec) : " << ts.tv_sec << endl;
+
     constexpr size_t recordDelay = 1;
     recordStartTime.tm_sec += recordDelay;
     ts.tv_sec += recordDelay;
     mktime(&recordStartTime);
 
+    cout << " > > > Record time (sec) : " << ts.tv_sec << endl;
+
     constexpr int SecToMs = 1000;
+    cout << " > > > m_parameters.sweepDuration() = " << m_parameters.sweepDuration() << endl;
+    cout << " > > > m_parameters.sweepMaxDelay() = " << m_parameters.sweepMaxDelay() << endl;
+
     uint16_t durationMs = round((m_parameters.sweepDuration() + m_parameters.sweepMaxDelay()) * SecToMs);
 
+    cout << " > > > Record duration (msec) : " << durationMs << endl;
     // Request record to all connected probes
+    cout << " > > > Reseting record respond message agregator... ";
     m_recordResponseMessageAgregator->reset(masterOutputIndex, m_probeServers->probeCount());
+    cout << "Done!" << endl;
 
     constexpr size_t Millisecond = 0;
     RecordRequestMessage message(recordStartTime.tm_hour, recordStartTime.tm_min, recordStartTime.tm_sec, Millisecond,
         durationMs, masterOutputIndex);
 
+    cout << " > > > Sending record request to probes... ";
     m_probeServers->sendToProbes(message);
+    cout << "Done!" << endl;
 
+    cout << " > > > Waiting until record time is arrived... " << endl;
     // Wait until record time is met
     size_t recordThreshold = ts.tv_sec;
     do
@@ -232,13 +279,16 @@ unordered_map<uint32_t, AudioFrame<double>> UniformizationService::sweepRoutineA
 
     // Start emitting the sweep at the desired output
     m_signalOverride->getSignalOverride<SweepSignalOverride>()->startSweep(masterOutputIndex);
+    cout << " > > > Starting sweep signal override" << endl;
 
+    cout << " > > > Waiting for probes response message... ";
     constexpr float WaitTimeFactor = 1.5;
     auto result = m_recordResponseMessageAgregator->read(round(WaitTimeFactor * durationMs));
     if (result == nullopt)
     {
         THROW_NETWORK_EXCEPTION("Reading probes sweep data timeout");
     }
+    cout << "Done!" << endl;
 
     m_signalOverride->setCurrentSignalOverrideType<PassthroughSignalOverride>();
 

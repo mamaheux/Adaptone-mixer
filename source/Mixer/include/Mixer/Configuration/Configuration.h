@@ -13,6 +13,8 @@
 
 #include <Utils/Configuration/Properties.h>
 
+#include <iostream>
+
 namespace adaptone
 {
     class Configuration

@@ -36,7 +36,7 @@ namespace adaptone
 
         std::unique_ptr<AutoPosition> m_autoPosition;
 
-        const UniformizationServiceParameters& m_parameters;
+        UniformizationServiceParameters m_parameters;
 
         std::shared_ptr<RecordResponseMessageAgregator> m_recordResponseMessageAgregator;
         std::shared_ptr<UniformizationProbeMessageHandler> m_probeMessageHandler;

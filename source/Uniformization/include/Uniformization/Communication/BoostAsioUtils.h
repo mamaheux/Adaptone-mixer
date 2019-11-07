@@ -5,6 +5,8 @@
 
 #include <boost/asio.hpp>
 
+#include <iostream>
+
 namespace adaptone
 {
     constexpr std::size_t MaxUdpBufferSize = 65535;
@@ -59,6 +61,7 @@ namespace adaptone
         }
         if (bytesReceived <= 0)
         {
+            std::cout << "tcpSocketReceiveTimeout errno=" << errno << std::endl;
             ec = boost::asio::error::fault;
         }
 
