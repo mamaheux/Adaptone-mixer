@@ -184,7 +184,7 @@ arma::mat UniformizationService::distancesExtractionRoutine(const vector<size_t>
         m_room.setSpeakerDirectivities(i, metrics.m_directivities);
     }
 
-    return delaysMat / m_parameters.speedOfSound();
+    return delaysMat * m_parameters.speedOfSound();
 }
 
 Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_t, AudioFrame<double>>& audioFrames)
