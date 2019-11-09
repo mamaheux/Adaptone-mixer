@@ -214,17 +214,17 @@ vec adaptone::findOptimalDelays(const mat& speakersToProbesDistances, const mat&
     mat taus = speakersToProbesDistances / speed;
 
     vec gradJ;
-    double gradNorm2 = 100;
 
-    size_t k = 0;
-    do
+    for (size_t i = 0; i < MaxIterCount; i++)
     {
-        k++;
         gradJ = gradDelayCost(delays, taus, directivities);
         delays -= gamma * gradJ;
-        gradNorm2 = sum(gradJ % gradJ);
+
+        if (sum(gradJ % gradJ) < MinGradJ)
+        {
+            break;
+        }
     }
-    while(k < MaxIterCount && gradNorm2 >= MinGradJ);
 
     return delays - min(delays);
 }
