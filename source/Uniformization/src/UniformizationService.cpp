@@ -119,6 +119,8 @@ void UniformizationService::confirmRoomPositions()
 {
     lock_guard lock(m_probeServerMutex);
     m_eqControlerEnabled.store(true);
+
+    optimizeDelays();
 }
 
 void UniformizationService::run()
@@ -192,7 +194,7 @@ Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_
     size_t probesCount = audioFrames.size();
     Metrics metrics;
     arma::vec delays = arma::zeros<arma::vec>(probesCount);
-    arma::vec directivities = arma::zeros<arma::vec>(probesCount);
+    arma::mat directivities = arma::zeros<arma::mat>(probesCount, m_parameters.eqCenterFrequencies().size());
     const arma::vec sweepVec = m_signalOverride->getSignalOverride<SweepSignalOverride>()->sweepVec();
     auto probeIds = m_probeServers->probeIds();
     size_t n = 0;
@@ -202,7 +204,8 @@ Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_
     {
         cout << " > > > > Computing delay... ";
         arma::vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
-        size_t sampleDelay = findDelay(probeData, sweepVec);
+        int sampleDelay = std::max(0, findDelay(probeData, sweepVec));
+
         cout << "Done!" << endl;
 
         delays(n) = sampleDelay / static_cast<double>(m_parameters.sampleFrequency());
@@ -219,7 +222,7 @@ Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_
             Normalized);
         cout << "Done!" << endl;
 
-        directivities(n) = arma::mean(bandAverage + 20 * log10(1 / (m_parameters.speedOfSound() * delays(n)) + 0.0001));
+        directivities.row(n) = (bandAverage + 20 * log10(1 / (m_parameters.speedOfSound() * delays(n)) + 0.0001)).t();
         n++;
     }
 
@@ -293,5 +296,24 @@ unordered_map<uint32_t, AudioFrame<double>> UniformizationService::sweepRoutineA
     m_signalOverride->setCurrentSignalOverrideType<PassthroughSignalOverride>();
 
     return *result;
+}
+
+void UniformizationService::optimizeDelays()
+{
+    auto speakers = m_room.speakers();
+    auto probes = m_room.probes();
+
+    arma::mat directivities = arma::zeros<arma::mat>(speakers.size(), probes.size());
+
+    // Flatten frequency dimension in directivities matrix with a mean operation
+    for (size_t i = 0; i < speakers.size(); i++)
+    {
+        directivities.row(i) = arma::mean(speakers[i].directivities(), 0).t();
+    }
+
+    arma::vec delays = findOptimalDelays(m_speakersToProbesDistancesMat, directivities, m_parameters.speedOfSound());
+    vector<size_t> sampleDelays = arma::conv_to<vector<size_t>>::from(round(delays * m_parameters.sampleFrequency()));
+
+    m_signalProcessor->setOutputDelays(sampleDelays);
 }
 

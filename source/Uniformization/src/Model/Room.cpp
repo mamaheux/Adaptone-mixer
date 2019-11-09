@@ -50,7 +50,7 @@ void Room::setSpeakersId(const std::vector<uint32_t>& ids)
     }
 }
 
-void Room::setSpeakerDirectivities(size_t speakerIndex, const arma::vec& directivities)
+void Room::setSpeakerDirectivities(size_t speakerIndex, const arma::mat& directivities)
 {
     m_speakers[speakerIndex].setDirectivities(directivities);
 }

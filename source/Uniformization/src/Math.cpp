@@ -197,3 +197,59 @@ vec adaptone::averageFrequencyBand(const vec& x, const vec& centerFrequencies, c
 
     return bandAverage;
 }
+
+vec adaptone::findOptimalDelays(const mat& speakersToProbesDistances, const mat& directivities,
+    double speed)
+{
+    constexpr double MinGradJ = 1e-3;
+    constexpr double GammaDefault = 1e-7;
+    constexpr size_t MaxIterCount = 10000;
+
+    size_t speakersCount = speakersToProbesDistances.n_rows;
+
+    double gammaScale = max(max(speakersToProbesDistances)) / mean(vectorise(directivities));
+    double gamma = gammaScale * GammaDefault;
+
+    vec delays = zeros<vec>(speakersCount);
+    mat taus = speakersToProbesDistances / speed;
+
+    vec gradJ;
+    double gradNorm2 = 100;
+
+    size_t k = 0;
+    do
+    {
+        k++;
+        gradJ = gradDelayCost(delays, taus, directivities);
+        delays -= gamma * gradJ;
+        gradNorm2 = sum(gradJ % gradJ);
+    }
+    while(k < MaxIterCount && gradNorm2 >= MinGradJ);
+
+    return delays - min(delays);
+}
+
+vec adaptone::gradDelayCost(const vec& delays, const mat& taus, const mat& directivities)
+{
+    size_t speakersCount = taus.n_rows;
+    size_t probesCount = taus.n_cols;
+
+    vec gradJ = zeros<vec>(speakersCount);
+
+    for (size_t c = 0; c < probesCount; c++)
+    {
+        for (size_t i = 0; i < speakersCount; i++)
+        {
+            for (size_t j = 0; j < speakersCount; j++)
+            {
+                double weight = directivities(i,c) * directivities(j,c) / (taus(i,c) * taus(j,c));
+                double factor = 2 * (delays(i) + taus(i,c) - delays(j) - taus(j,c)) * weight;
+
+                gradJ(i) += factor;
+                gradJ(j) -= factor;
+            }
+        }
+    }
+
+    return gradJ;
+}

@@ -31,22 +31,18 @@ namespace adaptone
     arma::vec averageFrequencyBand(const arma::vec& x, const arma::vec& centerFrequencies, const size_t fs,
         bool normalized);
 
+    arma::vec gradDelayCost(const arma::vec& delays, const arma::mat& taus, const arma::mat& directivities);
+
+    arma::vec findOptimalDelays(const arma::mat& speakersToProbesDistances, const arma::mat& directivities, double speed);
+
     inline arma::vec correlation(const arma::vec& A, const arma::vec& B)
     {
         return arma::conv(A, arma::reverse(B));
     }
 
-    inline size_t findDelay(const arma::vec& A, const arma::vec& B)
+    inline int findDelay(const arma::vec& A, const arma::vec& B)
     {
-        int64_t index = arma::index_max(correlation(A,B)) - (A.size() + B.size() - 2) / 2;
-        if (index < 0)
-        {
-            return 0;
-        }
-        else
-        {
-            return index;
-        }
+        return arma::index_max(correlation(A,B)) - (A.size() + B.size() - 2) / 2;
     }
 
     template<class T>

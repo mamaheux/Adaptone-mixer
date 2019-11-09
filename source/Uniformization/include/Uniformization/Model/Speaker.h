@@ -9,7 +9,7 @@ namespace adaptone
 {
     class Speaker : public ModelElement
     {
-        arma::vec m_directivities;
+        arma::mat m_directivities;
 
     public:
         Speaker();
@@ -17,16 +17,16 @@ namespace adaptone
         Speaker(double x, double y, double z, uint32_t id);
         ~Speaker() override;
 
-        void setDirectivities(const arma::vec& directivities);
-        const arma::vec& directivities() const;
+        void setDirectivities(const arma::mat& directivities);
+        const arma::mat& directivities() const;
     };
 
-    inline void Speaker::setDirectivities(const arma::vec& directivities)
+    inline void Speaker::setDirectivities(const arma::mat& directivities)
     {
         m_directivities = directivities;
     }
 
-    inline const arma::vec& Speaker::directivities() const
+    inline const arma::mat& Speaker::directivities() const
     {
         return m_directivities;
     }
