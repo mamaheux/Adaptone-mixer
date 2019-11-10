@@ -204,7 +204,8 @@ Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_
     {
         cout << " > > > > Computing delay... ";
         arma::vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
-        int sampleDelay = std::max(0, findDelay(probeData, sweepVec));
+        
+        size_t sampleDelay = max((int64_t)0, findDelay(probeData, sweepVec));
 
         cout << "Done!" << endl;
 
@@ -314,6 +315,8 @@ void UniformizationService::optimizeDelays()
     arma::vec delays = findOptimalDelays(m_speakersToProbesDistancesMat, directivities, m_parameters.speedOfSound());
     vector<size_t> sampleDelays = arma::conv_to<vector<size_t>>::from(round(delays * m_parameters.sampleFrequency()));
 
-    m_signalProcessor->setOutputDelays(sampleDelays);
+    for (size_t i = 0; i < speakers.size(); i++)
+    {
+        m_signalProcessor->setOutputDelay(speakers[i].id(), sampleDelays[i]);
+    }
 }
-

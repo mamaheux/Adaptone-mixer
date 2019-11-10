@@ -40,7 +40,7 @@ namespace adaptone
         return arma::conv(A, arma::reverse(B));
     }
 
-    inline int findDelay(const arma::vec& A, const arma::vec& B)
+    inline int64_t findDelay(const arma::vec& A, const arma::vec& B)
     {
         return arma::index_max(correlation(A,B)) - (A.size() + B.size() - 2) / 2;
     }
