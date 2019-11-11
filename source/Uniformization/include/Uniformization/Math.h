@@ -1,5 +1,5 @@
-#ifndef UTILS_MATH_H
-#define UTILS_MATH_H
+#ifndef UNIFORMIZATION_MATH_H
+#define UNIFORMIZATION_MATH_H
 
 #include <SignalProcessing/Utils/Math.h>
 #include <armadillo>
