@@ -2,6 +2,7 @@
 #include <Uniformization/Communication/Messages/Tcp/RecordRequestMessage.h>
 #include <Uniformization/Math.h>
 
+#include <Utils/Time.h>
 #include <Utils/Exception/InvalidValueException.h>
 
 #include <ctime>
@@ -54,8 +55,7 @@ UniformizationService::UniformizationService(shared_ptr<Logger> logger,
     m_probeMessageHandler = probeMessageHandler;
     m_probeServers = probeServers;
 
-    cout << " > > > m_parameters.sweepDuration() = " << m_parameters.sweepDuration() << endl;
-    cout << " > > > m_parameters.sweepMaxDelay() = " << m_parameters.sweepMaxDelay() << endl;
+    m_recordIndex = 0;
 }
 
 UniformizationService::~UniformizationService()
@@ -128,9 +128,9 @@ void UniformizationService::confirmRoomPositions()
 
 void UniformizationService::run()
 {
-    try
+    while (!m_stopped.load())
     {
-        while (!m_stopped.load())
+        try
         {
             if (m_eqControlerEnabled.load())
             {
@@ -141,10 +141,10 @@ void UniformizationService::run()
                 this_thread::sleep_for(UniformizationServiceSleepDuration);
             }
         }
-    }
-    catch (exception& ex)
-    {
-        m_logger->log(Logger::Level::Error, ex);
+        catch (exception& ex)
+        {
+            m_logger->log(Logger::Level::Error, ex);
+        }
     }
 }
 
@@ -153,84 +153,6 @@ void UniformizationService::performEqControlIteration()
     lock_guard lock(m_probeServerMutex);
 
     eqControl();
-}
-
-void UniformizationService::eqControl()
-{
-    static size_t recordIndex = 0;
-    recordIndex++;
-
-    cout << " > eqControl iter : " << recordIndex << endl;
-
-    constexpr size_t RecordDelayMs = 250;
-    constexpr size_t SecToMs = 1000;
-    size_t recordDurationMs = m_parameters.eqControlBlockSize() / static_cast<double>(m_parameters.sampleFrequency()) *
-        SecToMs;
-    cout << " > > Send probes record request message... ";
-    sendProbesRecordRequestMessageNow(RecordDelayMs, recordDurationMs, recordIndex);
-    cout << "Done!" << endl;
-
-    cout << " > > Agregate record response messages... ";
-    auto audioFrames = agregateProbesRecordResponseMessageNow(recordDurationMs);
-    cout << "Done!" << endl;
-
-    size_t masterProbeId = m_probeServers->masterProbeId();
-    auto probeIds = m_probeServers->probeIds();
-
-    vector<vec> bandAverageVector;
-    vec targetBandAverage;
-
-    cout << " > > Computing frequency band average... ";
-    for (uint32_t probeId : probeIds)
-    {
-        vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
-
-        constexpr bool Normalized = true;
-        bandAverageVector.emplace_back(averageFrequencyBand(probeData,
-            conv_to<vec>::from(m_parameters.eqCenterFrequencies()), m_parameters.sampleFrequency(), Normalized));
-
-        if (probeId == masterProbeId)
-        {
-            targetBandAverage = bandAverageVector.back();
-        }
-    }
-    cout << "Done!" << endl;
-
-    auto speakers = m_room.speakers();
-    auto probes = m_room.probes();
-    mat normalizedDistances = m_speakersToProbesDistancesMat / max(m_speakersToProbesDistancesMat);
-
-    cout << " > > Computing frequency band average error and applying correction to eq gains... ";
-    for (size_t i = 0; i < speakers.size(); i++)
-    {
-        mat directivities = log10(speakers[i].directivities());
-        directivities /= max(directivities);
-
-        vec bandError = zeros<vec>(m_parameters.eqCenterFrequencies().size());
-        for (size_t j = 0; j < probes.size(); j++)
-        {
-            if (probes[j].id() != masterProbeId)
-            {
-                bandError +=
-                    directivities.row(j) / normalizedDistances(i, j) % (targetBandAverage - bandAverageVector[i]);
-            }
-        }
-        bandError /= probes.size();
-        
-        double eqCenterCorrection = -m_parameters.eqControlErrorCenterCorrectionFactor() * mean(m_outputEqGains.row(i));
-        vec eqCorrection = clamp(m_parameters.eqControlErrorCorrectionFactor() * bandError,
-            m_parameters.eqControlErrorCorrectionUpperBound(), m_parameters.eqControlErrorCorrectionLowerBound());
-
-        m_outputEqGains.row(i) = clamp(m_outputEqGains.row(i) + eqCorrection + eqCenterCorrection,
-            m_parameters.eqControlEqGainLowerBoundDb(), m_parameters.eqControlEqGainUpperBoundDb());
-
-        m_signalProcessor->setUniformizationGraphicEqGains(speakers[i].id(),
-            conv_to<vector<double>>::from(m_outputEqGains.row(i)));
-
-        m_outputEqGains.row(i).print();
-    }
-    cout << "Done!" << endl;
-
 }
 
 void UniformizationService::initializeRoomModelElementId(const vector<size_t>& masterOutputIndexes)
@@ -400,5 +322,95 @@ void UniformizationService::optimizeDelays()
     for (size_t i = 0; i < speakers.size(); i++)
     {
         m_signalProcessor->setOutputDelay(speakers[i].id(), sampleDelays[i]);
+    }
+}
+
+void UniformizationService::eqControl()
+{
+    m_recordIndex++;
+
+    cout << " > eqControl iter : " << m_recordIndex << endl;
+
+    constexpr size_t RecordDelayMs = 250;
+    constexpr size_t SecToMs = 1000;
+    size_t recordDurationMs = m_parameters.eqControlBlockSize() / static_cast<double>(m_parameters.sampleFrequency()) *
+                              SecToMs;
+    cout << " > > Send probes record request message... ";
+    sendProbesRecordRequestMessageNow(RecordDelayMs, recordDurationMs, m_recordIndex);
+    cout << "Done!" << endl;
+
+    cout << " > > Agregate record response messages... ";
+    auto audioFrames = agregateProbesRecordResponseMessageNow(recordDurationMs);
+    cout << "Done!" << endl;
+
+    vector<vec> bandAverageVector;
+    vec targetBandAverage;
+
+    cout << " > > Computing frequency band average... ";
+    computeBandAveragesFromAudioFrames(audioFrames, bandAverageVector, targetBandAverage);
+    cout << "Done!" << endl;
+
+    cout << " > > Computing frequency band average error and applying correction to eq gains... ";
+    updateOutputEqGains(bandAverageVector, targetBandAverage);
+    cout << "Done!" << endl;
+}
+
+void UniformizationService::computeBandAveragesFromAudioFrames(unordered_map<uint32_t, AudioFrame<double>>& audioFrames,
+    vector<vec>& bandAverageVector, vec& targetBandAverage)
+{
+    size_t masterProbeId = m_probeServers->masterProbeId();
+    auto probeIds = m_probeServers->probeIds();
+
+    for (uint32_t probeId : probeIds)
+    {
+        vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
+
+        constexpr bool Normalized = true;
+        bandAverageVector.emplace_back(averageFrequencyBand(probeData,
+            conv_to<vec>::from(m_parameters.eqCenterFrequencies()), m_parameters.sampleFrequency(), Normalized));
+
+        if (probeId == masterProbeId)
+        {
+            targetBandAverage = bandAverageVector.back();
+        }
+    }
+}
+
+void UniformizationService::updateOutputEqGains(vector<vec> bandAverageVector, vec targetBandAverage)
+{
+    size_t masterProbeId = m_probeServers->masterProbeId();
+
+    auto speakers = m_room.speakers();
+    auto probes = m_room.probes();
+    mat normalizedDistances = m_speakersToProbesDistancesMat / max(m_speakersToProbesDistancesMat);
+
+    for (size_t i = 0; i < speakers.size(); i++)
+    {
+        mat directivities = log10(speakers[i].directivities());
+        directivities /= max(directivities);
+
+        vec bandError = zeros<vec>(m_parameters.eqCenterFrequencies().size());
+        for (size_t j = 0; j < probes.size(); j++)
+        {
+            if (probes[j].id() != masterProbeId)
+            {
+                bandError +=
+                    directivities.row(j) / normalizedDistances(i, j) % (targetBandAverage - bandAverageVector[i]);
+            }
+        }
+        bandError /= probes.size();
+
+        double eqCenterCorrection = -m_parameters.eqControlErrorCenterCorrectionFactor() * mean(m_outputEqGains.row(i));
+        vec eqCorrection = clamp(m_parameters.eqControlErrorCorrectionFactor() * bandError,
+            m_parameters.eqControlErrorCorrectionUpperBound(), m_parameters.eqControlErrorCorrectionLowerBound());
+
+        m_outputEqGains.row(i) = clamp(m_outputEqGains.row(i) + eqCorrection + eqCenterCorrection,
+            m_parameters.eqControlEqGainLowerBoundDb(), m_parameters.eqControlEqGainUpperBoundDb());
+
+        vector<double> outputEqGainsNatural = conv_to<vector<double>>::from(exp10(m_outputEqGains.row(i) / 20));
+
+        m_signalProcessor->setUniformizationGraphicEqGains(speakers[i].id(), outputEqGainsNatural);
+
+        m_outputEqGains.row(i).print();
     }
 }

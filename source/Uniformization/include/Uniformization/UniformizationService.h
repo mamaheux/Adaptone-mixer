@@ -52,6 +52,8 @@ namespace adaptone
         arma::mat m_speakersToProbesDistancesMat;
         Room m_room;
 
+        uint8_t m_recordIndex;
+
     public:
         UniformizationService(std::shared_ptr<Logger> logger,
             std::shared_ptr<GenericSignalOverride> signalOverride,
@@ -79,6 +81,10 @@ namespace adaptone
         timespec sendProbesRecordRequestMessageNow(std::size_t delayMs, std::size_t durationMs,
             std::size_t recordIndex);
         std::unordered_map<uint32_t, AudioFrame<double>> agregateProbesRecordResponseMessageNow(size_t timeoutMs);
+
+        void updateOutputEqGains(std::vector<arma::vec> bandAverageVector, arma::vec targetBandAverage);
+        void computeBandAveragesFromAudioFrames(std::unordered_map<uint32_t, AudioFrame<double>>& audioFrames,
+            std::vector<arma::vec>& bandAverageVector, arma::vec& targetBandAverage);
 
         void initializeRoomModelElementId(const std::vector<size_t>& masterOutputIndexes);
         std::unordered_map<uint32_t, AudioFrame<double>> sweepRoutineAtOutputX(const size_t masterOutputIndex);
