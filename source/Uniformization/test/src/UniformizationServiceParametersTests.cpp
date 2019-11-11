@@ -27,6 +27,14 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     constexpr size_t AutoPositionTryCount = 17;
     constexpr size_t AutoPositionCountThreshold = 18;
     const vector<double> EqCenterFrequencies({ 19, 19 });
+    constexpr std::size_t EqControlBlockSize = 20;
+    constexpr std::size_t EqControlErrorWindowSize = 21;
+    constexpr double EqControlErrorCorrectionFactor = 22.22;
+    constexpr double EqControlErrorCorrectionUpperBound = 23.23;
+    constexpr double EqControlErrorCorrectionLowerBound = 24.24;
+    constexpr double EqControlErrorCenterCorrectionFactor = 25.25;
+    constexpr double EqControlEqGainUpperBoundDb = 26.26;
+    constexpr double EqControlEqGainLowerBoundDb = 26.26;
     constexpr PcmAudioFrameFormat Format = PcmAudioFrameFormat::Double;
 
     UniformizationServiceParameters parameters(DiscoveryEndpoint,
@@ -49,6 +57,14 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
         AutoPositionTryCount,
         AutoPositionCountThreshold,
         EqCenterFrequencies,
+        EqControlBlockSize,
+        EqControlErrorWindowSize,
+        EqControlErrorCorrectionFactor,
+        EqControlErrorCorrectionUpperBound,
+        EqControlErrorCorrectionLowerBound,
+        EqControlErrorCenterCorrectionFactor,
+        EqControlEqGainUpperBoundDb,
+        EqControlEqGainLowerBoundDb,
         Format);
 
     EXPECT_EQ(parameters.discoveryEndpoint().ipAddress(), DiscoveryEndpoint.ipAddress());
@@ -72,6 +88,14 @@ TEST(UniformizationServiceParametersTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(parameters.autoPositionTryCount(), AutoPositionTryCount);
     EXPECT_EQ(parameters.autoPositionCountThreshold(), AutoPositionCountThreshold);
     EXPECT_EQ(parameters.eqCenterFrequencies(), EqCenterFrequencies);
+    EXPECT_EQ(parameters.eqControlBlockSize(), EqControlBlockSize);
+    EXPECT_EQ(parameters.eqControlErrorWindowSize(), EqControlErrorWindowSize);
+    EXPECT_DOUBLE_EQ(parameters.eqControlErrorCorrectionFactor(), EqControlErrorCorrectionFactor);
+    EXPECT_DOUBLE_EQ(parameters.eqControlErrorCorrectionUpperBound(), EqControlErrorCorrectionUpperBound);
+    EXPECT_DOUBLE_EQ(parameters.eqControlErrorCorrectionLowerBound(), EqControlErrorCorrectionLowerBound);
+    EXPECT_DOUBLE_EQ(parameters.eqControlErrorCenterCorrectionFactor(), EqControlErrorCenterCorrectionFactor);
+    EXPECT_DOUBLE_EQ(parameters.eqControlEqGainUpperBoundDb(), EqControlEqGainUpperBoundDb);
+    EXPECT_DOUBLE_EQ(parameters.eqControlEqGainLowerBoundDb(), EqControlEqGainLowerBoundDb);
     EXPECT_EQ(parameters.format(), Format);
 
 

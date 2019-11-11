@@ -28,6 +28,15 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     constexpr const char* AutoPositionTryCountPropertyKey = "uniformization.auto_position_try_count";
     constexpr const char* AutoPositionCountThresholdPropertyKey = "uniformization.auto_position_count_threshold";
 
+    constexpr const char* eqControlBlockSizePropertyKey = "uniformization.eq_control_block_size";
+    constexpr const char* eqControlErrorWindowSizePropertyKey = "uniformization.eq_control_error_window_size";
+    constexpr const char* eqControlErrorCorrectionFactorPropertyKey = "uniformization.eq_control_error_correction_factor";
+    constexpr const char* eqControlErrorCorrectionUpperBoundPropertyKey = "uniformization.eq_control_error_correction_upper_bound";
+    constexpr const char* eqControlErrorCorrectionLowerBoundPropertyKey = "uniformization.eq_control_error_correction_lower_bound";
+    constexpr const char* eqControlErrorCenterCorrectionFactorPropertyKey = "uniformization.eq_control_error_center_correction_factor";
+    constexpr const char* eqControlEqGainUpperBoundDbPropertyKey = "uniformization.eq_control_eq_gain_upper_bound_db";
+    constexpr const char* eqControlEqGainLowerBoundDbPropertyKey = "uniformization.eq_control_eq_gain_lower_bound_db";
+
     m_discoveryEndpoint = properties.get<Endpoint>(DiscoveryEndpointPropertyKey);
     m_discoveryTimeoutMs = properties.get<int>(DiscoveryTimeoutMsPropertyKey);
     m_discoveryTrialCount = properties.get<size_t>(DiscoveryTrialCountPropertyKey);
@@ -51,6 +60,15 @@ UniformizationConfiguration::UniformizationConfiguration(const Properties& prope
     m_autoPositionThermalIterationCount = properties.get<size_t>(AutoPositionThermalIterationCountPropertyKey);
     m_autoPositionTryCount = properties.get<size_t>(AutoPositionTryCountPropertyKey);
     m_autoPositionCountThreshold = properties.get<size_t>(AutoPositionCountThresholdPropertyKey);
+
+    m_eqControlBlockSize = properties.get<size_t>(eqControlBlockSizePropertyKey);
+    m_eqControlErrorWindowSize = properties.get<size_t>(eqControlErrorWindowSizePropertyKey);
+    m_eqControlErrorCorrectionFactor = properties.get<double>(eqControlErrorCorrectionFactorPropertyKey);
+    m_eqControlErrorCorrectionUpperBound = properties.get<double>(eqControlErrorCorrectionUpperBoundPropertyKey);
+    m_eqControlErrorCorrectionLowerBound = properties.get<double>(eqControlErrorCorrectionLowerBoundPropertyKey);
+    m_eqControlErrorCenterCorrectionFactor = properties.get<double>(eqControlErrorCenterCorrectionFactorPropertyKey);
+    m_eqControlEqGainUpperBoundDb = properties.get<double>(eqControlEqGainUpperBoundDbPropertyKey);
+    m_eqControlEqGainLowerBoundDb = properties.get<double>(eqControlEqGainLowerBoundDbPropertyKey);
 }
 
 UniformizationConfiguration::~UniformizationConfiguration()

@@ -48,6 +48,7 @@ namespace adaptone
         std::atomic<bool> m_stopped;
         std::unique_ptr<std::thread> m_uniformizationThread;
 
+        arma::mat m_outputEqGains;
         arma::mat m_speakersToProbesDistancesMat;
         Room m_room;
 
@@ -75,11 +76,16 @@ namespace adaptone
 
         void performEqControlIteration();
 
+        timespec sendProbesRecordRequestMessageNow(std::size_t delayMs, std::size_t durationMs,
+            std::size_t recordIndex);
+        std::unordered_map<uint32_t, AudioFrame<double>> agregateProbesRecordResponseMessageNow(size_t timeoutMs);
+
         void initializeRoomModelElementId(const std::vector<size_t>& masterOutputIndexes);
         std::unordered_map<uint32_t, AudioFrame<double>> sweepRoutineAtOutputX(const size_t masterOutputIndex);
         Metrics computeMetricsFromSweepData(std::unordered_map<uint32_t, AudioFrame<double>>& data);
         arma::mat distancesExtractionRoutine(const std::vector<size_t>& masterOutputIndexes);
         void optimizeDelays();
+        void eqControl();
     };
 }
 

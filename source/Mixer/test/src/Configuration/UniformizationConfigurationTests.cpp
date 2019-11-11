@@ -30,7 +30,16 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
         { "uniformization.auto_position_iteration_count", "10000" },
         { "uniformization.auto_position_thermal_iteration_count", "200" },
         { "uniformization.auto_position_try_count", "50" },
-        { "uniformization.auto_position_count_threshold", "10" }
+        { "uniformization.auto_position_count_threshold", "10" },
+
+        { "uniformization.eq_control_block_size", "32768" },
+        { "uniformization.eq_control_error_window_size", "10" },
+        { "uniformization.eq_control_error_correction_factor", "10.0" },
+        { "uniformization.eq_control_error_correction_upper_bound", "10" },
+        { "uniformization.eq_control_error_correction_lower_bound", "-10" },
+        { "uniformization.eq_control_error_center_correction_factor", "0.1" },
+        { "uniformization.eq_control_eq_gain_upper_bound_db", "20" },
+        { "uniformization.eq_control_eq_gain_lower_bound_db", "-20" },
     }));
 
     EXPECT_EQ(configuration.discoveryEndpoint().ipAddress(), "192.168.1.255");
@@ -57,4 +66,13 @@ TEST(UniformizationConfigurationTests, constructor_shouldSetTheAttributes)
     EXPECT_EQ(configuration.autoPositionThermalIterationCount(), 200);
     EXPECT_EQ(configuration.autoPositionTryCount(), 50);
     EXPECT_EQ(configuration.autoPositionCountThreshold(), 10);
+
+    EXPECT_EQ(configuration.eqControlBlockSize(), 32768);
+    EXPECT_EQ(configuration.eqControlErrorWindowSize(), 10);
+    EXPECT_DOUBLE_EQ(configuration.eqControlErrorCorrectionFactor(), 10.0);
+    EXPECT_DOUBLE_EQ(configuration.eqControlErrorCorrectionUpperBound(), 10);
+    EXPECT_DOUBLE_EQ(configuration.eqControlErrorCorrectionLowerBound(), -10);
+    EXPECT_DOUBLE_EQ(configuration.eqControlErrorCenterCorrectionFactor(), 0.1);
+    EXPECT_DOUBLE_EQ(configuration.eqControlEqGainUpperBoundDb(), 20);
+    EXPECT_DOUBLE_EQ(configuration.eqControlEqGainLowerBoundDb(), -20);
 }
