@@ -160,13 +160,19 @@ void UniformizationService::eqControl()
     static size_t recordIndex = 0;
     recordIndex++;
 
-    constexpr size_t recordDelayMs = 1000;
-    constexpr size_t SecToMs = 1000;
-    size_t recordDurationMs = SecToMs * m_parameters.eqControlBlockSize() /
-        static_cast<double>(m_parameters.sampleFrequency());
-    sendProbesRecordRequestMessageNow(recordDelayMs, recordDurationMs, recordIndex);
+    cout << " > eqControl iter : " << recordIndex << endl
 
+    constexpr size_t RecordDelayMs = 250;
+    constexpr size_t SecToMs = 1000;
+    size_t recordDurationMs = m_parameters.eqControlBlockSize() / static_cast<double>(m_parameters.sampleFrequency()) *
+        SecToMs;
+    cout << " > > Send probes record request message... ";
+    sendProbesRecordRequestMessageNow(RecordDelayMs, recordDurationMs, recordIndex);
+    cout << "Done!" << endl;
+
+    cout << " > > Agregate record response messages... ";
     auto audioFrames = agregateProbesRecordResponseMessageNow(recordDurationMs);
+    cout << "Done!" << endl;
 
     size_t masterProbeId = m_probeServers->masterProbeId();
     auto probeIds = m_probeServers->probeIds();
@@ -174,6 +180,7 @@ void UniformizationService::eqControl()
     vector<vec> bandAverageVector;
     vec targetBandAverage;
 
+    cout << " > > Computing frequency band average... ";
     for (uint32_t probeId : probeIds)
     {
         vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
@@ -187,11 +194,13 @@ void UniformizationService::eqControl()
             targetBandAverage = bandAverageVector.back();
         }
     }
+    cout << "Done!" << endl;
 
     auto speakers = m_room.speakers();
     auto probes = m_room.probes();
     mat normalizedDistances = m_speakersToProbesDistancesMat / max(m_speakersToProbesDistancesMat);
 
+    cout << " > > Computing frequency band average error and applying correction to eq gains... ";
     for (size_t i = 0; i < speakers.size(); i++)
     {
         mat directivities = log10(speakers[i].directivities());
@@ -217,7 +226,11 @@ void UniformizationService::eqControl()
 
         m_signalProcessor->setUniformizationGraphicEqGains(speakers[i].id(),
             conv_to<vector<double>>::from(m_outputEqGains.row(i)));
+
+        m_outputEqGains.row(i).print();
     }
+    cout << "Done!" << endl;
+
 }
 
 void UniformizationService::initializeRoomModelElementId(const vector<size_t>& masterOutputIndexes)
@@ -304,10 +317,11 @@ unordered_map<uint32_t, AudioFrame<double>> UniformizationService::sweepRoutineA
 {
     m_signalOverride->setCurrentSignalOverrideType<SweepSignalOverride>();
 
-    constexpr int SecToMs = 1000;
+    constexpr size_t SecToMs = 1000;
     uint16_t durationMs = round((m_parameters.sweepDuration() + m_parameters.sweepMaxDelay()) * SecToMs);
 
-    timespec recordThreshold = sendProbesRecordRequestMessageNow(1000, durationMs, masterOutputIndex);
+    constexpr size_t RecordDelayMs = 1000;
+    timespec recordThreshold = sendProbesRecordRequestMessageNow(RecordDelayMs, durationMs, masterOutputIndex);
 
     cout << " > > > Wait until record time is reached... " << endl;
     waitUntilTimeReached(recordThreshold);
