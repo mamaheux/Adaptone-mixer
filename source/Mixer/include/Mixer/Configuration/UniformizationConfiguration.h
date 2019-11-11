@@ -32,7 +32,14 @@ namespace adaptone
         std::size_t m_autoPositionTryCount;
         std::size_t m_autoPositionCountThreshold;
 
-
+        std::size_t m_eqControlBlockSize;
+        std::size_t m_eqControlErrorWindowSize;
+        double m_eqControlErrorCorrectionFactor;
+        double m_eqControlErrorCorrectionUpperBound;
+        double m_eqControlErrorCorrectionLowerBound;
+        double m_eqControlErrorCenterCorrectionFactor;
+        double m_eqControlEqGainUpperBoundDb;
+        double m_eqControlEqGainLowerBoundDb;
 
     public:
         explicit UniformizationConfiguration(const Properties& properties);
@@ -61,6 +68,15 @@ namespace adaptone
         std::size_t autoPositionThermalIterationCount() const;
         std::size_t autoPositionTryCount() const;
         std::size_t autoPositionCountThreshold() const;
+
+        std::size_t eqControlBlockSize() const;
+        std::size_t eqControlErrorWindowSize() const;
+        double  eqControlErrorCorrectionFactor() const;
+        double  eqControlErrorCorrectionUpperBound() const;
+        double  eqControlErrorCorrectionLowerBound() const;
+        double  eqControlErrorCenterCorrectionFactor() const;
+        double  eqControlEqGainUpperBoundDb() const;
+        double  eqControlEqGainLowerBoundDb() const;
     };
 
     inline const Endpoint& UniformizationConfiguration::discoveryEndpoint() const
@@ -155,6 +171,46 @@ namespace adaptone
     inline std::size_t UniformizationConfiguration::autoPositionCountThreshold() const
     {
         return m_autoPositionCountThreshold;
+    }
+
+    inline std::size_t UniformizationConfiguration::eqControlBlockSize() const
+    {
+        return m_eqControlBlockSize;
+    }
+
+    inline std::size_t UniformizationConfiguration::eqControlErrorWindowSize() const
+    {
+        return m_eqControlErrorWindowSize;
+    }
+
+    inline double UniformizationConfiguration::eqControlErrorCorrectionFactor() const
+    {
+        return m_eqControlErrorCorrectionFactor;
+    }
+
+    inline double UniformizationConfiguration::eqControlErrorCorrectionUpperBound() const
+    {
+        return m_eqControlErrorCorrectionUpperBound;
+    }
+
+    inline double UniformizationConfiguration::eqControlErrorCorrectionLowerBound() const
+    {
+        return m_eqControlErrorCorrectionLowerBound;
+    }
+
+    inline double UniformizationConfiguration::eqControlErrorCenterCorrectionFactor() const
+    {
+        return m_eqControlErrorCenterCorrectionFactor;
+    }
+
+    inline double UniformizationConfiguration::eqControlEqGainUpperBoundDb() const
+    {
+        return m_eqControlEqGainUpperBoundDb;
+    }
+
+    inline double UniformizationConfiguration::eqControlEqGainLowerBoundDb() const
+    {
+        return m_eqControlEqGainLowerBoundDb;
     }
 }
 

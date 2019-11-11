@@ -108,6 +108,14 @@ namespace adaptone
             m_uniformizationConfiguration.autoPositionTryCount(),
             m_uniformizationConfiguration.autoPositionCountThreshold(),
             m_audioConfiguration.eqCenterFrequencies(),
+            m_uniformizationConfiguration.eqControlBlockSize(),
+            m_uniformizationConfiguration.eqControlErrorWindowSize(),
+            m_uniformizationConfiguration.eqControlErrorCorrectionFactor(),
+            m_uniformizationConfiguration.eqControlErrorCorrectionUpperBound(),
+            m_uniformizationConfiguration.eqControlErrorCorrectionLowerBound(),
+            m_uniformizationConfiguration.eqControlErrorCenterCorrectionFactor(),
+            m_uniformizationConfiguration.eqControlEqGainUpperBoundDb(),
+            m_uniformizationConfiguration.eqControlEqGainLowerBoundDb(),
             m_audioOutputConfiguration.format());
     }
 }

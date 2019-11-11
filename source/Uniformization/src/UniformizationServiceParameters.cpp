@@ -23,6 +23,14 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     size_t autoPositionTryCount,
     size_t autoPositionCountThreshold,
     const vector<double>& eqCenterFrequencies,
+    std::size_t eqControlBlockSize,
+    std::size_t eqControlErrorWindowSize,
+    double eqControlErrorCorrectionFactor,
+    double eqControlErrorCorrectionUpperBound,
+    double eqControlErrorCorrectionLowerBound,
+    double eqControlErrorCenterCorrectionFactor,
+    double eqControlEqGainUpperBoundDb,
+    double eqControlEqGainLowerBoundDb,
     PcmAudioFrameFormat format) :
     m_discoveryEndpoint(discoveryEndpoint),
     m_discoveryTimeoutMs(discoveryTimeoutMs),
@@ -44,6 +52,14 @@ UniformizationServiceParameters::UniformizationServiceParameters(Endpoint discov
     m_autoPositionTryCount(autoPositionTryCount),
     m_autoPositionCountThreshold(autoPositionCountThreshold),
     m_eqCenterFrequencies(eqCenterFrequencies),
+    m_eqControlBlockSize(eqControlBlockSize),
+    m_eqControlErrorWindowSize(eqControlErrorWindowSize),
+    m_eqControlErrorCorrectionFactor(eqControlErrorCorrectionFactor),
+    m_eqControlErrorCorrectionUpperBound(eqControlErrorCorrectionUpperBound),
+    m_eqControlErrorCorrectionLowerBound(eqControlErrorCorrectionLowerBound),
+    m_eqControlErrorCenterCorrectionFactor(eqControlErrorCenterCorrectionFactor),
+    m_eqControlEqGainUpperBoundDb(eqControlEqGainUpperBoundDb),
+    m_eqControlEqGainLowerBoundDb(eqControlEqGainLowerBoundDb),
     m_format(format)
 {
 }

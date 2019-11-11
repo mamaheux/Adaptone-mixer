@@ -54,6 +54,14 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
         { "uniformization.auto_position_thermal_iteration_count", "200" },
         { "uniformization.auto_position_try_count", "50" },
         { "uniformization.auto_position_count_threshold", "10" },
+        { "uniformization.eq_control_block_size", "32768" },
+        { "uniformization.eq_control_error_window_size", "10" },
+        { "uniformization.eq_control_error_correction_factor", "10.0" },
+        { "uniformization.eq_control_error_correction_upper_bound", "10" },
+        { "uniformization.eq_control_error_correction_lower_bound", "-10" },
+        { "uniformization.eq_control_error_center_correction_factor", "0.1" },
+        { "uniformization.eq_control_eq_gain_upper_bound_db", "20" },
+        { "uniformization.eq_control_eq_gain_lower_bound_db", "-20" },
 
         { "web_socket.endpoint", "^/echo/?$" },
         { "web_socket.port", "8080" }
@@ -103,6 +111,15 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(configuration.uniformization().autoPositionThermalIterationCount(), 200);
     EXPECT_EQ(configuration.uniformization().autoPositionTryCount(), 50);
     EXPECT_EQ(configuration.uniformization().autoPositionCountThreshold(), 10);
+    EXPECT_EQ(configuration.uniformization().eqControlBlockSize(), 32768);
+    EXPECT_EQ(configuration.uniformization().eqControlErrorWindowSize(), 10);
+    EXPECT_DOUBLE_EQ(configuration.uniformization().eqControlErrorCorrectionFactor(), 10);
+    EXPECT_DOUBLE_EQ(configuration.uniformization().eqControlErrorCorrectionUpperBound(), 10);
+    EXPECT_DOUBLE_EQ(configuration.uniformization().eqControlErrorCorrectionLowerBound(), -10);
+    EXPECT_DOUBLE_EQ(configuration.uniformization().eqControlErrorCenterCorrectionFactor(), 0.1);
+    EXPECT_DOUBLE_EQ(configuration.uniformization().eqControlEqGainUpperBoundDb(), 20);
+    EXPECT_DOUBLE_EQ(configuration.uniformization().eqControlEqGainLowerBoundDb(), -20);
+
     EXPECT_DOUBLE_EQ(configuration.uniformization().routineIRSweepMaxDelay(), 0.5);
 
     EXPECT_EQ(configuration.webSocket().endpoint(), "^/echo/?$");
@@ -142,6 +159,14 @@ TEST(ConfigurationTests, constructor_shouldInitializeSubConfigurations)
     EXPECT_EQ(uniformizationServiceParameters.autoPositionTryCount(), 50);
     EXPECT_EQ(uniformizationServiceParameters.autoPositionCountThreshold(), 10);
     EXPECT_EQ(uniformizationServiceParameters.eqCenterFrequencies(), vector<double>({ 10, 20 }));
+    EXPECT_EQ(uniformizationServiceParameters.eqControlBlockSize(), 32768);
+    EXPECT_EQ(uniformizationServiceParameters.eqControlErrorWindowSize(), 10);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.eqControlErrorCorrectionFactor(), 10);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.eqControlErrorCorrectionUpperBound(), 10);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.eqControlErrorCorrectionLowerBound(), -10);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.eqControlErrorCenterCorrectionFactor(), 0.1);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.eqControlEqGainUpperBoundDb(), 20);
+    EXPECT_DOUBLE_EQ(uniformizationServiceParameters.eqControlEqGainLowerBoundDb(), -20);
     EXPECT_EQ(uniformizationServiceParameters.format(), PcmAudioFrameFormat::Signed16);
 
 }

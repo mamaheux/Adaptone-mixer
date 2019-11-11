@@ -28,6 +28,15 @@ namespace adaptone
         std::size_t m_autoPositionTryCount;
         std::size_t m_autoPositionCountThreshold;
 
+        std::size_t m_eqControlBlockSize;
+        std::size_t m_eqControlErrorWindowSize;
+        double m_eqControlErrorCorrectionFactor;
+        double m_eqControlErrorCorrectionUpperBound;
+        double m_eqControlErrorCorrectionLowerBound;
+        double m_eqControlErrorCenterCorrectionFactor;
+        double m_eqControlEqGainUpperBoundDb;
+        double m_eqControlEqGainLowerBoundDb;
+
         std::vector<double> m_eqCenterFrequencies;
 
         PcmAudioFrameFormat m_format;
@@ -53,6 +62,14 @@ namespace adaptone
             std::size_t autoPositionTryCount,
             std::size_t autoPositionCountThreshold,
             const std::vector<double>& eqCenterFrequencies,
+            std::size_t eqControlBlockSize,
+            std::size_t eqControlErrorWindowSize,
+            double eqControlErrorCorrectionFactor,
+            double eqControlErrorCorrectionUpperBound,
+            double eqControlErrorCorrectionLowerBound,
+            double eqControlErrorCenterCorrectionFactor,
+            double eqControlEqGainUpperBoundDb,
+            double eqControlEqGainLowerBoundDb,
             PcmAudioFrameFormat format);
         virtual ~UniformizationServiceParameters();
 
@@ -77,6 +94,15 @@ namespace adaptone
         std::size_t autoPositionCountThreshold() const;
 
         const std::vector<double>& eqCenterFrequencies() const;
+
+        std::size_t eqControlBlockSize() const;
+        std::size_t eqControlErrorWindowSize() const;
+        double  eqControlErrorCorrectionFactor() const;
+        double  eqControlErrorCorrectionUpperBound() const;
+        double  eqControlErrorCorrectionLowerBound() const;
+        double  eqControlErrorCenterCorrectionFactor() const;
+        double  eqControlEqGainUpperBoundDb() const;
+        double  eqControlEqGainLowerBoundDb() const;
 
         PcmAudioFrameFormat format() const;
 
@@ -181,6 +207,46 @@ namespace adaptone
     inline const std::vector<double>& UniformizationServiceParameters::eqCenterFrequencies() const
     {
         return m_eqCenterFrequencies;
+    }
+
+    inline std::size_t UniformizationServiceParameters::eqControlBlockSize() const
+    {
+        return m_eqControlBlockSize;
+    }
+
+    inline std::size_t UniformizationServiceParameters::eqControlErrorWindowSize() const
+    {
+        return m_eqControlErrorWindowSize;
+    }
+
+    inline double UniformizationServiceParameters::eqControlErrorCorrectionFactor() const
+    {
+        return m_eqControlErrorCorrectionFactor;
+    }
+
+    inline double UniformizationServiceParameters::eqControlErrorCorrectionUpperBound() const
+    {
+        return m_eqControlErrorCorrectionUpperBound;
+    }
+
+    inline double UniformizationServiceParameters::eqControlErrorCorrectionLowerBound() const
+    {
+        return m_eqControlErrorCorrectionLowerBound;
+    }
+
+    inline double UniformizationServiceParameters::eqControlErrorCenterCorrectionFactor() const
+    {
+        return m_eqControlErrorCenterCorrectionFactor;
+    }
+
+    inline double UniformizationServiceParameters::eqControlEqGainUpperBoundDb() const
+    {
+        return m_eqControlEqGainUpperBoundDb;
+    }
+
+    inline double UniformizationServiceParameters::eqControlEqGainLowerBoundDb() const
+    {
+        return m_eqControlEqGainLowerBoundDb;
     }
 
     inline PcmAudioFrameFormat UniformizationServiceParameters::format() const
