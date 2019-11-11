@@ -196,7 +196,7 @@ void UniformizationService::eqControl()
     {
         mat directivities = log10(speakers[i].directivities());
         directivities /= max(directivities);
-        
+
         vec bandError = zeros<vec>(m_parameters.eqCenterFrequencies().size());
         for (size_t j = 0; j < probes.size(); j++)
         {
@@ -207,6 +207,7 @@ void UniformizationService::eqControl()
             }
         }
         bandError /= probes.size();
+        
         double eqCenterCorrection = -m_parameters.eqControlErrorCenterCorrectionFactor() * mean(m_outputEqGains.row(i));
         vec eqCorrection = clamp(m_parameters.eqControlErrorCorrectionFactor() * bandError,
             m_parameters.eqControlErrorCorrectionUpperBound(), m_parameters.eqControlErrorCorrectionLowerBound());
