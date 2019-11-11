@@ -160,7 +160,7 @@ void UniformizationService::eqControl()
     static size_t recordIndex = 0;
     recordIndex++;
 
-    cout << " > eqControl iter : " << recordIndex << endl
+    cout << " > eqControl iter : " << recordIndex << endl;
 
     constexpr size_t RecordDelayMs = 250;
     constexpr size_t SecToMs = 1000;
