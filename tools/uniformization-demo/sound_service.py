@@ -2,6 +2,7 @@ import alsaaudio
 import time
 import threading
 import glob
+import scipy.io.wavfile
 
 # Room info
 WITH_UNIFORMISATION_PATH = 'asser/'
@@ -22,46 +23,45 @@ def play_thread(thread_name):
   global playback_device, current_frame_number, selected_id, uniform_audio_frames, default_audio_frame, uniformization
 
   while True:
-    if current_frame_number >= current_frame_number:
-      current_frame_number = 0
-    
     # We don't want to swap the selected probe mid write
     probe_id = selected_id
     is_uniform = uniformization
-    write_data = []
+    write_data = b""
 
     for _ in range(WRITE_FRAME_COUNT):
       if current_frame_number >= current_frame_number:
         current_frame_number = 0
 
       if is_uniform:
-        current_frame = uniform_audio_frames[current_frame_number]
-      elif:
-        current_frame = default_audio_frame[current_frame_number]
+        current_frame = uniform_audio_frames[probe_id][current_frame_number]
+      else:
+        current_frame = default_audio_frame[probe_id][current_frame_number]
 
       frame_bytes = current_frame.tobytes()
-      write_data.extend(frame_bytes)
-      write_data.extend(frame_bytes)
+      write_data += frame_bytes
+      write_data += frame_bytes
+      write_data += bytearray(4 * 8)
+
       current_frame_number = current_frame + 1
     
     playback_device.write(write_data)
 
 def initialize():
   global playback_device, uniform_audio_frames, default_audio_frame, total_frame_count
-  playback_device.setchannels(2)
+  playback_device.setchannels(10)
   playback_device.setrate(44100)
   playback_device.setformat(alsaaudio.PCM_FORMAT_S32_LE)
   playback_device.setperiodsize(WRITE_FRAME_COUNT)
 
   for filename in glob.glob(WITH_UNIFORMISATION_PATH + '*' + FILE_NAME_EXTENSION):
-    fs, data = wavfile.read(filename)
+    fs, data = scipy.io.wavfile.read(filename)
     file_number = filename.split(WITH_UNIFORMISATION_PATH + FILE_NAME_TEMPLATE)[1].split(FILE_NAME_EXTENSION)[0]
-    uniform_audio_frames[int(file_number)] = data
+    uniform_audio_frames[int(file_number)] = data.astype('int32') * 2**16
 
   for filename in glob.glob(WITHOUT_INIFORMISATION_PATH + '*' + FILE_NAME_EXTENSION):
-    fs, data = wavfile.read(filename)
+    fs, data = scipy.io.wavfile.read(filename)
     file_number = filename.split(WITHOUT_INIFORMISATION_PATH + FILE_NAME_TEMPLATE)[1].split(FILE_NAME_EXTENSION)[0]
-    uniform_audio_frames[int(file_number)] = data
+    uniform_audio_frames[int(file_number)] = data.astype('int32') * 2**16
 
   total_frame_count = len(uniform_audio_frames[1])
 
