@@ -5,11 +5,12 @@ import glob
 import scipy.io.wavfile
 
 # Room info
-WITH_UNIFORMISATION_PATH = 'asser/'
+WITH_UNIFORMISATION_PATH = 'asserv/'
 WITHOUT_INIFORMISATION_PATH = 'no_uni/'
 FILE_NAME_TEMPLATE = 'punk__millencolin-no-cigar_probe_'
 FILE_NAME_EXTENSION = '.wav'
 WRITE_FRAME_COUNT = 256
+VOLUME = 2**16
 
 uniformization = True
 selected_id = 1
@@ -20,7 +21,7 @@ total_frame_count = 0
 playback_device = alsaaudio.PCM(type=alsaaudio.PCM_PLAYBACK, mode=alsaaudio.PCM_NORMAL, device='hw:CARD=x20,DEV=0')
 
 def play_thread(thread_name):
-  global playback_device, current_frame_number, selected_id, uniform_audio_frames, default_audio_frame, uniformization
+  global playback_device, current_frame_number, selected_id, uniform_audio_frames, default_audio_frame, uniformization, total_frame_count
 
   while True:
     # We don't want to swap the selected probe mid write
@@ -29,7 +30,7 @@ def play_thread(thread_name):
     write_data = b""
 
     for _ in range(WRITE_FRAME_COUNT):
-      if current_frame_number >= current_frame_number:
+      if current_frame_number >= total_frame_count:
         current_frame_number = 0
 
       if is_uniform:
@@ -42,8 +43,8 @@ def play_thread(thread_name):
       write_data += frame_bytes
       write_data += bytearray(4 * 8)
 
-      current_frame_number = current_frame + 1
-    
+      current_frame_number += 1
+
     playback_device.write(write_data)
 
 def initialize():
@@ -56,12 +57,12 @@ def initialize():
   for filename in glob.glob(WITH_UNIFORMISATION_PATH + '*' + FILE_NAME_EXTENSION):
     fs, data = scipy.io.wavfile.read(filename)
     file_number = filename.split(WITH_UNIFORMISATION_PATH + FILE_NAME_TEMPLATE)[1].split(FILE_NAME_EXTENSION)[0]
-    uniform_audio_frames[int(file_number)] = data.astype('int32') * 2**16
+    uniform_audio_frames[int(file_number)] = data.astype('int32') * VOLUME
 
   for filename in glob.glob(WITHOUT_INIFORMISATION_PATH + '*' + FILE_NAME_EXTENSION):
     fs, data = scipy.io.wavfile.read(filename)
     file_number = filename.split(WITHOUT_INIFORMISATION_PATH + FILE_NAME_TEMPLATE)[1].split(FILE_NAME_EXTENSION)[0]
-    uniform_audio_frames[int(file_number)] = data.astype('int32') * 2**16
+    default_audio_frame[int(file_number)] = data.astype('int32') * VOLUME
 
   total_frame_count = len(uniform_audio_frames[1])
 
