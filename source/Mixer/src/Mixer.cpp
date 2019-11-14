@@ -233,7 +233,10 @@ shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
     shared_ptr<SignalProcessor> signalProcessor,
     shared_ptr<UniformizationService> uniformizationService)
 {
-    return make_shared<MixerApplicationMessageHandler>(channelIdMapping, signalProcessor, uniformizationService);
+    return make_shared<MixerApplicationMessageHandler>(channelIdMapping,
+        signalProcessor,
+        uniformizationService,
+        m_configuration.audio().outputChannelCount());
 }
 
 unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger,

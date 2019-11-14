@@ -19,10 +19,12 @@ using namespace std;
 
 MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<ChannelIdMapping> channelIdMapping,
     shared_ptr<SignalProcessor> signalProcessor,
-    shared_ptr<UniformizationService> uniformizationService) :
+    shared_ptr<UniformizationService> uniformizationService,
+    size_t outputChannelCount) :
     m_channelIdMapping(channelIdMapping),
     m_signalProcessor(signalProcessor),
-    m_uniformizationService(uniformizationService)
+    m_uniformizationService(uniformizationService),
+    m_outputChannelCount(outputChannelCount)
 {
     ADD_HANDLE_FUNCTION(ConfigurationChoiceMessage);
     ADD_HANDLE_FUNCTION(InitialParametersCreationMessage);
@@ -80,8 +82,7 @@ void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(
 void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const LaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    vector<size_t> masterOutputIndexes =  m_channelIdMapping->getMasterOutputIndexes();
-    Room room = m_uniformizationService->initializeRoom(masterOutputIndexes);
+    Room room = m_uniformizationService->initializeRoom(m_channelIdMapping->getMasterOutputIndexes());
 
     vector<ConfigurationPosition> firstSymmetryPositions;
     vector<ConfigurationPosition> secondSymmetryPositions;
@@ -105,6 +106,7 @@ void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const Lau
 void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const RelaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
+    m_signalProcessor->setOutputGains(vector<double>(m_outputChannelCount, 0));
     handleLaunchInitializationMessage(LaunchInitializationMessage(), send);
 }
 
@@ -249,6 +251,8 @@ void MixerApplicationMessageHandler::handleChangeAllProcessingParametersMessage(
     {
         applyAuxiliaryProcessingParameters(auxiliary);
     }
+
+    m_uniformizationService->confirmRoomPositions();
 }
 
 void MixerApplicationMessageHandler::handleListenProbeMessage(const ListenProbeMessage& message,

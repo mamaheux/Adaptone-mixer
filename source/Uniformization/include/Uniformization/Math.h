@@ -42,7 +42,10 @@ namespace adaptone
 
     inline int64_t findDelay(const arma::vec& A, const arma::vec& B)
     {
-        return arma::index_max(correlation(A,B)) - B.size() + 1;
+        arma::vec R = correlation(A,B);
+        double threshold = 0.8*arma::max(R);
+        arma::uvec indexes = arma::find(R > threshold);
+        return static_cast<int64_t>(indexes(1)) - B.size() + 1;
     }
 
     template<class T>
