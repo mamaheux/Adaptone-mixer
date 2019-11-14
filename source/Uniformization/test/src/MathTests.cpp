@@ -302,7 +302,7 @@ TEST(MathTests, correlation_shouldReturnTheCorrelationVectorBetweenTwoVector)
 
 TEST(MathTests, findDelay_shouldReturnTheCorrelationVectorBetweenTwoVector)
 {
-    const vec A = { 0, 0, 0, 1, 2, 3, 2, 1, -1, -2, -3, -2, -1, 0, 0, 0 };
+    const vec A = { 0, 0, 0, 1, 2, 3, 2, 1, -1, -2, -3, -2, -1 };
     const vec B = { 0, 0, 0, 0, 0, 0, 1, 2, 3, 2, 1, -1, -2, -3, -2, -1 };
 
     size_t delayAB = findDelay(A, B);
