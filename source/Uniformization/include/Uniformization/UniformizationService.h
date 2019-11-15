@@ -49,6 +49,7 @@ namespace adaptone
         std::unique_ptr<std::thread> m_uniformizationThread;
 
         arma::mat m_outputEqGains;
+        std::vector<std::size_t> m_optimalSampleDelays;
         arma::mat m_speakersToProbesDistancesMat;
         Room m_room;
 
@@ -72,6 +73,9 @@ namespace adaptone
 
         Room initializeRoom(const std::vector<std::size_t>& masterOutputIndexes);
         void confirmRoomPositions();
+
+        void enable();
+        void disable();
 
     private:
         void run();

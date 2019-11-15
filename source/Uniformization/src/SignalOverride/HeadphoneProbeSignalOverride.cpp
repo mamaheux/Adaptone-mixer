@@ -57,6 +57,19 @@ void HeadphoneProbeSignalOverride::writeData(const ProbeSoundDataMessage& messag
     const uint8_t* data = message.data();
     size_t dataSize = message.dataSize();
 
+    uint16_t offsetIndex;
+    if (m_isFirstMessage)
+    {
+        offsetIndex = 0;
+        m_isFirstMessage = false;
+    }
+    else
+    {
+        offsetIndex = message.soundDataId() - m_lastSoundDataId - 1;
+        m_currentWriteDataIndex += dataSize * offsetIndex;
+        m_currentWriteDataIndex %= m_data.size();
+    }
+
     while (dataSize > 0)
     {
         size_t dataSizeToWrite = min(m_data.size() - m_currentWriteDataIndex, dataSize);
@@ -68,4 +81,6 @@ void HeadphoneProbeSignalOverride::writeData(const ProbeSoundDataMessage& messag
         m_currentWriteDataIndex += dataSizeToWrite;
         m_currentWriteDataIndex %= m_data.size();
     }
+
+    m_lastSoundDataId = message.soundDataId();
 }

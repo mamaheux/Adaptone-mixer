@@ -49,6 +49,7 @@ MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<Channe
     ADD_HANDLE_FUNCTION(ChangeAllProcessingParametersMessage);
     ADD_HANDLE_FUNCTION(ListenProbeMessage);
     ADD_HANDLE_FUNCTION(StopProbeListeningMessage);
+    ADD_HANDLE_FUNCTION(ToogleUniformizationMessage);
 }
 
 MixerApplicationMessageHandler::~MixerApplicationMessageHandler()
@@ -265,6 +266,19 @@ void MixerApplicationMessageHandler::handleStopProbeListeningMessage(const StopP
     const std::function<void(const ApplicationMessage&)>& send)
 {
     m_uniformizationService->stopProbeListening();
+}
+
+void MixerApplicationMessageHandler::handleToogleUniformizationMessage(const ToogleUniformizationMessage& message,
+    const std::function<void(const ApplicationMessage&)>& send)
+{
+    if (message.isOn())
+    {
+        m_uniformizationService->enable();
+    }
+    else
+    {
+        m_uniformizationService->disable();
+    }
 }
 
 void MixerApplicationMessageHandler::applyInputProcessingParameters(const vector<InputProcessingParameters>& inputs)

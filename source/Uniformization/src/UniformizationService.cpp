@@ -90,6 +90,7 @@ void UniformizationService::stop()
 
 void UniformizationService::listenToProbeSound(uint32_t probeId)
 {
+    cout << "listenToProbeSound : " << probeId << endl;
     m_signalOverride->getSignalOverride<HeadphoneProbeSignalOverride>()->setCurrentProbeId(probeId);
     m_signalOverride->setCurrentSignalOverrideType<HeadphoneProbeSignalOverride>();
 }
@@ -121,6 +122,43 @@ void UniformizationService::confirmRoomPositions()
     m_eqControlerEnabled.store(true);
 }
 
+void UniformizationService::enable()
+{
+    lock_guard lock(m_probeServerMutex);
+
+    auto speakers = m_room.speakers();
+
+    for (size_t i = 0; i < speakers.size(); i++)
+    {
+        m_signalProcessor->setOutputDelay(speakers[i].id(), m_optimalSampleDelays.at(i));
+    }
+    /*for (size_t i = 0; i < speakers.size(); i++)
+    {
+        vector<double> outputEqGainsNatural = conv_to<vector<double>>::from(exp10(m_outputEqGains.row(i) / 20));
+        m_signalProcessor->setUniformizationGraphicEqGains(speakers[i].id(), outputEqGainsNatural);
+    }*/
+
+    m_eqControlerEnabled.store(true);
+}
+
+void UniformizationService::disable()
+{
+    m_eqControlerEnabled.store(false);
+    lock_guard lock(m_probeServerMutex);
+
+    auto speakers = m_room.speakers();
+
+    for (size_t i = 0; i < speakers.size(); i++)
+    {
+        m_signalProcessor->setOutputDelay(speakers[i].id(), 0);
+    }
+    /*for (size_t i = 0; i < speakers.size(); i++)
+    {
+        m_signalProcessor->setUniformizationGraphicEqGains(speakers[i].id(),
+            vector<double>(m_parameters.eqCenterFrequencies().size(), 1));
+    }*/
+}
+
 void UniformizationService::run()
 {
     while (!m_stopped.load())
@@ -130,7 +168,7 @@ void UniformizationService::run()
             if (m_eqControlerEnabled.load())
             {
                 this_thread::sleep_for(EqControlSleepDuration);
-                performEqControlIteration();
+                //performEqControlIteration();
             }
             else
             {
@@ -147,7 +185,10 @@ void UniformizationService::run()
 void UniformizationService::performEqControlIteration()
 {
     lock_guard lock(m_probeServerMutex);
-    eqControl();
+    if (m_eqControlerEnabled.load())
+    {
+        eqControl();
+    }
 }
 
 void UniformizationService::initializeRoomModelElementId(const vector<size_t>& masterOutputIndexes)
@@ -173,7 +214,7 @@ mat UniformizationService::distancesExtractionRoutine(const vector<size_t>& mast
 
     for (uint32_t probeId : m_probeServers->probeIds())
     {
-        cout << "Probe id : " << probeId << endl;
+        cout << "Probe id  : " << probeId << endl;
     }
 
     cout << " > > delay matrix : " << endl;
@@ -198,6 +239,10 @@ Metrics UniformizationService::computeMetricsFromSweepData(unordered_map<uint32_
     for (uint32_t probeId : probeIds)
     {
         vec probeData(audioFrames.at(probeId).data(), audioFrames.at(probeId).size(), false, false);
+
+        cout << " > > Stats probe " << probeId << endl;
+        cout << " > > > mean " << mean(abs(probeData)) << endl;
+        cout << " > > > max " << max(abs(probeData)) << endl;
         
         size_t sampleDelay = max(static_cast<int64_t>(0), findDelay(probeData, sweepVec));
 
@@ -237,7 +282,7 @@ unordered_map<uint32_t, AudioFrame<double>> UniformizationService::sweepRoutineA
     // Start emitting the sweep at the desired output
     m_signalOverride->getSignalOverride<SweepSignalOverride>()->startSweep(masterOutputIndex);
 
-    constexpr double durationFactor = 1.5;
+    constexpr double durationFactor = 3.0;
     auto result = agregateProbesRecordResponseMessageNow(round(durationFactor * durationMs));
 
     m_signalOverride->setCurrentSignalOverrideType<PassthroughSignalOverride>();
@@ -290,20 +335,20 @@ void UniformizationService::optimizeDelays()
         directivities.row(i) = mean(speakers[i].directivities(), 1).t();
     }
 
-    cout << " > directivities = " << endl;
+    cout << " > directivities : " << endl;
     directivities.print();
 
     directivities = zeros<mat>(speakers.size(), probes.size());
     // DEBUG #############################################################
     vec delays = findOptimalDelays(m_speakersToProbesDistancesMat, exp10(directivities / 20), m_parameters.speedOfSound());
-    vector<size_t> sampleDelays = conv_to<vector<size_t>>::from(round(delays * m_parameters.sampleFrequency()));
+    m_optimalSampleDelays = conv_to<vector<size_t>>::from(round(delays * m_parameters.sampleFrequency()));
 
     cout << " > Speaker delays : " << endl;
     delays.print();
 
     for (size_t i = 0; i < speakers.size(); i++)
     {
-        m_signalProcessor->setOutputDelay(speakers[i].id(), sampleDelays[i]);
+        m_signalProcessor->setOutputDelay(speakers[i].id(), m_optimalSampleDelays[i]);
     }
 }
 

@@ -25,6 +25,7 @@
 #include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 #include <Communication/Messages/Input/ListenProbeMessage.h>
 #include <Communication/Messages/Input/StopProbeListeningMessage.h>
+#include <Communication/Messages/Input/ToogleUniformizationMessage.h>
 
 #include <Communication/Messages/Output/SoundErrorMessage.h>
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
@@ -68,6 +69,7 @@ DEFINE_TYPE_MATCHER(ChangeAuxiliaryOutputVolumeMessage);
 DEFINE_TYPE_MATCHER(ChangeAllProcessingParametersMessage);
 DEFINE_TYPE_MATCHER(ListenProbeMessage);
 DEFINE_TYPE_MATCHER(StopProbeListeningMessage);
+DEFINE_TYPE_MATCHER(ToogleUniformizationMessage);
 
 DEFINE_TYPE_MATCHER(SoundErrorMessage);
 DEFINE_TYPE_MATCHER(InputSpectrumMessage);
@@ -578,6 +580,22 @@ TEST(ApplicationMessageHandlerTests, handle_StopProbeListeningMessage_shouldCall
 
     string serializedMessage = "{"
         "  \"seqId\": 26"
+        "}";
+
+    json j = json::parse(serializedMessage);
+    applicationMessageHandler.handle(j, [](const ApplicationMessage&) {});
+}
+
+TEST(ApplicationMessageHandlerTests, handle_ToogleUniformizationMessage_shouldCallHandleWithTheRightType)
+{
+    ApplicationMessageHandlerMock applicationMessageHandler;
+    EXPECT_CALL(applicationMessageHandler, handleDeserialized(IsToogleUniformizationMessage(), _));
+
+    string serializedMessage = "{"
+        "  \"seqId\": 27,"
+        "  \"data\": {"
+        "    \"isUniformizationOn\": true"
+        "  }"
         "}";
 
     json j = json::parse(serializedMessage);

@@ -8,6 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <mutex>
+#include <iostream>
 
 namespace adaptone
 {
@@ -28,6 +29,9 @@ namespace adaptone
 
         uint32_t m_currentProbeId;
 
+        uint16_t m_lastSoundDataId;
+        bool m_isFirstMessage;
+
     public:
         HeadphoneProbeSignalOverride(PcmAudioFrameFormat format,
             std::size_t channelCount,
@@ -46,10 +50,14 @@ namespace adaptone
 
     inline void HeadphoneProbeSignalOverride::setCurrentProbeId(uint32_t currentProbeId)
     {
+        std::cout << "listenToProbeSound : " << std::endl;
         std::lock_guard currentOverrideDataIndexLock(m_currentOverrideDataIndexMutex);
         std::lock_guard currentWriteDataIndexLock(m_writeDataMutex);
         m_currentOverrideDataIndex = 0;
         m_currentWriteDataIndex = 0;
+
+        m_lastSoundDataId = 0;
+        m_isFirstMessage = true;
 
         m_currentProbeId = currentProbeId;
     }

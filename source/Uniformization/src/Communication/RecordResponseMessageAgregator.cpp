@@ -2,6 +2,8 @@
 
 #include <Utils/Data/PcmAudioFrame.h>
 
+#include <iostream>
+
 using namespace adaptone;
 using namespace std;
 
@@ -36,8 +38,10 @@ void RecordResponseMessageAgregator::agregate(const RecordResponseMessage& messa
     m_framesByProbeId.emplace(probeId,
         PcmAudioFrame(m_format, ChannelCount, sampleCount, const_cast<uint8_t*>(message.data())));
 
+    cout << " > > agregate probe " << probeId << endl;
     if (m_framesByProbeId.size() == m_probeCount)
     {
+        cout << " > > agreation finished" << endl;
         m_stopped = true;
         m_conditionVariable.notify_all();
     }

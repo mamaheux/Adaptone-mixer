@@ -25,6 +25,7 @@
 #include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 #include <Communication/Messages/Input/ListenProbeMessage.h>
 #include <Communication/Messages/Input/StopProbeListeningMessage.h>
+#include <Communication/Messages/Input/ToogleUniformizationMessage.h>
 
 #include <Communication/Messages/Output/SoundErrorMessage.h>
 #include <Communication/Messages/Output/InputSpectrumMessage.h>
@@ -68,6 +69,7 @@ ApplicationMessageHandler::ApplicationMessageHandler()
     ADD_HANDLE_FUNCTION(ChangeAllProcessingParametersMessage);
     ADD_HANDLE_FUNCTION(ListenProbeMessage);
     ADD_HANDLE_FUNCTION(StopProbeListeningMessage);
+    ADD_HANDLE_FUNCTION(ToogleUniformizationMessage);
 
     ADD_HANDLE_FUNCTION(SoundErrorMessage);
     ADD_HANDLE_FUNCTION(InputSpectrumMessage);

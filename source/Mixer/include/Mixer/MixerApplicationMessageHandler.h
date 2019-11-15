@@ -29,6 +29,7 @@
 #include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 #include <Communication/Messages/Input/ListenProbeMessage.h>
 #include <Communication/Messages/Input/StopProbeListeningMessage.h>
+#include <Communication/Messages/Input/ToogleUniformizationMessage.h>
 
 #include <SignalProcessing/SignalProcessor.h>
 
@@ -106,6 +107,8 @@ namespace adaptone
         void handleListenProbeMessage(const ListenProbeMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
         void handleStopProbeListeningMessage(const StopProbeListeningMessage& message,
+            const std::function<void(const ApplicationMessage&)>& send);
+        void handleToogleUniformizationMessage(const ToogleUniformizationMessage& message,
             const std::function<void(const ApplicationMessage&)>& send);
 
         void applyInputProcessingParameters(const std::vector<InputProcessingParameters>& inputs);

@@ -13,6 +13,7 @@ TEST(HeadphoneProbeSignalOverrideTests, override_shouldWriteProbeData)
     const vector<size_t> HeadphoneChannelIndexes{ 2, 3 };
     constexpr uint32_t ProbeId = 0;
 
+
     HeadphoneProbeSignalOverride signalOverride(Format, ChannelCount, FrameSampleCount, HeadphoneChannelIndexes);
     PcmAudioFrame frame(PcmAudioFrameFormat::Unsigned8, ChannelCount, FrameSampleCount);
     for (size_t i = 0; i < frame.size(); i++)
@@ -20,12 +21,13 @@ TEST(HeadphoneProbeSignalOverrideTests, override_shouldWriteProbeData)
         frame[i] = i;
     }
 
+    uint32_t soundDataId = 0;
     signalOverride.setCurrentProbeId(ProbeId);
     for (uint8_t value = 0; value < numeric_limits<uint8_t>::max(); value++)
     {
         vector<uint8_t> data(FrameSampleCount, value);
 
-        signalOverride.writeData(ProbeSoundDataMessage(0, 0, 0, 0, 0, 0, data.data(), data.size()), ProbeId);
+        signalOverride.writeData(ProbeSoundDataMessage(soundDataId, 0, 0, 0, 0, 0, data.data(), data.size()), ProbeId);
 
         const PcmAudioFrame& overridenFrame = signalOverride.override(frame);
         for (size_t i = 0; i < frame.size(); i++)
@@ -39,6 +41,7 @@ TEST(HeadphoneProbeSignalOverrideTests, override_shouldWriteProbeData)
                 EXPECT_EQ(overridenFrame[i], value);
             }
         }
+        soundDataId++;
     }
 }
 
