@@ -36,14 +36,9 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     shared_ptr<SignalProcessor> signalProcessor = createSignalProcessor(analysisDispatcher);
     shared_ptr<GenericSignalOverride> outputSignalOverride = createOutputSignalOverride();
 
-    shared_ptr<UniformizationService> uniformizationService = createUniformizationService(logger,
-        outputSignalOverride,
-        signalProcessor);
-
     shared_ptr<ConnectionHandler> connectionHandler = createConnectionHandler(signalProcessor);
     shared_ptr<ApplicationMessageHandler> applicationMessageHandler = createApplicationMessageHandler(channelIdMapping,
-        signalProcessor,
-        uniformizationService);
+        signalProcessor);
     unique_ptr<ApplicationWebSocket> applicationWebSocket = createApplicationWebSocket(logger,
         connectionHandler,
         applicationMessageHandler);
@@ -58,8 +53,6 @@ Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration
     m_analysisDispatcher = analysisDispatcher;
     m_signalProcessor = signalProcessor;
     m_outputSignalOverride = outputSignalOverride;
-
-    m_uniformizationService = uniformizationService;
 
     m_connectionHandler = connectionHandler;
     m_applicationMessageHandler = applicationMessageHandler;
@@ -79,7 +72,6 @@ void Mixer::run()
     m_stopped.store(false);
     m_applicationWebSocketThread = make_unique<thread>(&Mixer::applicationWebSocketRun, this);
     m_analysisDispatcher->start();
-    m_uniformizationService->start();
 
     this_thread::sleep_for(1s); //Make sure the websocket is properly started.
 
@@ -89,7 +81,6 @@ void Mixer::run()
 
     m_applicationWebSocketThread->join();
     m_analysisDispatcher->stop();
-    m_uniformizationService->stop();
 }
 
 void Mixer::stop()
@@ -196,30 +187,8 @@ shared_ptr<GenericSignalOverride> Mixer::createOutputSignalOverride()
 {
     vector<shared_ptr<SpecificSignalOverride>> signalOverrides;
     signalOverrides.emplace_back(make_shared<PassthroughSignalOverride>());
-    signalOverrides.emplace_back(make_shared<SweepSignalOverride>(
-        m_configuration.audioOutput().format(),
-        m_configuration.audio().sampleFrequency(),
-        m_configuration.audio().outputChannelCount(),
-        m_configuration.audio().frameSampleCount(),
-        m_configuration.uniformization().routineIRSweepF1(),
-        m_configuration.uniformization().routineIRSweepF2(),
-        m_configuration.uniformization().routineIRSweepT()));
-    signalOverrides.emplace_back(make_shared<HeadphoneProbeSignalOverride>(m_configuration.audioOutput().format(),
-        m_configuration.audio().outputChannelCount(),
-        m_configuration.audio().frameSampleCount(),
-        m_configuration.audio().headphoneChannelIndexes()));
 
     return make_shared<GenericSignalOverride>(move(signalOverrides));
-}
-
-unique_ptr<UniformizationService> Mixer::createUniformizationService(shared_ptr<Logger> logger,
-    shared_ptr<GenericSignalOverride> outputSignalOverride,
-    shared_ptr<SignalProcessor> signalProcessor)
-{
-    return make_unique<UniformizationService>(logger,
-        outputSignalOverride,
-        signalProcessor,
-        m_configuration.toUniformizationServiceParameters());
 }
 
 shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalProcessor> signalProcessor)
@@ -230,10 +199,9 @@ shared_ptr<ConnectionHandler> Mixer::createConnectionHandler(shared_ptr<SignalPr
 
 shared_ptr<ApplicationMessageHandler> Mixer::createApplicationMessageHandler(
     shared_ptr<ChannelIdMapping> channelIdMapping,
-    shared_ptr<SignalProcessor> signalProcessor,
-    shared_ptr<UniformizationService> uniformizationService)
+    shared_ptr<SignalProcessor> signalProcessor)
 {
-    return make_shared<MixerApplicationMessageHandler>(channelIdMapping, signalProcessor, uniformizationService);
+    return make_shared<MixerApplicationMessageHandler>(channelIdMapping, signalProcessor);
 }
 
 unique_ptr<ApplicationWebSocket> Mixer::createApplicationWebSocket(shared_ptr<Logger> logger,

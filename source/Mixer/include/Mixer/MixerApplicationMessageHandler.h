@@ -42,15 +42,13 @@ namespace adaptone
     {
         std::shared_ptr<ChannelIdMapping> m_channelIdMapping;
         std::shared_ptr<SignalProcessor> m_signalProcessor;
-        std::shared_ptr<UniformizationService> m_uniformizationService;
 
         std::unordered_map<std::size_t,std::function<void(const ApplicationMessage&,
             const std::function<void(const ApplicationMessage&)>&)>> m_handleFunctions;
 
     public:
         MixerApplicationMessageHandler(std::shared_ptr<ChannelIdMapping> channelIdMapping,
-            std::shared_ptr<SignalProcessor> signalProcessor,
-            std::shared_ptr<UniformizationService> uniformizationService);
+            std::shared_ptr<SignalProcessor> signalProcessor);
         ~MixerApplicationMessageHandler() override;
 
         DECLARE_NOT_COPYABLE(MixerApplicationMessageHandler);

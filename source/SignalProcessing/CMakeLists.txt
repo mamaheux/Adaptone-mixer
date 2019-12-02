@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 2.6.4)
 
 project(SignalProcessing)
 
-find_package(CUDA 9.0 QUIET)
+#find_package(CUDA 9.0 QUIET)
 
 set(LIBRARY_OUTPUT_PATH bin/${CMAKE_BUILD_TYPE})
 

@@ -18,11 +18,9 @@ using namespace std;
     }
 
 MixerApplicationMessageHandler::MixerApplicationMessageHandler(shared_ptr<ChannelIdMapping> channelIdMapping,
-    shared_ptr<SignalProcessor> signalProcessor,
-    shared_ptr<UniformizationService> uniformizationService) :
+    shared_ptr<SignalProcessor> signalProcessor) :
     m_channelIdMapping(channelIdMapping),
-    m_signalProcessor(signalProcessor),
-    m_uniformizationService(uniformizationService)
+    m_signalProcessor(signalProcessor)
 {
     ADD_HANDLE_FUNCTION(ConfigurationChoiceMessage);
     ADD_HANDLE_FUNCTION(InitialParametersCreationMessage);
@@ -80,24 +78,7 @@ void MixerApplicationMessageHandler::handleInitialParametersCreationMessage(
 void MixerApplicationMessageHandler::handleLaunchInitializationMessage(const LaunchInitializationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    vector<size_t> masterOutputIndexes =  m_channelIdMapping->getMasterOutputIndexes();
-    Room room = m_uniformizationService->initializeRoom(masterOutputIndexes);
-
-    vector<ConfigurationPosition> firstSymmetryPositions;
-    vector<ConfigurationPosition> secondSymmetryPositions;
-    for (const Speaker& speaker : room.speakers())
-    {
-        firstSymmetryPositions.emplace_back(speaker.x(), speaker.y(), PositionType::Speaker, speaker.id());
-        secondSymmetryPositions.emplace_back(-speaker.x(), speaker.y(), PositionType::Speaker, speaker.id());
-    }
-
-    for (const Probe& probe : room.probes())
-    {
-        firstSymmetryPositions.emplace_back(probe.x(), probe.y(), PositionType::Probe, probe.id());
-        secondSymmetryPositions.emplace_back(-probe.x(), probe.y(), PositionType::Probe, probe.id());
-    }
-
-    send(PositionConfirmationMessage(firstSymmetryPositions, secondSymmetryPositions));
+    send(PositionConfirmationMessage(vector<ConfigurationPosition>(), vector<ConfigurationPosition>()));
 }
 
 void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const RelaunchInitializationMessage& message,
@@ -109,7 +90,6 @@ void MixerApplicationMessageHandler::handleRelaunchInitializationMessage(const R
 void MixerApplicationMessageHandler::handleSymmetryConfirmationMessage(const SymmetryConfirmationMessage& message,
     const function<void(const ApplicationMessage&)>& send)
 {
-    m_uniformizationService->confirmRoomPositions();
 }
 
 void MixerApplicationMessageHandler::handleOptimizePositionMessage(const OptimizePositionMessage& message,
@@ -252,13 +232,11 @@ void MixerApplicationMessageHandler::handleChangeAllProcessingParametersMessage(
 void MixerApplicationMessageHandler::handleListenProbeMessage(const ListenProbeMessage& message,
     const std::function<void(const ApplicationMessage&)>& send)
 {
-    m_uniformizationService->listenToProbeSound(message.probeId());
 }
 
 void MixerApplicationMessageHandler::handleStopProbeListeningMessage(const StopProbeListeningMessage& message,
     const std::function<void(const ApplicationMessage&)>& send)
 {
-    m_uniformizationService->stopProbeListening();
 }
 
 void MixerApplicationMessageHandler::applyInputProcessingParameters(const vector<InputProcessingParameters>& inputs)
