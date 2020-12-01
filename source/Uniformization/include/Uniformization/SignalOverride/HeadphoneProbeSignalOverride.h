@@ -32,7 +32,7 @@ namespace adaptone
         HeadphoneProbeSignalOverride(PcmAudioFrameFormat format,
             std::size_t channelCount,
             std::size_t frameSampleCount,
-            const std::vector<std::size_t>& headphoneChannelIndexes);
+            std::vector<std::size_t> headphoneChannelIndexes);
         ~HeadphoneProbeSignalOverride() override;
 
         DECLARE_NOT_COPYABLE(HeadphoneProbeSignalOverride);

@@ -15,15 +15,15 @@ InitialParametersCreationMessage::InitialParametersCreationMessage() : Applicati
 }
 
 InitialParametersCreationMessage::InitialParametersCreationMessage(size_t id,
-    const string& name,
-    const vector<size_t>& inputChannelIds,
+    string name,
+    vector<size_t> inputChannelIds,
     size_t speakersNumber,
-    const vector<size_t>& auxiliaryChannelIds) : ApplicationMessage(SeqId),
+    vector<size_t> auxiliaryChannelIds) : ApplicationMessage(SeqId),
     m_id(id),
-    m_name(name),
-    m_inputChannelIds(inputChannelIds),
+    m_name(move(name)),
+    m_inputChannelIds(move(inputChannelIds)),
     m_speakersNumber(speakersNumber),
-    m_auxiliaryChannelIds(auxiliaryChannelIds)
+    m_auxiliaryChannelIds(move(auxiliaryChannelIds))
 {
 }
 

@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-GenericSignalOverride::GenericSignalOverride(const vector<shared_ptr<SpecificSignalOverride>>& signalSignalOverrides) :
+GenericSignalOverride::GenericSignalOverride(vector<shared_ptr<SpecificSignalOverride>> signalSignalOverrides) :
     m_signalSignalOverrides(move(signalSignalOverrides)),
     m_currentSignalOverrideType(0)
 {

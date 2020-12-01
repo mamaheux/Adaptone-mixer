@@ -16,7 +16,7 @@ namespace adaptone
 
     public:
         ChangeAuxiliaryOutputEqGainsMessage();
-        ChangeAuxiliaryOutputEqGainsMessage(std::size_t channelId, const std::vector<double>& gains);
+        ChangeAuxiliaryOutputEqGainsMessage(std::size_t channelId, std::vector<double> gains);
         ~ChangeAuxiliaryOutputEqGainsMessage() override;
 
         std::size_t channelId() const;

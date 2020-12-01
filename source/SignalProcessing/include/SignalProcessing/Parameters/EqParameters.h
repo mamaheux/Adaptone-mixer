@@ -22,7 +22,7 @@ namespace adaptone
         std::deque<GraphicEqDesigner<T>> m_graphicEqDesigners;
 
     public:
-        EqParameters(std::size_t sampleFrequency, const std::vector<double>& eqCenterFrequencies,
+        EqParameters(std::size_t sampleFrequency, std::vector<double> eqCenterFrequencies,
             std::size_t channelCount, bool isDirty = false);
         virtual ~EqParameters();
 
@@ -42,13 +42,13 @@ namespace adaptone
     };
 
     template<class T>
-    EqParameters<T>::EqParameters(std::size_t sampleFrequency, const std::vector<double>& eqCenterFrequencies,
+    EqParameters<T>::EqParameters(std::size_t sampleFrequency, std::vector<double> eqCenterFrequencies,
         std::size_t channelCount, bool isDirty) :
-        m_eqCenterFrequencies(eqCenterFrequencies)
+        m_eqCenterFrequencies(move(eqCenterFrequencies))
     {
         for (std::size_t i = 0; i < channelCount; i++)
         {
-            m_graphicEqDesigners.emplace_back(sampleFrequency, eqCenterFrequencies);
+            m_graphicEqDesigners.emplace_back(sampleFrequency, m_eqCenterFrequencies);
             m_realtimeParameters.emplace_back(isDirty);
         }
     }

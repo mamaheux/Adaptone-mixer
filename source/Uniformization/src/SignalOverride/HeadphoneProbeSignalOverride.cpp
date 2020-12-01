@@ -10,9 +10,9 @@ constexpr size_t HeadphoneProbeSignalOverride::DataFrameCount;
 HeadphoneProbeSignalOverride::HeadphoneProbeSignalOverride(PcmAudioFrameFormat format,
     size_t channelCount,
     size_t frameSampleCount,
-    const vector<size_t>& headphoneChannelIndexes) :
+    vector<size_t> headphoneChannelIndexes) :
     m_frameSampleCount(frameSampleCount),
-    m_headphoneChannelIndexes(headphoneChannelIndexes),
+    m_headphoneChannelIndexes(move(headphoneChannelIndexes)),
     m_frame(format, channelCount, frameSampleCount),
     m_data(formatSize(format) * frameSampleCount * DataFrameCount),
     m_currentOverrideDataIndex(0),
@@ -48,7 +48,7 @@ const PcmAudioFrame& HeadphoneProbeSignalOverride::override(const PcmAudioFrame&
 
 void HeadphoneProbeSignalOverride::writeData(const ProbeSoundDataMessage& message, uint32_t probeId)
 {
-    lock_guard lock(m_writeDataMutex);    
+    lock_guard lock(m_writeDataMutex);
     if (probeId != m_currentProbeId)
     {
         return;

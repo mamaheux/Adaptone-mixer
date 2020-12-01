@@ -12,9 +12,9 @@ ApplicationWebSocket::ApplicationWebSocket(shared_ptr<Logger> logger,
     shared_ptr<ApplicationMessageHandler> applicationMessageHandler,
     const string& endpoint,
     uint16_t port) :
-    m_logger(logger),
-    m_connectionHandler(connectionHandler),
-    m_applicationMessageHandler(applicationMessageHandler),
+    m_logger(move(logger)),
+    m_connectionHandler(move(connectionHandler)),
+    m_applicationMessageHandler(move(applicationMessageHandler)),
 
     m_server(),
     m_endpoint(m_server.endpoint[endpoint]),

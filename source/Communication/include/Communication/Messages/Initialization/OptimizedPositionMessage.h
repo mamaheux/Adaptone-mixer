@@ -18,7 +18,7 @@ namespace adaptone
 
     public:
         OptimizedPositionMessage();
-        explicit OptimizedPositionMessage(const std::vector<ConfigurationPosition>& positions);
+        explicit OptimizedPositionMessage(std::vector<ConfigurationPosition> positions);
         ~OptimizedPositionMessage() override;
 
         const std::vector<ConfigurationPosition>& positions() const;

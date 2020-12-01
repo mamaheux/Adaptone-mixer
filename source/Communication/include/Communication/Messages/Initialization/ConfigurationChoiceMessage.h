@@ -27,11 +27,11 @@ namespace adaptone
     public:
         ConfigurationChoiceMessage();
         ConfigurationChoiceMessage(std::size_t id,
-            const std::string& name,
-            const std::vector<std::size_t>& inputChannelIds,
+            std::string name,
+            std::vector<std::size_t> inputChannelIds,
             std::size_t speakersNumber,
-            const std::vector<std::size_t>& auxiliaryChannelIds,
-            const std::vector<ConfigurationPosition>& positions);
+            std::vector<std::size_t> auxiliaryChannelIds,
+            std::vector<ConfigurationPosition> positions);
         ~ConfigurationChoiceMessage() override;
 
         std::size_t id() const;

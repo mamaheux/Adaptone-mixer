@@ -9,9 +9,9 @@ ChangeMasterMixInputVolumesMessage::ChangeMasterMixInputVolumesMessage() : Appli
 {
 }
 
-ChangeMasterMixInputVolumesMessage::ChangeMasterMixInputVolumesMessage(const vector<ChannelGain>& gains) :
+ChangeMasterMixInputVolumesMessage::ChangeMasterMixInputVolumesMessage(vector<ChannelGain> gains) :
     ApplicationMessage(SeqId),
-    m_gains(gains)
+    m_gains(move(gains))
 {
 }
 

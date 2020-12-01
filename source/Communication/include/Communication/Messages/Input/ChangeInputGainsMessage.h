@@ -18,7 +18,7 @@ namespace adaptone
 
     public:
         ChangeInputGainsMessage();
-        explicit ChangeInputGainsMessage(const std::vector<ChannelGain>& gains);
+        explicit ChangeInputGainsMessage(std::vector<ChannelGain> gains);
         ~ChangeInputGainsMessage() override;
 
         const std::vector<ChannelGain>& gains() const;

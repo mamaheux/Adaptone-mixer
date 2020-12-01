@@ -11,10 +11,10 @@ ChangeAuxiliaryMixInputVolumesMessage::ChangeAuxiliaryMixInputVolumesMessage() :
 }
 
 ChangeAuxiliaryMixInputVolumesMessage::ChangeAuxiliaryMixInputVolumesMessage(size_t auxiliaryChannelId,
-    const vector<ChannelGain>& gains) :
+    vector<ChannelGain> gains) :
     ApplicationMessage(SeqId),
     m_auxiliaryChannelId(auxiliaryChannelId),
-    m_gains(gains)
+    m_gains(move(gains))
 {
 }
 

@@ -4,7 +4,7 @@
 #include <Utils/Exception/InvalidValueException.h>
 #include <Utils/Network/NetworkBuffer.h>
 
-#include <boost/endian/arithmetic.hpp>
+#include <boost/endian/conversion.hpp>
 
 #include <cstddef>
 

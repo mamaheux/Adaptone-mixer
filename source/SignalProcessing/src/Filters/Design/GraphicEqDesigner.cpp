@@ -49,7 +49,7 @@ public:
     DECLARE_NOT_COPYABLE(ArmaGraphicEqDesignerPrivate);
     DECLARE_NOT_MOVABLE(ArmaGraphicEqDesignerPrivate);
 
-    void update(const vector<double>& gains) override;
+    void update(vector<double> gains) override;
     void update(const vector<BiquadCoefficients<float>>& biquadCoefficients, float d0) override;
     void update(const vector<BiquadCoefficients<double>>& biquadCoefficients, double d0) override;
 
@@ -127,13 +127,13 @@ ArmaGraphicEqDesignerPrivate::~ArmaGraphicEqDesignerPrivate()
 {
 }
 
-void ArmaGraphicEqDesignerPrivate::update(const vector<double>& gains)
+void ArmaGraphicEqDesignerPrivate::update(vector<double> gains)
 {
     if (m_centerW.n_elem != gains.size())
     {
         THROW_INVALID_VALUE_EXCEPTION("gains.size()", "");
     }
-    m_gains = gains;
+    m_gains = move(gains);
 
     updateHt();
     applyWeighting();

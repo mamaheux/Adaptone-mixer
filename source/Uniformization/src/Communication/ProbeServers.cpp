@@ -10,8 +10,8 @@ using namespace std;
 ProbeServers::ProbeServers(shared_ptr<Logger> logger,
     shared_ptr<ProbeMessageHandler> messageHandler,
     const ProbeServerParameters& probeServerParameters) :
-    m_logger(logger),
-    m_messageHandler(messageHandler),
+    m_logger(move(logger)),
+    m_messageHandler(move(messageHandler)),
     m_probeServerParameters(probeServerParameters),
     m_probeDiscoverer(probeServerParameters.discoveryEndpoint(),
         probeServerParameters.discoveryTimeoutMs(),

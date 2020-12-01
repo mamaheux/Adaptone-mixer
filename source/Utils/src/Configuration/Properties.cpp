@@ -5,7 +5,7 @@
 using namespace adaptone;
 using namespace std;
 
-Properties::Properties(const unordered_map<string, string>& properties) : m_properties(properties)
+Properties::Properties(unordered_map<string, string> properties) : m_properties(move(properties))
 {
 }
 

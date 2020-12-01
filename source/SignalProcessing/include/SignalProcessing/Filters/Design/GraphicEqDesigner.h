@@ -27,7 +27,7 @@ namespace adaptone
         DECLARE_NOT_COPYABLE(GraphicEqDesignerPrivate);
         DECLARE_NOT_MOVABLE(GraphicEqDesignerPrivate);
 
-        virtual void update(const std::vector<double>& gains) = 0;
+        virtual void update(std::vector<double> gains) = 0;
         virtual void update(const std::vector<BiquadCoefficients<float>>& biquadCoefficients, float d0) = 0;
         virtual void update(const std::vector<BiquadCoefficients<double>>& biquadCoefficients, double d0) = 0;
 

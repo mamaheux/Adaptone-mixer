@@ -31,7 +31,7 @@ namespace adaptone
             std::size_t outputChannelCount,
             PcmAudioFrameFormat inputFormat,
             PcmAudioFrameFormat outputFormat,
-            const std::vector<double>& eqCenterFrequencies,
+            std::vector<double> eqCenterFrequencies,
             std::size_t maxOutputDelay,
             std::size_t soundLevelLength);
         virtual ~SignalProcessorParameters();

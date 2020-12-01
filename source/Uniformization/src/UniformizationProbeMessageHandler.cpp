@@ -14,9 +14,9 @@ using namespace std;
 UniformizationProbeMessageHandler::UniformizationProbeMessageHandler(shared_ptr<Logger> logger,
     shared_ptr<HeadphoneProbeSignalOverride> headphoneProbeSignalOverride,
     shared_ptr<RecordResponseMessageAgregator> recordResponseMessageAgregator) :
-    m_logger(logger),
-    m_headphoneProbeSignalOverride(headphoneProbeSignalOverride),
-    m_recordResponseMessageAgregator(recordResponseMessageAgregator)
+    m_logger(move(logger)),
+    m_headphoneProbeSignalOverride(move(headphoneProbeSignalOverride)),
+    m_recordResponseMessageAgregator(move(recordResponseMessageAgregator))
 {
     ADD_HANDLE_FUNCTION(ProbeSoundDataMessage);
     ADD_HANDLE_FUNCTION(RecordResponseMessage);

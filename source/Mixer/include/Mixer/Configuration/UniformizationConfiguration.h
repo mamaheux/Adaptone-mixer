@@ -32,8 +32,6 @@ namespace adaptone
         std::size_t m_autoPositionTryCount;
         std::size_t m_autoPositionCountThreshold;
 
-
-
     public:
         explicit UniformizationConfiguration(const Properties& properties);
         virtual ~UniformizationConfiguration();

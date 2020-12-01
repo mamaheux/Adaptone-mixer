@@ -11,10 +11,10 @@ PositionConfirmationMessage::PositionConfirmationMessage() : ApplicationMessage(
 {
 }
 
-PositionConfirmationMessage::PositionConfirmationMessage(const vector<ConfigurationPosition>& firstSymmetryPositions,
-    const vector<ConfigurationPosition>& secondSymmetryPositions) : ApplicationMessage(SeqId),
-    m_firstSymmetryPositions(firstSymmetryPositions),
-    m_secondSymmetryPositions(secondSymmetryPositions)
+PositionConfirmationMessage::PositionConfirmationMessage(vector<ConfigurationPosition> firstSymmetryPositions,
+    vector<ConfigurationPosition> secondSymmetryPositions) : ApplicationMessage(SeqId),
+    m_firstSymmetryPositions(move(firstSymmetryPositions)),
+    m_secondSymmetryPositions(move(secondSymmetryPositions))
 {
 }
 

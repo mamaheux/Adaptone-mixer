@@ -28,7 +28,7 @@ namespace adaptone
     public:
         ChannelIdMapping(std::size_t inputChannelCount,
             std::size_t outputChannelCount,
-            const std::vector<std::size_t>& headphoneChannelIndexes);
+            std::vector<std::size_t> headphoneChannelIndexes);
         virtual ~ChannelIdMapping();
 
         DECLARE_NOT_COPYABLE(ChannelIdMapping);

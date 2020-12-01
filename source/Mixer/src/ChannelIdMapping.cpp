@@ -10,10 +10,10 @@ using namespace std;
 
 ChannelIdMapping::ChannelIdMapping(size_t inputChannelCount,
     size_t outputChannelCount,
-    const vector<size_t>& headphoneChannelIndexes) :
+    vector<size_t> headphoneChannelIndexes) :
     m_inputChannelCount(inputChannelCount),
     m_outputChannelCount(outputChannelCount),
-    m_headphoneChannelIndexes(headphoneChannelIndexes)
+    m_headphoneChannelIndexes(move(headphoneChannelIndexes))
 {
 }
 

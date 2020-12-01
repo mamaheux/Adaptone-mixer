@@ -16,7 +16,7 @@ namespace adaptone
 
     public:
         ChannelSpectrum();
-        ChannelSpectrum(std::size_t channelId, const std::vector<SpectrumPoint>& points);
+        ChannelSpectrum(std::size_t channelId, std::vector<SpectrumPoint> points);
         virtual ~ChannelSpectrum();
 
         std::size_t channelId() const;
@@ -73,7 +73,7 @@ namespace adaptone
 
     public:
         InputSpectrumMessage();
-        InputSpectrumMessage(const std::vector<ChannelSpectrum>& channelSpectrums);
+        InputSpectrumMessage(std::vector<ChannelSpectrum> channelSpectrums);
         ~InputSpectrumMessage() override;
 
         const std::vector<ChannelSpectrum>& channelSpectrums() const;
