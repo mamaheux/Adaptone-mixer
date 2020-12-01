@@ -1,5 +1,7 @@
 #include <Communication/Messages/Input/ChangeAllProcessingParametersMessage.h>
 
+#include <utility>
+
 using namespace adaptone;
 using namespace std;
 
@@ -15,12 +17,12 @@ InputProcessingParameters::InputProcessingParameters(size_t channelId,
     double gain,
     bool isMuted,
     bool isSolo,
-    const vector<double>& eqGains) :
+    vector<double> eqGains) :
     m_channelId(channelId),
     m_gain(gain),
     m_isMuted(isMuted),
     m_isSolo(isSolo),
-    m_eqGains(eqGains)
+    m_eqGains(move(eqGains))
 {
 }
 
@@ -36,12 +38,12 @@ MasterProcessingParameters::MasterProcessingParameters() :
 
 MasterProcessingParameters::MasterProcessingParameters(double gain,
     bool isMuted,
-    const vector<ChannelGain>& inputs,
-    const vector<double>& eqGains) :
+    vector<ChannelGain> inputs,
+    vector<double> eqGains) :
     m_gain(gain),
     m_isMuted(isMuted),
-    m_inputs(inputs),
-    m_eqGains(eqGains)
+    m_inputs(move(inputs)),
+    m_eqGains(move(eqGains))
 {
 }
 
@@ -59,13 +61,13 @@ AuxiliaryProcessingParameters::AuxiliaryProcessingParameters() :
 AuxiliaryProcessingParameters::AuxiliaryProcessingParameters(size_t auxiliaryChannelId,
     double gain,
     bool isMuted,
-    const vector<ChannelGain>& inputs,
-    const vector<double>& eqGains) :
+    vector<ChannelGain> inputs,
+    vector<double> eqGains) :
     m_auxiliaryChannelId(auxiliaryChannelId),
     m_gain(gain),
     m_isMuted(isMuted),
-    m_inputs(inputs),
-    m_eqGains(eqGains)
+    m_inputs(move(inputs)),
+    m_eqGains(move(eqGains))
 {
 }
 
@@ -82,18 +84,18 @@ ChangeAllProcessingParametersMessage::ChangeAllProcessingParametersMessage() :
 }
 
 ChangeAllProcessingParametersMessage::ChangeAllProcessingParametersMessage(
-    const vector<InputProcessingParameters>& inputs,
-    const MasterProcessingParameters& master,
-    const vector<AuxiliaryProcessingParameters>& auxiliaries,
-    const vector<size_t>& inputChannelIds,
+    vector<InputProcessingParameters> inputs,
+    MasterProcessingParameters master,
+    vector<AuxiliaryProcessingParameters> auxiliaries,
+    vector<size_t> inputChannelIds,
     size_t speakersNumber,
-    const vector<size_t>& auxiliaryChannelIds) : ApplicationMessage(SeqId),
-    m_inputs(inputs),
+    vector<size_t> auxiliaryChannelIds) : ApplicationMessage(SeqId),
+    m_inputs(move(inputs)),
     m_master(master),
-    m_auxiliaries(auxiliaries),
-    m_inputChannelIds(inputChannelIds),
+    m_auxiliaries(move(auxiliaries)),
+    m_inputChannelIds(move(inputChannelIds)),
     m_speakersNumber(speakersNumber),
-    m_auxiliaryChannelIds(auxiliaryChannelIds)
+    m_auxiliaryChannelIds(move(auxiliaryChannelIds))
 {
 
 }

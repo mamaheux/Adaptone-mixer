@@ -10,8 +10,8 @@ ChangeInputGainsMessage::ChangeInputGainsMessage() : ApplicationMessage(SeqId),
 {
 }
 
-ChangeInputGainsMessage::ChangeInputGainsMessage(const vector<ChannelGain>& gains) : ApplicationMessage(SeqId),
-    m_gains(gains)
+ChangeInputGainsMessage::ChangeInputGainsMessage(vector<ChannelGain> gains) : ApplicationMessage(SeqId),
+    m_gains(move(gains))
 {
 }
 

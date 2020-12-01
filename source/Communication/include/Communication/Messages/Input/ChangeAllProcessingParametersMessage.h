@@ -22,7 +22,7 @@ namespace adaptone
             double gain,
             bool isMuted,
             bool isSolo,
-            const std::vector<double>& eqGains);
+            std::vector<double> eqGains);
         virtual ~InputProcessingParameters();
 
         std::size_t channelId() const;
@@ -101,8 +101,8 @@ namespace adaptone
         MasterProcessingParameters();
         MasterProcessingParameters(double gain,
             bool isMuted,
-            const std::vector<ChannelGain>& inputs,
-            const std::vector<double>& eqGains);
+            std::vector<ChannelGain> inputs,
+            std::vector<double> eqGains);
         virtual ~MasterProcessingParameters();
 
         double gain() const;
@@ -174,8 +174,8 @@ namespace adaptone
         AuxiliaryProcessingParameters(std::size_t auxiliaryChannelId,
             double gain,
             bool isMuted,
-            const std::vector<ChannelGain>& inputs,
-            const std::vector<double>& eqGains);
+            std::vector<ChannelGain> inputs,
+            std::vector<double> eqGains);
         virtual ~AuxiliaryProcessingParameters();
 
         std::size_t auxiliaryChannelId() const;
@@ -258,12 +258,12 @@ namespace adaptone
 
     public:
         ChangeAllProcessingParametersMessage();
-        ChangeAllProcessingParametersMessage(const std::vector<InputProcessingParameters>& inputs,
-            const MasterProcessingParameters& master,
-            const std::vector<AuxiliaryProcessingParameters>& auxiliaries,
-            const std::vector<std::size_t>& inputChannelIds,
+        ChangeAllProcessingParametersMessage(std::vector<InputProcessingParameters> inputs,
+            MasterProcessingParameters master,
+            std::vector<AuxiliaryProcessingParameters> auxiliaries,
+            std::vector<std::size_t> inputChannelIds,
             std::size_t speakersNumber,
-            const std::vector<std::size_t>& auxiliaryChannelIds);
+            std::vector<std::size_t> auxiliaryChannelIds);
         ~ChangeAllProcessingParametersMessage() override;
 
         const std::vector<InputProcessingParameters>& inputs() const;

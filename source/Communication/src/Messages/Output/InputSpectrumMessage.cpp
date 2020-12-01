@@ -7,8 +7,8 @@ ChannelSpectrum::ChannelSpectrum() : m_channelId(0), m_points()
 {
 }
 
-ChannelSpectrum::ChannelSpectrum(size_t channelId, const vector<SpectrumPoint>& points) :
-    m_channelId(channelId), m_points(points)
+ChannelSpectrum::ChannelSpectrum(size_t channelId, vector<SpectrumPoint> points) :
+    m_channelId(channelId), m_points(move(points))
 {
 }
 
@@ -22,8 +22,8 @@ InputSpectrumMessage::InputSpectrumMessage() : ApplicationMessage(SeqId), m_chan
 {
 }
 
-InputSpectrumMessage::InputSpectrumMessage(const vector<ChannelSpectrum>& channelSpectrums) :
-    ApplicationMessage(SeqId), m_channelSpectrums(channelSpectrums)
+InputSpectrumMessage::InputSpectrumMessage(vector<ChannelSpectrum> channelSpectrums) :
+    ApplicationMessage(SeqId), m_channelSpectrums(move(channelSpectrums))
 {
 }
 

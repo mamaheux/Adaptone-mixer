@@ -10,9 +10,9 @@ OptimizedPositionMessage::OptimizedPositionMessage() : ApplicationMessage(SeqId)
 {
 }
 
-OptimizedPositionMessage::OptimizedPositionMessage(const vector<ConfigurationPosition>& positions) :
+OptimizedPositionMessage::OptimizedPositionMessage(vector<ConfigurationPosition> positions) :
     ApplicationMessage(SeqId),
-    m_positions(positions)
+    m_positions(move(positions))
 {
 }
 
