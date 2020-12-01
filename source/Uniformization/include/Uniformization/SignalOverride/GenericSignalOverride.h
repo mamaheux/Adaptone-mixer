@@ -21,7 +21,7 @@ namespace adaptone
         std::atomic<size_t> m_currentSignalOverrideType;
 
     public:
-        explicit GenericSignalOverride(const std::vector<std::shared_ptr<SpecificSignalOverride>>& signalSignalOverrides);
+        explicit GenericSignalOverride(std::vector<std::shared_ptr<SpecificSignalOverride>> signalSignalOverrides);
         virtual ~GenericSignalOverride();
 
         template<class T>

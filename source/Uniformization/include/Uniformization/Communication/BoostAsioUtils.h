@@ -48,10 +48,7 @@ namespace adaptone
         boost::asio::socket_base::message_flags flags,
         boost::system::error_code& ec)
     {
-        int bytesReceived = ::recv(socket.native_handle(),
-            boost::asio::detail::buffer_cast_helper(buffer),
-            boost::asio::detail::buffer_size_helper(buffer),
-            flags);
+        int bytesReceived = ::recv(socket.native_handle(), buffer.data(), buffer.size(), flags);
 
         if (hasSocketTimeout(bytesReceived))
         {
@@ -74,8 +71,8 @@ namespace adaptone
         socklen_t addr_len = senderEndpoint.capacity();
 
         int bytesReceived = ::recvfrom(socket.native_handle(),
-            boost::asio::detail::buffer_cast_helper(buffer),
-            boost::asio::detail::buffer_size_helper(buffer),
+            buffer.data(),
+            buffer.size(),
             flags,
             senderEndpoint.data(),
             &addr_len);

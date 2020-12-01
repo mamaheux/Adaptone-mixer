@@ -46,7 +46,7 @@ namespace adaptone
         ProbeServer(std::shared_ptr<Logger> logger,
             std::shared_ptr<ProbeMessageHandler> messageHandler,
             const DiscoveredProbe& discoveredProbe,
-            const ProbeServerParameters& probeServerParameters);
+            ProbeServerParameters probeServerParameters);
         virtual ~ProbeServer();
 
         DECLARE_NOT_COPYABLE(ProbeServer);

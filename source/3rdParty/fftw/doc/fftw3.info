@@ -1,4 +1,4 @@
-This is fftw3.info, produced by makeinfo version 6.5 from fftw3.texi.
+This is fftw3.info, produced by makeinfo version 6.7 from fftw3.texi.
 
 This manual is for FFTW (version 3.3.8, 24 May 2018).
 
@@ -162,3 +162,8 @@ Node: Concept Index298296
 Node: Library Index337208
 
 End Tag Table
+
+
+Local Variables:
+coding: utf-8
+End:

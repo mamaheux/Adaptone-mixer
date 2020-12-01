@@ -10,7 +10,7 @@ SignalProcessorParameters::SignalProcessorParameters(ProcessingDataType processi
     size_t outputChannelCount,
     PcmAudioFrameFormat inputFormat,
     PcmAudioFrameFormat outputFormat,
-    const vector<double>& eqCenterFrequencies,
+    vector<double> eqCenterFrequencies,
     size_t maxOutputDelay,
     size_t soundLevelLength) :
     m_processingDataType(processingDataType),
@@ -20,7 +20,7 @@ SignalProcessorParameters::SignalProcessorParameters(ProcessingDataType processi
     m_outputChannelCount(outputChannelCount),
     m_inputFormat(inputFormat),
     m_outputFormat(outputFormat),
-    m_eqCenterFrequencies(eqCenterFrequencies),
+    m_eqCenterFrequencies(move(eqCenterFrequencies)),
     m_maxOutputDelay(maxOutputDelay),
     m_soundLevelLength(soundLevelLength)
 {

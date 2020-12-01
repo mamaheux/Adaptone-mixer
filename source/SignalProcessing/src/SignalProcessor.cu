@@ -18,11 +18,11 @@ SignalProcessor::SignalProcessor(shared_ptr<AnalysisDispatcher> analysisDispatch
 
     if (parameters.processingDataType() == ProcessingDataType::Float)
     {
-        m_specificSignalProcessor = make_unique<CudaSignalProcessor<float>>(analysisDispatcher, parameters);
+        m_specificSignalProcessor = make_unique<CudaSignalProcessor<float>>(move(analysisDispatcher), parameters);
     }
     else if (parameters.processingDataType() == ProcessingDataType::Double)
     {
-        m_specificSignalProcessor = make_unique<CudaSignalProcessor<double>>(analysisDispatcher, parameters);
+        m_specificSignalProcessor = make_unique<CudaSignalProcessor<double>>(move(analysisDispatcher), parameters);
     }
     else
     {

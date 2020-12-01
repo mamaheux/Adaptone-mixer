@@ -11,7 +11,7 @@ ProbeServerParameters::ProbeServerParameters(Endpoint discoveryEndpoint,
     int probeTimeoutMs,
     size_t sampleFrequency,
     PcmAudioFrameFormat format) :
-    m_discoveryEndpoint(discoveryEndpoint),
+    m_discoveryEndpoint(move(discoveryEndpoint)),
     m_discoveryTimeoutMs(discoveryTimeoutMs),
     m_discoveryTrialCount(discoveryTrialCount),
     m_tcpConnectionPort(tcpConnectionPort),

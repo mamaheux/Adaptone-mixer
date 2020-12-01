@@ -20,7 +20,7 @@ namespace adaptone
         std::unordered_map<std::string, std::string> m_properties;
 
     public:
-        Properties(const std::unordered_map<std::string, std::string>& properties);
+        Properties(std::unordered_map<std::string, std::string> properties);
         explicit Properties(const std::string& filename);
         virtual ~Properties();
 

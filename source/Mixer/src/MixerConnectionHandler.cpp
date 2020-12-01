@@ -6,7 +6,7 @@ using namespace adaptone;
 using namespace std;
 
 MixerConnectionHandler::MixerConnectionHandler(shared_ptr<SignalProcessor> signalProcessor, size_t outputChannelCount) :
-    m_signalProcessor(signalProcessor),
+    m_signalProcessor(move(signalProcessor)),
     m_outputChannelCount(outputChannelCount)
 {
 }

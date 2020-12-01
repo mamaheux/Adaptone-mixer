@@ -24,7 +24,7 @@
 using namespace adaptone;
 using namespace std;
 
-Mixer::Mixer(const Configuration& configuration) : m_configuration(configuration), m_stopped(true)
+Mixer::Mixer(Configuration&& configuration) : m_configuration(configuration), m_stopped(true)
 {
     shared_ptr<Logger> logger = createLogger();
     shared_ptr<ChannelIdMapping> channelIdMapping = createChannelIdMapping();

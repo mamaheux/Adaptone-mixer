@@ -15,7 +15,7 @@ namespace adaptone
 
     public:
         Endpoint();
-        Endpoint(const std::string& ipAddress, uint16_t port);
+        Endpoint(std::string ipAddress, uint16_t port);
         virtual ~Endpoint();
 
         const std::string& ipAddress() const;

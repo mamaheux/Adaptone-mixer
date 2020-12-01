@@ -10,7 +10,7 @@
 using namespace adaptone;
 using namespace std;
 
-DiscoveredProbe::DiscoveredProbe(const boost::asio::ip::address& address) : m_address(address)
+DiscoveredProbe::DiscoveredProbe(boost::asio::ip::address address) : m_address(move(address))
 {
 }
 

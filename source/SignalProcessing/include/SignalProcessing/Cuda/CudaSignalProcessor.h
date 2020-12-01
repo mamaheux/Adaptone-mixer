@@ -128,7 +128,7 @@ namespace adaptone
             InitialParameterDirtyState),
 
         m_frameSampleCounter(0),
-        m_analysisDispatcher(analysisDispatcher)
+        m_analysisDispatcher(move(analysisDispatcher))
     {
         m_soundLevels[AnalysisDispatcher::SoundLevelType::InputGain] = std::vector<T>(parameters.inputChannelCount());
         m_soundLevels[AnalysisDispatcher::SoundLevelType::InputEq] = std::vector<T>(parameters.inputChannelCount());

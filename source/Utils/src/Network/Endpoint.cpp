@@ -7,7 +7,7 @@ Endpoint::Endpoint() : m_ipAddress(""), m_port(0)
 {
 }
 
-Endpoint::Endpoint(const string& ipAddress, uint16_t port) : m_ipAddress(ipAddress), m_port(port)
+Endpoint::Endpoint(string ipAddress, uint16_t port) : m_ipAddress(move(ipAddress)), m_port(port)
 {
 }
 

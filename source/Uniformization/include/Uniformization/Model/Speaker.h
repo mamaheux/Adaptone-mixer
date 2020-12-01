@@ -17,13 +17,13 @@ namespace adaptone
         Speaker(double x, double y, double z, uint32_t id);
         ~Speaker() override;
 
-        void setDirectivities(const arma::vec& directivities);
+        void setDirectivities(arma::vec directivities);
         const arma::vec& directivities() const;
     };
 
-    inline void Speaker::setDirectivities(const arma::vec& directivities)
+    inline void Speaker::setDirectivities(arma::vec directivities)
     {
-        m_directivities = directivities;
+        m_directivities = std::move(directivities);
     }
 
     inline const arma::vec& Speaker::directivities() const

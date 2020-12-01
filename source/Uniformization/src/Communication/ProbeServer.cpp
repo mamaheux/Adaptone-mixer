@@ -17,12 +17,12 @@ using namespace std::chrono_literals;
 ProbeServer::ProbeServer(shared_ptr<Logger> logger,
     shared_ptr<ProbeMessageHandler> messageHandler,
     const DiscoveredProbe& discoveredProbe,
-    const ProbeServerParameters& probeServerParameters) :
-    m_logger(logger),
-    m_messageHandler(messageHandler),
+    ProbeServerParameters probeServerParameters) :
+    m_logger(move(logger)),
+    m_messageHandler(move(messageHandler)),
     m_isMaster(false),
     m_isConnected(false),
-    m_probeServerParameters(probeServerParameters),
+    m_probeServerParameters(move(probeServerParameters)),
     m_sendingBuffer(MaxTcpMessageSize),
     m_stopped(true)
 {

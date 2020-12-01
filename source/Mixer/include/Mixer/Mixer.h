@@ -48,7 +48,7 @@ namespace adaptone
         std::atomic<bool> m_stopped;
 
     public:
-        Mixer(const Configuration& configuration);
+        explicit Mixer(Configuration&& configuration);
         virtual ~Mixer();
 
         DECLARE_NOT_COPYABLE(Mixer);
